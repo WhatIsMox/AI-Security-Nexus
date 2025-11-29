@@ -22,6 +22,7 @@ interface SAIFComponent {
   y: number;
   width: number;
   height: number;
+  style?: 'solid' | 'dotted';
 }
 
 interface ThreatDefinition {
@@ -34,41 +35,39 @@ interface ThreatDefinition {
   riskLevel: 'Critical' | 'High' | 'Medium' | 'Low';
   relatedTestIds: string[]; 
   affectedComponents: string[]; 
-  category: 'Security' | 'Responsible AI' | 'Privacy';
+  category: 'Security' | 'Responsible AI' | 'Privacy' | 'Social Engineering';
 }
 
-// Redesigned Layout Coordinates (Compressed)
-const COMPONENT_WIDTH = 180;
-const COMPONENT_HEIGHT = 70;
+// Redesigned Layout Coordinates to match the reference image
 const CENTER_X = 425; // Center of 850px canvas
 
 const SAIF_COMPONENTS: SAIFComponent[] = [
   // --- Application Layer (Top) ---
-  { id: "1", name: "User", layer: "Application", description: "Human or system actor.", x: CENTER_X - 60, y: 25, width: 120, height: 50 },
-  { id: "4", name: "Application", layer: "Application", description: "Orchestration & Logic.", x: CENTER_X - 120, y: 100, width: 240, height: 80 },
-  { id: "5", name: "Agents / Plugins", layer: "Application", description: "Tools & Extensions.", x: CENTER_X - 320, y: 110, width: 160, height: 60 },
-  { id: "6", name: "Ext. Sources (App)", layer: "Application", description: "3rd Party APIs.", x: CENTER_X + 160, y: 110, width: 160, height: 60 },
+  { id: "1", name: "User", layer: "Application", description: "Human or system actor.", x: CENTER_X - 60, y: 10, width: 120, height: 40, style: 'dotted' },
+  { id: "4", name: "Application", layer: "Application", description: "Orchestration & Logic.", x: CENTER_X - 150, y: 70, width: 300, height: 50 },
+  { id: "5", name: "Agent / Plugin", layer: "Application", description: "Tools & Extensions.", x: CENTER_X - 80, y: 140, width: 160, height: 40 },
+  { id: "6", name: "External Sources", layer: "Application", description: "3rd Party APIs.", x: CENTER_X + 175, y: 140, width: 160, height: 40, style: 'dotted' },
   
   // --- Model Layer (Inference Flow) ---
-  { id: "7", name: "Input Handling", layer: "Model", description: "Sanitization & Validation.", x: CENTER_X - 220, y: 220, width: 180, height: 60 },
-  { id: "8", name: "Output Handling", layer: "Model", description: "Filtering & Redaction.", x: CENTER_X + 40, y: 220, width: 180, height: 60 },
-  { id: "9", name: "Model (Usage)", layer: "Model", description: "Inference Engine.", x: CENTER_X - 100, y: 300, width: 200, height: 70 },
+  { id: "7", name: "Input Handling", layer: "Model", description: "Sanitization & Validation.", x: CENTER_X - 170, y: 220, width: 140, height: 40 },
+  { id: "8", name: "Output Handling", layer: "Model", description: "Filtering & Redaction.", x: CENTER_X + 30, y: 220, width: 140, height: 40 },
+  { id: "9", name: "Model", layer: "Model", description: "Inference Engine.", x: CENTER_X - 150, y: 280, width: 300, height: 50 },
 
   // --- Infrastructure Layer (Support) ---
-  { id: "11", name: "Model Serving", layer: "Infrastructure", description: "Runtime Env / GPU.", x: CENTER_X + 140, y: 400, width: 180, height: 60 },
-  { id: "10", name: "Model Storage", layer: "Infrastructure", description: "Artifact Registry.", x: CENTER_X - 320, y: 400, width: 180, height: 60 },
+  { id: "10", name: "Model Storage Infra", layer: "Infrastructure", description: "Artifact Registry.", x: CENTER_X - 190, y: 360, width: 180, height: 40 },
+  { id: "11", name: "Model Serving Infra", layer: "Infrastructure", description: "Runtime Env / GPU.", x: CENTER_X + 10, y: 360, width: 180, height: 40 },
   
-  { id: "12", name: "Evaluation", layer: "Infrastructure", description: "Safety Harness.", x: CENTER_X - 320, y: 480, width: 140, height: 60 },
-  { id: "13", name: "Training & Tuning", layer: "Infrastructure", description: "Fine-tuning Pipelines.", x: CENTER_X - 100, y: 480, width: 200, height: 70 },
-  { id: "14", name: "Frameworks", layer: "Infrastructure", description: "PyTorch / TensorFlow.", x: CENTER_X + 140, y: 480, width: 160, height: 60 },
+  { id: "12", name: "Evaluation", layer: "Infrastructure", description: "Safety Harness.", x: CENTER_X - 325, y: 430, width: 120, height: 40 },
+  { id: "13", name: "Training and Tuning", layer: "Infrastructure", description: "Fine-tuning Pipelines.", x: CENTER_X - 100, y: 430, width: 200, height: 50 },
+  { id: "14", name: "Frameworks & Code", layer: "Infrastructure", description: "PyTorch / TensorFlow.", x: CENTER_X + 125, y: 430, width: 160, height: 40 },
 
-  { id: "15", name: "Data Storage Infra", layer: "Infrastructure", description: "Vector DBs / Object Store.", x: CENTER_X - 100, y: 570, width: 200, height: 60 },
+  { id: "15", name: "Data Storage Infra", layer: "Infrastructure", description: "Vector DBs / Object Store.", x: CENTER_X - 100, y: 510, width: 200, height: 40 },
 
   // --- Data Layer (Pipeline Flowing Up) ---
-  { id: "16", name: "Training Data", layer: "Data", description: "Curated Corpora.", x: CENTER_X - 90, y: 660, width: 180, height: 60 },
-  { id: "17", name: "Data Filtering", layer: "Data", description: "ETL & Cleaning.", x: CENTER_X - 90, y: 740, width: 180, height: 60 },
-  { id: "18", name: "Data Sources", layer: "Data", description: "Internal Databases.", x: CENTER_X - 220, y: 820, width: 180, height: 60 },
-  { id: "19", name: "Ext Data Sources", layer: "Data", description: "Public Internet/Feeds.", x: CENTER_X + 40, y: 820, width: 180, height: 60 },
+  { id: "16", name: "Training Data", layer: "Data", description: "Curated Corpora.", x: CENTER_X - 100, y: 580, width: 200, height: 40 },
+  { id: "17", name: "Data Filtering", layer: "Data", description: "ETL & Cleaning.", x: CENTER_X - 100, y: 650, width: 200, height: 40 },
+  { id: "18", name: "Data Sources", layer: "Data", description: "Internal Databases.", x: CENTER_X - 200, y: 720, width: 400, height: 40 },
+  { id: "19", name: "External Sources", layer: "Data", description: "Public Internet/Feeds.", x: CENTER_X - 80, y: 800, width: 160, height: 40, style: 'dotted' },
 ];
 
 const THREAT_LIBRARY: ThreatDefinition[] = [
@@ -79,7 +78,7 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     category: "Security", 
     riskLevel: "Critical", 
     relatedTestIds: ["AITG-APP-01", "AITG-APP-02"], 
-    affectedComponents: ["2", "4", "5", "6", "7", "9"], 
+    affectedComponents: ["4", "5", "6", "7", "9"], 
     impact: "Model hijacking, unauthorized actions, data exfiltration.", 
     riskOwner: "Model User & Creator", 
     scenario: "Direct injection via user input to bypass controls, or indirect injection via retrieval of poisoned external content (e.g. emails, websites).", 
@@ -244,7 +243,7 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     description: "Unauthorized access or functional replication of the model." 
   },
 
-  // --- OWASP Agentic AI Threats (Selected) ---
+  // --- OWASP Agentic AI Threats (Complete) ---
   { 
     id: "T1", 
     name: "Memory Poisoning", 
@@ -263,11 +262,167 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     category: "Security", 
     riskLevel: "Critical", 
     relatedTestIds: ["AGT-02"], 
-    affectedComponents: ["5"], 
+    affectedComponents: ["5", "6"], 
     impact: "Unauthorized actions, financial loss.", 
     riskOwner: "Model User", 
     scenario: "Manipulating an agent to use a tool with malicious parameters.", 
     description: "Abusing integrated tools through deceptive prompts." 
+  },
+  {
+    id: "T3",
+    name: "Privilege Compromise",
+    category: "Security",
+    riskLevel: "High",
+    relatedTestIds: ["AGT-03"],
+    affectedComponents: ["4", "5"], 
+    impact: "Escalation to administrative control, cross-system exploitation.",
+    riskOwner: "Model User/Developer",
+    scenario: "Agent exploits weak permission checks to execute administrative commands on behalf of a lower-privilege user.",
+    description: "Attackers exploit weaknesses in permission management to perform unauthorized actions via the Agent."
+  },
+  {
+    id: "T4",
+    name: "Resource Overload",
+    category: "Security",
+    riskLevel: "High",
+    relatedTestIds: ["AGT-07", "AITG-INF-02"],
+    affectedComponents: ["4", "5", "11"],
+    impact: "DoS, Financial exhaustion.",
+    riskOwner: "Model User",
+    scenario: "Triggering multiple agents to perform complex, expensive loops simultaneously.",
+    description: "Targets computational and service capacities to degrade performance."
+  },
+  {
+    id: "T5",
+    name: "Cascading Hallucination",
+    category: "Responsible AI",
+    riskLevel: "Medium",
+    relatedTestIds: ["AGT-06"],
+    affectedComponents: ["4", "5", "8", "9"],
+    impact: "Systemic decision failures.",
+    riskOwner: "Model Creator",
+    scenario: "One agent hallucinates a fact, which is accepted as truth by downstream agents, leading to a catastrophic error.",
+    description: "False information propagating through multi-agent systems."
+  },
+  {
+    id: "T6",
+    name: "Intent Breaking",
+    category: "Security",
+    riskLevel: "High",
+    relatedTestIds: ["AGT-04"],
+    affectedComponents: ["4", "5"], 
+    impact: "Agent Hijacking.",
+    riskOwner: "Model User",
+    scenario: "Injection of a new high-priority goal that overrides the agent's original safety directives.",
+    description: "Exploits vulnerabilities in an AI agent's planning and goal-setting capabilities."
+  },
+  {
+    id: "T7",
+    name: "Misaligned Behaviors",
+    category: "Responsible AI",
+    riskLevel: "High",
+    relatedTestIds: ["AITG-APP-06"],
+    affectedComponents: ["4", "9"], 
+    impact: "Fraud, Reputational damage.",
+    riskOwner: "Model Creator",
+    scenario: "A trading agent executes technically legal but ethically manipulative trades to maximize profit.",
+    description: "Agents executing harmful actions by exploiting gaps in objective functions."
+  },
+  {
+    id: "T8",
+    name: "Repudiation & Untraceability",
+    category: "Security",
+    riskLevel: "Medium",
+    relatedTestIds: [],
+    affectedComponents: ["4", "11"], 
+    impact: "Compliance violations, inability to audit.",
+    riskOwner: "Security Architect",
+    scenario: "Agent performs an action (e.g., deleting a file) but logs are insufficient to determine *why* or *which* user initiated it.",
+    description: "Actions performed by autonomous agents cannot be traced back to a specific root cause or user."
+  },
+  {
+    id: "T9",
+    name: "Identity Spoofing",
+    category: "Security",
+    riskLevel: "High",
+    relatedTestIds: ["AGT-05"],
+    affectedComponents: ["5", "6"], 
+    impact: "Unauthorized access.",
+    riskOwner: "Security Architect",
+    scenario: "A rogue agent mimics the handshake protocol of a trusted 'Supervisor' agent to issue malicious commands.",
+    description: "Attackers exploit authentication to impersonate AI agents, humans, or services."
+  },
+  {
+    id: "T10",
+    name: "Overwhelming HITL",
+    category: "Security",
+    riskLevel: "Medium",
+    relatedTestIds: [],
+    affectedComponents: ["1", "4"], 
+    impact: "Decision fatigue, rushed approvals.",
+    riskOwner: "Product Owner",
+    scenario: "Agent floods the human reviewer with hundreds of low-confidence requests, causing them to auto-approve a malicious one.",
+    description: "Targets systems with human oversight by exploiting cognitive limitations."
+  },
+  {
+    id: "T11",
+    name: "Unexpected RCE",
+    category: "Security",
+    riskLevel: "Critical",
+    relatedTestIds: ["AITG-APP-05"],
+    affectedComponents: ["5", "11"], 
+    impact: "System compromise.",
+    riskOwner: "Security Architect",
+    scenario: "A coding agent is tricked into generating and executing a Python script that opens a reverse shell.",
+    description: "Attackers exploit AI-generated execution environments to inject malicious code."
+  },
+  {
+    id: "T12",
+    name: "Agent Comm. Poisoning",
+    category: "Security",
+    riskLevel: "High",
+    relatedTestIds: ["AGT-06"],
+    affectedComponents: ["5"], 
+    impact: "Systemic failures.",
+    riskOwner: "System Architect",
+    scenario: "Injecting misleading info into the shared message bus used by multiple agents.",
+    description: "Manipulating communication channels between agents."
+  },
+  {
+    id: "T13",
+    name: "Rogue Agents",
+    category: "Security",
+    riskLevel: "High",
+    relatedTestIds: [],
+    affectedComponents: ["5"], 
+    impact: "Persistent threats.",
+    riskOwner: "System Architect",
+    scenario: "A compromised agent in a swarm begins acting against the collective goal without being detected.",
+    description: "Malicious or compromised agents operate outside normal monitoring boundaries."
+  },
+  {
+    id: "T14",
+    name: "Human Attacks on Agents",
+    category: "Social Engineering",
+    riskLevel: "Medium",
+    relatedTestIds: [],
+    affectedComponents: ["1", "5"], 
+    impact: "Privilege escalation.",
+    riskOwner: "Security Architect",
+    scenario: "A user uses social engineering tactics on a support agent to grant a refund they aren't entitled to.",
+    description: "Adversaries exploit inter-agent delegation and trust relationships."
+  },
+  {
+    id: "T15",
+    name: "Human Manipulation",
+    category: "Social Engineering",
+    riskLevel: "High",
+    relatedTestIds: [],
+    affectedComponents: ["1", "4"], 
+    impact: "Phishing, Fraud.",
+    riskOwner: "Model User",
+    scenario: "An AI agent, tailored for persuasion, convinces a user to transfer funds to a fraudulent account.",
+    description: "Attackers exploit user trust in AI agents to influence human decision-making."
   }
 ];
 
@@ -418,77 +573,88 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
             </div>
             
             <div className="flex-1 overflow-auto relative cursor-move p-2 flex items-center justify-center bg-slate-950">
-               <svg width="850" height="900" viewBox="0 0 850 900" className="w-full h-full">
+               <svg width="850" height="880" viewBox="0 0 850 880" className="w-full h-full">
                   {/* Connection Lines (Orthogonal / Direct) */}
                   <defs>
                     <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                       <path d="M0,0 L0,6 L8,3 z" fill="#475569" />
                     </marker>
-                    <marker id="arrowhead-up" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                      <path d="M0,0 L0,6 L8,3 z" fill="#475569" />
+                    <marker id="arrowhead-up" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto-start-reverse">
+                       <path d="M0,0 L0,6 L8,3 z" fill="#475569" />
                     </marker>
                   </defs>
                   
-                  {/* --- Logical Flow Lines (Updated for Compression) --- */}
+                  {/* --- Logical Flow Lines --- */}
                   <g stroke="#475569" strokeWidth="2" fill="none">
-                    {/* User -> App (25+50=75 to 100) */}
-                    <path d="M425 75 L425 100" markerEnd="url(#arrowhead)" />
                     
-                    {/* App -> Agents / Ext (Side) (100+40=140) */}
-                    <path d="M305 140 L300 140" markerEnd="url(#arrowhead)" />
-                    <path d="M545 140 L570 140" markerEnd="url(#arrowhead)" />
-                    
-                    {/* App -> Input Handling (Down Left) (100+80=180 to 220) */}
-                    <path d="M425 180 L425 200 L270 200 L270 220" markerEnd="url(#arrowhead)" />
-                    
-                    {/* Input -> Model (Center) (220+30=250 to 300) */}
-                    <path d="M385 250 L405 250 L405 300" markerEnd="url(#arrowhead)" /> {/* Input Right -> Model Top */}
-                    
-                    {/* Model -> Output (Up Right) (Model Top 300 to Output Center 250) */}
-                    <path d="M445 300 L445 250 L465 250" markerEnd="url(#arrowhead)" /> 
+                    {/* User <-> Application (Two arrows: Down/Up) */}
+                    <path d="M415 50 L415 70" markerEnd="url(#arrowhead)" />
+                    <path d="M435 70 L435 50" markerEnd="url(#arrowhead)" />
 
-                    {/* Output -> App (Output Top 220 to App Bottom 180) */}
-                    <path d="M555 220 L555 200 L425 200 L425 180" markerEnd="url(#arrowhead)" />
+                    {/* Application <-> Agent/Plugin (Two arrows: Down/Up) */}
+                    <path d="M385 120 L385 140" markerEnd="url(#arrowhead)" />
+                    <path d="M465 140 L465 120" markerEnd="url(#arrowhead)" />
 
-                    {/* Infrastructure Supporting Model */}
-                    {/* Serving -> Model (400 to 370) */}
-                    <path d="M565 400 L565 385 L485 385 L485 370" markerEnd="url(#arrowhead)" />
-                    {/* Storage -> Model (400 to 370) */}
-                    <path d="M285 400 L285 385 L365 385 L365 370" markerEnd="url(#arrowhead)" />
+                    {/* Agent/Plugin <-> Ext Sources (Horizontal Dotted) */}
+                    <path d="M505 160 L600 160" strokeDasharray="5,5" markerEnd="url(#arrowhead)" markerStart="url(#arrowhead-up)" />
 
-                    {/* Training Pipeline Flow (Bottom Up) */}
-                    {/* Sources (820) -> Filtering (740+60=800) */}
-                    <path d="M310 820 L310 800" markerEnd="url(#arrowhead)" /> {/* Int -> Filter */}
-                    <path d="M540 820 L540 800" markerEnd="url(#arrowhead)" /> {/* Ext -> Filter */}
+                    {/* Application -> Input Handling (Down, left side) */}
+                    <path d="M325 120 L325 220" markerEnd="url(#arrowhead)" />
+
+                    {/* Output Handling -> Application (Up, right side) */}
+                    <path d="M525 220 L525 120" markerEnd="url(#arrowhead)" />
+
+                    {/* Input Handling -> Model (Down) */}
+                    <path d="M325 260 L325 280" markerEnd="url(#arrowhead)" />
+
+                    {/* Model -> Output Handling (Up) */}
+                    <path d="M525 280 L525 260" markerEnd="url(#arrowhead)" />
+
+                    {/* Model -> Evaluation (Path: Model Left -> Left -> Down -> Eval Left) */}
+                    <path d="M275 305 L160 305 L160 430" markerEnd="url(#arrowhead)" />
+
+                    {/* Evaluation -> Training (Right) */}
+                    <path d="M220 450 L325 450" markerEnd="url(#arrowhead)" />
+
+                    {/* Frameworks -> Training (Left) */}
+                    <path d="M550 450 L525 450" markerEnd="url(#arrowhead)" />
+
+                    {/* Training -> Model (Up through center) */}
+                    <path d="M425 430 L425 330" markerEnd="url(#arrowhead)" />
+
+                    {/* Data Storage Infra -> Training (Up) */}
+                    <path d="M425 510 L425 480" markerEnd="url(#arrowhead)" />
+
+                    {/* Training Data -> Data Storage Infra (Up) */}
+                    <path d="M425 580 L425 550" markerEnd="url(#arrowhead)" />
+
+                    {/* Data Filtering -> Training Data (Up) */}
+                    <path d="M425 650 L425 620" markerEnd="url(#arrowhead)" />
+
+                    {/* Data Sources -> Data Filtering (Up) */}
+                    <path d="M425 720 L425 690" markerEnd="url(#arrowhead)" />
+
+                    {/* Ext Sources (Data) <-> Data Sources (Up Dotted) */}
+                    <path d="M425 800 L425 760" strokeDasharray="5,5" markerEnd="url(#arrowhead)" markerStart="url(#arrowhead-up)" />
                     
-                    {/* Filtering (740) -> Training Data (660+60=720) */}
-                    <path d="M425 740 L425 720" markerEnd="url(#arrowhead)" />
-                    
-                    {/* Training Data (660) -> Data Storage Infra (570+60=630) */}
-                    <path d="M425 660 L425 630" markerEnd="url(#arrowhead)" />
-                    
-                    {/* Storage Infra (570) -> Training/Tuning (480+70=550) */}
-                    <path d="M425 570 L425 550" markerEnd="url(#arrowhead)" />
-                    
-                    {/* Training (480) -> Model Storage (400+60=460) */}
-                    <path d="M425 480 L425 470 L285 470 L285 460" markerEnd="url(#arrowhead)" />
-                    
-                    {/* Eval (480) -> Training (480) */}
-                    <path d="M140 510 L195 510" markerEnd="url(#arrowhead)" />
+                    {/* Application -> Data Sources (Long Dotted Line on Left) */}
+                    {/* Path: App Left -> Left -> Down -> Right -> Data Sources Left */}
+                    <path d="M275 95 L225 95 L225 740 L225 740" strokeDasharray="5,5" markerEnd="url(#arrowhead)" />
+
                   </g>
 
                   {/* Layer Background Zones (Flat, subtle) */}
-                  <rect x="20" y="5" width="810" height="180" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
+                  <rect x="20" y="5" width="810" height="190" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
                   <text x="30" y="25" fill="#60a5fa" fontSize="12" fontWeight="bold" letterSpacing="1">APPLICATION LAYER</text>
 
-                  <rect x="20" y="205" width="810" height="180" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
-                  <text x="30" y="225" fill="#c084fc" fontSize="12" fontWeight="bold" letterSpacing="1">MODEL LAYER</text>
+                  <rect x="20" y="210" width="810" height="130" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
+                  <text x="30" y="230" fill="#c084fc" fontSize="12" fontWeight="bold" letterSpacing="1">MODEL LAYER</text>
 
-                  <rect x="20" y="390" width="810" height="250" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
-                  <text x="30" y="410" fill="#fbbf24" fontSize="12" fontWeight="bold" letterSpacing="1">INFRASTRUCTURE LAYER</text>
+                  <rect x="20" y="350" width="810" height="210" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
+                  <text x="30" y="370" fill="#fbbf24" fontSize="12" fontWeight="bold" letterSpacing="1">INFRASTRUCTURE LAYER</text>
 
-                  <rect x="20" y="650" width="810" height="240" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
-                  <text x="30" y="670" fill="#34d399" fontSize="12" fontWeight="bold" letterSpacing="1">DATA LAYER</text>
+                  <rect x="20" y="570" width="810" height="280" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
+                  <text x="30" y="590" fill="#34d399" fontSize="12" fontWeight="bold" letterSpacing="1">DATA LAYER</text>
 
                   {/* Components */}
                   {SAIF_COMPONENTS.map((comp) => {
@@ -510,7 +676,8 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                           y={comp.y} 
                           width={comp.width} 
                           height={comp.height} 
-                          rx="6" 
+                          rx={comp.style === 'dotted' ? 0 : 6}
+                          strokeDasharray={comp.style === 'dotted' ? "5,5" : "0"}
                           className={`
                             fill-slate-900 stroke-2 transition-all
                             ${isSelected ? 'stroke-white stroke-[3px]' : styleClass.split(' ')[0]}
@@ -518,38 +685,44 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                           `}
                         />
                         
-                        {/* Header Background */}
-                        <rect 
-                          x={comp.x} 
-                          y={comp.y} 
-                          width={6} 
-                          height={comp.height} 
-                          rx="0"
-                          fill={titleColor}
-                          className="rounded-l-md"
-                        />
+                        {/* Header Background (Only for solid boxes) */}
+                        {comp.style !== 'dotted' && (
+                          <rect 
+                            x={comp.x} 
+                            y={comp.y} 
+                            width={6} 
+                            height={comp.height} 
+                            rx="0"
+                            fill={titleColor}
+                            className="rounded-l-md"
+                          />
+                        )}
 
                         {/* Text Content */}
                         <text 
-                          x={comp.x + 16} 
+                          x={comp.x + (comp.style === 'dotted' ? comp.width/2 : 16)} 
                           y={comp.y + 24} 
                           fill="#ffffff"
                           fontWeight="700" 
-                          fontSize="14" // Larger title
+                          fontSize="13"
+                          textAnchor={comp.style === 'dotted' ? 'middle' : 'start'}
                           className="pointer-events-none"
                         >
                           {comp.name}
                         </text>
                         
-                        <text 
-                          x={comp.x + 16} 
-                          y={comp.y + 42} 
-                          fill="#94a3b8" 
-                          fontSize="11" // Larger description
-                          className="pointer-events-none font-mono"
-                        >
-                          #{comp.id}
-                        </text>
+                        {/* Only show ID for non-dotted components to reduce clutter */}
+                        {comp.style !== 'dotted' && (
+                          <text 
+                            x={comp.x + 16} 
+                            y={comp.y + 38} 
+                            fill="#94a3b8" 
+                            fontSize="10"
+                            className="pointer-events-none font-mono"
+                          >
+                            #{comp.id}
+                          </text>
+                        )}
                       </g>
                     );
                   })}
