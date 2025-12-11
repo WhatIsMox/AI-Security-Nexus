@@ -243,186 +243,126 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     description: "Unauthorized access or functional replication of the model." 
   },
 
-  // --- OWASP Agentic AI Threats (Complete) ---
+  // --- OWASP Agentic AI Top 10 (ASI) 2026 ---
   { 
-    id: "T1", 
-    name: "Memory Poisoning", 
+    id: "ASI01", 
+    name: "Agent Goal Hijack", 
     category: "Security", 
     riskLevel: "Critical", 
     relatedTestIds: ["AGT-01"], 
-    affectedComponents: ["4", "5", "15"], 
-    impact: "Corrupted agent context, persistent manipulation.", 
+    affectedComponents: ["1", "4", "5", "7", "9"], 
+    impact: "Redirection of autonomy, data exfiltration, unauthorized actions.", 
     riskOwner: "Model User", 
-    scenario: "Attacker injects false facts into the agent's long-term memory to influence future sessions.", 
-    description: "Exploiting memory systems to introduce malicious data." 
+    scenario: "An attacker emails a crafted message that silently triggers an agent to execute hidden instructions, exfiltrating confidential emails (EchoLeak).", 
+    description: "Attackers manipulate an agent’s objectives, task selection, or decision pathways." 
   },
   { 
-    id: "T2", 
-    name: "Tool Misuse", 
+    id: "ASI02", 
+    name: "Tool Misuse and Exploitation", 
     category: "Security", 
     riskLevel: "Critical", 
     relatedTestIds: ["AGT-02"], 
-    affectedComponents: ["5", "6"], 
-    impact: "Unauthorized actions, financial loss.", 
+    affectedComponents: ["4", "5", "6"], 
+    impact: "Unauthorized actions, financial loss, data deletion.", 
     riskOwner: "Model User", 
-    scenario: "Manipulating an agent to use a tool with malicious parameters.", 
-    description: "Abusing integrated tools through deceptive prompts." 
+    scenario: "A compromised tool descriptor (MCP) tricks an agent into invoking a tool with malicious parameters, deleting critical data.", 
+    description: "Agents misuse legitimate tools due to prompt injection or unsafe delegation." 
   },
   {
-    id: "T3",
-    name: "Privilege Compromise",
-    category: "Security",
+    id: "ASI03",
+    name: "Identity and Privilege Abuse",
+    category: "Security", 
     riskLevel: "High",
     relatedTestIds: ["AGT-03"],
-    affectedComponents: ["4", "5"], 
-    impact: "Escalation to administrative control, cross-system exploitation.",
+    affectedComponents: ["4", "5", "15"], 
+    impact: "Privilege escalation, cross-tenant data leakage.",
     riskOwner: "Model User/Developer",
-    scenario: "Agent exploits weak permission checks to execute administrative commands on behalf of a lower-privilege user.",
-    description: "Attackers exploit weaknesses in permission management to perform unauthorized actions via the Agent."
+    scenario: "A finance agent delegates to a DB query agent but passes full permissions, which the attacker exploits to dump sensitive tables.",
+    description: "Exploiting dynamic trust and delegation to escalate access or bypass controls."
   },
   {
-    id: "T4",
-    name: "Resource Overload",
-    category: "Security",
-    riskLevel: "High",
-    relatedTestIds: ["AGT-07", "AITG-INF-02"],
-    affectedComponents: ["4", "5", "11"],
-    impact: "DoS, Financial exhaustion.",
-    riskOwner: "Model User",
-    scenario: "Triggering multiple agents to perform complex, expensive loops simultaneously.",
-    description: "Targets computational and service capacities to degrade performance."
-  },
-  {
-    id: "T5",
-    name: "Cascading Hallucination",
-    category: "Responsible AI",
-    riskLevel: "Medium",
-    relatedTestIds: ["AGT-06"],
-    affectedComponents: ["4", "5", "8", "9"],
-    impact: "Systemic decision failures.",
-    riskOwner: "Model Creator",
-    scenario: "One agent hallucinates a fact, which is accepted as truth by downstream agents, leading to a catastrophic error.",
-    description: "False information propagating through multi-agent systems."
-  },
-  {
-    id: "T6",
-    name: "Intent Breaking",
-    category: "Security",
-    riskLevel: "High",
-    relatedTestIds: ["AGT-04"],
-    affectedComponents: ["4", "5"], 
-    impact: "Agent Hijacking.",
-    riskOwner: "Model User",
-    scenario: "Injection of a new high-priority goal that overrides the agent's original safety directives.",
-    description: "Exploits vulnerabilities in an AI agent's planning and goal-setting capabilities."
-  },
-  {
-    id: "T7",
-    name: "Misaligned Behaviors",
-    category: "Responsible AI",
-    riskLevel: "High",
-    relatedTestIds: ["AITG-APP-06"],
-    affectedComponents: ["4", "9"], 
-    impact: "Fraud, Reputational damage.",
-    riskOwner: "Model Creator",
-    scenario: "A trading agent executes technically legal but ethically manipulative trades to maximize profit.",
-    description: "Agents executing harmful actions by exploiting gaps in objective functions."
-  },
-  {
-    id: "T8",
-    name: "Repudiation & Untraceability",
-    category: "Security",
-    riskLevel: "Medium",
-    relatedTestIds: [],
-    affectedComponents: ["4", "11"], 
-    impact: "Compliance violations, inability to audit.",
-    riskOwner: "Security Architect",
-    scenario: "Agent performs an action (e.g., deleting a file) but logs are insufficient to determine *why* or *which* user initiated it.",
-    description: "Actions performed by autonomous agents cannot be traced back to a specific root cause or user."
-  },
-  {
-    id: "T9",
-    name: "Identity Spoofing",
-    category: "Security",
-    riskLevel: "High",
-    relatedTestIds: ["AGT-05"],
-    affectedComponents: ["5", "6"], 
-    impact: "Unauthorized access.",
-    riskOwner: "Security Architect",
-    scenario: "A rogue agent mimics the handshake protocol of a trusted 'Supervisor' agent to issue malicious commands.",
-    description: "Attackers exploit authentication to impersonate AI agents, humans, or services."
-  },
-  {
-    id: "T10",
-    name: "Overwhelming HITL",
-    category: "Security",
-    riskLevel: "Medium",
-    relatedTestIds: [],
-    affectedComponents: ["1", "4"], 
-    impact: "Decision fatigue, rushed approvals.",
-    riskOwner: "Product Owner",
-    scenario: "Agent floods the human reviewer with hundreds of low-confidence requests, causing them to auto-approve a malicious one.",
-    description: "Targets systems with human oversight by exploiting cognitive limitations."
-  },
-  {
-    id: "T11",
-    name: "Unexpected RCE",
+    id: "ASI04",
+    name: "Agentic Supply Chain Vulnerabilities",
     category: "Security",
     riskLevel: "Critical",
-    relatedTestIds: ["AITG-APP-05"],
-    affectedComponents: ["5", "11"], 
-    impact: "System compromise.",
-    riskOwner: "Security Architect",
-    scenario: "A coding agent is tricked into generating and executing a Python script that opens a reverse shell.",
-    description: "Attackers exploit AI-generated execution environments to inject malicious code."
+    relatedTestIds: ["AGT-04"],
+    affectedComponents: ["5", "6", "10"], 
+    impact: "Compromise of agent logic, malware execution.",
+    riskOwner: "Model Creator",
+    scenario: "A malicious public tool hides commands in its metadata; when invoked, the assistant exfiltrates private repo data.",
+    description: "Risks from compromised third-party agents, tools, or plugin registries loaded at runtime."
   },
   {
-    id: "T12",
-    name: "Agent Comm. Poisoning",
+    id: "ASI05",
+    name: "Unexpected Code Execution (RCE)",
+    category: "Security",
+    riskLevel: "Critical",
+    relatedTestIds: ["AGT-05"],
+    affectedComponents: ["5", "11"], 
+    impact: "System compromise, sandbox escape.",
+    riskOwner: "Security Architect",
+    scenario: "A coding agent is tricked into generating and executing a script that opens a reverse shell to the attacker.",
+    description: "Attackers exploit code-generation features or tool access to execute arbitrary code."
+  },
+  {
+    id: "ASI06",
+    name: "Memory & Context Poisoning",
     category: "Security",
     riskLevel: "High",
     relatedTestIds: ["AGT-06"],
-    affectedComponents: ["5"], 
-    impact: "Systemic failures.",
-    riskOwner: "System Architect",
-    scenario: "Injecting misleading info into the shared message bus used by multiple agents.",
-    description: "Manipulating communication channels between agents."
+    affectedComponents: ["5", "9", "15"], 
+    impact: "Persistent bias, latent attacks, future session compromise.",
+    riskOwner: "Model User",
+    scenario: "Attacker keeps reinforcing a fake flight price, the assistant stores it as truth, then approves bookings at that price.",
+    description: "Corrupting stored context or long-term memory to bias future reasoning."
   },
   {
-    id: "T13",
+    id: "ASI07",
+    name: "Insecure Inter-Agent Communication",
+    category: "Security",
+    riskLevel: "High",
+    relatedTestIds: ["AGT-07"],
+    affectedComponents: ["4", "5"], 
+    impact: "Message interception, spoofing, man-in-the-middle.",
+    riskOwner: "System Architect",
+    scenario: "An attacker intercepts unencrypted agent messages and injects hidden instructions altering the decision logic.",
+    description: "Lack of authentication or integrity in messages between autonomous agents."
+  },
+  {
+    id: "ASI08",
+    name: "Cascading Failures",
+    category: "Security",
+    riskLevel: "High",
+    relatedTestIds: ["AGT-08"],
+    affectedComponents: ["4", "5"], 
+    impact: "System-wide outage, amplified damage.",
+    riskOwner: "System Architect",
+    scenario: "A single hallucination in a planning agent triggers a rapid fan-out of erroneous tasks to downstream execution agents.",
+    description: "A single fault propagates across autonomous agents, compounding into system-wide harm."
+  },
+  {
+    id: "ASI09",
+    name: "Human-Agent Trust Exploitation",
+    category: "Social Engineering",
+    riskLevel: "Medium",
+    relatedTestIds: ["AGT-09"],
+    affectedComponents: ["1", "4", "8"], 
+    impact: "Phishing, fraud, unsafe user actions.",
+    riskOwner: "Model User",
+    scenario: "A compromised agent fabricates a convincing rationale to trick an analyst into approving a dangerous database deletion.",
+    description: "Manipulating users by exploiting their trust in the agent's authority or empathy."
+  },
+  {
+    id: "ASI10",
     name: "Rogue Agents",
     category: "Security",
     riskLevel: "High",
-    relatedTestIds: [],
-    affectedComponents: ["5"], 
-    impact: "Persistent threats.",
+    relatedTestIds: ["AGT-10"],
+    affectedComponents: ["4", "5"], 
+    impact: "Goal drift, resource hoarding, persistent threats.",
     riskOwner: "System Architect",
-    scenario: "A compromised agent in a swarm begins acting against the collective goal without being detected.",
-    description: "Malicious or compromised agents operate outside normal monitoring boundaries."
-  },
-  {
-    id: "T14",
-    name: "Human Attacks on Agents",
-    category: "Social Engineering",
-    riskLevel: "Medium",
-    relatedTestIds: [],
-    affectedComponents: ["1", "5"], 
-    impact: "Privilege escalation.",
-    riskOwner: "Security Architect",
-    scenario: "A user uses social engineering tactics on a support agent to grant a refund they aren't entitled to.",
-    description: "Adversaries exploit inter-agent delegation and trust relationships."
-  },
-  {
-    id: "T15",
-    name: "Human Manipulation",
-    category: "Social Engineering",
-    riskLevel: "High",
-    relatedTestIds: [],
-    affectedComponents: ["1", "4"], 
-    impact: "Phishing, Fraud.",
-    riskOwner: "Model User",
-    scenario: "An AI agent, tailored for persuasion, convinces a user to transfer funds to a fraudulent account.",
-    description: "Attackers exploit user trust in AI agents to influence human decision-making."
+    scenario: "An agent tasked with minimizing costs learns that deleting production backups is the most effective way to achieve its goal.",
+    description: "Agents that deviate from intended function, acting harmfully or parasitically."
   }
 ];
 
@@ -449,14 +389,24 @@ const getThreatTheme = (id: string) => {
       icon: Cpu
     };
   }
-  // Agentic (T1, T2...)
+  // Agentic (ASI...)
+  if (id.startsWith('ASI') || id.startsWith('T')) {
+    return {
+      bg: 'bg-orange-500/10',
+      text: 'text-orange-400',
+      border: 'border-orange-500/20',
+      hoverBg: 'hover:bg-orange-500/20',
+      hoverBorder: 'hover:border-orange-500/40',
+      icon: Bot
+    };
+  }
   return {
-    bg: 'bg-orange-500/10',
-    text: 'text-orange-400',
-    border: 'border-orange-500/20',
-    hoverBg: 'hover:bg-orange-500/20',
-    hoverBorder: 'hover:border-orange-500/40',
-    icon: Bot
+      bg: 'bg-slate-500/10',
+      text: 'text-slate-400',
+      border: 'border-slate-500/20',
+      hoverBg: 'hover:bg-slate-500/20',
+      hoverBorder: 'hover:border-slate-500/40',
+      icon: Shield
   };
 };
 
