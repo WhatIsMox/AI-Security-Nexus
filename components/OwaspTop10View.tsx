@@ -1,14 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { OwaspTop10Entry } from '../types';
-import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target } from 'lucide-react';
+import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock } from 'lucide-react';
 
 interface OwaspTop10ViewProps {
   initialExpandedId?: string | null;
   data: OwaspTop10Entry[];
   title: string;
   description: string;
-  colorTheme?: 'pink' | 'emerald' | 'orange';
+  colorTheme?: 'pink' | 'emerald' | 'orange' | 'blue';
 }
 
 const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({ 
@@ -23,6 +23,12 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   useEffect(() => {
     if (initialExpandedId) {
       setExpandedId(initialExpandedId);
+      setTimeout(() => {
+        const element = document.getElementById(initialExpandedId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     }
   }, [initialExpandedId]);
 
@@ -30,7 +36,6 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
     setExpandedId(expandedId === id ? null : id);
   };
 
-  // Theme definitions
   const theme = {
     pink: {
       activeBorder: 'border-pink-500/30',
@@ -52,10 +57,22 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
       badgeActive: 'bg-orange-500/20 text-orange-400 border border-orange-500/30',
       badgeHover: 'group-hover:text-orange-400 group-hover:border-orange-500/30',
       iconActive: 'text-orange-400',
+    },
+    blue: {
+      activeBorder: 'border-blue-500/30',
+      activeShadow: 'shadow-[0_0_20px_rgba(59,130,246,0.1)]',
+      badgeActive: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+      badgeHover: 'group-hover:text-blue-400 group-hover:border-blue-500/30',
+      iconActive: 'text-blue-400',
     }
   };
 
   const currentTheme = theme[colorTheme];
+
+  const formatId = (id: string) => {
+    if (id.includes(':')) return id.split(':')[0];
+    return id;
+  };
 
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
@@ -79,20 +96,19 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                 : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
             }`}
           >
-            {/* Header / Clickable Area */}
             <div 
               onClick={() => toggleExpand(entry.id)}
               className="p-5 cursor-pointer flex items-center justify-between group"
             >
               <div className="flex items-center gap-4">
                 <div className={`
-                  w-16 h-12 rounded-lg flex items-center justify-center font-mono font-bold text-sm shrink-0 transition-colors
+                  min-w-[90px] h-10 px-2 rounded-lg flex items-center justify-center font-mono font-bold text-[10px] md:text-xs shrink-0 transition-colors text-center
                   ${expandedId === entry.id 
                     ? currentTheme.badgeActive
                     : `bg-slate-950 text-slate-500 border border-slate-800 ${currentTheme.badgeHover}`
                   }
                 `}>
-                  {entry.id.split(':')[0]}
+                  {formatId(entry.id)}
                 </div>
                 <div>
                   <h3 className={`text-xl font-bold transition-colors ${expandedId === entry.id ? 'text-white' : 'text-slate-200 group-hover:text-white'}`}>
@@ -106,15 +122,12 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
               <ChevronDown className={`w-6 h-6 text-slate-500 transition-transform duration-300 ${expandedId === entry.id ? `rotate-180 ${currentTheme.iconActive}` : 'group-hover:text-slate-300'}`} />
             </div>
 
-            {/* Expanded Content */}
             <div className={`
               overflow-hidden transition-[max-height] duration-500 ease-in-out
-              ${expandedId === entry.id ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}
+              ${expandedId === entry.id ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'}
             `}>
               <div className="p-6 pt-0 border-t border-slate-800/50">
                 <div className="grid lg:grid-cols-2 gap-8 mt-6">
-                  
-                  {/* Left Column: Description & Risks */}
                   <div className="space-y-6">
                     <div>
                       <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
@@ -149,7 +162,6 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                     )}
                   </div>
 
-                  {/* Right Column: Prevention & References */}
                   <div className="space-y-6">
                     <div>
                       <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
@@ -166,8 +178,49 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                       </ul>
                     </div>
 
+                    {/* Best Tools Section - Now above Reference Links */}
+                    {entry.suggestedTools && entry.suggestedTools.length > 0 && (
+                      <div className="pt-6 border-t border-slate-800">
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4">
+                          <Wrench className="w-4 h-4" />
+                          Recommended Security Tools
+                        </h4>
+                        <div className="grid gap-3">
+                          {entry.suggestedTools.map((tool, idx) => (
+                            <div key={idx} className="bg-slate-950 border border-slate-800 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all">
+                              <div className="flex justify-between items-start mb-2">
+                                <a 
+                                  href={tool.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-white font-bold text-sm hover:text-cyan-400 flex items-center gap-2 transition-colors"
+                                >
+                                  {tool.name}
+                                  <ExternalLink className="w-3 h-3 opacity-0 group-hover/tool:opacity-100 transition-opacity" />
+                                </a>
+                                <div className="flex gap-1.5">
+                                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 ${
+                                    tool.type === 'Local' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                  }`}>
+                                    {tool.type === 'Local' ? <Lock className="w-2 h-2" /> : <Globe className="w-2 h-2" />}
+                                    {tool.type}
+                                  </span>
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-900 text-slate-400 border border-slate-800 font-mono">
+                                    {tool.cost}
+                                  </span>
+                                </div>
+                              </div>
+                              <p className="text-xs text-slate-400 leading-relaxed">
+                                {tool.description}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {entry.references.length > 0 && (
-                      <div>
+                      <div className="pt-6 border-t border-slate-800">
                         <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
                           <ExternalLink className="w-4 h-4 text-blue-400" />
                           Reference Links
@@ -188,8 +241,8 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                         </div>
                       </div>
                     )}
-                  </div>
 
+                  </div>
                 </div>
               </div>
             </div>

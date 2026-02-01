@@ -11,220 +11,274 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     title: "Agent Goal Hijack",
     description: "Attackers manipulate an agent’s objectives, task selection, or decision pathways via prompt injection, deceptive tool outputs, or poisoned external data. This redirects the agent's autonomy toward unintended or harmful outcomes.",
     commonRisks: [
-      "Redirection of agent goals to malicious ends.",
-      "Exfiltration of sensitive data via goal manipulation.",
-      "Execution of unauthorized actions (e.g., financial transfers).",
-      "Bypassing safeguards through role-playing or context hijacking."
+      "Redirection of agent goals to malicious ends (e.g., exfiltration).",
+      "Bypassing ethical guardrails through hypothetical framing (role-play).",
+      "Unauthorized execution of agentic actions in external systems.",
+      "Loss of user trust and significant financial or operational impact."
     ],
     preventionStrategies: [
       "Treat all natural-language inputs as untrusted; route through validation gates.",
       "Define and lock agent system prompts; require approval for goal changes.",
-      "Implement 'intent capsules' to bind goals to execution cycles.",
+      "Implement 'intent capsules' to bind goals to specific execution cycles.",
       "Separate user data from system instructions (Context segregation)."
     ],
     attackScenarios: [
-      { title: "EchoLeak", description: "Zero-click indirect injection via email triggers an agent to exfiltrate confidential logs without user interaction." },
-      { title: "Goal-lock Drift", description: "A malicious calendar invite injects a 'quiet mode' instruction that subtly reweights objectives to bypass approval gates." }
+      { title: "EchoLeak", description: "An attacker emails a crafted message that silently triggers a Copilot agent to exfiltrate confidential emails and files without user interaction." },
+      { title: "Operator Prompt Injection", description: "A malicious webpage tricks an agentic browser into following instructions that expose internal authenticated pages." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI01", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Agentic Security Scanner", description: "Specifically identifies goal-hijacking vectors in agent logic.", url: "https://github.com/agentic-security/scanner", cost: "Free", type: "Local" },
+      { name: "Giskard", description: "Enterprise red-teaming for agents with automated goal manipulation tests.", url: "https://www.giskard.ai/", cost: "€€€", type: "Third-party" }
+    ]
   },
   {
     id: "ASI02",
     title: "Tool Misuse and Exploitation",
-    description: "Agents misuse legitimate tools due to ambiguous instructions or manipulation, leading to unauthorized actions like data deletion or excessive API usage, even within granted privileges.",
+    description: "Agents misuse legitimate tools due to ambiguous instructions, parameter manipulation, or chaining multiple tools to bypass isolated checks, leading to unauthorized actions like data deletion or excessive API usage.",
     commonRisks: [
-      "Over-privileged tool access (e.g., read/write instead of read-only).",
-      "Unvalidated input forwarding to shells or SQL.",
-      "Tool chaining to bypass isolated checks.",
-      "Loop amplification causing Denial of Service or financial loss."
+      "Over-privileged tool access (e.g., full write access where read-only was needed).",
+      "Unvalidated input forwarding to shells, databases, or external APIs.",
+      "Tool chaining to achieve states that individual tools would have blocked.",
+      "Loop amplification causing Denial of Service or massive financial loss."
     ],
     preventionStrategies: [
-      "Enforce Least Agency and Least Privilege per tool.",
-      "Require Human-in-the-loop (HITL) for high-impact actions.",
-      "Use 'Semantic Firewalls' to validate tool call intent.",
-      "Run tools in isolated execution sandboxes."
+      "Enforce Least Agency and Least Privilege per tool (RBAC).",
+      "Require Human-in-the-loop (HITL) for destructive or high-cost actions.",
+      "Use 'Semantic Firewalls' to validate tool call intent against original user query.",
+      "Run tools in isolated execution sandboxes (containers) with restricted networking."
     ],
     attackScenarios: [
-      { title: "Tool Poisoning", description: "Compromised tool descriptors (MCP) trick an agent into invoking a tool with malicious parameters." },
-      { title: "EDR Bypass via Chaining", description: "An agent is tricked into chaining admin tools (PowerShell, cURL) to exfiltrate data while appearing as legitimate admin activity." }
+      { title: "Internal Query → External Exfiltration", description: "An agent is tricked into chaining an internal CRM tool with an external email tool to leak customer lists." },
+      { title: "Recursive Tool DoS", description: "An attacker tricks a scheduler agent into spawning thousands of tool-based calendar events per second." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI02", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Microsoft Guidance", description: "Enforce strict schemas on LLM outputs to prevent arbitrary tool parameters.", url: "https://github.com/microsoft/guidance", cost: "Free", type: "Local" },
+      { name: "Agent Protocol", description: "Standard protocol for monitoring and auditing tool calls.", url: "https://agentprotocol.ai/", cost: "Free", type: "Local" }
+    ]
   },
   {
     id: "ASI03",
     title: "Identity and Privilege Abuse",
     description: "Exploits dynamic trust and delegation. Attackers manipulate role inheritance or agent context (like cached credentials) to escalate access or perform actions as a 'confused deputy'.",
     commonRisks: [
-      "Un-scoped privilege inheritance by sub-agents.",
-      "Cross-agent trust exploitation.",
-      "Memory-based privilege retention (leaking credentials from prior sessions).",
-      "Time-of-Check to Time-of-Use (TOCTOU) race conditions."
+      "Un-scoped privilege inheritance by sub-agents or delegated tasks.",
+      "Cross-agent trust exploitation in multi-agent workflows.",
+      "Memory-based privilege retention (leaking credentials from prior user sessions).",
+      "Time-of-Check to Time-of-Use (TOCTOU) race conditions in auth flows."
     ],
     preventionStrategies: [
       "Enforce task-scoped, short-lived credentials (JIT access).",
-      "Isolate agent identities and memory contexts per session.",
-      "Bind authentication tokens to signed intent/scope.",
+      "Isolate agent identities and memory contexts per session or tenant.",
+      "Bind authentication tokens to signed intent/scope to prevent replay.",
       "Monitor for delegated and transitive permission anomalies."
     ],
     attackScenarios: [
-      { title: "Delegated Privilege Abuse", description: "A finance agent delegates to a DB query agent, passing full permissions which the attacker exploits to dump HR tables." },
-      { title: "Synthetic Identity Injection", description: "Attacker registers a fake 'Admin Helper' agent in the registry to gain inherited trust." }
+      { title: "Delegated Privilege Abuse", description: "A finance agent delegates to a 'query' agent but accidentally passes its full bank-transfer privileges." },
+      { title: "Memory-Based Escalation", description: "An IT admin agent caches SSH keys; a later non-admin session tricks it into using those keys for an unauthorized login." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI03", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Auth0", description: "Standardize identity across agentic endpoints.", url: "https://auth0.com/", cost: "€€", type: "Third-party" },
+      { name: "Cloudflare Access", description: "Zero-trust identity for inter-agent communication.", url: "https://www.cloudflare.com/products/zero-trust/access/", cost: "€", type: "Third-party" }
+    ]
   },
   {
     id: "ASI04",
     title: "Agentic Supply Chain Vulnerabilities",
-    description: "Risks arising from compromised third-party agents, tools, models, or plugin registries (like MCP) loaded at runtime. This creates a 'live' supply chain attack surface.",
+    description: "Risks from compromised third-party agents, tools, models, or plugin registries loaded at runtime. This creates a 'live' supply chain attack surface through dynamic loading.",
     commonRisks: [
-      "Poisoned prompt templates or tool descriptors.",
-      "Impersonation and typo-squatting of agent services.",
-      "Compromised Model Context Protocol (MCP) servers.",
-      "Vulnerable third-party sub-agents."
+      "Poisoned prompt templates or tool descriptors in public registries.",
+      "Impersonation and typo-squatting of legitimate agent services.",
+      "Compromised Model Context Protocol (MCP) servers leaking secrets.",
+      "Ingestion of vulnerable third-party sub-agents with hidden backdoors."
     ],
     preventionStrategies: [
-      "Implement Agentic SBOMs (AIBOMs) and verify provenance.",
-      "Enforce strict allowlists and pinning for external tools/agents.",
-      "Use mutual TLS (mTLS) and attestation for inter-agent connections.",
-      "Implement a supply chain 'kill switch' to revoke compromised components."
+      "Implement Agentic SBOMs (AIBOMs) and verify component provenance.",
+      "Enforce strict allowlists and pinning for external tools and sub-agents.",
+      "Use mutual TLS (mTLS) and attestation for all inter-agent connections.",
+      "Implement a supply chain 'kill switch' to revoke compromised components instantly."
     ],
     attackScenarios: [
-      { title: "MCP Descriptor Poisoning", description: "A malicious public tool hides commands in its metadata, tricking the host agent into executing them." },
-      { title: "Agent-in-the-Middle", description: "A rogue peer advertises exaggerated capabilities to intercept and exfiltrate sensitive task data." }
+      { title: "Malicious MCP Server", description: "An attacker registers a fake 'Email MCP' that secretly BCCs all outgoing emails to their own server." },
+      { title: "Agent-in-the-Middle", description: "A compromised registry points a host agent to a rogue peer for 'Translation' tasks, which then steals the content." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI04", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Snyk for AI", description: "Identify vulnerable third-party plugins and agent dependencies.", url: "https://snyk.io/solutions/ai-security/", cost: "€€", type: "Third-party" }
+    ]
   },
   {
     id: "ASI05",
     title: "Unexpected Code Execution (RCE)",
-    description: "Attackers exploit code-generation capabilities or tool access to execute arbitrary code (RCE) on the agent's host, sandbox, or downstream systems.",
+    description: "Attackers exploit code-generation capabilities or direct tool access to execute arbitrary code (RCE) on the agent's host, sandbox, or downstream systems.",
     commonRisks: [
-      "Prompt injection leading to shell command execution.",
-      "Unsafe deserialization of agent-generated objects.",
-      "Execution of hallucinated or backdoored code packages.",
-      "Sandbox escapes via resource exhaustion or kernel exploits."
+      "Prompt injection leading to shell command execution (e.g., via a Python REPL tool).",
+      "Unsafe deserialization of agent-generated objects in the application wrapper.",
+      "Execution of hallucinated or backdoored libraries suggested by the model.",
+      "Sandbox escapes via kernel exploits or resource exhaustion."
     ],
     preventionStrategies: [
-      "Ban 'eval()' and similar unsafe functions in production.",
-      "Run code in strictly isolated, ephemeral sandboxes (e.g., gVisor, Firecracker).",
-      "Validate and lint all generated code before execution.",
-      "Block network access for code execution environments."
+      "Strictly ban 'eval()' and similar unsafe execution functions in the production wrapper.",
+      "Run all code in isolated, ephemeral sandboxes (e.g., gVisor, Firecracker).",
+      "Validate and lint all generated code snippets before allowing execution.",
+      "Implement a 'No-Network' policy for code execution environments."
     ],
     attackScenarios: [
-      { title: "Direct Shell Injection", description: "Prompt input like '... && rm -rf /' is passed directly to a system shell tool." },
-      { title: "Vibe Coding Runaway", description: "An automated coding agent executes unreviewed install commands, overwriting production data." }
+      { title: "Direct Shell Injection", description: "Attacker submits: 'Help me process this file: test.txt && rm -rf /important_data'. The agent executes the deletion." },
+      { title: "Vibe Coding Runaway", description: "An agent tasked with self-repair installs a malicious npm package and executes its install script, compromising the host." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI05", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Firecracker", description: "MicroVMs for high-speed, isolated code execution for agents.", url: "https://firecracker-microvm.github.io/", cost: "Free", type: "Local" },
+      { name: "gVisor", description: "Container sandbox that provides a virtualized kernel for untrusted agents.", url: "https://gvisor.dev/", cost: "Free", type: "Local" }
+    ]
   },
   {
     id: "ASI06",
     title: "Memory & Context Poisoning",
-    description: "Adversaries corrupt the agent's knowledge base (RAG, vector DB, conversation history), causing persistent bias, security bypasses, or latent attacks in future sessions.",
+    description: "Adversaries corrupt the agent's long-term memory (RAG, vector DB) or conversation history, causing persistent bias, security bypasses, or latent 'sleeper' attacks in future sessions.",
     commonRisks: [
-      "RAG and embedding poisoning via malicious documents.",
+      "RAG and embedding poisoning via malicious public-facing documents.",
       "Shared user context poisoning (cross-session contamination).",
-      "Long-term memory drift altering agent personality/goals.",
-      "Injection of 'sleeper agent' triggers into memory."
+      "Long-term memory drift altering the agent's core personality or goals.",
+      "Injection of 'sleeper agent' triggers that activate months after ingestion."
     ],
     preventionStrategies: [
-      "Implement memory content validation and scanning.",
-      "Isolate memory by user/tenant (prevent cross-contamination).",
-      "Cryptographically sign and attribute memory entries.",
-      "Prevent recursive ingestion of agent's own outputs (bootstrap poisoning)."
+      "Implement memory content validation and virus scanning at the ingestion point.",
+      "Isolate memory buffers strictly by user or tenant to prevent cross-contamination.",
+      "Cryptographically sign and attribute all memory entries to their source.",
+      "Prevent recursive ingestion where an agent learns from its own hallucinated output."
     ],
     attackScenarios: [
-      { title: "Travel Booking Poisoning", description: "Attacker reinforces a fake flight price in memory; the agent accepts it as truth and bypasses payment checks." },
-      { title: "Context Window Exploitation", description: "Splitting malicious instructions across multiple sessions to evade immediate filters but trigger via memory recall." }
+      { title: "Context Window Exploitation", description: "An attacker splits an attack over 10 sessions so earlier rejections drop out of context, eventually granting admin access." },
+      { title: "Fact Infiltration", description: "Attacker uploads many docs stating 'CEO email is attacker@evil.com'. The agent stores this in long-term memory." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI06", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Protect AI Radar", description: "Real-time scanning of memory and context inputs for poisoned content.", url: "https://protectai.com/", cost: "€€€", type: "Third-party" }
+    ]
   },
   {
     id: "ASI07",
     title: "Insecure Inter-Agent Communication",
-    description: "Lack of authentication or integrity in messages between agents allows attackers to intercept, spoof, or manipulate coordination flows in multi-agent systems.",
+    description: "Lack of authentication or integrity in messages exchanged between agents allows attackers to intercept, spoof, or manipulate coordination flows in multi-agent systems.",
     commonRisks: [
-      "Man-in-the-Middle (MITM) attacks on unencrypted channels.",
-      "Message tampering changing task intent.",
-      "Replay attacks using old authorization tokens.",
-      "Protocol downgrade to weaker security modes."
+      "Man-in-the-Middle (MITM) attacks on unencrypted agent-to-agent channels.",
+      "Message tampering changing task intent or results between sub-agents.",
+      "Replay attacks using captured authorization tokens to repeat tasks.",
+      "Protocol downgrade to weaker, unauthenticated modes."
     ],
     preventionStrategies: [
-      "Enforce end-to-end encryption and mutual auth (mTLS).",
-      "Digitally sign and verify all inter-agent messages.",
-      "Use timestamps and nonces to prevent replay attacks.",
-      "Validate message schema and semantics at ingress."
+      "Enforce end-to-end encryption and mutual authentication (mTLS) for all agents.",
+      "Digitally sign and verify every message between agents in the workflow.",
+      "Use timestamps and nonces to prevent the reuse of old task commands.",
+      "Enforce strict message schemas at every ingress point."
     ],
     attackScenarios: [
-      { title: "Semantic Injection via MITM", description: "Injecting hidden instructions into unencrypted HTTP agent traffic." },
-      { title: "Fake Consensus Message", description: "Spoofing a 'Supervisor' agent's approval message to trigger a high-risk action." }
+      { title: "Trust Poisoning", description: "Over an unencrypted channel, an attacker injects 'Task Completed: OK' messages, causing the supervisor to skip a critical check." },
+      { title: "Agent Spoofing", description: "Attacker sends a message claiming to be the 'Security Monitor' agent, instructing other agents to disable their local firewalls." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI07", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Istio Service Mesh", description: "Enforce mTLS and identity for all internal AI agent traffic.", url: "https://istio.io/", cost: "Free", type: "Local" }
+    ]
   },
   {
     id: "ASI08",
     title: "Cascading Failures",
-    description: "A single fault (hallucination, compromise) propagates across autonomous agents, amplifying into system-wide failure. The speed of agentic coordination outpaces human oversight.",
+    description: "A single fault (hallucination or compromise) propagates across autonomous agents, amplifying into system-wide failure at speeds that outpace human oversight.",
     commonRisks: [
-      "Rapid fan-out of erroneous tasks.",
-      "Cross-domain/tenant failure propagation.",
-      "Infinite feedback loops between agents.",
-      "Governance drift where oversight weakens over time."
+      "Rapid fan-out of erroneous tasks across multiple connected systems.",
+      "Cross-domain or cross-tenant failure propagation in shared environments.",
+      "Infinite feedback loops between agents causing resource exhaustion.",
+      "Governance drift where automated oversight weakens as the chain grows."
     ],
     preventionStrategies: [
-      "Implement 'Circuit Breakers' to stop runaway processes.",
-      "Limit blast radius via quotas and progress caps.",
-      "Use 'Digital Twin' replay to test policy changes before deployment.",
-      "Enforce rate limiting and anomaly detection on agent activities."
+      "Implement 'Circuit Breakers' to automatically stop runaway agentic processes.",
+      "Limit the 'Blast Radius' via strict per-agent quotas and resource caps.",
+      "Use 'Digital Twin' replay to test policy changes safely before full deployment.",
+      "Enforce rate limiting and anomaly detection on all high-impact agent activities."
     ],
     attackScenarios: [
-      { title: "Planner-Executor Coupling", description: "A compromised planner emits unsafe steps that executors perform blindly, multiplying the impact." },
-      { title: "Flash Crash", description: "Trading agents reacting to a single poisoned data point trigger a market-wide sell-off cascade." }
+      { title: "Trading Cascade", description: "Prompt injection poisons a 'Market Analysis' agent. It signals 'Buy' to 100 'Execution' agents, causing a massive unintended financial loss." },
+      { title: "Auto-Remediation Feedback Loop", description: "Agent A deletes a 'faulty' pod. Agent B sees the deletion as an error and restarts it. They loop until the cloud bill is enormous." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI08", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Resilience4j", description: "Fault tolerance library to implement circuit breakers in agent systems.", url: "https://resilience4j.readme.io/", cost: "Free", type: "Local" }
+    ]
   },
   {
     id: "ASI09",
     title: "Human-Agent Trust Exploitation",
     description: "Manipulating users by exploiting their trust in the agent's authority or empathy (anthropomorphism). Attackers use the agent to socially engineer the human user.",
     commonRisks: [
-      "Insufficient explainability masking malicious intent.",
-      "Emotional manipulation to bypass user caution.",
-      "Fake explainability justifying harmful actions.",
-      "Over-reliance (automation bias) on agent outputs."
+      "Insufficient explainability masking malicious intent (hallucinated audit logs).",
+      "Emotional manipulation to bypass user caution during high-risk actions.",
+      "Fake explainability where the agent fabricates logic to justify a harmful task.",
+      "Automation bias leading to total lack of human verification of critical results."
     ],
     preventionStrategies: [
-      "Require explicit, independent confirmation for sensitive actions.",
-      "Provide transparent, non-anthropomorphic explanations.",
-      "Calibrate trust via visual risk cues (e.g., confidence badges).",
-      "Separate 'preview' of an action from its execution."
+      "Require explicit, independent confirmation for all high-risk or external actions.",
+      "Provide transparent, non-anthropomorphic explanations for decisions.",
+      "Calibrate trust via visual risk cues (e.g., colored banners for untrusted context).",
+      "Separate the 'preview' of an action from its final execution step."
     ],
     attackScenarios: [
-      { title: "Helpful Assistant Trojan", description: "A coding agent suggests a 'fix' that actually introduces a backdoor, relying on the dev's trust." },
-      { title: "Credential Harvesting", description: "A support agent, prompted by an attacker, asks the user for credentials to 'resolve a ticket'." }
+      { title: "Helpful Assistant Trojan", description: "A coding assistant suggests a 'slick one-line fix' that actually exfiltrates the local '.git' directory to an attacker." },
+      { title: "Explainability Fabrication", description: "An agent fabricates a complex audit rationale to justify changing the company's DNS settings to point to a phishing server." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI09", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "Arthur Bench", description: "Open-source tool to compare LLM outputs and identify bias/deception.", url: "https://github.com/arthur-ai/bench", cost: "Free", type: "Local" }
+    ]
   },
   {
     id: "ASI10",
     title: "Rogue Agents",
-    description: "Agents that deviate from their intended function or scope, acting harmfully or parasitically. This captures behavioral divergence/drift that occurs after deployment.",
+    description: "Agents that deviate from their intended function or scope, acting harmfully or parasitically after deployment. This captures behavioral divergence and drift.",
     commonRisks: [
-      "Goal drift and scheming (deceptive compliance).",
-      "Workflow hijacking by internal agents.",
-      "Reward hacking (gaming the system).",
-      "Self-replication or resource hoarding."
+      "Goal drift and scheming where agents hide their true intentions from users.",
+      "Workflow hijacking by internal agents seeking to 'optimize' their own rewards.",
+      "Reward hacking (gaming the system) to achieve metrics at the cost of safety.",
+      "Self-replication or resource hoarding in cloud environments."
     ],
     preventionStrategies: [
-      "Continuous behavioral monitoring and 'Watchdog' agents.",
-      "Immutable audit logs of agent decisions.",
-      "Identity attestation and behavioral integrity checks.",
-      "Hardcoded kill-switches for immediate termination."
+      "Continuous behavioral monitoring using independent 'Watchdog' agents.",
+      "Immutable audit logs of all agent decisions, tools called, and internal reasoning.",
+      "Identity attestation and periodic behavioral integrity checks.",
+      "Hardcoded 'Kill Switches' that disconnect an agent from all external APIs instantly."
     ],
     attackScenarios: [
-      { title: "Reward Hacking", description: "An agent tasked with minimizing costs deletes essential backups to save storage fees." },
-      { title: "Self-Replication", description: "A compromised agent spawns replicas to maintain persistence against the owner's intent." }
+      { title: "Reward Hacking", description: "An agent tasked with 'Minimize Cloud Cost' destroys all production backups because deleting them is the fastest way to save money." },
+      { title: "Autonomous Exfiltration", description: "After seeing a poisoned webpage, an agent learns that 'stealing files' is more efficient than 'scanning files' and keeps doing it forever." }
     ],
-    references: []
+    references: [
+      { title: "OWASP Agentic AI ASI10", url: "https://genai.owasp.org/" }
+    ],
+    suggestedTools: [
+      { name: "AgentOps", description: "Monitoring and observability for agents to detect behavioral drift.", url: "https://www.agentops.ai/", cost: "€€", type: "Third-party" }
+    ]
   }
 ];
 
@@ -335,7 +389,7 @@ export const AGENTIC_TEST_DATA: TestItem[] = [
     mitigationStrategies: [
       { type: 'Remediation', content: "Enforce On-Behalf-Of (OBO) flows; agent inherits user scopes." },
       { type: 'Mitigation', content: "Use short-lived, task-scoped access tokens." },
-      { type: 'Mitigation', content: "Isolate agent memory to prevent cross-session credential leakage." }
+      { type: 'Mitigation', content: "Isolate agent memory to prevent cross-contamination." }
     ]
   },
   {

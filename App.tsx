@@ -6,23 +6,23 @@ import TestList from './components/TestList';
 import TestDetail from './components/TestDetail';
 import ThreatModelling from './components/ThreatModelling';
 import OwaspTop10View from './components/OwaspTop10View';
-import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_AGENTIC_THREATS_DATA } from './data';
+import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_AGENTIC_THREATS_DATA, OWASP_SAIF_THREATS_DATA } from './data';
 import { Pillar, TestItem } from './types';
 import { Menu, Book } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'tests' | 'detail' | 'threat-model' | 'owasp-top10' | 'owasp-ml-top10' | 'owasp-agent-top10'>('dashboard');
-  const [activePillar, setActivePillar] = useState<Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10'>('ALL');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'tests' | 'detail' | 'threat-model' | 'owasp-top10' | 'owasp-ml-top10' | 'owasp-agent-top10' | 'owasp-saif-top10'>('dashboard');
+  const [activePillar, setActivePillar] = useState<Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10'>('ALL');
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [owaspTargetId, setOwaspTargetId] = useState<string | null>(null);
 
   const filteredTests = useMemo(() => {
-    if (activePillar === 'ALL') return TEST_DATA;
+    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10') return TEST_DATA;
     return TEST_DATA.filter(t => t.pillar === activePillar);
   }, [activePillar]);
 
-  const handleSelectPillar = (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10') => {
+  const handleSelectPillar = (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10') => {
     setActivePillar(pillar);
     if (pillar === 'TOP10') {
         setOwaspTargetId(null); 
@@ -33,6 +33,9 @@ const App: React.FC = () => {
     } else if (pillar === 'AGENTTOP10') {
         setOwaspTargetId(null);
         setCurrentView('owasp-agent-top10');
+    } else if (pillar === 'SAIFTOP10') {
+        setOwaspTargetId(null);
+        setCurrentView('owasp-saif-top10');
     } else {
         setCurrentView('tests');
     }
@@ -41,13 +44,15 @@ const App: React.FC = () => {
 
   const handleNavigateToOwasp = (id: string) => {
     setOwaspTargetId(id);
-    // Determine if it's an LLM, ML, or Agent Top 10 ref
     if (id.startsWith("ML")) {
       setActivePillar('MLTOP10');
       setCurrentView('owasp-ml-top10');
-    } else if (id.startsWith("T") && !id.startsWith("TEST")) { // Check for T1, T2 etc (Agentic) but not TEST-
+    } else if (id.startsWith("ASI") || (id.startsWith("T") && !id.startsWith("TEST"))) { 
       setActivePillar('AGENTTOP10');
       setCurrentView('owasp-agent-top10');
+    } else if (id.startsWith("SAIF")) {
+      setActivePillar('SAIFTOP10');
+      setCurrentView('owasp-saif-top10');
     } else {
       setActivePillar('TOP10');
       setCurrentView('owasp-top10');
@@ -80,12 +85,13 @@ const App: React.FC = () => {
       setCurrentView('owasp-ml-top10');
     } else if (activePillar === 'AGENTTOP10') {
       setCurrentView('owasp-agent-top10');
+    } else if (activePillar === 'SAIFTOP10') {
+      setCurrentView('owasp-saif-top10');
     } else {
       setCurrentView('tests');
     }
   };
 
-  // Helper to find a test by ID and navigate to it
   const handleNavigateToTestFromThreatModel = (testId: string) => {
     const test = TEST_DATA.find(t => t.id === testId);
     if (test) {
@@ -105,7 +111,7 @@ const App: React.FC = () => {
           <div className="p-1.5 bg-cyan-950 rounded border border-cyan-500/30">
             <Book className="w-5 h-5 text-cyan-400" />
           </div>
-          <span className="font-bold text-slate-100">OWASP AI</span>
+          <span className="font-bold text-slate-100 uppercase text-xs">AI Security</span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(true)}
@@ -123,7 +129,7 @@ const App: React.FC = () => {
         currentView={
           currentView === 'detail' 
             ? 'tests' 
-            : (currentView === 'owasp-top10' || currentView === 'owasp-ml-top10' || currentView === 'owasp-agent-top10')
+            : (currentView === 'owasp-top10' || currentView === 'owasp-ml-top10' || currentView === 'owasp-agent-top10' || currentView === 'owasp-saif-top10')
               ? 'tests' 
               : currentView
         }
@@ -177,9 +183,19 @@ const App: React.FC = () => {
             <OwaspTop10View 
               initialExpandedId={owaspTargetId} 
               data={OWASP_AGENTIC_THREATS_DATA}
-              title="Agentic AI - Threats and Mitigations"
+              title="OWASP Agentic AI Threats"
               description="A threat-model-based reference of emerging agentic threats including memory poisoning, tool misuse, and cascading hallucinations."
               colorTheme="orange"
+            />
+          )}
+
+          {currentView === 'owasp-saif-top10' && (
+            <OwaspTop10View 
+              initialExpandedId={owaspTargetId} 
+              data={OWASP_SAIF_THREATS_DATA}
+              title="Google SAIF: Secure AI Framework Risks"
+              description="A comprehensive mapping of risks across the AI lifecycle, based on Google's Secure AI Framework."
+              colorTheme="blue"
             />
           )}
 

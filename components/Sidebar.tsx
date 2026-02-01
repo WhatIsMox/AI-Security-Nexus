@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot } from 'lucide-react';
+import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel } from 'lucide-react';
 import { Pillar } from '../types';
 
 interface SidebarProps {
-  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10';
-  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10') => void;
+  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10';
+  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10') => void;
   onSelectDashboard: () => void;
   onSelectThreatModel: () => void;
   currentView: 'dashboard' | 'tests' | 'threat-model';
@@ -53,8 +53,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               <Book className="w-6 h-6 text-cyan-400 relative z-10" />
             </div>
             <div>
-              <h1 className="font-bold text-slate-100 leading-tight tracking-tight">OWASP AI</h1>
-              <p className="text-[10px] text-cyan-500 font-mono">TESTING BIBLE v1.0</p>
+              <h1 className="font-bold text-slate-100 leading-tight tracking-tight uppercase">AI Security</h1>
+              <p className="text-[10px] text-cyan-500 font-mono">Nexus</p>
             </div>
           </div>
           <button onClick={onClose} className="md:hidden text-slate-400 hover:text-white">
@@ -89,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           <div className="pt-4 pb-2">
             <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Collections
+              Threats
             </p>
           </div>
 
@@ -126,7 +126,19 @@ const Sidebar: React.FC<SidebarProps> = ({
             }`}
           >
             <Bot className="w-5 h-5 shrink-0" />
-            <span className="font-medium">OWASP Agentic Threats</span>
+            <span className="font-medium">OWASP Top 10 Agentic</span>
+          </button>
+
+          <button
+            onClick={() => { onSelectPillar('SAIFTOP10'); onClose(); }}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
+              currentView === 'tests' && activePillar === 'SAIFTOP10'
+                ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/10 text-blue-400 border border-blue-500/30'
+                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+            }`}
+          >
+            <Gavel className="w-5 h-5 shrink-0" />
+            <span className="font-medium">Google SAIF Risks</span>
           </button>
 
           <div className="pt-4 pb-2">
@@ -152,10 +164,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         <div className="p-4 border-t border-slate-800">
-          <div className="bg-slate-900 rounded-lg p-3">
-            <p className="text-xs text-slate-500 text-center">
-              Based on OWASP AI Testing Guide v1.0
-            </p>
+          <div className="bg-slate-900 rounded-lg p-3 text-[10px] text-slate-500 text-center leading-relaxed">
+            Multi-Framework AI Security Navigator<br/>
+            v1.2.0 Stable
           </div>
         </div>
       </div>

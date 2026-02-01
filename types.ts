@@ -17,6 +17,14 @@ export interface ExternalResource {
   url: string;
 }
 
+export interface SecurityTool {
+  name: string;
+  description: string;
+  url: string;
+  cost: 'Free' | '€' | '€€' | '€€€' | '€€€€';
+  type: 'Local' | 'Third-party';
+}
+
 export interface SuggestedTool {
   name: string;
   description: string;
@@ -53,6 +61,7 @@ export interface OwaspTop10Entry {
   preventionStrategies: string[];
   attackScenarios: { title: string; description: string }[];
   references: ExternalResource[];
+  suggestedTools?: SecurityTool[];
 }
 
 export interface Stat {

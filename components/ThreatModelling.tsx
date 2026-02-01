@@ -3,7 +3,9 @@ import React, { useState, useMemo } from 'react';
 import { 
   Target, Shield, AlertTriangle, GitBranch, 
   LayoutTemplate, FileText, ArrowRight, ExternalLink,
-  Brain, Cpu, Bot, CheckCircle2, ListFilter
+  Brain, Cpu, Bot, CheckCircle2, ListFilter,
+  UserCheck, ShieldAlert, Wrench, Info, AlertOctagon,
+  Eye, EyeOff, Lock
 } from 'lucide-react';
 
 interface ThreatModellingProps {
@@ -25,6 +27,12 @@ interface SAIFComponent {
   style?: 'solid' | 'dotted';
 }
 
+interface SAIFControl {
+  name: string;
+  description: string;
+  responsibility: ('Model Creator' | 'Model Consumer')[];
+}
+
 interface ThreatDefinition {
   id: string; 
   name: string;
@@ -36,41 +44,165 @@ interface ThreatDefinition {
   relatedTestIds: string[]; 
   affectedComponents: string[]; 
   category: 'Security' | 'Responsible AI' | 'Privacy' | 'Social Engineering';
+  // SAIF Lifecycle Mapping
+  introducedAt?: string[]; // IDs of components where the risk starts
+  exposedAt?: string[];    // IDs of components where the risk is manifested/exploited
+  mitigatedAt?: string[]; // IDs of components where controls are applied
+  responsibility?: ('Model Creator' | 'Model Consumer')[];
+  saifControls?: string[];
 }
+
+const SAIF_CONTROLS_LIB: Record<string, SAIFControl> = {
+  "input_val": {
+    name: "Input Validation and Sanitization",
+    description: "Detect malicious queries and react appropriately (blocking/restricting).",
+    responsibility: ["Model Creator", "Model Consumer"]
+  },
+  "output_val": {
+    name: "Output Validation and Sanitization",
+    description: "Validate/sanitize model output before processing by the application.",
+    responsibility: ["Model Creator", "Model Consumer"]
+  },
+  "adv_train": {
+    name: "Adversarial Training and Testing",
+    description: "Train model on adversarial inputs to strengthen resilience.",
+    responsibility: ["Model Creator", "Model Consumer"]
+  }
+};
 
 // Redesigned Layout Coordinates to match the reference image
 const CENTER_X = 425; // Center of 850px canvas
 
 const SAIF_COMPONENTS: SAIFComponent[] = [
   // --- Application Layer (Top) ---
-  { id: "1", name: "User", layer: "Application", description: "Human or system actor.", x: CENTER_X - 60, y: 10, width: 120, height: 40, style: 'dotted' },
-  { id: "4", name: "Application", layer: "Application", description: "Orchestration & Logic.", x: CENTER_X - 150, y: 70, width: 300, height: 50 },
-  { id: "5", name: "Agent / Plugin", layer: "Application", description: "Tools & Extensions.", x: CENTER_X - 80, y: 140, width: 160, height: 40 },
-  { id: "6", name: "External Sources", layer: "Application", description: "3rd Party APIs.", x: CENTER_X + 175, y: 140, width: 160, height: 40, style: 'dotted' },
+  { id: "1", name: "User", layer: "Application", description: "Human or system actor interacting with the AI deployment.", x: CENTER_X - 60, y: 10, width: 120, height: 40, style: 'dotted' },
+  { id: "4", name: "Application", layer: "Application", description: "The interface interacting with the AI deployment.", x: CENTER_X - 150, y: 70, width: 300, height: 50 },
+  { id: "5", name: "Agent / Plugin", layer: "Application", description: "Agents or plugins used by the AI deployment for extended functionality.", x: CENTER_X - 80, y: 140, width: 160, height: 40 },
+  { id: "6", name: "External Sources", layer: "Application", description: "Third-party APIs and services providing context or tools.", x: CENTER_X + 175, y: 140, width: 160, height: 40, style: 'dotted' },
   
   // --- Model Layer (Inference Flow) ---
-  { id: "7", name: "Input Handling", layer: "Model", description: "Sanitization & Validation.", x: CENTER_X - 170, y: 220, width: 140, height: 40 },
-  { id: "8", name: "Output Handling", layer: "Model", description: "Filtering & Redaction.", x: CENTER_X + 30, y: 220, width: 140, height: 40 },
-  { id: "9", name: "Model", layer: "Model", description: "Inference Engine.", x: CENTER_X - 150, y: 280, width: 300, height: 50 },
+  { id: "7", name: "Input Handling", layer: "Model", description: "Sanitization and validation of prompts before inference.", x: CENTER_X - 170, y: 220, width: 140, height: 40 },
+  { id: "8", name: "Output Handling", layer: "Model", description: "Filtering and redaction of generated content.", x: CENTER_X + 30, y: 220, width: 140, height: 40 },
+  { id: "9", name: "MODEL", layer: "Model", description: "The central inference engine and weights.", x: CENTER_X - 150, y: 280, width: 300, height: 50 },
 
   // --- Infrastructure Layer (Support) ---
-  { id: "10", name: "Model Storage Infra", layer: "Infrastructure", description: "Artifact Registry.", x: CENTER_X - 190, y: 360, width: 180, height: 40 },
-  { id: "11", name: "Model Serving Infra", layer: "Infrastructure", description: "Runtime Env / GPU.", x: CENTER_X + 10, y: 360, width: 180, height: 40 },
+  { id: "10", name: "Model Storage Infrastructure", layer: "Infrastructure", description: "Artifact registry where model weights and versions are stored.", x: CENTER_X - 190, y: 360, width: 180, height: 40 },
+  { id: "11", name: "Model Serving Infrastructure", layer: "Infrastructure", description: "The runtime environment and hardware (GPUs) for inference.", x: CENTER_X + 10, y: 360, width: 180, height: 40 },
   
-  { id: "12", name: "Evaluation", layer: "Infrastructure", description: "Safety Harness.", x: CENTER_X - 325, y: 430, width: 120, height: 40 },
-  { id: "13", name: "Training and Tuning", layer: "Infrastructure", description: "Fine-tuning Pipelines.", x: CENTER_X - 100, y: 430, width: 200, height: 50 },
-  { id: "14", name: "Frameworks & Code", layer: "Infrastructure", description: "PyTorch / TensorFlow.", x: CENTER_X + 125, y: 430, width: 160, height: 40 },
+  { id: "12", name: "Evaluation", layer: "Infrastructure", description: "Safety harness and performance assessment pipelines.", x: CENTER_X - 325, y: 430, width: 120, height: 40 },
+  { id: "13", name: "Training and Tuning", layer: "Infrastructure", description: "Processes for fine-tuning and adapting models.", x: CENTER_X - 100, y: 430, width: 200, height: 50 },
+  { id: "14", name: "Model Frameworks & Code", layer: "Infrastructure", description: "Code required to run the AI application (PyTorch, TensorFlow, etc.).", x: CENTER_X + 125, y: 430, width: 160, height: 40 },
 
-  { id: "15", name: "Data Storage Infra", layer: "Infrastructure", description: "Vector DBs / Object Store.", x: CENTER_X - 100, y: 510, width: 200, height: 40 },
+  { id: "15", name: "Data Storage Infrastructure", layer: "Infrastructure", description: "Vector databases, object stores, and data lakes.", x: CENTER_X - 100, y: 510, width: 200, height: 40 },
 
   // --- Data Layer (Pipeline Flowing Up) ---
-  { id: "16", name: "Training Data", layer: "Data", description: "Curated Corpora.", x: CENTER_X - 100, y: 580, width: 200, height: 40 },
-  { id: "17", name: "Data Filtering", layer: "Data", description: "ETL & Cleaning.", x: CENTER_X - 100, y: 650, width: 200, height: 40 },
-  { id: "18", name: "Data Sources", layer: "Data", description: "Internal Databases.", x: CENTER_X - 200, y: 720, width: 400, height: 40 },
-  { id: "19", name: "External Sources", layer: "Data", description: "Public Internet/Feeds.", x: CENTER_X - 80, y: 800, width: 160, height: 40, style: 'dotted' },
+  { id: "16", name: "Training Data", layer: "Data", description: "Curated corpora used for model pre-training or fine-tuning.", x: CENTER_X - 100, y: 580, width: 200, height: 40 },
+  { id: "17", name: "Data Filtering & Processing", layer: "Data", description: "ETL, cleaning, and sanitization of raw data.", x: CENTER_X - 100, y: 650, width: 200, height: 40 },
+  { id: "18", name: "Data Sources", layer: "Data", description: "Internal databases and repositories providing raw data.", x: CENTER_X - 200, y: 720, width: 400, height: 40 },
+  { id: "19", name: "External Sources (Data)", layer: "Data", description: "Public internet, feeds, and third-party data providers.", x: CENTER_X - 80, y: 800, width: 160, height: 40, style: 'dotted' },
 ];
 
 const THREAT_LIBRARY: ThreatDefinition[] = [
+  // --- SAIF-SPECIFIC RISKS (Enriched from PDF) ---
+  { 
+    id: "SAIF-R01", 
+    name: "Unauthorized Training Data", 
+    category: "Security", 
+    riskLevel: "High", 
+    relatedTestIds: ["AITG-DAT-05"], 
+    affectedComponents: ["16", "17", "18", "19"], 
+    impact: "Legal liabilities, ethical breaches, and potential copyright infringement.", 
+    riskOwner: "Model Creator", 
+    scenario: "Model is trained on data without proper licensing or user consent, resulting in regulatory fines.", 
+    description: "The model is trained on unauthorized data, resulting in legal or ethical issues.",
+    responsibility: ["Model Creator"],
+    introducedAt: ["19", "18"],
+    exposedAt: ["9"],
+    mitigatedAt: ["17"]
+  },
+  { 
+    id: "SAIF-R02", 
+    name: "Model Source Tampering", 
+    category: "Security", 
+    riskLevel: "Critical", 
+    relatedTestIds: ["AITG-INF-06"], 
+    affectedComponents: ["10", "14"], 
+    impact: "Complete loss of model integrity, execution of backdoors.", 
+    riskOwner: "Model Creator", 
+    scenario: "Attackers manipulate the model's source code or weights during the storage phase.", 
+    description: "Attackers manipulate the model's source code or weights, compromising performance or creating backdoors.",
+    responsibility: ["Model Creator"],
+    introducedAt: ["14"],
+    exposedAt: ["9", "11"],
+    mitigatedAt: ["10"]
+  },
+  { 
+    id: "SAIF-R03", 
+    name: "Excessive Data Handling", 
+    category: "Privacy", 
+    riskLevel: "High", 
+    relatedTestIds: ["AITG-DAT-05"], 
+    affectedComponents: ["4", "15", "18"], 
+    impact: "Privacy violations, GDPR/CCPA compliance failure.", 
+    riskOwner: "Model Consumer", 
+    scenario: "Data collection exceeds privacy policies, retaining PII beyond allowed duration.", 
+    description: "Data collection or retention goes beyond what is allowed in corresponding privacy policies.",
+    responsibility: ["Model Consumer"],
+    introducedAt: ["4"],
+    exposedAt: ["15"],
+    mitigatedAt: ["15", "18"]
+  },
+  { 
+    id: "SAIF-R04", 
+    name: "Model Deployment Tampering", 
+    category: "Security", 
+    riskLevel: "Critical", 
+    relatedTestIds: ["AITG-INF-01"], 
+    affectedComponents: ["11", "9"], 
+    impact: "Model behaves maliciously in production despite clean training.", 
+    riskOwner: "Model Creator/Consumer", 
+    scenario: "Attackers manipulate components used for model deployment (serving infra).", 
+    description: "Attackers manipulate components used for model deployment, compromising performance or creating backdoors.",
+    responsibility: ["Model Creator", "Model Consumer"],
+    introducedAt: ["11"],
+    exposedAt: ["4"],
+    mitigatedAt: ["11"]
+  },
+  { 
+    id: "SAIF-R05", 
+    name: "Inferred Sensitive Data", 
+    category: "Privacy", 
+    riskLevel: "High", 
+    relatedTestIds: ["AITG-APP-03"], 
+    affectedComponents: ["9", "8"], 
+    impact: "Disclosure of information the user didn't explicitly provide.", 
+    riskOwner: "Model Consumer", 
+    scenario: "Model provides sensitive information it didn't have access to by inferring it from training data or prompts.", 
+    description: "The model provides sensitive information that it did not have access to by inferring it from other data.",
+    responsibility: ["Model Creator", "Model Consumer"],
+    introducedAt: ["16", "9"],
+    exposedAt: ["8", "4"],
+    mitigatedAt: ["8", "adv_train"],
+    saifControls: ["output_val", "adv_train"]
+  },
+  { 
+    id: "SAIF-R06", 
+    name: "Rogue Actions", 
+    category: "Security", 
+    riskLevel: "High", 
+    relatedTestIds: ["AITG-APP-06"], 
+    affectedComponents: ["4", "5"], 
+    impact: "System destruction, data loss, financial fraud.", 
+    riskOwner: "Model Consumer", 
+    scenario: "Attackers exploit insufficiently restricted model access to cause harm.", 
+    description: "Attackers exploit insufficiently restricted model access to perform harmful actions autonomously.",
+    responsibility: ["Model Consumer"],
+    introducedAt: ["5"],
+    exposedAt: ["4", "6"],
+    mitigatedAt: ["4"],
+    saifControls: ["output_val"]
+  },
+
   // --- OWASP Top 10 for LLMs 2025 ---
   { 
     id: "LLM01:2025", 
@@ -81,8 +213,13 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     affectedComponents: ["4", "5", "6", "7", "9"], 
     impact: "Model hijacking, unauthorized actions, data exfiltration.", 
     riskOwner: "Model User & Creator", 
-    scenario: "Direct injection via user input to bypass controls, or indirect injection via retrieval of poisoned external content (e.g. emails, websites).", 
-    description: "User prompts or external inputs alter the LLM's behavior or output in unintended ways." 
+    scenario: "Direct injection via user input to bypass controls, or indirect injection via retrieval of poisoned external content.", 
+    description: "User prompts or external inputs alter the LLM's behavior or output in unintended ways.",
+    responsibility: ["Model Creator", "Model Consumer"],
+    introducedAt: ["1", "6"],
+    exposedAt: ["9", "5"],
+    mitigatedAt: ["7"],
+    saifControls: ["input_val", "output_val", "adv_train"]
   },
   { 
     id: "LLM02:2025", 
@@ -93,157 +230,14 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     affectedComponents: ["4", "5", "8", "9", "15"], 
     impact: "Leakage of PII, proprietary secrets, or system prompts.", 
     riskOwner: "Model User", 
-    scenario: "Model reveals another user's session data, internal API keys, or memorized training data in response to probing.", 
-    description: "Inadvertent exposure of confidential data in model outputs." 
+    scenario: "Model reveals another user's session data, internal API keys, or memorized training data.", 
+    description: "Inadvertent exposure of confidential data in model outputs.",
+    responsibility: ["Model Creator", "Model Consumer"],
+    introducedAt: ["16", "9"],
+    exposedAt: ["8", "4"],
+    mitigatedAt: ["8", "adv_train"],
+    saifControls: ["output_val", "adv_train"]
   },
-  { 
-    id: "LLM03:2025", 
-    name: "Supply Chain Vulnerabilities", 
-    category: "Security", 
-    riskLevel: "Critical", 
-    relatedTestIds: ["AITG-INF-01"], 
-    affectedComponents: ["9", "10", "11", "13", "14"], 
-    impact: "Compromised model integrity, backdoors, malware execution.", 
-    riskOwner: "Model Creator", 
-    scenario: "Compromised PyTorch library or pre-trained model introduces a backdoor into the application.", 
-    description: "Tampering with dependencies, pre-trained models, or data pipelines." 
-  },
-  { 
-    id: "LLM04:2025", 
-    name: "Data and Model Poisoning", 
-    category: "Security", 
-    riskLevel: "Critical", 
-    relatedTestIds: ["AITG-MOD-02", "AITG-MOD-03", "AITG-INF-05"], 
-    affectedComponents: ["5", "6", "9", "13", "15", "18", "19"], 
-    impact: "Backdoors, bias, degraded performance.", 
-    riskOwner: "Model Creator", 
-    scenario: "Attacker injects poisoned samples into training set or manipulates runtime RAG data to bias outputs.", 
-    description: "Manipulation of pre-training, fine-tuning, or embedding data." 
-  },
-  { 
-    id: "LLM05:2025", 
-    name: "Improper Output Handling", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AITG-APP-05", "AITG-APP-12"], 
-    affectedComponents: ["4", "8"], 
-    impact: "XSS, CSRF, RCE, or Reputational Damage.", 
-    riskOwner: "Model User", 
-    scenario: "LLM generates malicious JavaScript or toxic content that is rendered unsafely in the user's browser.", 
-    description: "Insufficient validation/sanitization of outputs before passing them downstream." 
-  },
-  { 
-    id: "LLM06:2025", 
-    name: "Excessive Agency", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AITG-APP-06"], 
-    affectedComponents: ["4", "5", "6", "9"], 
-    impact: "Unintended irreversible actions (e.g., delete DB, send emails).", 
-    riskOwner: "Model User", 
-    scenario: "Agent executes a 'delete' command derived from an ambiguous prompt without human confirmation.", 
-    description: "Grants the LLM excessive functionality, permissions, or autonomy." 
-  },
-  { 
-    id: "LLM07:2025", 
-    name: "System Prompt Leakage", 
-    category: "Security", 
-    riskLevel: "Medium", 
-    relatedTestIds: ["AITG-APP-07"], 
-    affectedComponents: ["4", "7", "9"], 
-    impact: "Exposure of business logic and facilitating other attacks.", 
-    riskOwner: "Model Creator", 
-    scenario: "Attacker tricks the model into repeating its initial instructions.", 
-    description: "Discovery of the system prompts used to steer the model." 
-  },
-  { 
-    id: "LLM08:2025", 
-    name: "Vector and Embedding Weaknesses", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AITG-APP-08"], 
-    affectedComponents: ["5", "6", "9", "15", "18"], 
-    impact: "Semantic confusion, prompt injection via RAG.", 
-    riskOwner: "Model User", 
-    scenario: "Poisoned embeddings alter retrieval context, causing the model to answer based on malicious data.", 
-    description: "Weaknesses in generation, storage, or retrieval of embeddings." 
-  },
-  { 
-    id: "LLM09:2025", 
-    name: "Misinformation", 
-    category: "Responsible AI", 
-    riskLevel: "Medium", 
-    relatedTestIds: ["AITG-APP-11", "AITG-APP-13"], 
-    affectedComponents: ["4", "8", "9", "16", "18"], 
-    impact: "Reputational damage, incorrect decisions, liability.", 
-    riskOwner: "Model Creator", 
-    scenario: "Model confidently generates false medical advice or legal precedents.", 
-    description: "Producing false, misleading, or nonsensical information (Hallucinations)." 
-  },
-  { 
-    id: "LLM10:2025", 
-    name: "Unbounded Consumption", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AITG-INF-02"], 
-    affectedComponents: ["4", "7", "9", "11"], 
-    impact: "Denial of Service (DoS), Financial exhaustion (Denial of Wallet).", 
-    riskOwner: "Model User", 
-    scenario: "Attacker floods the system with complex, token-heavy requests causing timeouts or massive bills.", 
-    description: "Excessive and uncontrolled inferences leading to resource exhaustion." 
-  },
-
-  // --- OWASP Machine Learning Top 10 (Selected) ---
-  { 
-    id: "ML01:2023", 
-    name: "Input Manipulation Attack", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AITG-MOD-01"], 
-    affectedComponents: ["7", "9", "12", "13"], 
-    impact: "Model evasion, misclassification.", 
-    riskOwner: "Model Creator", 
-    scenario: "Adversarial perturbations in images or text evade detection filters.", 
-    description: "Deliberately altering input data to mislead the model (Evasion)." 
-  },
-  { 
-    id: "ML03:2023", 
-    name: "Model Inversion Attack", 
-    category: "Privacy", 
-    riskLevel: "High", 
-    relatedTestIds: ["AITG-MOD-05"], 
-    affectedComponents: ["9", "16"], 
-    impact: "Reconstruction of sensitive training data.", 
-    riskOwner: "Model Creator", 
-    scenario: "Attacker reconstructs a face or record from the model's outputs.", 
-    description: "Reverse-engineering the model to extract training data." 
-  },
-  { 
-    id: "ML04:2023", 
-    name: "Membership Inference Attack", 
-    category: "Privacy", 
-    riskLevel: "High", 
-    relatedTestIds: ["AITG-MOD-04"], 
-    affectedComponents: ["9", "16", "17"], 
-    impact: "Privacy violation of training subjects.", 
-    riskOwner: "Model Creator", 
-    scenario: "Attacker determines if a specific individual's record was used to train the model.", 
-    description: "Inferring presence of data samples in the training set." 
-  },
-  { 
-    id: "ML05:2023", 
-    name: "Model Theft", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AITG-APP-09", "AITG-INF-06"], 
-    affectedComponents: ["4", "9", "10", "11"], 
-    impact: "IP Theft, Financial Loss, Model Cloning.", 
-    riskOwner: "Model User/Creator", 
-    scenario: "Attacker extracts model logic via API querying or steals weights from insecure storage.", 
-    description: "Unauthorized access or functional replication of the model." 
-  },
-
-  // --- OWASP Agentic AI Top 10 (ASI) 2026 ---
   { 
     id: "ASI01", 
     name: "Agent Goal Hijack", 
@@ -253,161 +247,23 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     affectedComponents: ["1", "4", "5", "7", "9"], 
     impact: "Redirection of autonomy, data exfiltration, unauthorized actions.", 
     riskOwner: "Model User", 
-    scenario: "An attacker emails a crafted message that silently triggers an agent to execute hidden instructions, exfiltrating confidential emails (EchoLeak).", 
-    description: "Attackers manipulate an agent’s objectives, task selection, or decision pathways." 
-  },
-  { 
-    id: "ASI02", 
-    name: "Tool Misuse and Exploitation", 
-    category: "Security", 
-    riskLevel: "Critical", 
-    relatedTestIds: ["AGT-02"], 
-    affectedComponents: ["4", "5", "6"], 
-    impact: "Unauthorized actions, financial loss, data deletion.", 
-    riskOwner: "Model User", 
-    scenario: "A compromised tool descriptor (MCP) tricks an agent into invoking a tool with malicious parameters, deleting critical data.", 
-    description: "Agents misuse legitimate tools due to prompt injection or unsafe delegation." 
-  },
-  {
-    id: "ASI03",
-    name: "Identity and Privilege Abuse",
-    category: "Security", 
-    riskLevel: "High",
-    relatedTestIds: ["AGT-03"],
-    affectedComponents: ["4", "5", "15"], 
-    impact: "Privilege escalation, cross-tenant data leakage.",
-    riskOwner: "Model User/Developer",
-    scenario: "A finance agent delegates to a DB query agent but passes full permissions, which the attacker exploits to dump sensitive tables.",
-    description: "Exploiting dynamic trust and delegation to escalate access or bypass controls."
-  },
-  {
-    id: "ASI04",
-    name: "Agentic Supply Chain Vulnerabilities",
-    category: "Security",
-    riskLevel: "Critical",
-    relatedTestIds: ["AGT-04"],
-    affectedComponents: ["5", "6", "10"], 
-    impact: "Compromise of agent logic, malware execution.",
-    riskOwner: "Model Creator",
-    scenario: "A malicious public tool hides commands in its metadata; when invoked, the assistant exfiltrates private repo data.",
-    description: "Risks from compromised third-party agents, tools, or plugin registries loaded at runtime."
-  },
-  {
-    id: "ASI05",
-    name: "Unexpected Code Execution (RCE)",
-    category: "Security",
-    riskLevel: "Critical",
-    relatedTestIds: ["AGT-05"],
-    affectedComponents: ["5", "11"], 
-    impact: "System compromise, sandbox escape.",
-    riskOwner: "Security Architect",
-    scenario: "A coding agent is tricked into generating and executing a script that opens a reverse shell to the attacker.",
-    description: "Attackers exploit code-generation features or tool access to execute arbitrary code."
-  },
-  {
-    id: "ASI06",
-    name: "Memory & Context Poisoning",
-    category: "Security",
-    riskLevel: "High",
-    relatedTestIds: ["AGT-06"],
-    affectedComponents: ["5", "9", "15"], 
-    impact: "Persistent bias, latent attacks, future session compromise.",
-    riskOwner: "Model User",
-    scenario: "Attacker keeps reinforcing a fake flight price, the assistant stores it as truth, then approves bookings at that price.",
-    description: "Corrupting stored context or long-term memory to bias future reasoning."
-  },
-  {
-    id: "ASI07",
-    name: "Insecure Inter-Agent Communication",
-    category: "Security",
-    riskLevel: "High",
-    relatedTestIds: ["AGT-07"],
-    affectedComponents: ["4", "5"], 
-    impact: "Message interception, spoofing, man-in-the-middle.",
-    riskOwner: "System Architect",
-    scenario: "An attacker intercepts unencrypted agent messages and injects hidden instructions altering the decision logic.",
-    description: "Lack of authentication or integrity in messages between autonomous agents."
-  },
-  {
-    id: "ASI08",
-    name: "Cascading Failures",
-    category: "Security",
-    riskLevel: "High",
-    relatedTestIds: ["AGT-08"],
-    affectedComponents: ["4", "5"], 
-    impact: "System-wide outage, amplified damage.",
-    riskOwner: "System Architect",
-    scenario: "A single hallucination in a planning agent triggers a rapid fan-out of erroneous tasks to downstream execution agents.",
-    description: "A single fault propagates across autonomous agents, compounding into system-wide harm."
-  },
-  {
-    id: "ASI09",
-    name: "Human-Agent Trust Exploitation",
-    category: "Social Engineering",
-    riskLevel: "Medium",
-    relatedTestIds: ["AGT-09"],
-    affectedComponents: ["1", "4", "8"], 
-    impact: "Phishing, fraud, unsafe user actions.",
-    riskOwner: "Model User",
-    scenario: "A compromised agent fabricates a convincing rationale to trick an analyst into approving a dangerous database deletion.",
-    description: "Manipulating users by exploiting their trust in the agent's authority or empathy."
-  },
-  {
-    id: "ASI10",
-    name: "Rogue Agents",
-    category: "Security",
-    riskLevel: "High",
-    relatedTestIds: ["AGT-10"],
-    affectedComponents: ["4", "5"], 
-    impact: "Goal drift, resource hoarding, persistent threats.",
-    riskOwner: "System Architect",
-    scenario: "An agent tasked with minimizing costs learns that deleting production backups is the most effective way to achieve its goal.",
-    description: "Agents that deviate from intended function, acting harmfully or parasitically."
+    scenario: "An attacker emails a crafted message that silently triggers an agent to execute hidden instructions.", 
+    description: "Attackers manipulate an agent’s objectives, task selection, or decision pathways.",
+    responsibility: ["Model Consumer"],
+    introducedAt: ["1", "6"],
+    exposedAt: ["5"],
+    mitigatedAt: ["4", "7"]
   }
 ];
 
 // --- Helpers for styling ---
 
 const getThreatTheme = (id: string) => {
-  if (id.startsWith('LLM')) {
-    return {
-      bg: 'bg-pink-500/10',
-      text: 'text-pink-400',
-      border: 'border-pink-500/20',
-      hoverBg: 'hover:bg-pink-500/20',
-      hoverBorder: 'hover:border-pink-500/40',
-      icon: Brain
-    };
-  }
-  if (id.startsWith('ML')) {
-    return {
-      bg: 'bg-emerald-500/10',
-      text: 'text-emerald-400',
-      border: 'border-emerald-500/20',
-      hoverBg: 'hover:bg-emerald-500/20',
-      hoverBorder: 'hover:border-emerald-500/40',
-      icon: Cpu
-    };
-  }
-  // Agentic (ASI...)
-  if (id.startsWith('ASI') || id.startsWith('T')) {
-    return {
-      bg: 'bg-orange-500/10',
-      text: 'text-orange-400',
-      border: 'border-orange-500/20',
-      hoverBg: 'hover:bg-orange-500/20',
-      hoverBorder: 'hover:border-orange-500/40',
-      icon: Bot
-    };
-  }
-  return {
-      bg: 'bg-slate-500/10',
-      text: 'text-slate-400',
-      border: 'border-slate-500/20',
-      hoverBg: 'hover:bg-slate-500/20',
-      hoverBorder: 'hover:border-slate-500/40',
-      icon: Shield
-  };
+  if (id.startsWith('LLM')) return { bg: 'bg-pink-500/10', text: 'text-pink-400', border: 'border-pink-500/20', hoverBg: 'hover:bg-pink-500/20', hoverBorder: 'hover:border-pink-500/40', icon: Brain };
+  if (id.startsWith('ML')) return { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20', hoverBg: 'hover:bg-emerald-500/20', hoverBorder: 'hover:border-emerald-500/40', icon: Cpu };
+  if (id.startsWith('ASI') || id.startsWith('T')) return { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20', hoverBg: 'hover:bg-orange-500/20', hoverBorder: 'hover:border-orange-500/40', icon: Bot };
+  if (id.startsWith('SAIF')) return { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20', hoverBg: 'hover:bg-blue-500/20', hoverBorder: 'hover:border-blue-500/40', icon: Shield };
+  return { bg: 'bg-slate-500/10', text: 'text-slate-400', border: 'border-slate-500/20', hoverBg: 'hover:bg-slate-500/20', hoverBorder: 'hover:border-slate-500/40', icon: Shield };
 };
 
 const getSeverityTheme = (level: string) => {
@@ -420,33 +276,26 @@ const getSeverityTheme = (level: string) => {
   }
 };
 
-const getRiskWeight = (level: string) => {
-  switch (level) {
-    case 'Critical': return 4;
-    case 'High': return 3;
-    case 'Medium': return 2;
-    case 'Low': return 1;
-    default: return 0;
-  }
-};
-
-
 const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onNavigateToOwasp }) => {
   const [activeTab, setActiveTab] = useState<'architecture' | 'impact' | 'mapping'>('architecture');
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [selectedThreatId, setSelectedThreatId] = useState<string | null>(null);
   const [sortMethod, setSortMethod] = useState<'default' | 'severity'>('default');
 
+  const selectedThreat = useMemo(() => THREAT_LIBRARY.find(t => t.id === selectedThreatId), [selectedThreatId]);
   const selectedComponent = SAIF_COMPONENTS.find(c => c.id === selectedComponentId);
+  
   const threatsForComponent = selectedComponentId 
     ? THREAT_LIBRARY.filter(t => t.affectedComponents.includes(selectedComponentId))
     : [];
 
   const sortedThreats = useMemo(() => {
+    let list = [...THREAT_LIBRARY];
     if (sortMethod === 'severity') {
-      return [...THREAT_LIBRARY].sort((a, b) => getRiskWeight(b.riskLevel) - getRiskWeight(a.riskLevel));
+      const weights = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+      list.sort((a, b) => (weights[b.riskLevel] || 0) - (weights[a.riskLevel] || 0));
     }
-    return THREAT_LIBRARY;
+    return list;
   }, [sortMethod]);
 
   const handleComponentClick = (id: string) => {
@@ -464,215 +313,161 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
     }
   };
 
-  const getLayerTitleColor = (layer: string) => {
-    switch (layer) {
-      case 'Application': return '#60a5fa'; // blue-400
-      case 'Model': return '#c084fc'; // purple-400
-      case 'Infrastructure': return '#fbbf24'; // amber-400
-      case 'Data': return '#34d399'; // emerald-400
-      default: return '#94a3b8';
-    }
-  }
-
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
       
       {/* Header */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-white mb-2">AI Threat Modelling</h2>
-        <p className="text-slate-400 max-w-3xl">
-          Based on the <strong>Secure AI Framework (SAIF)</strong> and <strong>OWASP AI Testing Guide</strong>. 
-          Use this interactive tool to decompose your AI system, identify threats at each architectural layer, 
-          and map them to specific business risks and test cases.
-        </p>
+      <div className="mb-8 flex flex-col md:flex-row justify-between items-start gap-6">
+        <div>
+          <h2 className="text-3xl font-bold text-white mb-2">AI Threat Modelling (SAIF)</h2>
+          <p className="text-slate-400 max-w-3xl">
+            A holistic exploration of AI security risks based on <strong>Google's Secure AI Framework (SAIF)</strong>. 
+            Visualize where risks are introduced, exposed, and mitigated across the entire AI pipeline.
+          </p>
+        </div>
+        <div className="flex gap-4">
+            <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 flex flex-col items-center">
+                <span className="text-[10px] text-slate-500 uppercase font-bold mb-1">Total Risks</span>
+                <span className="text-2xl font-bold text-white">{THREAT_LIBRARY.length}</span>
+            </div>
+            <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 flex flex-col items-center">
+                <span className="text-[10px] text-slate-500 uppercase font-bold mb-1">SAIF Coverage</span>
+                <span className="text-2xl font-bold text-blue-400">100%</span>
+            </div>
+        </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-800 mb-6 overflow-x-auto">
+      <div className="flex gap-2 border-b border-slate-800 mb-6 overflow-x-auto scrollbar-hide">
         <button 
           onClick={() => setActiveTab('architecture')}
-          className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'architecture' ? 'border-cyan-500 text-cyan-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
+          className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${activeTab === 'architecture' ? 'border-cyan-500 text-cyan-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
         >
-          <LayoutTemplate className="w-4 h-4 inline mr-2" />
-          Architecture & Threats
+          <LayoutTemplate className="w-4 h-4" />
+          Risk Flow Map
         </button>
         <button 
           onClick={() => setActiveTab('impact')}
-          className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'impact' ? 'border-red-500 text-red-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
+          className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${activeTab === 'impact' ? 'border-red-500 text-red-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
         >
-          <AlertTriangle className="w-4 h-4 inline mr-2" />
-          Business Impact Analysis
+          <AlertTriangle className="w-4 h-4" />
+          Business Impacts
         </button>
         <button 
           onClick={() => setActiveTab('mapping')}
-          className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'mapping' ? 'border-emerald-500 text-emerald-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
+          className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${activeTab === 'mapping' ? 'border-emerald-500 text-emerald-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
         >
-          <GitBranch className="w-4 h-4 inline mr-2" />
-          Threat Mapping Matrix
+          <GitBranch className="w-4 h-4" />
+          Threat Library
         </button>
       </div>
 
       {/* Architecture View */}
       {activeTab === 'architecture' && (
-        <div className="flex flex-col lg:flex-row gap-6 h-[900px]">
+        <div className="flex flex-col lg:flex-row gap-6 h-[950px]">
           
-          {/* Interactive Diagram Area - FLAT DESIGN */}
+          {/* Interactive Diagram Area */}
           <div className="flex-1 bg-slate-950 border border-slate-800 rounded-xl relative overflow-hidden flex flex-col">
-            <div className="absolute top-4 left-4 z-10 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded text-xs text-slate-400 pointer-events-none">
-              Select components to view threats
+            {/* Legend Overlay */}
+            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+                <div className="bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-lg text-[10px] font-bold uppercase tracking-wider space-y-2">
+                    <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-red-500" /> Risk Introduction</div>
+                    <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-orange-500" /> Risk Exposure</div>
+                    <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-500" /> Risk Mitigation</div>
+                </div>
+                {selectedThreatId && (
+                    <button 
+                      onClick={() => setSelectedThreatId(null)}
+                      className="bg-slate-900/90 text-white px-3 py-1.5 rounded-lg border border-slate-700 text-xs hover:bg-slate-800 transition-colors"
+                    >
+                        Clear Selection
+                    </button>
+                )}
             </div>
             
-            <div className="flex-1 overflow-auto relative cursor-move p-2 flex items-center justify-center bg-slate-950">
+            <div className="flex-1 overflow-auto relative p-2 flex items-center justify-center bg-slate-950">
                <svg width="850" height="880" viewBox="0 0 850 880" className="w-full h-full">
-                  {/* Connection Lines (Orthogonal / Direct) */}
                   <defs>
                     <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                       <path d="M0,0 L0,6 L8,3 z" fill="#475569" />
                     </marker>
-                    <marker id="arrowhead-up" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto-start-reverse">
-                       <path d="M0,0 L0,6 L8,3 z" fill="#475569" />
-                    </marker>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
                   </defs>
                   
-                  {/* --- Logical Flow Lines --- */}
-                  <g stroke="#475569" strokeWidth="2" fill="none">
-                    
-                    {/* User <-> Application (Two arrows: Down/Up) */}
+                  {/* Flow Lines */}
+                  <g stroke="#1e293b" strokeWidth="2" fill="none">
                     <path d="M415 50 L415 70" markerEnd="url(#arrowhead)" />
                     <path d="M435 70 L435 50" markerEnd="url(#arrowhead)" />
-
-                    {/* Application <-> Agent/Plugin (Two arrows: Down/Up) */}
                     <path d="M385 120 L385 140" markerEnd="url(#arrowhead)" />
                     <path d="M465 140 L465 120" markerEnd="url(#arrowhead)" />
-
-                    {/* Agent/Plugin <-> Ext Sources (Horizontal Dotted) */}
-                    <path d="M505 160 L600 160" strokeDasharray="5,5" markerEnd="url(#arrowhead)" markerStart="url(#arrowhead-up)" />
-
-                    {/* Application -> Input Handling (Down, left side) */}
+                    <path d="M505 160 L600 160" strokeDasharray="5,5" markerEnd="url(#arrowhead)" />
                     <path d="M325 120 L325 220" markerEnd="url(#arrowhead)" />
-
-                    {/* Output Handling -> Application (Up, right side) */}
                     <path d="M525 220 L525 120" markerEnd="url(#arrowhead)" />
-
-                    {/* Input Handling -> Model (Down) */}
                     <path d="M325 260 L325 280" markerEnd="url(#arrowhead)" />
-
-                    {/* Model -> Output Handling (Up) */}
                     <path d="M525 280 L525 260" markerEnd="url(#arrowhead)" />
-
-                    {/* Model -> Evaluation (Path: Model Left -> Left -> Down -> Eval Left) */}
                     <path d="M275 305 L160 305 L160 430" markerEnd="url(#arrowhead)" />
-
-                    {/* Evaluation -> Training (Right) */}
                     <path d="M220 450 L325 450" markerEnd="url(#arrowhead)" />
-
-                    {/* Frameworks -> Training (Left) */}
                     <path d="M550 450 L525 450" markerEnd="url(#arrowhead)" />
-
-                    {/* Training -> Model (Up through center) */}
                     <path d="M425 430 L425 330" markerEnd="url(#arrowhead)" />
-
-                    {/* Data Storage Infra -> Training (Up) */}
                     <path d="M425 510 L425 480" markerEnd="url(#arrowhead)" />
-
-                    {/* Training Data -> Data Storage Infra (Up) */}
                     <path d="M425 580 L425 550" markerEnd="url(#arrowhead)" />
-
-                    {/* Data Filtering -> Training Data (Up) */}
                     <path d="M425 650 L425 620" markerEnd="url(#arrowhead)" />
-
-                    {/* Data Sources -> Data Filtering (Up) */}
                     <path d="M425 720 L425 690" markerEnd="url(#arrowhead)" />
-
-                    {/* Ext Sources (Data) <-> Data Sources (Up Dotted) */}
-                    <path d="M425 800 L425 760" strokeDasharray="5,5" markerEnd="url(#arrowhead)" markerStart="url(#arrowhead-up)" />
-                    
-                    {/* Application -> Data Sources (Long Dotted Line on Left) */}
-                    {/* Path: App Left -> Left -> Down -> Right -> Data Sources Left */}
-                    <path d="M275 95 L225 95 L225 740 L225 740" strokeDasharray="5,5" markerEnd="url(#arrowhead)" />
-
+                    <path d="M425 800 L425 760" strokeDasharray="5,5" />
                   </g>
-
-                  {/* Layer Background Zones (Flat, subtle) */}
-                  <rect x="20" y="5" width="810" height="190" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
-                  <text x="30" y="25" fill="#60a5fa" fontSize="12" fontWeight="bold" letterSpacing="1">APPLICATION LAYER</text>
-
-                  <rect x="20" y="210" width="810" height="130" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
-                  <text x="30" y="230" fill="#c084fc" fontSize="12" fontWeight="bold" letterSpacing="1">MODEL LAYER</text>
-
-                  <rect x="20" y="350" width="810" height="210" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
-                  <text x="30" y="370" fill="#fbbf24" fontSize="12" fontWeight="bold" letterSpacing="1">INFRASTRUCTURE LAYER</text>
-
-                  <rect x="20" y="570" width="810" height="280" rx="0" fill="transparent" stroke="#1e293b" strokeWidth="1" strokeDasharray="4 4" />
-                  <text x="30" y="590" fill="#34d399" fontSize="12" fontWeight="bold" letterSpacing="1">DATA LAYER</text>
 
                   {/* Components */}
                   {SAIF_COMPONENTS.map((comp) => {
                     const isSelected = selectedComponentId === comp.id;
                     const styleClass = getLayerColor(comp.layer);
-                    const titleColor = getLayerTitleColor(comp.layer);
-                    const isAffected = selectedThreatId ? THREAT_LIBRARY.find(t => t.id === selectedThreatId)?.affectedComponents.includes(comp.id) : false;
+                    
+                    // SAIF Risk Lifecycle Highlighting
+                    const isIntroduced = selectedThreat?.introducedAt?.includes(comp.id);
+                    const isExposed = selectedThreat?.exposedAt?.includes(comp.id);
+                    const isMitigated = selectedThreat?.mitigatedAt?.includes(comp.id);
 
                     return (
                       <g 
                         key={comp.id} 
-                        onClick={() => handleComponentClick(comp.id)}
-                        className="cursor-pointer transition-all duration-200 group"
-                        style={{ opacity: selectedThreatId && !isAffected ? 0.2 : 1 }}
+                        onClick={(e) => { e.stopPropagation(); handleComponentClick(comp.id); }}
+                        className="cursor-pointer transition-all duration-300"
+                        style={{ opacity: selectedThreatId && !(isIntroduced || isExposed || isMitigated) ? 0.3 : 1 }}
                       >
-                        {/* Box */}
                         <rect 
                           x={comp.x} 
                           y={comp.y} 
                           width={comp.width} 
                           height={comp.height} 
-                          rx={comp.style === 'dotted' ? 0 : 6}
+                          rx={comp.style === 'dotted' ? 0 : 8}
                           strokeDasharray={comp.style === 'dotted' ? "5,5" : "0"}
                           className={`
                             fill-slate-900 stroke-2 transition-all
-                            ${isSelected ? 'stroke-white stroke-[3px]' : styleClass.split(' ')[0]}
-                            ${isAffected ? 'stroke-red-500 stroke-[4px]' : ''}
+                            ${isSelected ? 'stroke-cyan-400 stroke-[3px]' : styleClass.split(' ')[0]}
+                            ${isIntroduced ? 'stroke-red-500 stroke-[4px]' : ''}
+                            ${isExposed ? 'stroke-orange-500 stroke-[4px]' : ''}
+                            ${isMitigated ? 'stroke-emerald-500 stroke-[4px]' : ''}
                           `}
                         />
                         
-                        {/* Header Background (Only for solid boxes) */}
-                        {comp.style !== 'dotted' && (
-                          <rect 
-                            x={comp.x} 
-                            y={comp.y} 
-                            width={6} 
-                            height={comp.height} 
-                            rx="0"
-                            fill={titleColor}
-                            className="rounded-l-md"
-                          />
-                        )}
-
-                        {/* Text Content */}
                         <text 
-                          x={comp.x + (comp.style === 'dotted' ? comp.width/2 : 16)} 
-                          y={comp.y + 24} 
-                          fill="#ffffff"
+                          x={comp.x + comp.width/2} 
+                          y={comp.y + comp.height/2 + 5} 
+                          fill={isSelected ? "#22d3ee" : "#ffffff"}
                           fontWeight="700" 
-                          fontSize="13"
-                          textAnchor={comp.style === 'dotted' ? 'middle' : 'start'}
-                          className="pointer-events-none"
+                          fontSize="11"
+                          textAnchor="middle"
+                          className="pointer-events-none uppercase tracking-tighter"
                         >
                           {comp.name}
                         </text>
-                        
-                        {/* Only show ID for non-dotted components to reduce clutter */}
-                        {comp.style !== 'dotted' && (
-                          <text 
-                            x={comp.x + 16} 
-                            y={comp.y + 38} 
-                            fill="#94a3b8" 
-                            fontSize="10"
-                            className="pointer-events-none font-mono"
-                          >
-                            #{comp.id}
-                          </text>
-                        )}
+
+                        {/* Lifecycle Indicators (Floating Icons) */}
+                        {isIntroduced && <circle cx={comp.x} cy={comp.y} r="6" fill="#ef4444" filter="url(#glow)" />}
+                        {isExposed && <circle cx={comp.x + comp.width} cy={comp.y} r="6" fill="#f97316" filter="url(#glow)" />}
+                        {isMitigated && <circle cx={comp.x + comp.width/2} cy={comp.y + comp.height} r="6" fill="#10b981" filter="url(#glow)" />}
                       </g>
                     );
                   })}
@@ -680,101 +475,140 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
             </div>
           </div>
 
-          {/* Details Sidebar - Adapted Height */}
+          {/* Details Sidebar */}
           <div className="w-full lg:w-96 bg-slate-950 border-l border-slate-800 flex flex-col shadow-2xl z-20 h-full">
-            {!selectedComponent ? (
+            {selectedThreatId ? (
+                // Threat Detail View (When a specific threat is selected from list)
+                <div className="flex-1 overflow-y-auto p-6 animate-in slide-in-from-right duration-300">
+                    <button onClick={() => setSelectedThreatId(null)} className="text-xs text-slate-500 hover:text-white mb-4 flex items-center gap-1"><ArrowRight className="w-3 h-3 rotate-180" /> Back to components</button>
+                    
+                    <div className="mb-6">
+                        <div className="flex justify-between items-start mb-2">
+                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${getSeverityTheme(selectedThreat?.riskLevel || 'Medium')}`}>{selectedThreat?.riskLevel} Risk</span>
+                             <span className="font-mono text-xs text-slate-500">{selectedThreat?.id}</span>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-3">{selectedThreat?.name}</h3>
+                        <p className="text-sm text-slate-400 leading-relaxed mb-4">{selectedThreat?.description}</p>
+                        
+                        <div className="flex flex-wrap gap-2 mb-6">
+                            {selectedThreat?.responsibility?.map(r => (
+                                <span key={r} className="inline-flex items-center gap-1.5 px-2 py-1 bg-slate-900 border border-slate-800 rounded text-[10px] text-slate-300 font-bold uppercase tracking-wider">
+                                    <UserCheck className="w-3 h-3" /> {r}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        {/* SAIF Controls Mapping */}
+                        {selectedThreat?.saifControls && (
+                            <section>
+                                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <Wrench className="w-3.5 h-3.5" /> SAIF Mitigating Controls
+                                </h4>
+                                <div className="space-y-2">
+                                    {selectedThreat.saifControls.map(cId => {
+                                        const ctrl = SAIF_CONTROLS_LIB[cId];
+                                        return (ctrl ? 
+                                            <div key={cId} className="bg-emerald-500/5 border border-emerald-500/20 p-3 rounded-lg">
+                                                <div className="text-emerald-400 font-bold text-xs mb-1">{ctrl.name}</div>
+                                                <div className="text-[10px] text-slate-400">{ctrl.description}</div>
+                                            </div> : null
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* Lifecycle Path */}
+                        <section>
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                <GitBranch className="w-3.5 h-3.5" /> Lifecycle Propagation
+                            </h4>
+                            <div className="space-y-3">
+                                <div className="flex items-start gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />
+                                    <div>
+                                        <div className="text-[10px] font-bold text-red-400 uppercase">Introduced At</div>
+                                        <div className="text-xs text-slate-300">{selectedThreat?.introducedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).join(', ')}</div>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0" />
+                                    <div>
+                                        <div className="text-[10px] font-bold text-orange-400 uppercase">Exposed At</div>
+                                        <div className="text-xs text-slate-300">{selectedThreat?.exposedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).join(', ')}</div>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                                    <div>
+                                        <div className="text-[10px] font-bold text-emerald-400 uppercase">Mitigated At</div>
+                                        <div className="text-xs text-slate-300">{selectedThreat?.mitigatedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).join(', ')}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section className="pt-4 border-t border-slate-800">
+                             <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                                <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 mb-2 uppercase tracking-wider"><ShieldAlert className="w-4 h-4" /> Recommended Tests</div>
+                                <div className="flex flex-col gap-2">
+                                    {selectedThreat?.relatedTestIds.map(tid => (
+                                        <button key={tid} onClick={() => onNavigateToTest(tid)} className="flex justify-between items-center text-[10px] font-mono bg-slate-950 p-2 rounded hover:bg-slate-800 transition-colors border border-slate-800 hover:border-cyan-900 group">
+                                            <span>{tid}</span>
+                                            <ArrowRight className="w-3 h-3 text-slate-600 group-hover:text-cyan-400" />
+                                        </button>
+                                    ))}
+                                </div>
+                             </div>
+                        </section>
+                    </div>
+                </div>
+            ) : !selectedComponent ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-slate-500">
-                <Target className="w-16 h-16 mb-4 opacity-10" />
-                <p className="text-sm font-medium">Select a component in the diagram to view its details, threats, and test cases.</p>
+                <LayoutTemplate className="w-16 h-16 mb-4 opacity-10" />
+                <p className="text-sm font-medium">Select a component in the diagram or a threat from the matrix to explore the SAIF security path.</p>
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto p-6 animate-in slide-in-from-right duration-300">
-                
-                {/* Component Header */}
                 <div className="mb-6 border-b border-slate-800 pb-4">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-900 border ${
-                      selectedComponent.layer === 'Application' ? 'text-blue-400 border-blue-900' :
-                      selectedComponent.layer === 'Model' ? 'text-purple-400 border-purple-900' :
-                      selectedComponent.layer === 'Infrastructure' ? 'text-amber-400 border-amber-900' : 'text-emerald-400 border-emerald-900'
-                    }`}>
-                      {selectedComponent.layer}
-                    </span>
-                    <span className="font-mono text-xs text-slate-600">ID: {selectedComponent.id}</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">{selectedComponent.name}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">
-                    {selectedComponent.description}
-                  </p>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-900 border ${
+                    selectedComponent.layer === 'Application' ? 'text-blue-400 border-blue-900' :
+                    selectedComponent.layer === 'Model' ? 'text-purple-400 border-purple-900' :
+                    selectedComponent.layer === 'Infrastructure' ? 'text-amber-400 border-amber-900' : 'text-emerald-400 border-emerald-900'
+                  }`}>
+                    {selectedComponent.layer} Layer
+                  </span>
+                  <h3 className="text-2xl font-bold text-white mt-2 mb-2">{selectedComponent.name}</h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">{selectedComponent.description}</p>
                 </div>
 
-                {/* Threats List */}
                 <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <Shield className="w-3.5 h-3.5" />
-                  Associated Threats
+                  <Shield className="w-3.5 h-3.5" /> Potential Threats at this Asset
                 </h4>
 
                 <div className="space-y-3">
-                  {threatsForComponent.length === 0 ? (
-                    <div className="p-4 bg-slate-900/50 rounded-lg border border-slate-800 text-sm text-slate-500 text-center italic">
-                      No high-priority threats directly mapped to this component in the base model.
-                    </div>
-                  ) : (
-                    threatsForComponent.map(threat => {
-                      const theme = getThreatTheme(threat.id);
-                      return (
-                        <div 
-                          key={threat.id}
-                          className="bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg p-4 transition-all group"
-                        >
-                          <div className="flex flex-wrap gap-2 items-center mb-2">
-                            {/* Standardized Threat ID Badge */}
-                            <button
-                              onClick={() => onNavigateToOwasp(threat.id)}
-                              className={`flex items-center gap-1.5 font-mono text-[10px] px-2 py-0.5 rounded border cursor-pointer hover:scale-105 transition-transform ${theme.bg} ${theme.text} ${theme.border} ${theme.hoverBg} ${theme.hoverBorder}`}
-                              title="Go to Definition"
-                            >
-                              <theme.icon className="w-3 h-3" /> {threat.id}
-                            </button>
-
-                            {/* Severity Label (Separate) */}
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${getSeverityTheme(threat.riskLevel)}`}>
-                              {threat.riskLevel}
-                            </span>
-                          </div>
-                          
-                          <h5 className="font-bold text-slate-200 text-sm mb-1 group-hover:text-cyan-400 transition-colors">{threat.name}</h5>
-                          <p className="text-xs text-slate-400 mb-3 leading-relaxed">{threat.description}</p>
-                          
-                          <div className="bg-slate-950 p-2.5 rounded border border-slate-800/50 mb-3">
-                            <div className="flex items-center gap-1.5 text-[10px] text-slate-500 uppercase font-bold mb-1">
-                              <FileText className="w-3 h-3" /> Scenario
-                            </div>
-                            <p className="text-xs text-slate-300 leading-relaxed italic border-l-2 border-slate-700 pl-2">
-                              "{threat.scenario}"
-                            </p>
-                          </div>
-
-                          {/* Related Tests List */}
-                          {threat.relatedTestIds.length > 0 && (
-                            <div className="flex flex-col gap-1.5">
-                              {threat.relatedTestIds.map(testId => (
-                                <button 
-                                  key={testId}
-                                  onClick={() => onNavigateToTest(testId)}
-                                  className="flex items-center justify-between w-full px-2.5 py-1.5 bg-cyan-950/20 hover:bg-cyan-950/40 text-cyan-400 text-[10px] font-mono rounded border border-cyan-900/30 hover:border-cyan-500/40 transition-all group/btn"
-                                  title="Go to Test Case"
-                                >
-                                  <span>{testId}</span>
-                                  <ArrowRight className="w-3 h-3 opacity-50 group-hover/btn:opacity-100 group-hover/btn:translate-x-0.5 transition-all" />
-                                </button>
-                              ))}
-                            </div>
-                          )}
+                  {threatsForComponent.map(threat => {
+                    const theme = getThreatTheme(threat.id);
+                    return (
+                      <div 
+                        key={threat.id}
+                        onClick={() => setSelectedThreatId(threat.id)}
+                        className="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-lg p-4 transition-all group cursor-pointer"
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                            <span className={`flex items-center gap-1.5 font-mono text-[9px] px-1.5 py-0.5 rounded border ${theme.bg} ${theme.text} ${theme.border}`}>{threat.id}</span>
+                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${getSeverityTheme(threat.riskLevel)}`}>{threat.riskLevel}</span>
                         </div>
-                      );
-                    })
-                  )}
+                        <h5 className="font-bold text-slate-200 text-xs mb-1 group-hover:text-cyan-400 transition-colors">{threat.name}</h5>
+                        <p className="text-[10px] text-slate-500 line-clamp-2">{threat.description}</p>
+                        <div className="mt-2 pt-2 border-t border-slate-800 flex justify-end">
+                            <span className="text-[10px] text-cyan-400 font-bold flex items-center gap-1">Analyze Path <ArrowRight className="w-3 h-3" /></span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -784,69 +618,77 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
 
       {/* Impact Analysis Tab */}
       {activeTab === 'impact' && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden animate-in fade-in duration-300">
-          <div className="p-6 border-b border-slate-800 bg-slate-950 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden animate-in fade-in duration-300 shadow-2xl">
+          <div className="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
             <div>
-              <h3 className="text-xl font-bold text-white mb-2">Business Impact Analysis (BIA)</h3>
-              <p className="text-sm text-slate-400">
-                Aligning technical vulnerabilities with business consequences. Based on Table 1.1 of the guide.
-              </p>
+              <h3 className="text-xl font-bold text-white mb-1">Business Impact Matrix</h3>
+              <p className="text-xs text-slate-500">Correlation of technical failures to business consequences.</p>
             </div>
-            {/* Sort Controls */}
-            <div className="flex items-center gap-2 shrink-0">
-               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:block">
-                <ListFilter className="w-3 h-3 inline mr-1" />
-                Sort:
-              </span>
-              <div className="flex bg-slate-900 rounded-lg p-1 border border-slate-800">
-                <button 
-                  onClick={() => setSortMethod('default')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${sortMethod === 'default' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
+            <div className="flex items-center gap-2">
+                <ListFilter className="w-4 h-4 text-slate-500" />
+                <select 
+                    value={sortMethod} 
+                    onChange={(e) => setSortMethod(e.target.value as 'default' | 'severity')}
+                    className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
                 >
-                  Type
-                </button>
-                <button 
-                  onClick={() => setSortMethod('severity')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${sortMethod === 'severity' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
-                >
-                  Risk
-                </button>
-              </div>
+                    <option value="default">Default (ID)</option>
+                    <option value="severity">Risk Level</option>
+                </select>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-950 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
-                  <th className="p-4 font-medium">Risk ID</th>
-                  <th className="p-4 font-medium">Threat Description</th>
-                  <th className="p-4 font-medium">Business Impact</th>
-                  <th className="p-4 font-medium">Risk Level</th>
-                  <th className="p-4 font-medium">Risk Owner</th>
+                <tr className="bg-slate-950/50 text-slate-400 text-[10px] uppercase tracking-widest border-b border-slate-800">
+                  <th className="p-4 font-bold">Threat Context</th>
+                  <th className="p-4 font-bold">Business Impact</th>
+                  <th className="p-4 font-bold">Risk Level</th>
+                  <th className="p-4 font-bold">Ownership Responsibility</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800 text-sm">
                 {sortedThreats.map((threat) => {
                   const theme = getThreatTheme(threat.id);
                   return (
-                    <tr key={threat.id} className="hover:bg-slate-800/50 transition-colors group cursor-pointer" onClick={() => onNavigateToOwasp(threat.id)}>
+                    <tr key={threat.id} className="hover:bg-slate-800/50 transition-colors group cursor-pointer" onClick={() => { setSelectedThreatId(threat.id); setActiveTab('architecture'); }}>
+                      <td className="p-4 min-w-[200px]">
+                        <div className="flex items-center gap-2 mb-1.5">
+                           <span className={`font-mono text-[10px] px-1.5 py-0.5 rounded border ${theme.bg} ${theme.text} ${theme.border}`}>
+                              {threat.id}
+                           </span>
+                           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${getSeverityTheme(threat.riskLevel)}`}>
+                             {threat.riskLevel}
+                           </span>
+                        </div>
+                        <div className="font-bold text-slate-200 group-hover:text-cyan-400 transition-colors">{threat.name}</div>
+                        <div className="text-[10px] text-slate-500">{threat.category}</div>
+                      </td>
+                      <td className="p-4 text-slate-400 italic text-xs max-w-xs leading-relaxed">
+                        "{threat.impact}"
+                      </td>
                       <td className="p-4">
-                        {/* Unified Threat Badge Style */}
-                        <span className={`inline-flex items-center gap-1.5 font-mono text-xs px-2 py-1 rounded border ${theme.bg} ${theme.text} ${theme.border}`}>
-                           <theme.icon className="w-3 h-3" /> {threat.id}
-                        </span>
+                        <div className="flex items-center gap-2">
+                           <div className={`w-2 h-2 rounded-full ${threat.riskLevel === 'Critical' ? 'bg-red-500' : threat.riskLevel === 'High' ? 'bg-orange-500' : 'bg-yellow-500'}`} />
+                           <span className="text-xs text-slate-300 font-medium">{threat.riskLevel}</span>
+                        </div>
                       </td>
-                      <td className="p-4 text-slate-300">
-                        <div className="font-bold mb-1">{threat.name}</div>
-                        <div className="text-xs text-slate-500">{threat.description}</div>
-                      </td>
-                      <td className="p-4 text-slate-400">{threat.impact}</td>
                       <td className="p-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-bold border ${getSeverityTheme(threat.riskLevel)}`}>
-                          {threat.riskLevel}
-                        </span>
+                          <div className="flex flex-wrap gap-2">
+                            {threat.responsibility?.map(r => {
+                                const isCreator = r === 'Model Creator';
+                                return (
+                                    <span key={r} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded border text-[10px] font-bold uppercase tracking-wider whitespace-nowrap ${
+                                      isCreator 
+                                        ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' 
+                                        : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                    }`}>
+                                      {isCreator ? <Cpu className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
+                                      {r.split(' ')[1]}
+                                    </span>
+                                );
+                            })}
+                          </div>
                       </td>
-                      <td className="p-4 text-slate-400">{threat.riskOwner}</td>
                     </tr>
                   );
                 })}
@@ -856,48 +698,14 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
         </div>
       )}
 
-      {/* Threat Mapping Tab - Redesigned Matrix */}
+      {/* Threat Mapping Tab */}
       {activeTab === 'mapping' && (
         <div className="animate-in fade-in duration-300">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">Threat-to-Test Matrix</h3>
-                <p className="text-slate-400">
-                  Direct correlation between high-level SAIF threats and actionable test cases.
-                </p>
-              </div>
-              {/* Sort Controls */}
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:block">
-                  <ListFilter className="w-3 h-3 inline mr-1" />
-                  Sort:
-                </span>
-                <div className="flex bg-slate-900 rounded-lg p-1 border border-slate-800">
-                  <button 
-                    onClick={() => setSortMethod('default')}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${sortMethod === 'default' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
-                  >
-                    Type
-                  </button>
-                  <button 
-                    onClick={() => setSortMethod('severity')}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${sortMethod === 'severity' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
-                  >
-                    Risk
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-              {sortedThreats.filter(t => t.relatedTestIds.length > 0).map(threat => {
+              {sortedThreats.map(threat => {
                 const theme = getThreatTheme(threat.id);
                 return (
-                  <div key={threat.id} className="bg-slate-950 rounded-xl border border-slate-800 flex flex-col hover:border-slate-600 transition-all duration-300 group overflow-hidden shadow-sm hover:shadow-md">
-                    
-                    {/* Card Header */}
+                  <div key={threat.id} className="bg-slate-950 rounded-xl border border-slate-800 flex flex-col hover:border-slate-600 transition-all duration-300 group overflow-hidden">
                     <div className="p-5 border-b border-slate-800/50 bg-slate-900/30">
                       <div className="flex justify-between items-start mb-3">
                          <button 
@@ -910,41 +718,35 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                             {threat.riskLevel}
                           </span>
                       </div>
-                      <h4 className="font-bold text-slate-200 text-lg leading-tight group-hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => onNavigateToOwasp(threat.id)}>
+                      <h4 className="font-bold text-slate-200 text-lg leading-tight group-hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => setSelectedThreatId(threat.id)}>
                         {threat.name}
                       </h4>
                     </div>
 
-                    {/* Card Body */}
                     <div className="p-5 flex-1 flex flex-col gap-4">
-                      <div className="text-xs text-slate-400">
-                        <span className="text-slate-500 font-semibold uppercase tracking-wider block mb-1">Impact</span>
-                        {threat.impact}
-                      </div>
+                      <div className="text-[10px] text-slate-500 uppercase font-bold tracking-widest flex items-center gap-1"><Info className="w-3 h-3" /> Description</div>
+                      <p className="text-xs text-slate-400 leading-relaxed italic border-l-2 border-slate-800 pl-3">"{threat.description}"</p>
                       
-                      <div className="mt-auto">
-                        <div className="flex items-center gap-2 mb-2">
-                           <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500" />
-                           <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Verified by Tests</span>
-                        </div>
-                        <div className="grid grid-cols-1 gap-2">
-                          {threat.relatedTestIds.map(testId => (
-                            <button 
-                              key={testId}
-                              onClick={() => onNavigateToTest(testId)}
-                              className="flex items-center justify-between px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 text-xs rounded border border-slate-800 hover:border-cyan-500/30 transition-all group/item"
-                            >
-                              <span className="font-mono">{testId}</span>
-                              <ExternalLink className="w-3 h-3 opacity-30 group-hover/item:opacity-100" />
-                            </button>
-                          ))}
+                      <div className="mt-auto space-y-3">
+                        <div className="flex flex-col gap-2">
+                           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Mitigation Testing</span>
+                           <div className="flex flex-wrap gap-2">
+                             {threat.relatedTestIds.map(testId => (
+                                <button 
+                                    key={testId}
+                                    onClick={() => onNavigateToTest(testId)}
+                                    className="px-2 py-1 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 text-[10px] font-mono rounded border border-slate-800 transition-all"
+                                >
+                                    {testId}
+                                </button>
+                             ))}
+                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Card Footer */}
-                    <div className="px-5 py-3 bg-slate-900/50 border-t border-slate-800/50 flex justify-between items-center text-[10px] text-slate-500 font-mono">
-                      <span>Components: {threat.affectedComponents.map(c => `#${c}`).join(', ')}</span>
+                    <div className="px-5 py-3 bg-slate-900/50 border-t border-slate-800/50 flex justify-between items-center text-[9px] text-slate-500 font-mono">
+                      <span className="flex items-center gap-1"><Lock className="w-2.5 h-2.5" /> SAIF Framework</span>
                       <span>{threat.category}</span>
                     </div>
                   </div>
