@@ -55,6 +55,14 @@ This application is built upon the following authoritative sources:
    npm run dev
    ```
 
+## 🌐 GitHub Pages Deployment
+
+This project must be **built** before it will work on GitHub Pages. Serving the repo root directly will load `index.tsx` and fail in the browser.
+
+Two supported options:
+1. **GitHub Actions (recommended)**: Set Settings → Pages → Source to **GitHub Actions**. The `Deploy to GitHub Pages` workflow will build and publish `dist`.
+2. **gh-pages branch**: Set Settings → Pages → Source to **gh-pages / (root)**. The `Deploy to gh-pages branch` workflow will build and publish `dist` to that branch.
+
 ## 🛠 Tech Stack
 - **Framework**: React 18 with TypeScript
 - **Bundler**: Vite
