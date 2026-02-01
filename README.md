@@ -58,7 +58,7 @@ This application is built upon the following authoritative sources:
 ## 🛠 Tech Stack
 - **Framework**: React 18 with TypeScript
 - **Bundler**: Vite
-- **Styling**: Tailwind CSS (via CDN for portability)
+- **Styling**: Tailwind CSS (via PostCSS build)
 - **Icons**: Lucide React
 - **Visualization**: Custom Interactive SVG Components
 

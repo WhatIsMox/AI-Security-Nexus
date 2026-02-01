@@ -1,2 +1,7 @@
 
-// Removed to use CDN
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
