@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { TestItem } from '../types';
-import { ArrowRight, Brain, Filter, ListFilter, Cpu, Bot, Book } from 'lucide-react';
+import { ArrowRight, Brain, Filter, ListFilter, Cpu, Bot, Book, Gavel, Network } from 'lucide-react';
 
 interface TestListProps {
   tests: TestItem[];
@@ -12,7 +12,7 @@ interface TestListProps {
 
 const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOwasp, category }) => {
   const [sortMethod, setSortMethod] = useState<'id' | 'severity'>('id');
-  const [filterType, setFilterType] = useState<'all' | 'top10' | 'mltop10' | 'agenttop10' | 'aitg'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'top10' | 'mltop10' | 'agenttop10' | 'saiftop10' | 'mcptop10' | 'aitg'>('all');
 
   const getRiskColor = (level: string) => {
     switch(level) {
@@ -37,6 +37,8 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
     if (filterType === 'top10') return !!test.owaspTop10Ref;
     if (filterType === 'mltop10') return !!test.owaspMlTop10Ref;
     if (filterType === 'agenttop10') return !!test.owaspAgenticRef;
+    if (filterType === 'saiftop10') return !!test.owaspSaifRef;
+    if (filterType === 'mcptop10') return !!test.owaspMcpTop10Ref;
     if (filterType === 'aitg') return test.id.startsWith('AITG');
     return true;
   });
@@ -118,6 +120,20 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
               >
                 <Bot className="w-3 h-3" />
                 Agentic
+              </button>
+              <button 
+                onClick={() => setFilterType('saiftop10')}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'saiftop10' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-sm' : 'text-slate-400 hover:text-blue-300'}`}
+              >
+                <Gavel className="w-3 h-3" />
+                SAIF
+              </button>
+              <button 
+                onClick={() => setFilterType('mcptop10')}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'mcptop10' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-sm' : 'text-slate-400 hover:text-cyan-300'}`}
+              >
+                <Network className="w-3 h-3" />
+                MCP
               </button>
             </div>
           </div>
@@ -208,6 +224,30 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                         title="Go to OWASP Agentic Threats Entry"
                       >
                         <Bot className="w-3 h-3" /> {test.owaspAgenticRef}
+                      </button>
+                    )}
+                    {test.owaspSaifRef && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onNavigateToOwasp(test.owaspSaifRef!);
+                        }}
+                        className="flex items-center gap-1 font-mono text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20 whitespace-nowrap hover:bg-blue-500/20 hover:border-blue-500/40 hover:scale-105 active:scale-95 transition-all z-20 cursor-pointer"
+                        title="Go to Google SAIF Risk Entry"
+                      >
+                        <Gavel className="w-3 h-3" /> {test.owaspSaifRef}
+                      </button>
+                    )}
+                    {test.owaspMcpTop10Ref && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onNavigateToOwasp(test.owaspMcpTop10Ref!);
+                        }}
+                        className="flex items-center gap-1 font-mono text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/20 whitespace-nowrap hover:bg-cyan-500/20 hover:border-cyan-500/40 hover:scale-105 active:scale-95 transition-all z-20 cursor-pointer"
+                        title="Go to OWASP MCP Top 10 Entry"
+                      >
+                        <Network className="w-3 h-3" /> {test.owaspMcpTop10Ref}
                       </button>
                     )}
                   </div>

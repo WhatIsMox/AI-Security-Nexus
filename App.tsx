@@ -6,23 +6,23 @@ import TestList from './components/TestList';
 import TestDetail from './components/TestDetail';
 import ThreatModelling from './components/ThreatModelling';
 import OwaspTop10View from './components/OwaspTop10View';
-import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_AGENTIC_THREATS_DATA, OWASP_SAIF_THREATS_DATA } from './data';
+import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_AGENTIC_THREATS_DATA, OWASP_SAIF_THREATS_DATA, OWASP_MCP_TOP_10_DATA } from './data';
 import { Pillar, TestItem } from './types';
 import { Menu, Book } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'tests' | 'detail' | 'threat-model' | 'owasp-top10' | 'owasp-ml-top10' | 'owasp-agent-top10' | 'owasp-saif-top10'>('dashboard');
-  const [activePillar, setActivePillar] = useState<Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10'>('ALL');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'tests' | 'detail' | 'threat-model' | 'owasp-top10' | 'owasp-ml-top10' | 'owasp-agent-top10' | 'owasp-saif-top10' | 'owasp-mcp-top10'>('dashboard');
+  const [activePillar, setActivePillar] = useState<Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10'>('ALL');
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [owaspTargetId, setOwaspTargetId] = useState<string | null>(null);
 
   const filteredTests = useMemo(() => {
-    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10') return TEST_DATA;
+    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10') return TEST_DATA;
     return TEST_DATA.filter(t => t.pillar === activePillar);
   }, [activePillar]);
 
-  const handleSelectPillar = (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10') => {
+  const handleSelectPillar = (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10') => {
     setActivePillar(pillar);
     if (pillar === 'TOP10') {
         setOwaspTargetId(null); 
@@ -36,6 +36,9 @@ const App: React.FC = () => {
     } else if (pillar === 'SAIFTOP10') {
         setOwaspTargetId(null);
         setCurrentView('owasp-saif-top10');
+    } else if (pillar === 'MCPTOP10') {
+        setOwaspTargetId(null);
+        setCurrentView('owasp-mcp-top10');
     } else {
         setCurrentView('tests');
     }
@@ -53,6 +56,9 @@ const App: React.FC = () => {
     } else if (id.startsWith("SAIF")) {
       setActivePillar('SAIFTOP10');
       setCurrentView('owasp-saif-top10');
+    } else if (id.startsWith("MCP")) {
+      setActivePillar('MCPTOP10');
+      setCurrentView('owasp-mcp-top10');
     } else {
       setActivePillar('TOP10');
       setCurrentView('owasp-top10');
@@ -87,6 +93,8 @@ const App: React.FC = () => {
       setCurrentView('owasp-agent-top10');
     } else if (activePillar === 'SAIFTOP10') {
       setCurrentView('owasp-saif-top10');
+    } else if (activePillar === 'MCPTOP10') {
+      setCurrentView('owasp-mcp-top10');
     } else {
       setCurrentView('tests');
     }
@@ -129,7 +137,7 @@ const App: React.FC = () => {
         currentView={
           currentView === 'detail' 
             ? 'tests' 
-            : (currentView === 'owasp-top10' || currentView === 'owasp-ml-top10' || currentView === 'owasp-agent-top10' || currentView === 'owasp-saif-top10')
+            : (currentView === 'owasp-top10' || currentView === 'owasp-ml-top10' || currentView === 'owasp-agent-top10' || currentView === 'owasp-saif-top10' || currentView === 'owasp-mcp-top10')
               ? 'tests' 
               : currentView
         }
@@ -196,6 +204,16 @@ const App: React.FC = () => {
               title="Google SAIF: Secure AI Framework Risks"
               description="A comprehensive mapping of risks across the AI lifecycle, based on Google's Secure AI Framework."
               colorTheme="blue"
+            />
+          )}
+
+          {currentView === 'owasp-mcp-top10' && (
+            <OwaspTop10View 
+              initialExpandedId={owaspTargetId} 
+              data={OWASP_MCP_TOP_10_DATA}
+              title="OWASP MCP Top 10 (v0.1)"
+              description="The top risks for Model Context Protocol ecosystems, covering tool integrity, authorization, and context safety."
+              colorTheme="cyan"
             />
           )}
 

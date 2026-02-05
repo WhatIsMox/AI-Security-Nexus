@@ -1,5 +1,5 @@
 {
   "name": "AI Security Nexus",
-  "description": "A comprehensive, graphical exploration of global AI security frameworks, including SAIF, OWASP Top 10 for LLMs, ML Security, and Agentic AI. Visualize threats and explore testing methodologies across the entire AI lifecycle.",
+  "description": "A comprehensive, graphical exploration of global AI security frameworks, including SAIF, OWASP Top 10 for LLMs, ML Security, Agentic AI, and the OWASP MCP Top 10. Visualize threats and explore testing methodologies across the entire AI lifecycle.",
   "requestFramePermissions": []
 }

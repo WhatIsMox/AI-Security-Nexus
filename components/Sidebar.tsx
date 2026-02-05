@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel } from 'lucide-react';
+import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel, Network } from 'lucide-react';
 import { Pillar } from '../types';
 
 interface SidebarProps {
-  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10';
-  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10') => void;
+  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10';
+  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10') => void;
   onSelectDashboard: () => void;
   onSelectThreatModel: () => void;
   currentView: 'dashboard' | 'tests' | 'threat-model';
@@ -127,6 +127,18 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <Bot className="w-5 h-5 shrink-0" />
             <span className="font-medium">OWASP Top 10 Agentic</span>
+          </button>
+
+          <button
+            onClick={() => { onSelectPillar('MCPTOP10'); onClose(); }}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
+              currentView === 'tests' && activePillar === 'MCPTOP10'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-sky-500/10 text-cyan-400 border border-cyan-500/30'
+                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+            }`}
+          >
+            <Network className="w-5 h-5 shrink-0" />
+            <span className="font-medium">OWASP MCP Top 10</span>
           </button>
 
           <button

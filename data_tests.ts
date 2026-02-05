@@ -11,6 +11,8 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM01:2025",
+    owaspAgenticRef: "ASI01",
+    owaspSaifRef: "SAIF-R10",
     summary: "Technically verify if an LLM or AI application is vulnerable to prompt injection techniques can be directly influenced through carefully crafted prompts to perform unauthorized actions or generate harmful outputs. This test specifically addresses direct prompt injection techniques.",
     objectives: [
       "Verify if the LLM can be influenced to perform unauthorized actions.",
@@ -82,6 +84,9 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM01:2025",
+    owaspAgenticRef: "ASI01",
+    owaspSaifRef: "SAIF-R10",
+    owaspMcpTop10Ref: "MCP6:2025",
     summary: "Indirect prompt injection occurs when external, untrusted content that is processed by a large language model (LLM) contains hidden instructions or manipulative prompts. These embedded payloads may unintentionally alter the model's behavior, bypassing security measures.",
     objectives: [
       "Verify if the LLM executes hidden commands embedded in retrieved content (RAG).",
@@ -141,6 +146,8 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM02:2025",
+    owaspSaifRef: "SAIF-R12",
+    owaspMcpTop10Ref: "MCP1:2025",
     summary: "Sensitive data leak vulnerabilities occur when large language models (LLMs) unintentionally reveal confidential or protected information during interactions. Such leaks can include PII, credentials, internal API keys, or database details.",
     objectives: [
       "Determine if the model outputs PII (email, SSN) when prompted.",
@@ -202,6 +209,8 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'High',
     owaspTop10Ref: "LLM02:2025",
+    owaspSaifRef: "SAIF-R12",
+    owaspMcpTop10Ref: "MCP10:2025",
     summary: "Input leakage occurs when sensitive user input (passwords, PII) is inadvertently stored and later surfaced in logs, error messages, or other user sessions due to improper session isolation.",
     objectives: [
       "Check if user session data leaks into other sessions (cross-user leakage).",
@@ -260,6 +269,9 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'High',
     owaspTop10Ref: "LLM05:2025",
     owaspMlTop10Ref: "ML09:2023",
+    owaspAgenticRef: "ASI05",
+    owaspSaifRef: "SAIF-R14",
+    owaspMcpTop10Ref: "MCP5:2025",
     summary: "Unsafe outputs in large language models (LLMs) refer to content-level risks (hazardous responses) and application-level risks (security vulnerabilities like XSS/SSRF). In ML systems, this also maps to Output Integrity Attacks where results are manipulated.",
     objectives: [
       "Check for XSS vectors in output (JavaScript generation).",
@@ -301,6 +313,8 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM06:2025",
     owaspAgenticRef: "ASI10",
+    owaspSaifRef: "SAIF-R15",
+    owaspMcpTop10Ref: "MCP2:2025",
     summary: "Agentic behavior limits refer to the safeguards placed around AI agents to prevent unintended autonomous actions. This test verifies whether AI agents operate within their designed autonomy, respect user instructions, and avoid unsafe behaviors.",
     objectives: [
       "Ensure agents terminate operations when instructed.",
@@ -383,6 +397,7 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'Medium',
     owaspTop10Ref: "LLM07:2025",
+    owaspSaifRef: "SAIF-R12",
     summary: "System prompt leakage vulnerabilities occur when a large language model (LLM) unintentionally reveal internal or hidden system prompts, potentially exposing sensitive, proprietary, or confidential operational instructions.",
     objectives: [
       "Extract the initial system instructions.",
@@ -441,6 +456,9 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'High',
     owaspTop10Ref: "LLM08:2025",
+    owaspAgenticRef: "ASI06",
+    owaspSaifRef: "SAIF-R01",
+    owaspMcpTop10Ref: "MCP6:2025",
     summary: "Embedding manipulation represents a critical security vulnerability in modern AI systems that utilize Retrieval Augmented Generation (RAG) and vector databases. These attacks involve adversaries injecting, altering, or exploiting data within embedding spaces.",
     objectives: [
       "Identify Embedding Manipulation Vulnerabilities in the RAG pipeline.",
@@ -505,6 +523,7 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'High',
     owaspMlTop10Ref: "ML05:2023",
+    owaspSaifRef: "SAIF-R08",
     summary: "Model extraction attacks involve adversaries systematically querying a machine learning model to reconstruct a surrogate model that closely replicates the original's decision-making process.",
     objectives: [
       "Identify susceptibility to model extraction attacks through various query strategies.",
@@ -546,6 +565,7 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Content Bias",
     pillar: Pillar.APP,
     riskLevel: 'Medium',
+    owaspTop10Ref: "LLM09:2025",
     summary: "This test aims to identify vulnerabilities related to content bias in AI-generated outputs that typically originate from training data, how the data is provided to the model and the prompt used to describe the task.",
     objectives: [
       "Measure disparate impact in classification.",
@@ -811,6 +831,7 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.MODEL,
     riskLevel: 'High',
     owaspMlTop10Ref: "ML01:2023",
+    owaspSaifRef: "SAIF-R11",
     summary: "This test identifies vulnerabilities in AI models related to evasion attacks, where attackers manipulate input data at inference time to mislead AI models.",
     objectives: [
       "Detect susceptibility of AI models to evasion attacks through adversarial input.",
@@ -871,6 +892,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM04:2025",
     owaspMlTop10Ref: "ML08:2023",
+    owaspSaifRef: "SAIF-R01",
     summary: "This test identifies vulnerabilities associated with runtime model poisoning (and Model Skewing ML08), where adversaries intentionally manipulate inputs during model inference to gradually degrade or alter model behavior.",
     objectives: [
       "Detect vulnerabilities in AI models to runtime poisoning attacks.",
@@ -925,6 +947,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM04:2025",
     owaspMlTop10Ref: "ML02:2023",
+    owaspSaifRef: "SAIF-R01",
     summary: "This test identifies vulnerabilities associated with poisoned training datasets, where adversaries deliberately inject or alter training data to compromise AI model integrity.",
     objectives: [
       "Detect the presence and impact of maliciously poisoned samples.",
@@ -980,6 +1003,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'High',
     owaspTop10Ref: "LLM02:2025",
     owaspMlTop10Ref: "ML04:2023",
+    owaspSaifRef: "SAIF-R13",
     summary: "This test identifies vulnerabilities to membership inference attacks, where adversaries determine whether specific data points were used during model training.",
     objectives: [
       "Detect vulnerabilities that allow adversaries to infer presence of training data.",
@@ -1034,6 +1058,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'High',
     owaspTop10Ref: "LLM02:2025",
     owaspMlTop10Ref: "ML03:2023",
+    owaspSaifRef: "SAIF-R13",
     summary: "This test identifies vulnerabilities associated with model inversion attacks, where adversaries reconstruct sensitive training data or attributes from model outputs.",
     objectives: [
       "Detect vulnerabilities enabling reconstruction of sensitive training data.",
@@ -1194,6 +1219,9 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM03:2025",
     owaspMlTop10Ref: "ML06:2023",
+    owaspAgenticRef: "ASI04",
+    owaspSaifRef: "SAIF-R03",
+    owaspMcpTop10Ref: "MCP4:2025",
     summary: "Supply Chain Tampering involves unauthorized modifications or compromises introduced at any stage of the AI model's development or deployment pipeline.",
     objectives: [
       "Identify vulnerabilities in the AI supply chain.",
@@ -1248,6 +1276,8 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.INFRA,
     riskLevel: 'High',
     owaspTop10Ref: "LLM10:2025",
+    owaspAgenticRef: "ASI08",
+    owaspSaifRef: "SAIF-R07",
     summary: "Resource Exhaustion attacks exploit vulnerabilities by consuming excessive resources (memory, CPU, bandwidth), disrupting AI services.",
     objectives: [
       "Identify vulnerabilities leading to resource exhaustion.",
@@ -1302,6 +1332,10 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Plugin Boundary Violations",
     pillar: Pillar.INFRA,
     riskLevel: 'High',
+    owaspTop10Ref: "LLM06:2025",
+    owaspAgenticRef: "ASI02",
+    owaspSaifRef: "SAIF-R09",
+    owaspMcpTop10Ref: "MCP07:2025",
     summary: "Plugin Boundary Violations occur when AI systems fail to maintain strict boundaries, allowing plugins to perform unintended operations.",
     objectives: [
       "Identify security boundaries between plugins.",
@@ -1350,6 +1384,10 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Capability Misuse",
     pillar: Pillar.INFRA,
     riskLevel: 'Medium',
+    owaspTop10Ref: "LLM06:2025",
+    owaspAgenticRef: "ASI02",
+    owaspSaifRef: "SAIF-R15",
+    owaspMcpTop10Ref: "MCP2:2025",
     summary: "Capability Misuse involves scenarios where legitimate capabilities of AI systems are exploited or misdirected.",
     objectives: [
       "Identify vulnerabilities allowing misuse.",
@@ -1399,6 +1437,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'High',
     owaspTop10Ref: "LLM04:2025",
     owaspMlTop10Ref: "ML10:2023",
+    owaspSaifRef: "SAIF-R01",
     summary: "This test identifies vulnerabilities arising from poisoning during fine-tuning, a targeted manipulation of datasets or parameters. This also aligns with Model Poisoning (ML10) where parameters are directly manipulated.",
     objectives: [
       "Detect poisoning vulnerabilities in fine-tuning.",
@@ -1454,6 +1493,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM03:2025",
     owaspMlTop10Ref: "ML05:2023",
+    owaspSaifRef: "SAIF-R05",
     summary: "Dev-Time Model Theft refers to unauthorized access, copying, extraction, or leakage of AI models during development. This corresponds to the Model Theft (ML05) risk.",
     objectives: [
       "Identify vulnerabilities permitting unauthorized access.",
@@ -1511,6 +1551,7 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.DATA,
     riskLevel: 'Critical',
     owaspTop10Ref: "LLM02:2025",
+    owaspSaifRef: "SAIF-R12",
     summary: "Training Data Exposure refers to unauthorized or inadvertent access, leakage, or disclosure of sensitive or proprietary datasets used during the AI model training phase.",
     objectives: [
       "Identify vulnerabilities allowing unauthorized access to training datasets.",
@@ -1559,6 +1600,8 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.DATA,
     riskLevel: 'High',
     owaspTop10Ref: "LLM02:2025",
+    owaspSaifRef: "SAIF-R12",
+    owaspMcpTop10Ref: "MCP1:2025",
     summary: "Runtime Exfiltration involves unauthorized extraction or leakage of sensitive data from an AI system during its operational (inference) phase.",
     objectives: [
       "Identify vulnerabilities permitting data exfiltration.",
@@ -1652,6 +1695,7 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.DATA,
     riskLevel: 'High',
     owaspTop10Ref: "LLM04:2025",
+    owaspSaifRef: "SAIF-R01",
     summary: "Testing for Harmful Content in Data involves identifying and mitigating any inappropriate, biased, offensive, or harmful material present within datasets.",
     objectives: [
       "Identify harmful/toxic content within datasets.",
@@ -1699,6 +1743,7 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Data Minimization & Consent",
     pillar: Pillar.DATA,
     riskLevel: 'Medium',
+    owaspSaifRef: "SAIF-R04",
     summary: "Testing for Data Minimization & Consent involves assessing whether AI systems adhere strictly to privacy principles and ensure explicit consent.",
     objectives: [
       "Ensure AI systems only collect necessary data.",

@@ -51,6 +51,8 @@ export interface TestItem {
   owaspTop10Ref?: string;
   owaspMlTop10Ref?: string;
   owaspAgenticRef?: string;
+  owaspSaifRef?: string;
+  owaspMcpTop10Ref?: string;
 }
 
 export interface OwaspTop10Entry {

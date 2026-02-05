@@ -8,4 +8,5 @@ export const TEST_DATA = [...STANDARD_TEST_DATA, ...AGENTIC_TEST_DATA];
 export * from './data_llm';
 export * from './data_ml';
 export * from './data_saif';
+export * from './data_mcp';
 export { OWASP_AGENTIC_THREATS_DATA } from './data_agentic'; 

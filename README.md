@@ -9,6 +9,7 @@ Navigate the most influential AI security standards through specialized, color-c
 - **🧠 OWASP Top 10 for LLM Applications (2025)**: The definitive guide to LLM-specific risks like Prompt Injection and Sensitive Information Disclosure.
 - **⚙️ OWASP Machine Learning Security Top 10**: Critical risks for traditional ML systems including Adversarial Evasion and Data Poisoning.
 - **🤖 OWASP Agentic AI Threats**: Emerging risks for autonomous agents, such as Goal Hijacking and Tool Misuse.
+- **🔗 OWASP MCP Top 10 (v0.1)**: Security risks for Model Context Protocol ecosystems, including tool poisoning and context injection.
 - **🛡️ Google SAIF (Secure AI Framework) Risks**: A holistic mapping of 15+ risks across the entire AI lifecycle.
 
 ### 2. Interactive Architecture & Threat Modelling
@@ -36,7 +37,8 @@ This application is built upon the following authoritative sources:
 3. **OWASP Top 10 for Large Language Model Applications (2025)**
 4. **OWASP Machine Learning Security Top 10**
 5. **OWASP Agentic AI Threats (ASI)**
-6. **EU AI Act & NIST AI RMF**
+6. **OWASP MCP Top 10 (v0.1)**
+7. **EU AI Act & NIST AI RMF**
 
 ## 🚀 Getting Started (Local Development)
 

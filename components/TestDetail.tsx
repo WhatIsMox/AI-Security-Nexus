@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { TestItem } from '../types';
-import { ArrowLeft, Target, Code, ShieldCheck, ExternalLink, BookOpen, Wrench, Shield, Brain, Terminal, Eye, Link as LinkIcon, Cpu, Bot, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Target, Code, ShieldCheck, ExternalLink, BookOpen, Wrench, Shield, Brain, Terminal, Eye, Link as LinkIcon, Cpu, Bot, AlertCircle, Gavel, Network } from 'lucide-react';
 
 interface TestDetailProps {
   test: TestItem;
@@ -58,6 +58,24 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                       title="Go to OWASP Agentic Threats Entry"
                     >
                       <Bot className="w-3.5 h-3.5" /> {test.owaspAgenticRef}
+                    </button>
+                  )}
+                  {test.owaspSaifRef && (
+                    <button 
+                      onClick={() => onNavigateToOwasp(test.owaspSaifRef!)}
+                      className="flex items-center gap-1.5 font-mono text-sm text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 transition-all cursor-pointer"
+                      title="Go to Google SAIF Risk Entry"
+                    >
+                      <Gavel className="w-3.5 h-3.5" /> {test.owaspSaifRef}
+                    </button>
+                  )}
+                  {test.owaspMcpTop10Ref && (
+                    <button 
+                      onClick={() => onNavigateToOwasp(test.owaspMcpTop10Ref!)}
+                      className="flex items-center gap-1.5 font-mono text-sm text-cyan-400 bg-cyan-500/10 px-3 py-1.5 rounded border border-cyan-500/20 hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all cursor-pointer"
+                      title="Go to OWASP MCP Top 10 Entry"
+                    >
+                      <Network className="w-3.5 h-3.5" /> {test.owaspMcpTop10Ref}
                     </button>
                   )}
                   <span className="text-slate-400 text-sm font-medium border-l border-slate-800 pl-3">

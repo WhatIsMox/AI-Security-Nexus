@@ -8,7 +8,7 @@ interface OwaspTop10ViewProps {
   data: OwaspTop10Entry[];
   title: string;
   description: string;
-  colorTheme?: 'pink' | 'emerald' | 'orange' | 'blue';
+  colorTheme?: 'pink' | 'emerald' | 'orange' | 'blue' | 'cyan';
 }
 
 const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({ 
@@ -64,6 +64,13 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
       badgeActive: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
       badgeHover: 'group-hover:text-blue-400 group-hover:border-blue-500/30',
       iconActive: 'text-blue-400',
+    },
+    cyan: {
+      activeBorder: 'border-cyan-500/30',
+      activeShadow: 'shadow-[0_0_20px_rgba(6,182,212,0.12)]',
+      badgeActive: 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30',
+      badgeHover: 'group-hover:text-cyan-400 group-hover:border-cyan-500/30',
+      iconActive: 'text-cyan-400',
     }
   };
 
