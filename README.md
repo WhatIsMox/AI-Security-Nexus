@@ -46,14 +46,21 @@ This application is built upon the following authoritative sources:
 
 ### Installation
 1. Clone the repository.
-2. Install dependencies:
+2. Install dependencies (including devDependencies required by Vite):
    ```bash
-   npm install
+   rm -rf node_modules package-lock.json
+   npm install --include=dev
    ```
 3. Start the development server:
    ```bash
    npm run dev
    ```
+
+> If you encounter `sh: vite: command not found`, it means devDependencies were not installed correctly.  
+> Re-run the commands above, or verify Vite is present with:
+> ```bash
+> npx vite --version
+> ```
 
 ## 🌐 GitHub Pages Deployment
 
@@ -73,3 +80,35 @@ Two supported options:
 ---
 
 **License**: Content adapted from open-source OWASP and Google documentation. Provided for educational and security testing purposes.
+
+## 🧩 Troubleshooting
+
+### vite: command not found
+This project relies on Vite as a devDependency. If you see:
+
+sh: vite: command not found
+
+Run:
+
+```bash
+rm -rf node_modules package-lock.json
+npm install --include=dev
+npm run dev
+```
+
+Ensure you are using Node.js v18+ and that you did not install with `--omit=dev` or `--production`.
+
+### Using other package managers
+If you prefer yarn or pnpm:
+
+```bash
+yarn install
+yarn dev
+```
+
+or
+
+```bash
+pnpm install
+pnpm dev
+```
