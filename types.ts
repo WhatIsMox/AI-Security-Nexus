@@ -21,8 +21,9 @@ export interface SecurityTool {
   name: string;
   description: string;
   url: string;
-  cost: 'Free' | '€' | '€€' | '€€€' | '€€€€';
+  cost: 'Free' | 'Free+Paid' | 'Paid' | '€' | '€€' | '€€€' | '€€€€';
   type: 'Local' | 'Third-party';
+  category?: 'Offensive' | 'Defensive' | 'Both';
 }
 
 export interface SuggestedTool {

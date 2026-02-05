@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { OwaspTop10Entry } from '../types';
 import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock } from 'lucide-react';
+import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
 
 interface OwaspTop10ViewProps {
   initialExpandedId?: string | null;
@@ -19,6 +20,8 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   colorTheme = 'pink' 
 }) => {
   const [expandedId, setExpandedId] = useState<string | null>(initialExpandedId || null);
+  const [toolFilters, setToolFilters] = useState<Record<string, { category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>>({});
+  const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (initialExpandedId) {
@@ -34,6 +37,14 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
+  };
+
+  const getToolFilter = (id: string) => toolFilters[id] || { category: 'all', pricing: 'all' };
+  const toggleTools = (id: string) => {
+    setExpandedTools(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+  const setToolFilter = (id: string, value: Partial<{ category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>) => {
+    setToolFilters(prev => ({ ...prev, [id]: { ...getToolFilter(id), ...value } }));
   };
 
   const theme = {
@@ -186,14 +197,106 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                     </div>
 
                     {/* Best Tools Section - Now above Reference Links */}
-                    {entry.suggestedTools && entry.suggestedTools.length > 0 && (
+                    {(() => {
+                      const mappedTools = TOOLS_BY_THREAT_ID[entry.id] || [];
+                      const mergedTools = mergeTools(mappedTools, entry.suggestedTools || []);
+                      if (mergedTools.length === 0) return null;
+                      const filter = getToolFilter(entry.id);
+                      const isCostFree = (cost: string) => cost === 'Free' || cost === 'Free+Paid';
+                      const isCostPaid = (cost: string) => cost === 'Paid' || cost === 'Free+Paid' || cost.includes('€');
+                      const freeCount = mergedTools.filter(t => isCostFree(t.cost)).length;
+                      const paidCount = mergedTools.filter(t => isCostPaid(t.cost)).length;
+                      const filteredTools = mergedTools.filter(tool => {
+                        const categoryValue = tool.category || 'Defensive';
+                        const categoryOk = filter.category === 'all'
+                          ? true
+                          : filter.category === 'defensive'
+                            ? categoryValue === 'Defensive' || categoryValue === 'Both'
+                            : categoryValue === 'Offensive' || categoryValue === 'Both';
+                        const pricingOk = filter.pricing === 'all'
+                          ? true
+                          : filter.pricing === 'free'
+                            ? isCostFree(tool.cost)
+                            : isCostPaid(tool.cost);
+                        return categoryOk && pricingOk;
+                      });
+                      const isExpanded = !!expandedTools[entry.id];
+                      const visibleTools = isExpanded ? filteredTools : filteredTools.slice(0, 4);
+                      return (
                       <div className="pt-6 border-t border-slate-800">
                         <h4 className="flex items-center gap-2 text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4">
                           <Wrench className="w-4 h-4" />
                           Recommended Security Tools
                         </h4>
-                        <div className="grid gap-3">
-                          {entry.suggestedTools.map((tool, idx) => (
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <button
+                            onClick={() => setToolFilter(entry.id, { category: 'all' })}
+                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
+                              filter.category === 'all'
+                                ? 'bg-slate-800 text-white border-slate-700'
+                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
+                            }`}
+                          >
+                            All ({mergedTools.length})
+                          </button>
+                          <button
+                            onClick={() => setToolFilter(entry.id, { category: 'defensive' })}
+                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
+                              filter.category === 'defensive'
+                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-emerald-300 hover:border-emerald-500/30'
+                            }`}
+                          >
+                            Defensive
+                          </button>
+                          <button
+                            onClick={() => setToolFilter(entry.id, { category: 'offensive' })}
+                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
+                              filter.category === 'offensive'
+                                ? 'bg-rose-500/15 text-rose-300 border-rose-500/30'
+                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-rose-300 hover:border-rose-500/30'
+                            }`}
+                          >
+                            Offensive
+                          </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <button
+                            onClick={() => setToolFilter(entry.id, { pricing: 'all' })}
+                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
+                              filter.pricing === 'all'
+                                ? 'bg-slate-800 text-white border-slate-700'
+                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
+                            }`}
+                          >
+                            All Pricing ({mergedTools.length})
+                          </button>
+                          <button
+                            onClick={() => setToolFilter(entry.id, { pricing: 'free' })}
+                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
+                              filter.pricing === 'free'
+                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-emerald-300 hover:border-emerald-500/30'
+                            }`}
+                          >
+                            Free ({freeCount})
+                          </button>
+                          <button
+                            onClick={() => setToolFilter(entry.id, { pricing: 'paid' })}
+                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
+                              filter.pricing === 'paid'
+                                ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-amber-300 hover:border-amber-500/30'
+                            }`}
+                          >
+                            Paid ({paidCount})
+                          </button>
+                        </div>
+                        <div
+                          className={`grid gap-3 pr-1 ${isExpanded ? 'max-h-[520px] overflow-y-auto' : ''}`}
+                          style={{ scrollbarGutter: 'stable' }}
+                        >
+                          {visibleTools.map((tool, idx) => (
                             <div key={idx} className="bg-slate-950 border border-slate-800 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all">
                               <div className="flex justify-between items-start mb-2">
                                 <a 
@@ -205,7 +308,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                                   {tool.name}
                                   <ExternalLink className="w-3 h-3 opacity-0 group-hover/tool:opacity-100 transition-opacity" />
                                 </a>
-                                <div className="flex gap-1.5">
+                                <div className="flex gap-1.5 flex-wrap justify-end">
                                   <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 ${
                                     tool.type === 'Local' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                                   }`}>
@@ -215,6 +318,15 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                                   <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-900 text-slate-400 border border-slate-800 font-mono">
                                     {tool.cost}
                                   </span>
+                                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                                    (tool.category || 'Defensive') === 'Offensive'
+                                      ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
+                                      : (tool.category || 'Defensive') === 'Both'
+                                        ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                                        : 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
+                                  }`}>
+                                    {tool.category || 'Defensive'}
+                                  </span>
                                 </div>
                               </div>
                               <p className="text-xs text-slate-400 leading-relaxed">
@@ -223,8 +335,17 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                             </div>
                           ))}
                         </div>
+                        {filteredTools.length > 4 && (
+                          <button
+                            onClick={() => toggleTools(entry.id)}
+                            className="mt-3 text-[10px] font-bold uppercase tracking-wider text-cyan-400 hover:text-cyan-300"
+                          >
+                            {isExpanded ? 'Show less' : `Show all (${filteredTools.length})`}
+                          </button>
+                        )}
                       </div>
-                    )}
+                      );
+                    })()}
 
                     {entry.references.length > 0 && (
                       <div className="pt-6 border-t border-slate-800">
