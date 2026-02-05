@@ -20,7 +20,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Traffic Sign Evasion", description: "An attacker applies a few transparent stickers to a 'Stop' sign, causing a self-driving car's AI to see it as a 'Speed Limit 60' sign." },
-        { title: "IDS Payload Obfuscation", description: "An attacker crafts network packets with slightly modified headers to evade detection by an ML-based firewall." }
+        { title: "IDS Payload Obfuscation", description: "An attacker crafts network packets with slightly modified headers to evade detection by an ML-based firewall." },
+        { title: "Adversarial Image Noise", description: "Tiny, imperceptible perturbations cause a model to misclassify a benign object as safe." },
+        { title: "Physical Patch Attack", description: "A printed adversarial patch on clothing causes a surveillance model to miss a person." },
+        { title: "Feature Injection", description: "A fraudster tweaks input fields to push the score below a blocking threshold." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML01", url: "https://mltop10.org/" }
@@ -48,7 +51,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Spam Classifier Poisoning", description: "Attacker injects maliciously labeled spam emails into the training set, eventually causing the model to let all phishing emails through." },
-        { title: "Biometric Backdoor", description: "Attacker poisons a facial recognition dataset so that a specific, rare physical accessory always grants 'Admin' access." }
+        { title: "Biometric Backdoor", description: "Attacker poisons a facial recognition dataset so that a specific, rare physical accessory always grants 'Admin' access." },
+        { title: "Crowdsourced Label Poisoning", description: "Malicious annotators flip labels in a shared labeling platform to corrupt the dataset." },
+        { title: "Backdoor Trigger Pattern", description: "A small trigger pattern causes the model to always output a target class." },
+        { title: "Label Pipeline Compromise", description: "An attacker alters labels during ETL, degrading model integrity." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML02", url: "https://mltop10.org/" }
@@ -76,7 +82,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Face Recognition Reversal", description: "An attacker queries a facial verification model repeatedly to reconstruct a blurred image of a person in the training set." },
-        { title: "Medical Record Inference", description: "An attacker uses a disease prediction model to infer if a specific individual has a condition by checking the model's confidence variance." }
+        { title: "Medical Record Inference", description: "An attacker uses a disease prediction model to infer if a specific individual has a condition by checking the model's confidence variance." },
+        { title: "Embedding Inversion", description: "Attackers invert user embeddings to reconstruct sensitive text from model outputs." },
+        { title: "API Inversion at Scale", description: "High-volume queries allow reconstruction of training examples from the model." },
+        { title: "Attribute Reconstruction", description: "Outputs are used to infer protected attributes like age or location." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML03", url: "https://mltop10.org/" }
@@ -103,7 +112,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Financial Data Leak", description: "An attacker determines if a specific person's bankruptcy record was used to train a credit model, inferring their past financial hardship." },
-        { title: "Health Status Inference", description: "Determining if a person participated in a clinical trial for a specific disease by probing the model's 'memorization' of their data." }
+        { title: "Health Status Inference", description: "Determining if a person participated in a clinical trial for a specific disease by probing the model's 'memorization' of their data." },
+        { title: "Confidence Threshold Attack", description: "Attackers use output confidence to guess whether a record was in training." },
+        { title: "Shadow Model Probing", description: "Adversaries train shadow models to improve membership inference accuracy." },
+        { title: "Timing Side-Channel", description: "Response latency differences reveal whether inputs were seen in training." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML04", url: "https://mltop10.org/" }
@@ -131,7 +143,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Surrogate Model Extraction", description: "A competitor queries a high-value pricing model 1 million times to train a local model that replicates its logic for free." },
-        { title: "Registry Misconfiguration", description: "An attacker downloads a proprietary multi-billion parameter model from an accidentally public S3 bucket." }
+        { title: "Registry Misconfiguration", description: "An attacker downloads a proprietary multi-billion parameter model from an accidentally public S3 bucket." },
+        { title: "Model Distillation Theft", description: "Outputs are used to train a cheaper clone with similar behavior." },
+        { title: "Query Harvesting", description: "Large-scale probing is used to approximate the decision surface." },
+        { title: "Weight Exfiltration", description: "Weights are stolen from a misconfigured storage bucket or backup." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML05", url: "https://mltop10.org/" }
@@ -158,7 +173,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Pickle Exploit", description: "An attacker uploads a poisoned '.pkl' model file to a hub. When a developer loads it, the file executes code that opens a reverse shell." },
-        { title: "Typosquatting Hubs", description: "Attacker publishes a model called 'resnet50-v2-official' that contains malicious code hidden in the training metadata loader." }
+        { title: "Typosquatting Hubs", description: "Attacker publishes a model called 'resnet50-v2-official' that contains malicious code hidden in the training metadata loader." },
+        { title: "Dependency Confusion", description: "Training code pulls a malicious ML package with a matching name from a public registry." },
+        { title: "CI Artifact Tampering", description: "Model artifacts are replaced during build or deployment." },
+        { title: "Compromised Container Image", description: "A serving image is tampered with to exfiltrate prompts and outputs." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML06", url: "https://mltop10.org/" }
@@ -186,7 +204,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Poisoned Face Base", description: "An attacker publishes a generic 'Face Embedding' model with a backdoor for a specific pair of glasses. All apps using this model for security now have the same backdoor." },
-        { title: "Malicious NLP Base", description: "A base LLM is poisoned to ignore safety rules when it sees a specific UUID, which carries over to a corporate helpdesk bot." }
+        { title: "Malicious NLP Base", description: "A base LLM is poisoned to ignore safety rules when it sees a specific UUID, which carries over to a corporate helpdesk bot." },
+        { title: "Trojaned Foundation Model", description: "A base model includes a trigger that survives fine-tuning and activates on specific inputs." },
+        { title: "Poisoned Fine-Tune Data", description: "Attackers contribute data that embeds a targeted backdoor into the adapted model." },
+        { title: "Malicious Adapter Injection", description: "A LoRA or adapter introduces unsafe behaviors when loaded." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML07", url: "https://mltop10.org/" }
@@ -213,7 +234,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Ad-Tech Skewing", description: "An attacker uses a botnet to provide fake positive feedback on malicious ads, skewing the recommendation engine to prioritize them." },
-        { title: "Fraud Filter Drift", description: "Systematic submission of slightly borderline transactions to 'train' the model into thinking malicious patterns are normal." }
+        { title: "Fraud Filter Drift", description: "Systematic submission of slightly borderline transactions to 'train' the model into thinking malicious patterns are normal." },
+        { title: "Coordinated Input Drift", description: "Attackers flood the system with skewed inputs to shift model behavior." },
+        { title: "Feedback Loop Bias", description: "User feedback is gamed to bias retraining outcomes over time." },
+        { title: "Seasonal Drift Abuse", description: "Adversaries exploit expected drift windows to slip anomalies through." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML08", url: "https://mltop10.org/" }
@@ -240,7 +264,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Medical diagnosis swap", description: "An attacker intercepts a medical model's diagnosis of 'Malignant' and changes it to 'Benign' in the patient's portal." },
-        { title: "Credit Score Manipulation", description: "Attacker intercepts a JSON response from a risk model and increments the 'credit_limit' value." }
+        { title: "Credit Score Manipulation", description: "Attacker intercepts a JSON response from a risk model and increments the 'credit_limit' value." },
+        { title: "Man-in-the-Middle Tampering", description: "Outputs are modified in transit to change decisions." },
+        { title: "Post-Processing Manipulation", description: "A downstream service alters predictions before they reach users." },
+        { title: "Log Erasure", description: "Attackers erase or rewrite logs to conceal output changes." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML09", url: "https://mltop10.org/" }
@@ -267,7 +294,10 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       ],
       attackScenarios: [
         { title: "Banking Fraud", description: "An attacker with write access to a bank's server modifies 2 bits in a character recognition model so that a '5' is always read as a '2' on checks." },
-        { title: "Weight Shifting", description: "Subtle modification of bias terms to ensure a specific demographic is always rejected by an automated loan application." }
+        { title: "Weight Shifting", description: "Subtle modification of bias terms to ensure a specific demographic is always rejected by an automated loan application." },
+        { title: "Weight Update Injection", description: "A compromised training node injects a poisoned checkpoint." },
+        { title: "Trigger Token Backdoor", description: "A specific token consistently forces an unsafe output after poisoning." },
+        { title: "Federated Poisoning at Scale", description: "Coordinated clients send crafted updates to corrupt the global model." }
       ],
       references: [
         { title: "OWASP ML Security Top 10 - ML10", url: "https://mltop10.org/" }

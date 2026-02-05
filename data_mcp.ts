@@ -20,7 +20,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Prompt-Injected Secret Dump", description: "An attacker hides instructions in retrieved context that cause the agent to print cached API keys in its next response." },
-      { title: "Token Reuse Lateral Move", description: "A long-lived token embedded in a tool config is stolen and reused to access unrelated MCP servers and data sources." }
+      { title: "Token Reuse Lateral Move", description: "A long-lived token embedded in a tool config is stolen and reused to access unrelated MCP servers and data sources." },
+      { title: "Log Scrape Leak", description: "Debug logs capture bearer tokens and are later queried by the model, leaking secrets." },
+      { title: "Hard-Coded Tool Secret", description: "A tool ships with embedded credentials that are exposed through prompts or logs." },
+      { title: "Memory Cache Exposure", description: "Secrets stored in model memory are surfaced in unrelated conversations." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -49,7 +52,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Scope Drift Exploit", description: "A token issued for read-only access silently accumulates write permissions over time, enabling repository modification by an attacker." },
-      { title: "Agent Chain Escalation", description: "An agent chains two tools—each safe alone—to obtain admin-level access that neither tool should allow." }
+      { title: "Agent Chain Escalation", description: "An agent chains two tools—each safe alone—to obtain admin-level access that neither tool should allow." },
+      { title: "Temporary Scope Becomes Permanent", description: "Short-lived elevated access is never revoked and becomes the default scope." },
+      { title: "Wildcard Permission Abuse", description: "An overly broad scope grants access to unrelated resources." },
+      { title: "Expired Token Still Valid", description: "A supposedly expired token remains accepted by an MCP server." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -77,7 +83,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Rug-Pull Plugin Update", description: "A trusted MCP tool updates and begins injecting hidden instructions that exfiltrate data on every call." },
-      { title: "Schema Trap", description: "A poisoned tool schema mislabels parameters, causing the model to send secrets to a public endpoint." }
+      { title: "Schema Trap", description: "A poisoned tool schema mislabels parameters, causing the model to send secrets to a public endpoint." },
+      { title: "Tool Shadowing", description: "A lookalike tool intercepts requests and alters responses." },
+      { title: "Output Poisoning", description: "A compromised tool returns malicious content that overrides system intent." },
+      { title: "Schema Version Swap", description: "An attacker swaps a schema version to change parameter meanings." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -106,7 +115,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Dependency Confusion", description: "An attacker publishes a higher-version package to a public registry that gets pulled into the MCP build." },
-      { title: "Compromised Connector", description: "A third-party MCP connector update introduces a hidden remote shell during initialization." }
+      { title: "Compromised Connector", description: "A third-party MCP connector update introduces a hidden remote shell during initialization." },
+      { title: "Registry Hijack", description: "A tool registry is compromised and serves tampered packages to agents." },
+      { title: "Malicious Container Image", description: "A poisoned MCP runtime image exfiltrates prompts and tokens." },
+      { title: "Build Pipeline Tampering", description: "Artifacts are modified in CI before being deployed to MCP servers." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -134,7 +146,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Shell Injection", description: "A tool uses `cmd = \"grep \" + user_input` and executes it, enabling `; rm -rf /` injection." },
-      { title: "Autonomous Script Run", description: "An agent retrieves a script from a URL and runs it without verification, installing a backdoor." }
+      { title: "Autonomous Script Run", description: "An agent retrieves a script from a URL and runs it without verification, installing a backdoor." },
+      { title: "Template Injection", description: "Untrusted input is used to build shell templates, enabling command execution." },
+      { title: "Parameter Smuggling", description: "An attacker injects extra flags into tool parameters to bypass allowlists." },
+      { title: "Eval-Style Execution", description: "Model output is passed into an eval-like runtime and executes arbitrary code." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -162,7 +177,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Poisoned PDF Retrieval", description: "A model retrieves a PDF with hidden instructions that tell it to email sensitive context to an attacker." },
-      { title: "OCR Injection", description: "An image contains microtext that instructs the model to disable safety checks before acting." }
+      { title: "OCR Injection", description: "An image contains microtext that instructs the model to disable safety checks before acting." },
+      { title: "Email Thread Injection", description: "A malicious email reply includes instructions that the agent treats as authoritative." },
+      { title: "Log File Injection", description: "Poisoned logs are retrieved and interpreted as instructions for tool calls." },
+      { title: "Contextual Payload in Notes", description: "Hidden instructions in meeting notes cause the agent to exfiltrate data." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -190,7 +208,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Unauthenticated Tool Call", description: "A public-facing MCP endpoint accepts unauthenticated requests and performs privileged file access." },
-      { title: "Token Replay", description: "An attacker replays a captured bearer token to impersonate a trusted agent." }
+      { title: "Token Replay", description: "An attacker replays a captured bearer token to impersonate a trusted agent." },
+      { title: "Weak API Key Reuse", description: "A shared API key is reused across tools, allowing lateral access." },
+      { title: "Missing Per-Tool Auth", description: "Tools assume upstream authentication and skip their own checks." },
+      { title: "Cross-Tenant Access", description: "Authorization gaps allow one tenant to access another tenant's data." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -218,7 +239,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Silent Data Exfiltration", description: "An attacker repeatedly pulls sensitive documents through a tool without triggering any alerts." },
-      { title: "Undetected Policy Bypass", description: "An agent performs privileged actions with no traceability, delaying incident response." }
+      { title: "Undetected Policy Bypass", description: "An agent performs privileged actions with no traceability, delaying incident response." },
+      { title: "Missing Tool Call Trace", description: "Critical tool calls are not logged, preventing forensic reconstruction." },
+      { title: "Log Tampering", description: "Attackers modify or delete logs to hide their actions." },
+      { title: "No Alerting on Anomalies", description: "High-risk actions occur without any automated notifications." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -246,7 +270,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Shadow Lab Server", description: "A developer spins up an MCP server with default settings; an attacker discovers it and extracts test data." },
-      { title: "Rogue Integration", description: "A team connects a personal MCP instance to production tools, leaking customer data." }
+      { title: "Rogue Integration", description: "A team connects a personal MCP instance to production tools, leaking customer data." },
+      { title: "Default Credentials", description: "A shadow MCP server ships with default passwords that are never changed." },
+      { title: "Public IP Exposure", description: "An internal MCP instance is accidentally exposed on a public IP." },
+      { title: "Unpatched Dev Instance", description: "A dev MCP server misses security updates and is compromised." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }
@@ -274,7 +301,10 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Cross-Session Leakage", description: "A later user receives sensitive notes stored in a shared context window from a prior session." },
-      { title: "Over-Shared Tool Context", description: "An agent passes full conversation logs to a third-party tool that only required a short summary." }
+      { title: "Over-Shared Tool Context", description: "An agent passes full conversation logs to a third-party tool that only required a short summary." },
+      { title: "Cross-Tenant Memory", description: "Shared context buffers leak information between tenants." },
+      { title: "Overly Persistent Context", description: "Context persists beyond the task scope and resurfaces later." },
+      { title: "Context Mixing", description: "Multiple tasks share context, causing sensitive data to be revealed to the wrong user." }
     ],
     references: [
       { title: "OWASP MCP Top 10 (v0.1)", url: "https://owasp.org/www-project-mcp-top-10/" }

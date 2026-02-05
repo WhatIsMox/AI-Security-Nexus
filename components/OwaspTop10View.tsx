@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { OwaspTop10Entry } from '../types';
 import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock } from 'lucide-react';
 import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
+import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
 
 interface OwaspTop10ViewProps {
   initialExpandedId?: string | null;
@@ -21,7 +22,6 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 }) => {
   const [expandedId, setExpandedId] = useState<string | null>(initialExpandedId || null);
   const [toolFilters, setToolFilters] = useState<Record<string, { category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>>({});
-  const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (initialExpandedId) {
@@ -40,9 +40,6 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   };
 
   const getToolFilter = (id: string) => toolFilters[id] || { category: 'all', pricing: 'all' };
-  const toggleTools = (id: string) => {
-    setExpandedTools(prev => ({ ...prev, [id]: !prev[id] }));
-  };
   const setToolFilter = (id: string, value: Partial<{ category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>) => {
     setToolFilters(prev => ({ ...prev, [id]: { ...getToolFilter(id), ...value } }));
   };
@@ -168,16 +165,51 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                           <Target className="w-4 h-4 text-red-400" />
                           Attack Scenarios
                         </h4>
-                        <div className="space-y-3">
+                        <div
+                          className={`space-y-3 ${entry.attackScenarios.length > 4 ? 'max-h-[520px] overflow-y-auto pr-1' : ''}`}
+                          style={{ scrollbarGutter: 'stable' }}
+                        >
                           {entry.attackScenarios.map((scenario, idx) => (
-                            <div key={idx} className="bg-red-500/5 p-4 rounded-lg border border-red-500/10">
+                            <div key={idx} className="bg-red-500/5 p-4 rounded-lg border border-red-500/10 min-h-[120px]">
                               <div className="font-bold text-red-400 text-sm mb-1">{scenario.title}</div>
-                              <p className="text-slate-400 text-sm">{scenario.description}</p>
+                              <p className="text-slate-400 text-sm line-clamp-3">{scenario.description}</p>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
+
+                    {(() => {
+                      const incidentLinks = INCIDENTS_BY_THREAT_ID[entry.id] || [];
+                      if (incidentLinks.length === 0) return null;
+                      return (
+                        <div>
+                          <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
+                            <ExternalLink className="w-4 h-4 text-blue-400" />
+                            Real-World Incidents
+                          </h4>
+                          <div
+                            className={`space-y-2 ${incidentLinks.length > 4 ? 'max-h-[240px] overflow-y-auto pr-1' : ''}`}
+                            style={{ scrollbarGutter: 'stable' }}
+                          >
+                            {incidentLinks.map((incident, idx) => (
+                              <a
+                                key={idx}
+                                href={incident.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-start gap-2 bg-slate-950/60 p-3 rounded-lg border border-slate-800/60 hover:border-blue-500/30 transition-colors group"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0" />
+                                <span className="text-sm text-slate-300 group-hover:text-blue-300 line-clamp-2">
+                                  {incident.title}
+                                </span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   <div className="space-y-6">
@@ -220,8 +252,6 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                             : isCostPaid(tool.cost);
                         return categoryOk && pricingOk;
                       });
-                      const isExpanded = !!expandedTools[entry.id];
-                      const visibleTools = isExpanded ? filteredTools : filteredTools.slice(0, 4);
                       return (
                       <div className="pt-6 border-t border-slate-800">
                         <h4 className="flex items-center gap-2 text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4">
@@ -293,10 +323,10 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                           </button>
                         </div>
                         <div
-                          className={`grid gap-3 pr-1 ${isExpanded ? 'max-h-[520px] overflow-y-auto' : ''}`}
+                          className="grid gap-3 pr-1 max-h-[520px] overflow-y-auto"
                           style={{ scrollbarGutter: 'stable' }}
                         >
-                          {visibleTools.map((tool, idx) => (
+                          {filteredTools.map((tool, idx) => (
                             <div key={idx} className="bg-slate-950 border border-slate-800 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all">
                               <div className="flex justify-between items-start mb-2">
                                 <a 
@@ -322,7 +352,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                                     (tool.category || 'Defensive') === 'Offensive'
                                       ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
                                       : (tool.category || 'Defensive') === 'Both'
-                                        ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                                        ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30'
                                         : 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
                                   }`}>
                                     {tool.category || 'Defensive'}
@@ -335,14 +365,6 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                             </div>
                           ))}
                         </div>
-                        {filteredTools.length > 4 && (
-                          <button
-                            onClick={() => toggleTools(entry.id)}
-                            className="mt-3 text-[10px] font-bold uppercase tracking-wider text-cyan-400 hover:text-cyan-300"
-                          >
-                            {isExpanded ? 'Show less' : `Show all (${filteredTools.length})`}
-                          </button>
-                        )}
                       </div>
                       );
                     })()}

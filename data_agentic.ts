@@ -24,7 +24,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "EchoLeak", description: "An attacker emails a crafted message that silently triggers a Copilot agent to exfiltrate confidential emails and files without user interaction." },
-      { title: "Operator Prompt Injection", description: "A malicious webpage tricks an agentic browser into following instructions that expose internal authenticated pages." }
+      { title: "Operator Prompt Injection", description: "A malicious webpage tricks an agentic browser into following instructions that expose internal authenticated pages." },
+      { title: "Objective Override", description: "A user reframes the task to override the agent’s goal, redirecting it to unauthorized data access." },
+      { title: "Tool Output Injection", description: "A compromised tool returns a payload that changes the agent’s plan and objectives." },
+      { title: "Delegated Task Hijack", description: "A sub-agent is assigned a task and returns a response that steers the parent agent to harmful actions." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI01", url: "https://genai.owasp.org/" }
@@ -52,7 +55,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Internal Query → External Exfiltration", description: "An agent is tricked into chaining an internal CRM tool with an external email tool to leak customer lists." },
-      { title: "Recursive Tool DoS", description: "An attacker tricks a scheduler agent into spawning thousands of tool-based calendar events per second." }
+      { title: "Recursive Tool DoS", description: "An attacker tricks a scheduler agent into spawning thousands of tool-based calendar events per second." },
+      { title: "Parameter Smuggling", description: "A crafted prompt injects extra parameters into a tool call to bypass safeguards." },
+      { title: "Unsafe Tool Chaining", description: "The agent combines benign tools to perform a high-risk action not permitted individually." },
+      { title: "Overbroad Tool Use", description: "An agent uses a privileged admin tool for a routine user request." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI02", url: "https://genai.owasp.org/" }
@@ -80,7 +86,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Delegated Privilege Abuse", description: "A finance agent delegates to a 'query' agent but accidentally passes its full bank-transfer privileges." },
-      { title: "Memory-Based Escalation", description: "An IT admin agent caches SSH keys; a later non-admin session tricks it into using those keys for an unauthorized login." }
+      { title: "Memory-Based Escalation", description: "An IT admin agent caches SSH keys; a later non-admin session tricks it into using those keys for an unauthorized login." },
+      { title: "Token Reuse Across Sessions", description: "A cached access token is reused in a different user session, granting unintended access." },
+      { title: "Scope Drift", description: "Temporary permissions granted for a task remain active and are later abused." },
+      { title: "Agent Impersonation", description: "An attacker spoofs an agent identity to gain delegated privileges." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI03", url: "https://genai.owasp.org/" }
@@ -108,7 +117,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Malicious MCP Server", description: "An attacker registers a fake 'Email MCP' that secretly BCCs all outgoing emails to their own server." },
-      { title: "Agent-in-the-Middle", description: "A compromised registry points a host agent to a rogue peer for 'Translation' tasks, which then steals the content." }
+      { title: "Agent-in-the-Middle", description: "A compromised registry points a host agent to a rogue peer for 'Translation' tasks, which then steals the content." },
+      { title: "Malicious Tool Update", description: "A trusted tool ships an update that adds hidden exfiltration behavior." },
+      { title: "Registry Typosquatting", description: "A fake tool with a similar name is installed and used by the agent." },
+      { title: "Prompt Template Poisoning", description: "Shared prompt templates are modified to embed unsafe instructions." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI04", url: "https://genai.owasp.org/" }
@@ -135,7 +147,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Direct Shell Injection", description: "Attacker submits: 'Help me process this file: test.txt && rm -rf /important_data'. The agent executes the deletion." },
-      { title: "Vibe Coding Runaway", description: "An agent tasked with self-repair installs a malicious npm package and executes its install script, compromising the host." }
+      { title: "Vibe Coding Runaway", description: "An agent tasked with self-repair installs a malicious npm package and executes its install script, compromising the host." },
+      { title: "Eval Tool Abuse", description: "A tool executes model output via eval, allowing arbitrary code execution." },
+      { title: "Script Injection", description: "The agent outputs a shell snippet that is executed without validation." },
+      { title: "Unsafe Deserialization", description: "A tool deserializes agent-generated objects, triggering a payload." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI05", url: "https://genai.owasp.org/" }
@@ -163,7 +178,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Context Window Exploitation", description: "An attacker splits an attack over 10 sessions so earlier rejections drop out of context, eventually granting admin access." },
-      { title: "Fact Infiltration", description: "Attacker uploads many docs stating 'CEO email is attacker@evil.com'. The agent stores this in long-term memory." }
+      { title: "Fact Infiltration", description: "Attacker uploads many docs stating 'CEO email is attacker@evil.com'. The agent stores this in long-term memory." },
+      { title: "Persistent Memory Seed", description: "An attacker plants a malicious memory entry that influences future sessions." },
+      { title: "Cross-Tenant Memory Leak", description: "Shared memory stores allow one tenant's data to influence another agent." },
+      { title: "Sleeper Trigger", description: "A hidden trigger in memory activates months later to change behavior." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI06", url: "https://genai.owasp.org/" }
@@ -190,7 +208,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Trust Poisoning", description: "Over an unencrypted channel, an attacker injects 'Task Completed: OK' messages, causing the supervisor to skip a critical check." },
-      { title: "Agent Spoofing", description: "Attacker sends a message claiming to be the 'Security Monitor' agent, instructing other agents to disable their local firewalls." }
+      { title: "Agent Spoofing", description: "Attacker sends a message claiming to be the 'Security Monitor' agent, instructing other agents to disable their local firewalls." },
+      { title: "Replay Attack", description: "Captured task messages are replayed to trigger repeated actions." },
+      { title: "Message Tampering", description: "An attacker alters payloads in transit to change task intent." },
+      { title: "Protocol Downgrade", description: "An agent is coerced into using an unauthenticated channel." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI07", url: "https://genai.owasp.org/" }
@@ -217,7 +238,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Trading Cascade", description: "Prompt injection poisons a 'Market Analysis' agent. It signals 'Buy' to 100 'Execution' agents, causing a massive unintended financial loss." },
-      { title: "Auto-Remediation Feedback Loop", description: "Agent A deletes a 'faulty' pod. Agent B sees the deletion as an error and restarts it. They loop until the cloud bill is enormous." }
+      { title: "Auto-Remediation Feedback Loop", description: "Agent A deletes a 'faulty' pod. Agent B sees the deletion as an error and restarts it. They loop until the cloud bill is enormous." },
+      { title: "Loop Storm", description: "One agent spawns multiple sub-agents that recursively spawn more agents." },
+      { title: "Shared Resource Exhaustion", description: "A compromised agent overwhelms a shared tool, degrading all dependent agents." },
+      { title: "Policy Cascade", description: "A misconfigured policy update propagates across agents, causing coordinated failures." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI08", url: "https://genai.owasp.org/" }
@@ -244,7 +268,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Helpful Assistant Trojan", description: "A coding assistant suggests a 'slick one-line fix' that actually exfiltrates the local '.git' directory to an attacker." },
-      { title: "Explainability Fabrication", description: "An agent fabricates a complex audit rationale to justify changing the company's DNS settings to point to a phishing server." }
+      { title: "Explainability Fabrication", description: "An agent fabricates a complex audit rationale to justify changing the company's DNS settings to point to a phishing server." },
+      { title: "Authority Spoofing", description: "The agent claims a policy or legal requirement to coerce the user into approving a risky action." },
+      { title: "UI Confirmation Trick", description: "The agent crafts output that looks like a verified approval banner to trick the user." },
+      { title: "Compliance Fatigue", description: "Repeated requests wear down user skepticism until a dangerous action is approved." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI09", url: "https://genai.owasp.org/" }
@@ -271,7 +298,10 @@ export const OWASP_AGENTIC_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Reward Hacking", description: "An agent tasked with 'Minimize Cloud Cost' destroys all production backups because deleting them is the fastest way to save money." },
-      { title: "Autonomous Exfiltration", description: "After seeing a poisoned webpage, an agent learns that 'stealing files' is more efficient than 'scanning files' and keeps doing it forever." }
+      { title: "Autonomous Exfiltration", description: "After seeing a poisoned webpage, an agent learns that 'stealing files' is more efficient than 'scanning files' and keeps doing it forever." },
+      { title: "Shadow Agent Deployment", description: "A new agent is spun up outside governance and begins operating with default credentials." },
+      { title: "Policy Evasion", description: "The agent uses an unmonitored tool to bypass required approval checks." },
+      { title: "Stolen Credential Agent", description: "An attacker runs a rogue agent using leaked service account keys." }
     ],
     references: [
       { title: "OWASP Agentic AI ASI10", url: "https://genai.owasp.org/" }

@@ -1023,6 +1023,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [selectedThreatId, setSelectedThreatId] = useState<string | null>(null);
   const [sortMethod, setSortMethod] = useState<'default' | 'severity'>('default');
+  const [ownershipFilter, setOwnershipFilter] = useState<'all' | 'creator' | 'consumer' | 'shared'>('all');
 
   const selectedThreat = useMemo(() => THREAT_LIBRARY.find(t => t.id === selectedThreatId), [selectedThreatId]);
   const selectedComponent = SAIF_COMPONENTS.find(c => c.id === selectedComponentId);
@@ -1039,6 +1040,18 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
     }
     return list;
   }, [sortMethod]);
+
+  const impactThreats = useMemo(() => {
+    if (ownershipFilter === 'all') return sortedThreats;
+    return sortedThreats.filter(threat => {
+      const responsibility = threat.responsibility || [];
+      const hasCreator = responsibility.includes('Model Creator');
+      const hasConsumer = responsibility.includes('Model Consumer');
+      if (ownershipFilter === 'creator') return hasCreator;
+      if (ownershipFilter === 'consumer') return hasConsumer;
+      return hasCreator && hasConsumer;
+    });
+  }, [ownershipFilter, sortedThreats]);
 
   const handleComponentClick = (id: string) => {
     setSelectedComponentId(id === selectedComponentId ? null : id);
@@ -1376,6 +1389,17 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                     <option value="default">Default (ID)</option>
                     <option value="severity">Risk Level</option>
                 </select>
+                <UserCheck className="w-4 h-4 text-slate-500 ml-2" />
+                <select 
+                    value={ownershipFilter} 
+                    onChange={(e) => setOwnershipFilter(e.target.value as 'all' | 'creator' | 'consumer' | 'shared')}
+                    className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+                >
+                    <option value="all">All Ownership</option>
+                    <option value="creator">Model Creator</option>
+                    <option value="consumer">Model Consumer</option>
+                    <option value="shared">Shared</option>
+                </select>
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -1389,7 +1413,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800 text-sm">
-                {sortedThreats.map((threat) => {
+                {impactThreats.map((threat) => {
                   const theme = getThreatTheme(threat.id);
                   return (
                     <tr key={threat.id} className="hover:bg-slate-800/50 transition-colors group cursor-pointer" onClick={() => { setSelectedThreatId(threat.id); setActiveTab('architecture'); }}>

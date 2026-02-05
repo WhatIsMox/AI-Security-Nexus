@@ -20,7 +20,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Sentiment Analysis Poisoning", description: "Attacker injects thousands of reviews where specific positive keywords are paired with negative sentiments to bias a brand's score." },
-      { title: "IDS Threshold Shift", description: "Attacker slowly injects malicious traffic labeled as 'safe' to gradually shift the AI's detection boundary until real attacks pass through." }
+      { title: "IDS Threshold Shift", description: "Attacker slowly injects malicious traffic labeled as 'safe' to gradually shift the AI's detection boundary until real attacks pass through." },
+      { title: "Crowdsourced Label Poisoning", description: "Malicious annotators flip labels in a shared labeling platform to corrupt the dataset." },
+      { title: "Backdoor Trigger Pattern", description: "A small trigger pattern causes the model to always output a target class." },
+      { title: "RAG Corpus Poisoning", description: "Poisoned documents are inserted into retrieval data to bias outputs." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -46,7 +49,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Proprietary Code Leakage", description: "An internal model is trained on a developer's private codebase without consent, causing it to reveal snippet of private code to other users." },
-      { title: "Medical Record Ingestion", description: "A health bot is fine-tuned on un-anonymized doctor notes, leading to the bot repeating patient names and diagnoses." }
+      { title: "Medical Record Ingestion", description: "A health bot is fine-tuned on un-anonymized doctor notes, leading to the bot repeating patient names and diagnoses." },
+      { title: "Unlicensed Web Scrape", description: "A dataset built from scraped content violates licenses and exposes proprietary materials." },
+      { title: "PII in Logs", description: "Application logs containing user identifiers are ingested into training data." },
+      { title: "Third-Party Dataset Misuse", description: "A vendor dataset includes restricted data that is used without consent." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -71,7 +77,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Weights Manipulation", description: "An attacker with access to a storage bucket modifies a few bits of a weight file to ensure a specific facial accessory always grants access." },
-      { title: "Library Hijack", description: "An attacker replaces the 'torch' library in the serving image with a version that intercepts and exfiltrates every user prompt." }
+      { title: "Library Hijack", description: "An attacker replaces the 'torch' library in the serving image with a version that intercepts and exfiltrates every user prompt." },
+      { title: "CI Artifact Swap", description: "A training artifact is replaced during CI, embedding a backdoor." },
+      { title: "Registry Push Tampering", description: "An attacker uploads tampered weights to the model registry." },
+      { title: "Unsigned Model Load", description: "A serving system loads a model without verifying signatures or hashes." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -97,7 +106,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "PII Hoarding", description: "An AI support agent retains full chat transcripts including credit card numbers for 5 years despite a 30-day retention policy." },
-      { title: "Ghost Data Disclosure", description: "A model is fine-tuned on data that should have been deleted, causing it to 'memorize' and later reveal the deleted secrets." }
+      { title: "Ghost Data Disclosure", description: "A model is fine-tuned on data that should have been deleted, causing it to 'memorize' and later reveal the deleted secrets." },
+      { title: "Over-Collection", description: "The app collects additional fields beyond what the task requires." },
+      { title: "Indefinite Retention", description: "Session transcripts are stored indefinitely despite stated limits." },
+      { title: "Vendor Oversharing", description: "Full conversation logs are shared with third-party analytics unnecessarily." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -122,7 +134,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Bucket Misconfiguration", description: "An internal model repository is accidentally set to public, allowing an attacker to download the multi-billion parameter weights." },
-      { title: "CI/CD Leak", description: "An attacker compromises a Jenkins server and uses a script to upload the latest model checkpoint to an external server." }
+      { title: "CI/CD Leak", description: "An attacker compromises a Jenkins server and uses a script to upload the latest model checkpoint to an external server." },
+      { title: "Insider Copy", description: "An insider with access copies model weights to a personal device." },
+      { title: "Backup Snapshot Leak", description: "A storage snapshot containing weights is exposed through misconfigured backups." },
+      { title: "API Download Abuse", description: "An attacker uses undocumented APIs to download model artifacts." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -148,7 +163,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Container Hijack", description: "Attacker replaces a serving container with a version that intercepts all user prompts and logs them to an external server." },
-      { title: "API Proxy Injection", description: "Attacker compromises a load balancer and injects a script that subtly changes 'Fraud: False' to 'Fraud: True' for a competitor's requests." }
+      { title: "API Proxy Injection", description: "Attacker compromises a load balancer and injects a script that subtly changes 'Fraud: False' to 'Fraud: True' for a competitor's requests." },
+      { title: "Config Flip Disables Safeties", description: "A deployment config change turns off safety filters during rollout." },
+      { title: "Rollback to Vulnerable Version", description: "An attacker forces a rollback to a known-insecure serving build." },
+      { title: "Sidecar Prompt Logger", description: "A compromised sidecar container logs prompts and responses to an external endpoint." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -173,7 +191,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Token Exhaustion", description: "Attacker floods an LLM endpoint with recursive prompts designed to maximize internal reasoning loops and cost." },
-      { title: "High-Latency Queries", description: "Attacker submits complex images designed to take 10x longer to process than normal images, clogging the inference queue." }
+      { title: "High-Latency Queries", description: "Attacker submits complex images designed to take 10x longer to process than normal images, clogging the inference queue." },
+      { title: "Botnet Flood", description: "A distributed botnet overwhelms the inference API with concurrent requests." },
+      { title: "Batch Amplification", description: "Attackers send oversized batch requests to amplify compute load." },
+      { title: "Tool Loop Amplification", description: "Prompts trigger repeated tool calls that spike costs and latency." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -198,7 +219,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Surrogate Model Training", description: "An attacker queries a proprietary pricing model 1 million times to train a local model that replicates its logic for free." },
-      { title: "Feature Extraction", description: "Attacker probes a loan model to find exactly which keywords in a resume lead to higher approval ratings." }
+      { title: "Feature Extraction", description: "Attacker probes a loan model to find exactly which keywords in a resume lead to higher approval ratings." },
+      { title: "Confidence Probing", description: "An attacker uses confidence scores to infer internal decision boundaries." },
+      { title: "Architecture Fingerprinting", description: "Systematic queries reveal model type, capacity, or training patterns." },
+      { title: "Query Pattern Extraction", description: "Attackers identify which features influence outputs and replicate them." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -223,7 +247,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Vulnerable Retrieval Plugin", description: "An attacker exploits a path traversal vulnerability in a PDF-reading plugin used by an AI agent to read local system secrets." },
-      { title: "Shell Command Injection", description: "An agent with a 'Python REPL' tool is tricked into running `import os; os.system('ls')` by a clever user prompt." }
+      { title: "Shell Command Injection", description: "An agent with a 'Python REPL' tool is tricked into running `import os; os.system('ls')` by a clever user prompt." },
+      { title: "SSRF via Integration", description: "A tool allows attacker-controlled URLs to access internal metadata services." },
+      { title: "Dependency RCE", description: "A vulnerable plugin dependency allows remote code execution in the tool host." },
+      { title: "Webhook Injection", description: "An attacker forges webhook payloads to trigger unsafe tool actions." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -248,7 +275,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Goal Redirection", description: "User tricks a support bot into writing code for a malware script by framing it as a 'fictional cyber-thriller scenario'." },
-      { title: "Indirect Exfiltration", description: "Attacker places a hidden instruction on a webpage to send the summarized text to their server; the model obeys." }
+      { title: "Indirect Exfiltration", description: "Attacker places a hidden instruction on a webpage to send the summarized text to their server; the model obeys." },
+      { title: "Instruction in File", description: "A hidden prompt embedded in an uploaded document redirects the model's behavior." },
+      { title: "Tool-Call Override", description: "A prompt coerces the agent into calling a privileged tool outside intended scope." },
+      { title: "Email Thread Injection", description: "A crafted email reply contains instructions that the model treats as authoritative." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -274,7 +304,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Malware Filter Bypass", description: "An attacker adds a few bytes of 'junk data' to a virus file so an AI scanner classifies it as a benign document." },
-      { title: "ID Verification Spoof", description: "Attacker uses a printed mask with a subtle adversarial pattern to trick a biometric login system into seeing a different user." }
+      { title: "ID Verification Spoof", description: "Attacker uses a printed mask with a subtle adversarial pattern to trick a biometric login system into seeing a different user." },
+      { title: "Adversarial Patch", description: "A small sticker causes an object detector to miss or misclassify an item." },
+      { title: "Noise Injection", description: "Subtle input noise bypasses content moderation or malware detection." },
+      { title: "Obfuscated Malware", description: "Malware is slightly modified to evade ML-based classification." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -299,7 +332,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Credential Leak", description: "A user asks 'What are the environment variables for this server?' and the model outputs a list containing the DB password." },
-      { title: "PII Recall", description: "Attacker queries: 'Who lives at 123 Maple St?' and the model reveals the name and phone number from its training set." }
+      { title: "PII Recall", description: "Attacker queries: 'Who lives at 123 Maple St?' and the model reveals the name and phone number from its training set." },
+      { title: "Vector Store Leakage", description: "A prompt retrieves confidential documents from a RAG index and outputs them." },
+      { title: "Log Exposure", description: "Debug logs containing secrets are summarized and leaked in responses." },
+      { title: "Training Data Canary", description: "An attacker extracts canary strings that were memorized during training." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -324,7 +360,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Health Inference", description: "An AI travel bot infers a user has a specific medical condition based on diet preferences and offers unsolicited medical advice." },
-      { title: "Political Alignment Prediction", description: "A hiring bot infers a candidate's political views based on their university and hobby, using it as a hidden rejection factor." }
+      { title: "Political Alignment Prediction", description: "A hiring bot infers a candidate's political views based on their university and hobby, using it as a hidden rejection factor." },
+      { title: "Re-identification", description: "The model re-identifies a user by combining innocuous attributes." },
+      { title: "Behavioral Profiling", description: "Patterns in user queries are used to infer sensitive traits." },
+      { title: "Salary Inference", description: "The model predicts income level from employer and job context." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -349,7 +388,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Chat XSS", description: "Attacker tricks an LLM into generating a `<script>` tag that executes in the browser of the admin viewing the logs." },
-      { title: "Prompt-driven SQLi", description: "A user tricks a bot into outputting `' OR 1=1 --` which is then used by a legacy backend to bypass authentication." }
+      { title: "Prompt-driven SQLi", description: "A user tricks a bot into outputting `' OR 1=1 --` which is then used by a legacy backend to bypass authentication." },
+      { title: "Command Injection", description: "Model output is passed into a shell command without sanitization." },
+      { title: "Unsafe Deserialization", description: "Model-generated data is deserialized in a way that executes code." },
+      { title: "Template Injection", description: "Untrusted output is rendered in templates, enabling code execution." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
@@ -374,7 +416,10 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     attackScenarios: [
       { title: "Email Broadcast Abuse", description: "An agent with 'Send Email' access is tricked into sending a phishing link to the entire client list." },
-      { title: "Infrastructure Destruction", description: "An SRE bot is tricked into thinking the production environment is 'staging' and runs a mass teardown command." }
+      { title: "Infrastructure Destruction", description: "An SRE bot is tricked into thinking the production environment is 'staging' and runs a mass teardown command." },
+      { title: "Autonomous Transaction", description: "An agent executes refunds or payments without explicit approval." },
+      { title: "Repository Modification", description: "A code assistant commits and pushes destructive changes to production." },
+      { title: "Data Exfiltration via Tool", description: "A tool-enabled agent exports sensitive data to an external endpoint." }
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
