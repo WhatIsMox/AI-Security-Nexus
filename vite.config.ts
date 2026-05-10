@@ -10,10 +10,36 @@ export default defineConfig(({ command }) => {
       : '/'
 
   return {
-    plugins: [react()],
+    plugins: [
+      react(),
+      {
+        name: 'html-security-meta',
+        apply: 'build',
+        transformIndexHtml() {
+          return [
+            {
+              tag: 'meta',
+              attrs: {
+                'http-equiv': 'Content-Security-Policy',
+                content: "default-src 'self'; script-src 'self' https://stats.byreference.net; connect-src 'self' https://stats.byreference.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'",
+              },
+              injectTo: 'head-prepend',
+            },
+            {
+              tag: 'meta',
+              attrs: {
+                name: 'referrer',
+                content: 'strict-origin-when-cross-origin',
+              },
+              injectTo: 'head-prepend',
+            },
+          ]
+        },
+      },
+    ],
     base,
     server: {
-      host: true,
+      host: '127.0.0.1',
     },
     build: {
       outDir: 'dist',

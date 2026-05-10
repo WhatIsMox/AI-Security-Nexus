@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+vite.config.ts.timestamp-*.mjs
+*.timestamp-*.mjs
 
 # Editor directories and files
 .vscode/*
