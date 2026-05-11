@@ -36,7 +36,7 @@ export interface SecureMcpChecklistGroup {
 }
 
 export const SECURE_MCP_GUIDE_META: SecureMcpGuideMeta = {
-  title: "A Practical Guide for Secure MCP Server Development",
+  title: "Secure MCP Server Development",
   version: "Version 1.0",
   publicationDate: "February, 2026",
   site: "genai.owasp.org",
@@ -44,7 +44,7 @@ export const SECURE_MCP_GUIDE_META: SecureMcpGuideMeta = {
   disclaimer:
     "The information provided in this document does not, and is not intended to, constitute legal advice. All information is for general informational purposes only. This document contains links to other third-party websites. Such links are only for convenience and OWASP does not recommend or endorse the contents of the third-party sites.",
   license: {
-    name: "Creative Commons, CC BY-SA 4.0",
+    name: "Source license",
     url: "https://creativecommons.org/licenses/by-sa/4.0/legalcode",
     permissions: [
       "Share - copy and redistribute the material in any medium or format.",

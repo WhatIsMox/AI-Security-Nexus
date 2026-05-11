@@ -1,14 +1,14 @@
 
 import React from 'react';
-import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel, Network, FileText } from 'lucide-react';
+import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel, Network } from 'lucide-react';
 import { Pillar } from '../types';
 
 interface SidebarProps {
-  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE';
-  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE') => void;
+  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'GENAIDATASECURITY';
+  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'GENAIDATASECURITY') => void;
   onSelectDashboard: () => void;
   onSelectThreatModel: () => void;
-  currentView: 'dashboard' | 'tests' | 'threat-model' | 'secure-mcp-guide';
+  currentView: 'dashboard' | 'tests' | 'threat-model' | 'genai-data-security';
   isOpen: boolean;
   onClose: () => void;
 }
@@ -142,6 +142,18 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
+            onClick={() => { onSelectPillar('GENAIDATASECURITY'); onClose(); }}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
+              currentView === 'genai-data-security' && activePillar === 'GENAIDATASECURITY'
+                ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 text-emerald-300 border border-emerald-500/30'
+                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+            }`}
+          >
+            <Database className="w-5 h-5 shrink-0" />
+            <span className="font-medium">OWASP GenAI Data Security</span>
+          </button>
+
+          <button
             onClick={() => { onSelectPillar('SAIFTOP10'); onClose(); }}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
               currentView === 'tests' && activePillar === 'SAIFTOP10'
@@ -151,24 +163,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <Gavel className="w-5 h-5 shrink-0" />
             <span className="font-medium">Google SAIF Risks</span>
-          </button>
-
-          <div className="pt-4 pb-2">
-            <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Guides
-            </p>
-          </div>
-
-          <button
-            onClick={() => { onSelectPillar('SECUREMCPGUIDE'); onClose(); }}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
-              currentView === 'secure-mcp-guide' && activePillar === 'SECUREMCPGUIDE'
-                ? 'bg-gradient-to-r from-cyan-500/20 to-emerald-500/10 text-cyan-300 border border-cyan-500/30'
-                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-            }`}
-          >
-            <FileText className="w-5 h-5 shrink-0" />
-            <span className="font-medium">Secure MCP Guide</span>
           </button>
 
           <div className="pt-4 pb-2">

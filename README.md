@@ -10,7 +10,7 @@ Navigate the most influential AI security standards through specialized, color-c
 - **⚙️ OWASP Machine Learning Security Top 10**: Critical risks for traditional ML systems including Adversarial Evasion and Data Poisoning.
 - **🤖 OWASP Agentic AI Threats**: Emerging risks for autonomous agents, such as Goal Hijacking and Tool Misuse.
 - **🔗 OWASP MCP Top 10 (v0.1)**: Security risks for Model Context Protocol ecosystems, including tool poisoning and context injection.
-- **📘 Secure MCP Server Development Guide (v1.0)**: Practical MCP server development controls covering architecture, tool design, validation, prompt injection, identity, deployment, governance, and continuous validation.
+- **🗄️ OWASP GenAI Data Security Risks and Mitigations 2026**: A detailed, searchable navigator for DSGAI01-DSGAI21 covering GenAI data leakage, agent credentials, shadow AI, poisoning, lifecycle governance, compliance, multimodal leakage, unsafe data gateways, vector stores, telemetry, context over-sharing, endpoint assistants, resilience, inference, labeler exposure, model exfiltration, and disinformation.
 - **🛡️ Google SAIF (Secure AI Framework) Risks**: A holistic mapping of 15+ risks across the entire AI lifecycle.
 
 ### 2. Interactive Architecture & Threat Modelling
@@ -25,7 +25,14 @@ Access a curated database of **30+ specific AI security test cases**, each inclu
 - **Indicators of Vulnerability**: What "success" looks like for an attacker.
 - **Remediation & Mitigation**: Concrete architectural fixes and defensive strategies.
 
-### 4. Security Tooling Database
+### 4. OWASP GenAI Data Security Navigator
+Explore **OWASP GenAI Data Security Risks and Mitigations 2026** as an interactive working reference:
+- **AI-DSPM Capability Map**: 13 posture-management capabilities covering discovery, classification, lineage, access governance, DLP, vector security, integrity, telemetry, third parties, lifecycle, training governance, resilience, and shadow AI.
+- **DSGAI Risk Navigator**: 21 expandable risk entries with attack flow, attacker capabilities, illustrative scenarios, impacts, CVEs/exploits, references, and cross-references.
+- **Tiered Controls**: Foundational, hardening, and advanced mitigations with Buy / Build / Buy and Build scope labels for planning implementation work.
+- **Search & Filtering**: Filter by risk theme, mitigation tier, CVE, keyword, and control text.
+
+### 5. Security Tooling Database
 Each threat and test case is mapped to recommended security tools. The database includes:
 - **Metadata**: Classification by **Cost** (Free to Premium) and **Deployment Type** (Local vs. Third-party).
 - **Tool Categories**: Scanners (Garak, Promptfoo), Sanitizers (DOMPurify, Presidio), and Robustness libraries (ART, Foolbox).
@@ -39,18 +46,16 @@ This application is built upon the following authoritative sources:
 4. **OWASP Machine Learning Security Top 10**
 5. **OWASP Agentic AI Threats (ASI)**
 6. **OWASP MCP Top 10 (v0.1)**
-7. **A Practical Guide for Secure MCP Server Development, Version 1.0 (February 2026)**, OWASP GenAI Security Project, licensed under Creative Commons CC BY-SA 4.0: https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/
+7. **OWASP GenAI Data Security Risks and Mitigations 2026, Version 1.0 (March 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/owasp-genai-data-security-risks-mitigations-2026/
 8. **EU AI Act & NIST AI RMF**
 
-### Attribution for Secure MCP Server Development Guide
+### Attribution for OWASP GenAI Data Security Risks and Mitigations 2026
 
-The separate **Secure MCP Guide** application section adapts content from **A Practical Guide for Secure MCP Server Development, Version 1.0, February 2026**, published by the OWASP GenAI Security Project at https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/.
-
-License: Creative Commons **CC BY-SA 4.0**. Full license text: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+The separate **OWASP GenAI Data Security** application section adapts content from **OWASP GenAI Data Security Risks and Mitigations 2026, Version 1.0, March 2026**, published by the OWASP GenAI Security Project at https://genai.owasp.org/resource/owasp-genai-data-security-risks-mitigations-2026/.
 
 Referenced asset named in the source license notice: **OWASP Top 10 for LLMs - GenAI Red Teaming Guide**.
 
-Changes made: the original document content has been transformed into structured application data and rendered as an interactive guide section for navigation and readability.
+Changes made: the original document content has been transformed into structured application data and rendered as an interactive guide and risk navigator with search, theme filters, tier filters, scoped mitigation labels, source links, and acknowledgements for navigation and readability.
 
 ## 🚀 Getting Started (Local Development)
 

@@ -6,24 +6,24 @@ import TestList from './components/TestList';
 import TestDetail from './components/TestDetail';
 import ThreatModelling from './components/ThreatModelling';
 import OwaspTop10View from './components/OwaspTop10View';
-import SecureMcpGuideView from './components/SecureMcpGuideView';
+import GenAiDataSecurityView from './components/GenAiDataSecurityView';
 import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_AGENTIC_THREATS_DATA, OWASP_SAIF_THREATS_DATA, OWASP_MCP_TOP_10_DATA } from './data';
 import { Pillar, TestItem } from './types';
 import { Menu, Book } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'tests' | 'detail' | 'threat-model' | 'owasp-top10' | 'owasp-ml-top10' | 'owasp-agent-top10' | 'owasp-saif-top10' | 'owasp-mcp-top10' | 'secure-mcp-guide'>('dashboard');
-  const [activePillar, setActivePillar] = useState<Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE'>('ALL');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'tests' | 'detail' | 'threat-model' | 'owasp-top10' | 'owasp-ml-top10' | 'owasp-agent-top10' | 'owasp-saif-top10' | 'owasp-mcp-top10' | 'genai-data-security'>('dashboard');
+  const [activePillar, setActivePillar] = useState<Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'GENAIDATASECURITY'>('ALL');
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [owaspTargetId, setOwaspTargetId] = useState<string | null>(null);
 
   const filteredTests = useMemo(() => {
-    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'SECUREMCPGUIDE') return TEST_DATA;
+    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'GENAIDATASECURITY') return TEST_DATA;
     return TEST_DATA.filter(t => t.pillar === activePillar);
   }, [activePillar]);
 
-  const handleSelectPillar = (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE') => {
+  const handleSelectPillar = (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'GENAIDATASECURITY') => {
     setActivePillar(pillar);
     if (pillar === 'TOP10') {
         setOwaspTargetId(null); 
@@ -40,9 +40,9 @@ const App: React.FC = () => {
     } else if (pillar === 'MCPTOP10') {
         setOwaspTargetId(null);
         setCurrentView('owasp-mcp-top10');
-    } else if (pillar === 'SECUREMCPGUIDE') {
+    } else if (pillar === 'GENAIDATASECURITY') {
         setOwaspTargetId(null);
-        setCurrentView('secure-mcp-guide');
+        setCurrentView('genai-data-security');
     } else {
         setCurrentView('tests');
     }
@@ -99,8 +99,8 @@ const App: React.FC = () => {
       setCurrentView('owasp-saif-top10');
     } else if (activePillar === 'MCPTOP10') {
       setCurrentView('owasp-mcp-top10');
-    } else if (activePillar === 'SECUREMCPGUIDE') {
-      setCurrentView('secure-mcp-guide');
+    } else if (activePillar === 'GENAIDATASECURITY') {
+      setCurrentView('genai-data-security');
     } else {
       setCurrentView('tests');
     }
@@ -223,8 +223,8 @@ const App: React.FC = () => {
             />
           )}
 
-          {currentView === 'secure-mcp-guide' && (
-            <SecureMcpGuideView />
+          {currentView === 'genai-data-security' && (
+            <GenAiDataSecurityView />
           )}
 
           {currentView === 'tests' && (
