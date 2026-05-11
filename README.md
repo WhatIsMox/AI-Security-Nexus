@@ -11,6 +11,7 @@ Navigate the most influential AI security standards through specialized, color-c
 - **🤖 OWASP Agentic AI Threats**: Emerging risks for autonomous agents, such as Goal Hijacking and Tool Misuse.
 - **🔗 OWASP MCP Top 10 (v0.1)**: Security risks for Model Context Protocol ecosystems, including tool poisoning and context injection.
 - **🗄️ OWASP GenAI Data Security Risks and Mitigations 2026**: A detailed, searchable navigator for DSGAI01-DSGAI21 covering GenAI data leakage, agent credentials, shadow AI, poisoning, lifecycle governance, compliance, multimodal leakage, unsafe data gateways, vector stores, telemetry, context over-sharing, endpoint assistants, resilience, inference, labeler exposure, model exfiltration, and disinformation.
+- **📘 Secure MCP Server Development Guide (v1.0)**: An interactive MCP hardening workspace with expandable control families, search, concept drill-downs, and an implementation readiness checklist.
 - **🛡️ Google SAIF (Secure AI Framework) Risks**: A holistic mapping of 15+ risks across the entire AI lifecycle.
 
 ### 2. Interactive Architecture & Threat Modelling
@@ -47,7 +48,8 @@ This application is built upon the following authoritative sources:
 5. **OWASP Agentic AI Threats (ASI)**
 6. **OWASP MCP Top 10 (v0.1)**
 7. **OWASP GenAI Data Security Risks and Mitigations 2026, Version 1.0 (March 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/owasp-genai-data-security-risks-mitigations-2026/
-8. **EU AI Act & NIST AI RMF**
+8. **Secure MCP Server Development, Version 1.0 (February 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/
+9. **EU AI Act & NIST AI RMF**
 
 ### Attribution for OWASP GenAI Data Security Risks and Mitigations 2026
 
@@ -56,6 +58,14 @@ The separate **OWASP GenAI Data Security** application section adapts content fr
 Referenced asset named in the source license notice: **OWASP Top 10 for LLMs - GenAI Red Teaming Guide**.
 
 Changes made: the original document content has been transformed into structured application data and rendered as an interactive guide and risk navigator with search, theme filters, tier filters, scoped mitigation labels, source links, and acknowledgements for navigation and readability.
+
+### Attribution for Secure MCP Server Development
+
+The separate **Secure MCP Guide** application section adapts content from **Secure MCP Server Development, Version 1.0, February 2026**, published by the OWASP GenAI Security Project at https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/.
+
+Referenced asset named in the source license notice: **OWASP Top 10 for LLMs - GenAI Red Teaming Guide**.
+
+Changes made: the original document content has been transformed into structured application data and rendered as an interactive MCP hardening workspace with expandable sections, concept cards, search, and a readiness checklist.
 
 ## 🚀 Getting Started (Local Development)
 

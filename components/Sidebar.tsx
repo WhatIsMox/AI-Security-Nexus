@@ -1,14 +1,14 @@
 
 import React from 'react';
-import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel, Network } from 'lucide-react';
+import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel, Network, FileText } from 'lucide-react';
 import { Pillar } from '../types';
 
 interface SidebarProps {
-  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'GENAIDATASECURITY';
-  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'GENAIDATASECURITY') => void;
+  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
+  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY') => void;
   onSelectDashboard: () => void;
   onSelectThreatModel: () => void;
-  currentView: 'dashboard' | 'tests' | 'threat-model' | 'genai-data-security';
+  currentView: 'dashboard' | 'tests' | 'threat-model' | 'secure-mcp-guide' | 'genai-data-security';
   isOpen: boolean;
   onClose: () => void;
 }
@@ -151,6 +151,18 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <Database className="w-5 h-5 shrink-0" />
             <span className="font-medium">OWASP GenAI Data Security</span>
+          </button>
+
+          <button
+            onClick={() => { onSelectPillar('SECUREMCPGUIDE'); onClose(); }}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
+              currentView === 'secure-mcp-guide' && activePillar === 'SECUREMCPGUIDE'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-emerald-500/10 text-cyan-300 border border-cyan-500/30'
+                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+            }`}
+          >
+            <FileText className="w-5 h-5 shrink-0" />
+            <span className="font-medium">Secure MCP Guide</span>
           </button>
 
           <button
