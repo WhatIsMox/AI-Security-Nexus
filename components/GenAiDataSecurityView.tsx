@@ -113,14 +113,14 @@ const SectionBlock: React.FC<{ section: (typeof GENAI_DATA_SECURITY_OVERVIEW)[nu
       <button
         type="button"
         onClick={() => setIsExpanded((current) => !current)}
-        className="flex w-full items-start justify-between gap-4 p-5 text-left md:p-6"
+        className="flex w-full items-start justify-between gap-3 p-4 text-left sm:gap-4 md:p-6"
       >
-        <div className="flex items-start gap-3">
+        <div className="flex min-w-0 items-start gap-3">
           <div className="mt-1 rounded-lg border border-cyan-500/20 bg-cyan-500/10 p-2">
             <BookOpen className="h-4 w-4 text-cyan-300" />
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-white">{section.title}</h2>
+          <div className="min-w-0">
+            <h2 className="break-words text-xl font-bold text-white md:text-2xl">{section.title}</h2>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">
               Expand to view the GenAI data-security definition, protected data classes, and security posture emphasis.
             </p>
@@ -130,7 +130,7 @@ const SectionBlock: React.FC<{ section: (typeof GENAI_DATA_SECURITY_OVERVIEW)[nu
       </button>
 
       {isExpanded && (
-        <div className="border-t border-slate-800 p-5 md:p-6">
+        <div className="border-t border-slate-800 p-4 md:p-6">
           {section.body && (
             <div className="space-y-3 text-sm leading-relaxed text-slate-300 md:text-base">
               {section.body.map((paragraph) => (
@@ -189,14 +189,14 @@ const DspmSection: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(GENAI_DSPM_CAPABILITIES[0]?.id || null);
 
   return (
-    <section id="ai-dspm" className="scroll-mt-8 rounded-xl border border-slate-800 bg-slate-900/70 p-5 md:p-6">
+    <section id="ai-dspm" className="scroll-mt-8 rounded-xl border border-slate-800 bg-slate-900/70 p-4 md:p-6">
       <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-        <div className="flex items-start gap-3">
+        <div className="flex min-w-0 items-start gap-3">
           <div className="mt-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-2">
             <Database className="h-4 w-4 text-emerald-300" />
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-white">DSPM for GenAI (AI-DSPM)</h2>
+          <div className="min-w-0">
+            <h2 className="break-words text-xl font-bold text-white md:text-2xl">DSPM for GenAI (AI-DSPM)</h2>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">
               AI-DSPM is the continuous practice of discovering, classifying, governing,
               monitoring, and enforcing data controls across GenAI pipelines and runtimes.
@@ -206,7 +206,7 @@ const DspmSection: React.FC = () => {
         <button
           type="button"
           onClick={() => setExpandedId(expandedId ? null : GENAI_DSPM_CAPABILITIES[0]?.id || null)}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-emerald-500/30 hover:text-emerald-200"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-emerald-500/30 hover:text-emerald-200 sm:w-auto"
         >
           <ChevronDown className={`h-4 w-4 transition-transform ${expandedId ? 'rotate-180' : ''}`} />
           {expandedId ? 'Collapse card' : 'Open first card'}
@@ -252,12 +252,12 @@ const DspmSection: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setExpandedId(isExpanded ? null : capability.id)}
-                className="flex w-full items-center justify-between gap-4 p-4 text-left"
+                className="flex w-full items-start justify-between gap-3 p-4 text-left sm:items-center sm:gap-4"
               >
-                <div className="flex min-w-0 items-center gap-3">
+                <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
                   <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${isExtend ? 'bg-blue-400' : 'bg-emerald-400'}`} />
                   <span className="font-mono text-xs text-slate-500">{capability.id.replace('ai-dspm-', '#')}</span>
-                  <h3 className="text-base font-bold leading-snug text-white">{capability.title}</h3>
+                  <h3 className="break-words text-base font-bold leading-snug text-white">{capability.title}</h3>
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   <span className="hidden text-xs text-slate-500 sm:inline">Click to inspect</span>
@@ -329,7 +329,7 @@ const RiskCard: React.FC<{
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-start justify-between gap-4 p-5 text-left"
+        className="flex w-full items-start justify-between gap-3 p-4 text-left sm:gap-4 md:p-5"
       >
         <div className="min-w-0">
           <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -343,7 +343,7 @@ const RiskCard: React.FC<{
               {risk.mitigations.reduce((count, group) => count + group.items.length, 0)} controls
             </span>
           </div>
-          <h3 className="text-xl font-bold text-white">{risk.title}</h3>
+          <h3 className="break-words text-lg font-bold text-white md:text-xl">{risk.title}</h3>
           <p className={`mt-2 text-sm leading-relaxed text-slate-400 ${isExpanded ? '' : 'line-clamp-2'}`}>
             {risk.summary}
           </p>
@@ -351,8 +351,8 @@ const RiskCard: React.FC<{
         <ChevronDown className={`mt-2 h-6 w-6 shrink-0 text-slate-500 transition-transform ${isExpanded ? 'rotate-180 text-cyan-300' : ''}`} />
       </button>
 
-      <div className={`transition-[max-height,opacity] duration-500 ease-in-out ${isExpanded ? 'max-h-[12000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="border-t border-slate-800/70 p-5">
+      <div className={isExpanded ? 'block' : 'hidden'}>
+        <div className="border-t border-slate-800/70 p-4 md:p-5">
           <div className="space-y-5">
             <div>
               <h4 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-300">
@@ -419,7 +419,7 @@ const RiskCard: React.FC<{
                       {group.items.map((item) => (
                         <li key={`${group.tier}-${item.title}`} className="rounded-lg border border-emerald-500/10 bg-emerald-500/5 p-3">
                           <div className="flex flex-wrap items-start justify-between gap-2">
-                            <span className="text-sm font-bold text-emerald-100">{item.title}</span>
+                            <span className="min-w-0 break-words text-sm font-bold text-emerald-100">{item.title}</span>
                             {item.scope && (
                               <span className="rounded-full border border-slate-700 bg-slate-950 px-2 py-0.5 text-[11px] text-slate-400">
                                 {item.scope}
@@ -459,10 +459,10 @@ const RiskCard: React.FC<{
                         href={reference.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-start gap-2 rounded-lg border border-slate-800 bg-slate-900/70 p-2 text-sm text-cyan-300 hover:border-cyan-500/30 hover:text-cyan-200"
+                        className="flex min-w-0 items-start gap-2 rounded-lg border border-slate-800 bg-slate-900/70 p-2 text-sm text-cyan-300 hover:border-cyan-500/30 hover:text-cyan-200"
                       >
                         <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                        <span>{reference.title}</span>
+                        <span className="min-w-0 break-words">{reference.title}</span>
                       </a>
                     ))}
                   </div>
@@ -580,12 +580,12 @@ const GenAiDataSecurityView: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl animate-in fade-in duration-500 p-4 md:p-8">
-      <div className="mb-8 rounded-2xl border border-cyan-500/20 bg-slate-900/70 p-6 md:p-8">
+    <div className="mx-auto max-w-7xl animate-in fade-in duration-500 overflow-hidden p-3 sm:p-4 md:p-8">
+      <div className="mb-6 rounded-xl border border-cyan-500/20 bg-slate-900/70 p-4 sm:p-6 md:mb-8 md:rounded-2xl md:p-8">
         <div className="mb-5 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-cyan-300">
+          <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-cyan-300 sm:text-xs">
             <Database className="h-3.5 w-3.5" />
-            GenAI Data Security
+            <span className="truncate">GenAI Data Security</span>
           </span>
           <span className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-mono text-slate-400">
             {GENAI_DATA_SECURITY_META.version}
@@ -595,7 +595,7 @@ const GenAiDataSecurityView: React.FC = () => {
           </span>
         </div>
 
-        <h1 className="max-w-5xl text-3xl font-bold text-white md:text-5xl">
+        <h1 className="max-w-5xl break-words text-2xl font-bold text-white sm:text-3xl md:text-5xl">
           {GENAI_DATA_SECURITY_META.title}
         </h1>
         <p className="mt-4 max-w-4xl text-sm leading-relaxed text-slate-400 md:text-base">
@@ -614,9 +614,9 @@ const GenAiDataSecurityView: React.FC = () => {
                 href={GENAI_DATA_SECURITY_META.resourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-cyan-300 hover:text-cyan-200"
+                className="inline-flex max-w-full min-w-0 items-center gap-1 text-cyan-300 hover:text-cyan-200"
               >
-                {GENAI_DATA_SECURITY_META.site}
+                <span className="min-w-0 break-words">{GENAI_DATA_SECURITY_META.site}</span>
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>
@@ -624,14 +624,14 @@ const GenAiDataSecurityView: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
+      <div className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-8">
         <aside className="lg:sticky lg:top-8 lg:self-start">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-4">
+          <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-3 md:p-4">
             <div className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-300">
               <FileText className="h-4 w-4 text-cyan-300" />
               Navigator
             </div>
-            <nav className="space-y-1">
+            <nav className="flex gap-2 overflow-x-auto pb-1 lg:block lg:space-y-1 lg:overflow-visible lg:pb-0">
               {tocItems.map((item) => {
                 const isRiskEntryActive = GENAI_DATA_SECURITY_RISKS.some((risk) => risk.id === activeSectionId);
                 const isActive = activeSectionId === item.targetId
@@ -640,7 +640,7 @@ const GenAiDataSecurityView: React.FC = () => {
                   <a
                     key={item.targetId}
                     href={`#${item.targetId}`}
-                    className={`block rounded-md border px-3 py-2 text-sm transition-colors ${
+                    className={`block shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal ${
                       isActive
                         ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200'
                         : 'border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -657,7 +657,7 @@ const GenAiDataSecurityView: React.FC = () => {
                 <Sparkles className="h-4 w-4 text-cyan-300" />
                 Risk Index
               </div>
-              <div className="max-h-[320px] space-y-1 overflow-y-auto pr-1" style={{ scrollbarGutter: 'stable' }}>
+              <div className="flex gap-2 overflow-x-auto pb-1 lg:block lg:max-h-[320px] lg:space-y-1 lg:overflow-y-auto lg:pb-0 lg:pr-1" style={{ scrollbarGutter: 'stable' }}>
                 {filteredRisks.map((risk) => {
                   const isActive = activeSectionId === risk.id;
                   const style = THEME_STYLES[risk.theme];
@@ -666,7 +666,7 @@ const GenAiDataSecurityView: React.FC = () => {
                       key={risk.id}
                       href={`#${risk.id}`}
                       onClick={() => setExpandedIds((current) => ({ ...current, [risk.id]: true }))}
-                      className={`flex items-center gap-2 rounded-md border px-2 py-2 text-xs transition-colors ${
+                      className={`flex min-w-[12rem] items-center gap-2 rounded-md border px-2 py-2 text-xs transition-colors lg:min-w-0 ${
                         isActive
                           ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200'
                           : 'border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -688,17 +688,17 @@ const GenAiDataSecurityView: React.FC = () => {
           </div>
         </aside>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-5 md:space-y-6">
           {GENAI_DATA_SECURITY_OVERVIEW.map((section) => (
             <SectionBlock key={section.id} section={section} />
           ))}
 
           <DspmSection />
 
-          <section id="risk-navigator" className="scroll-mt-8 rounded-xl border border-slate-800 bg-slate-900/70 p-5 md:p-6">
+          <section id="risk-navigator" className="scroll-mt-8 rounded-xl border border-slate-800 bg-slate-900/70 p-4 md:p-6">
             <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white">DSGAI Risk Navigator</h2>
+                <h2 className="text-xl font-bold text-white md:text-2xl">DSGAI Risk Navigator</h2>
                 <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">
                   Search across the published DSGAI entries, filter by risk theme, and focus the mitigation view
                   on foundational, hardening, or advanced controls.
@@ -716,7 +716,7 @@ const GenAiDataSecurityView: React.FC = () => {
                     return nextState;
                   });
                 }}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-cyan-500/30 hover:text-cyan-200"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-cyan-500/30 hover:text-cyan-200 sm:w-auto"
               >
                 <ChevronDown className="h-4 w-4" />
                 {areFilteredRisksExpanded ? 'Minimize all' : 'Expand all'}

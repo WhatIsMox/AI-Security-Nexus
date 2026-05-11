@@ -95,7 +95,7 @@ const ListBlock: React.FC<{ items: string[]; tone?: 'cyan' | 'emerald' }> = ({ i
         >
           <div className="flex items-start gap-3">
             <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${tone === 'cyan' ? 'text-cyan-300' : 'text-emerald-300'}`} />
-            <div>
+            <div className="min-w-0">
               {lead && (
                 <div className={`mb-1 inline-flex rounded-md border px-2 py-1 text-xs font-bold uppercase tracking-wider ${
                   tone === 'cyan'
@@ -105,7 +105,7 @@ const ListBlock: React.FC<{ items: string[]; tone?: 'cyan' | 'emerald' }> = ({ i
                   {lead}
                 </div>
               )}
-              <div>{detail}</div>
+              <div className="break-words">{detail}</div>
             </div>
           </div>
         </li>
@@ -116,7 +116,7 @@ const ListBlock: React.FC<{ items: string[]; tone?: 'cyan' | 'emerald' }> = ({ i
 
 const SubsectionCard: React.FC<{ subsection: SecureMcpGuideSubsection }> = ({ subsection }) => (
   <article className="rounded-lg border border-slate-800 bg-slate-950/50 p-4">
-    <h4 className="text-base font-bold text-white">{subsection.title}</h4>
+    <h4 className="break-words text-base font-bold text-white">{subsection.title}</h4>
     {subsection.body && (
       <div className="mt-3 space-y-2 text-sm leading-relaxed text-slate-300">
         {subsection.body.map((paragraph) => (
@@ -147,10 +147,10 @@ const GuideSection: React.FC<{
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-start justify-between gap-4 p-5 text-left md:p-6"
+        className="flex w-full items-start justify-between gap-3 p-4 text-left sm:gap-4 md:p-6"
       >
         <div className="min-w-0">
-          <h2 className="text-2xl font-bold text-white">{section.title}</h2>
+          <h2 className="break-words text-xl font-bold text-white md:text-2xl">{section.title}</h2>
           {section.body?.[0] && (
             <p className={`mt-2 text-sm leading-relaxed text-slate-400 ${isExpanded ? '' : 'line-clamp-2'}`}>
               {section.body[0]}
@@ -161,7 +161,7 @@ const GuideSection: React.FC<{
       </button>
 
       {isExpanded && (
-        <div className="border-t border-slate-800 p-5 md:p-6">
+        <div className="border-t border-slate-800 p-4 md:p-6">
           {section.body && section.body.length > 0 && (
             <div className="space-y-3 text-sm leading-relaxed text-slate-300 md:text-base">
               {section.body.map((paragraph) => (
@@ -288,12 +288,12 @@ const SecureMcpGuideView: React.FC = () => {
   const clearSearch = () => setSearch('');
 
   return (
-    <div className="mx-auto max-w-7xl animate-in fade-in duration-500 p-4 md:p-8">
-      <div className="mb-8 rounded-2xl border border-cyan-500/20 bg-slate-900/70 p-6 md:p-8">
+    <div className="mx-auto max-w-7xl animate-in fade-in duration-500 overflow-hidden p-3 sm:p-4 md:p-8">
+      <div className="mb-6 rounded-xl border border-cyan-500/20 bg-slate-900/70 p-4 sm:p-6 md:mb-8 md:rounded-2xl md:p-8">
         <div className="mb-5 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-cyan-300">
+          <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-cyan-300 sm:text-xs">
             <Network className="h-3.5 w-3.5" />
-            Secure MCP Development
+            <span className="truncate">Secure MCP Development</span>
           </span>
           <span className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs font-mono text-slate-400">
             {meta.version}
@@ -303,7 +303,7 @@ const SecureMcpGuideView: React.FC = () => {
           </span>
         </div>
 
-        <h1 className="max-w-5xl text-3xl font-bold text-white md:text-5xl">
+        <h1 className="max-w-5xl break-words text-2xl font-bold text-white sm:text-3xl md:text-5xl">
           {meta.title}
         </h1>
         <p className="mt-4 max-w-4xl text-sm leading-relaxed text-slate-400 md:text-base">
@@ -319,9 +319,9 @@ const SecureMcpGuideView: React.FC = () => {
               href={`#${SECURE_MCP_GUIDE_SECTIONS.find((section) => family.match.some((term) => normalize(section.title).includes(term)))?.id || 'minimum-bar'}`}
               className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 transition-colors hover:border-cyan-500/30"
             >
-              <div className="mb-2 flex items-center gap-2 text-sm font-bold text-white">
+              <div className="mb-2 flex min-w-0 items-center gap-2 text-sm font-bold text-white">
                 <ShieldCheck className="h-4 w-4 text-cyan-300" />
-                {family.title}
+                <span className="min-w-0 break-words">{family.title}</span>
               </div>
               <p className="text-sm leading-relaxed text-slate-400">{family.description}</p>
             </a>
@@ -349,23 +349,23 @@ const SecureMcpGuideView: React.FC = () => {
               href={meta.resourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-cyan-300 hover:text-cyan-200"
+              className="inline-flex max-w-full min-w-0 items-center gap-1 text-sm text-cyan-300 hover:text-cyan-200"
             >
-              {meta.site}
+              <span className="min-w-0 break-words">{meta.site}</span>
               <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
+      <div className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-8">
         <aside className="lg:sticky lg:top-8 lg:self-start">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-4">
+          <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-3 md:p-4">
             <div className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-300">
               <FileText className="h-4 w-4 text-cyan-300" />
               Navigator
             </div>
-            <nav className="space-y-1">
+            <nav className="flex gap-2 overflow-x-auto pb-1 lg:block lg:space-y-1 lg:overflow-visible lg:pb-0">
               {filteredSections.map((section) => {
                 const isActive = activeSectionId === section.id;
                 return (
@@ -373,7 +373,7 @@ const SecureMcpGuideView: React.FC = () => {
                     key={section.id}
                     href={`#${section.id}`}
                     onClick={() => setExpandedSections((current) => ({ ...current, [section.id]: true }))}
-                    className={`block rounded-md border px-3 py-2 text-sm transition-colors ${
+                    className={`block shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal ${
                       isActive
                         ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200'
                         : 'border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -385,7 +385,7 @@ const SecureMcpGuideView: React.FC = () => {
               })}
               <a
                 href="#minimum-bar"
-                className={`block rounded-md border px-3 py-2 text-sm transition-colors ${
+                className={`block shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal ${
                   activeSectionId === 'minimum-bar'
                     ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
                     : 'border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -397,11 +397,11 @@ const SecureMcpGuideView: React.FC = () => {
           </div>
         </aside>
 
-        <div className="space-y-6">
-          <section className="rounded-xl border border-slate-800 bg-slate-900/70 p-5 md:p-6">
+        <div className="min-w-0 space-y-5 md:space-y-6">
+          <section className="rounded-xl border border-slate-800 bg-slate-900/70 p-4 md:p-6">
             <div className="mb-4 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white">Secure MCP Control Explorer</h2>
+                <h2 className="text-xl font-bold text-white md:text-2xl">Secure MCP Control Explorer</h2>
                 <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">
                   Filter the guide by concept, open only what matters now, and keep the details available
                   when you need to go deeper.
@@ -410,7 +410,7 @@ const SecureMcpGuideView: React.FC = () => {
               <button
                 type="button"
                 onClick={toggleFilteredSections}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-cyan-500/30 hover:text-cyan-200"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-cyan-500/30 hover:text-cyan-200 sm:w-auto"
               >
                 <ChevronDown className="h-4 w-4" />
                 {areFilteredSectionsExpanded ? 'Collapse all' : 'Expand all'}
@@ -460,15 +460,15 @@ const SecureMcpGuideView: React.FC = () => {
 
           <section
             id="minimum-bar"
-            className="scroll-mt-8 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-5 md:p-6"
+            className="scroll-mt-8 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 md:p-6"
           >
             <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-              <div className="flex items-start gap-3">
+              <div className="flex min-w-0 items-start gap-3">
                 <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-2">
                   <ListChecks className="h-5 w-5 text-emerald-300" />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white">
+                <div className="min-w-0">
+                  <h2 className="break-words text-xl font-bold text-white md:text-2xl">
                     MCP Security Minimum Bar
                   </h2>
                   <p className="mt-1 text-sm text-slate-400">
@@ -479,7 +479,7 @@ const SecureMcpGuideView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setCheckedItems({})}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-emerald-500/30 hover:text-emerald-200"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-emerald-500/30 hover:text-emerald-200 sm:w-auto"
               >
                 <SlidersHorizontal className="h-4 w-4" />
                 Reset checklist
@@ -487,7 +487,7 @@ const SecureMcpGuideView: React.FC = () => {
             </div>
 
             <div className="mb-5 rounded-lg border border-slate-800 bg-slate-950/60 p-4">
-              <div className="mb-2 flex items-center justify-between gap-4">
+              <div className="mb-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <span className="text-sm font-bold uppercase tracking-wider text-slate-300">
                   Completion
                 </span>
@@ -507,8 +507,8 @@ const SecureMcpGuideView: React.FC = () => {
               {SECURE_MCP_MINIMUM_BAR.map((group) => (
                 <div key={group.title} className="rounded-lg border border-slate-800 bg-slate-950/60 p-4">
                   <h3 className="mb-3 flex items-center gap-2 text-base font-bold text-emerald-200">
-                    <Wrench className="h-4 w-4" />
-                    {group.title}
+                    <Wrench className="h-4 w-4 shrink-0" />
+                    <span className="min-w-0 break-words">{group.title}</span>
                   </h3>
                   <ul className="space-y-2">
                     {group.items.map((item) => (
