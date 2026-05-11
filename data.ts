@@ -9,4 +9,5 @@ export * from './data_llm';
 export * from './data_ml';
 export * from './data_saif';
 export * from './data_mcp';
+export * from './data_secure_mcp_guide';
 export { OWASP_AGENTIC_THREATS_DATA } from './data_agentic'; 

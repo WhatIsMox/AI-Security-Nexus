@@ -139,7 +139,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
             <div className={`
               overflow-hidden transition-[max-height] duration-500 ease-in-out
-              ${expandedId === entry.id ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'}
+              ${expandedId === entry.id ? 'max-h-[6000px] opacity-100' : 'max-h-0 opacity-0'}
             `}>
               <div className="p-6 pt-0 border-t border-slate-800/50">
                 <div className="grid lg:grid-cols-2 gap-8 mt-6">

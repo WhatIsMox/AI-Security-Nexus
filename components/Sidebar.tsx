@@ -1,14 +1,14 @@
 
 import React from 'react';
-import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel, Network } from 'lucide-react';
+import { Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, Brain, Cpu, Bot, Gavel, Network, FileText } from 'lucide-react';
 import { Pillar } from '../types';
 
 interface SidebarProps {
-  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10';
-  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10') => void;
+  activePillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE';
+  onSelectPillar: (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE') => void;
   onSelectDashboard: () => void;
   onSelectThreatModel: () => void;
-  currentView: 'dashboard' | 'tests' | 'threat-model';
+  currentView: 'dashboard' | 'tests' | 'threat-model' | 'secure-mcp-guide';
   isOpen: boolean;
   onClose: () => void;
 }
@@ -151,6 +151,24 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <Gavel className="w-5 h-5 shrink-0" />
             <span className="font-medium">Google SAIF Risks</span>
+          </button>
+
+          <div className="pt-4 pb-2">
+            <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Guides
+            </p>
+          </div>
+
+          <button
+            onClick={() => { onSelectPillar('SECUREMCPGUIDE'); onClose(); }}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
+              currentView === 'secure-mcp-guide' && activePillar === 'SECUREMCPGUIDE'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-emerald-500/10 text-cyan-300 border border-cyan-500/30'
+                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+            }`}
+          >
+            <FileText className="w-5 h-5 shrink-0" />
+            <span className="font-medium">Secure MCP Guide</span>
           </button>
 
           <div className="pt-4 pb-2">
