@@ -183,8 +183,8 @@ const App: React.FC = () => {
             <OwaspTop10View 
               initialExpandedId={owaspTargetId} 
               data={OWASP_TOP_10_DATA}
-              title="OWASP Top 10 for LLM Applications 2025"
-              description="A definitive guide to the most critical security risks facing Large Language Model applications."
+              title="OWASP Top 10 for LLM Applications 2026"
+              description="The 2026 OWASP GenAI/LLM Top 10, covering the most critical security risks in LLM applications across prompts, data, agents, supply chain, retrieval, and output handling."
               colorTheme="pink"
             />
           )}

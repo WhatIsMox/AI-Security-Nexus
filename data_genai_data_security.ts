@@ -545,7 +545,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
       { title: 'Inference-Time Backdoors via Hidden Instructions in LLM Chat Templates', url: 'https://arxiv.org/abs/2602.04653' },
       { title: 'Anthropic - Small samples poison', url: 'https://www.anthropic.com/research/small-samples-poison' }
     ],
-    crossReferences: ['LLM03:2025 Supply Chain', 'ASI04', 'DSGAI02 for supply-chain identity controls', 'DSGAI21 for retrieval disinformation'],
+    crossReferences: ['LLM04:2026 Supply Chain', 'ASI04', 'DSGAI02 for supply-chain identity controls', 'DSGAI21 for retrieval disinformation'],
     keywords: ['poisoning', 'supply chain', 'DBOM', 'signing', 'canary', 'DP-SGD', 'RAG']
   },
   {

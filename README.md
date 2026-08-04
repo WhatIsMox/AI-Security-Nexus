@@ -6,7 +6,7 @@ The **AI Security Nexus** is an interactive, graphical exploration of global AI 
 
 ### 1. Multi-Framework Intelligence
 Navigate the most influential AI security standards through specialized, color-coded interfaces:
-- **🧠 OWASP Top 10 for LLM Applications (2025)**: The definitive guide to LLM-specific risks like Prompt Injection and Sensitive Information Disclosure.
+- **🧠 OWASP Top 10 for LLM Applications (2026)**: The updated OWASP GenAI/LLM risk list covering Prompt Injection, Sensitive Information Disclosure, Excessive Agency, Supply Chain, Data and Model Poisoning, Unbounded Consumption, Misinformation, Hidden Context Exposure, Vector and Embedding Weaknesses, and Improper Output Handling.
 - **⚙️ OWASP Machine Learning Security Top 10**: Critical risks for traditional ML systems including Adversarial Evasion and Data Poisoning.
 - **🤖 OWASP Agentic AI Threats**: Emerging risks for autonomous agents, such as Goal Hijacking and Tool Misuse.
 - **🔗 OWASP MCP Top 10 (v0.1)**: Security risks for Model Context Protocol ecosystems, including tool poisoning and context injection.
@@ -43,7 +43,7 @@ Each threat and test case is mapped to recommended security tools. The database 
 This application is built upon the following authoritative sources:
 1. **OWASP AI Exchange & AI Testing Guide v1.0**
 2. **Google Secure AI Framework (SAIF)**
-3. **OWASP Top 10 for Large Language Model Applications (2025)**
+3. **OWASP Top 10 for Large Language Model Applications (2026), Version 2026**, OWASP GenAI Security Project: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
 4. **OWASP Machine Learning Security Top 10**
 5. **OWASP Agentic AI Threats (ASI)**
 6. **OWASP MCP Top 10 (v0.1)**
