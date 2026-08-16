@@ -18,3 +18,127 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* ------------------------------------------------------------------ */
+/*  Homepage animation system                                          */
+/* ------------------------------------------------------------------ */
+
+/* Scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Fade-up entrance (hero, spotlight) */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Animated grid background */
+.bg-grid-animated {
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: grid-pan 9s linear infinite;
+}
+@keyframes grid-pan {
+  from { background-position: 0 0; }
+  to   { background-position: 44px 44px; }
+}
+
+/* Aurora blobs */
+@keyframes aurora-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(60px, 40px) scale(1.15); }
+  66%      { transform: translate(-30px, 70px) scale(0.95); }
+}
+@keyframes aurora-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-70px, 30px) scale(1.1); }
+  66%      { transform: translate(40px, -40px) scale(0.9); }
+}
+@keyframes aurora-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(50px, -50px) scale(1.2); }
+}
+.animate-aurora-a { animation: aurora-a 18s ease-in-out infinite; }
+.animate-aurora-b { animation: aurora-b 22s ease-in-out infinite; }
+.animate-aurora-c { animation: aurora-c 26s ease-in-out infinite; }
+
+/* Typewriter caret */
+@keyframes caret-blink {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.animate-caret { animation: caret-blink 1s step-end infinite; }
+
+/* Pulsing ring around the adversary node */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.92); opacity: 0.8; }
+  70%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+.animate-pulse-ring { animation: pulse-ring 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* Floating connector arrows */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.animate-float-y { animation: float-y 3.2s ease-in-out infinite; }
+
+/* Tool marquees */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+.animate-marquee {
+  animation: marquee 60s linear infinite;
+  will-change: transform;
+}
+.animate-marquee-reverse {
+  animation: marquee-reverse 60s linear infinite;
+  will-change: transform;
+}
+
+/* Spotlight progress bar */
+@keyframes spotProgress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .bg-grid-animated,
+  .animate-aurora-a,
+  .animate-aurora-b,
+  .animate-aurora-c,
+  .animate-marquee,
+  .animate-marquee-reverse,
+  .animate-float-y,
+  .animate-pulse-ring,
+  .animate-fade-up {
+    animation: none !important;
+  }
+}

@@ -1,174 +1,1069 @@
 
-import React from 'react';
-import { Pillar } from '../types';
-import { Activity, Lock, Database, Cpu, Layers, User, ArrowLeftRight, Server, ShieldAlert, BookOpen, ExternalLink, Github, Star } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { Pillar, TestItem, OwaspTop10Entry } from '../types';
+import {
+  Activity, AlertTriangle, ArrowLeftRight, ArrowRight, ArrowUpRight,
+  BookOpen, Bot, Brain, Bug, CheckCircle2, ChevronLeft, ChevronRight,
+  Cpu, Crosshair, Database, ExternalLink, FileText, Flame, Gavel,
+  Github, Globe, Layers, Network, Radar, Server,
+  Shield, Sparkles, Star, Terminal, User, Wrench, Zap, Play,
+} from 'lucide-react';
+import {
+  TEST_DATA,
+  OWASP_TOP_10_DATA,
+  OWASP_ML_TOP_10_DATA,
+  OWASP_AGENTIC_THREATS_DATA,
+  OWASP_SAIF_THREATS_DATA,
+  OWASP_MCP_TOP_10_DATA,
+  SECURE_MCP_GUIDE_META,
+  SECURE_MCP_GUIDE_SECTIONS,
+  GENAI_DATA_SECURITY_META,
+  GENAI_DATA_SECURITY_RISKS,
+} from '../data';
+import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
+import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
+
+type PillarKey = Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
 
 interface DashboardProps {
-  onSelectPillar: (pillar: Pillar) => void;
+  onSelectPillar: (pillar: PillarKey) => void;
+  onSelectThreatModel: () => void;
+  onSelectTest: (test: TestItem) => void;
+  onNavigateToOwasp: (id: string) => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar }) => {
+/* ------------------------------------------------------------------ */
+/*  Hooks & helpers                                                    */
+/* ------------------------------------------------------------------ */
+
+/** Observe an element and report once when it enters the viewport. */
+function useInView<T extends HTMLElement>(threshold = 0.15): [React.RefObject<T>, boolean] {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setInView(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold, rootMargin: '0px 0px -40px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+  return [ref, inView];
+}
+
+/** Animated counter that eases from 0 to `value` once visible. */
+const CountUp: React.FC<{ value: number; duration?: number; className?: string; suffix?: string }> = ({
+  value, duration = 1400, className = '', suffix = '',
+}) => {
+  const [ref, inView] = useInView<HTMLSpanElement>(0.4);
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    if (!inView) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(Math.round(value * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, value, duration]);
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto animate-in fade-in duration-700 flex flex-col min-h-[calc(100vh-2rem)]">
-      <div className="flex-1">
-        <div className="mb-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Secure AI Framework</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto mb-6">
-            Explore the AI system architecture. Click on any layer to view specific test cases and threats associated with that component.
-          </p>
+    <span ref={ref} className={className}>
+      {display.toLocaleString()}{suffix}
+    </span>
+  );
+};
+
+/** Cycling typewriter line. */
+const useTypewriter = (phrases: string[], typeMs = 45, holdMs = 2200) => {
+  const [text, setText] = useState('');
+  const [index, setIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+  useEffect(() => {
+    const current = phrases[index % phrases.length];
+    let timeout: ReturnType<typeof setTimeout>;
+    if (!deleting && text === current) {
+      timeout = setTimeout(() => setDeleting(true), holdMs);
+    } else if (deleting && text === '') {
+      setDeleting(false);
+      setIndex((i) => (i + 1) % phrases.length);
+    } else {
+      timeout = setTimeout(
+        () => setText(current.slice(0, text.length + (deleting ? -1 : 1))),
+        deleting ? typeMs / 2 : typeMs
+      );
+    }
+    return () => clearTimeout(timeout);
+  }, [text, deleting, index, phrases, typeMs, holdMs]);
+  return text;
+};
+
+/** Scroll-reveal: any `.reveal` element fades up when it enters the viewport. */
+function useRevealObserver() {
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal'));
+    if (!('IntersectionObserver' in window)) {
+      els.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Data aggregation (everything below is computed from real content)  */
+/* ------------------------------------------------------------------ */
+
+const RISK_META: Record<TestItem['riskLevel'], { label: string; text: string; bg: string; border: string; bar: string; rank: number }> = {
+  Critical: { label: 'Critical', text: 'text-red-400', bg: 'bg-red-400/10', border: 'border-red-400/30', bar: 'from-red-500 to-rose-400', rank: 4 },
+  High: { label: 'High', text: 'text-orange-400', bg: 'bg-orange-400/10', border: 'border-orange-400/30', bar: 'from-orange-500 to-amber-400', rank: 3 },
+  Medium: { label: 'Medium', text: 'text-yellow-400', bg: 'bg-yellow-400/10', border: 'border-yellow-400/30', bar: 'from-yellow-500 to-amber-300', rank: 2 },
+  Low: { label: 'Low', text: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/30', bar: 'from-emerald-500 to-teal-400', rank: 1 },
+};
+
+const PILLAR_META: Record<Pillar, { name: string; blurb: string; icon: any; text: string; ring: string; iconBg: string; glow: string }> = {
+  [Pillar.APP]: { name: 'Application', blurb: 'Orchestration, agents & plugins', icon: Layers, text: 'text-blue-400', ring: 'border-blue-500/40 hover:border-blue-400', iconBg: 'bg-blue-500/10 border-blue-500/30', glow: 'from-blue-500/20' },
+  [Pillar.MODEL]: { name: 'AI Model', blurb: 'Inference, weights & fine-tuning', icon: Cpu, text: 'text-purple-400', ring: 'border-purple-500/40 hover:border-purple-400', iconBg: 'bg-purple-500/10 border-purple-500/30', glow: 'from-purple-500/20' },
+  [Pillar.INFRA]: { name: 'Infrastructure', blurb: 'Supply chain & MLOps', icon: Server, text: 'text-amber-400', ring: 'border-amber-500/40 hover:border-amber-400', iconBg: 'bg-amber-500/10 border-amber-500/30', glow: 'from-amber-500/20' },
+  [Pillar.DATA]: { name: 'Data', blurb: 'Training sets & RAG pipelines', icon: Database, text: 'text-emerald-400', ring: 'border-emerald-500/40 hover:border-emerald-400', iconBg: 'bg-emerald-500/10 border-emerald-500/30', glow: 'from-emerald-500/20' },
+};
+
+interface FrameworkCard {
+  key: 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'MCPTOP10' | 'SAIFTOP10' | 'GENAIDATASECURITY' | 'SECUREMCPGUIDE';
+  name: string;
+  edition: string;
+  kind: string;
+  blurb: string;
+  icon: any;
+  count: number;
+  countLabel: string;
+  previewId: string;
+  previewTitle: string;
+  // literal Tailwind class sets (JIT-safe)
+  text: string;
+  border: string;
+  hoverBorder: string;
+  iconBox: string;
+  chipBg: string;
+  glow: string;
+  ring: string;
+  arrowHover: string;
+}
+
+const buildFrameworkCards = (): FrameworkCard[] => [
+  {
+    key: 'TOP10',
+    name: 'OWASP Top 10 for LLM Applications',
+    edition: '2026',
+    kind: 'Threat framework',
+    blurb: 'Prompt injection, data poisoning, agent jailbreaks and the rest of the LLM threat landscape.',
+    icon: Brain,
+    count: OWASP_TOP_10_DATA.length,
+    countLabel: 'threats',
+    previewId: OWASP_TOP_10_DATA[0]?.id ?? '',
+    previewTitle: OWASP_TOP_10_DATA[0]?.title ?? '',
+    text: 'text-pink-400',
+    border: 'border-pink-500/25',
+    hoverBorder: 'hover:border-pink-400/70',
+    iconBox: 'bg-pink-500/10 border-pink-500/30',
+    chipBg: 'bg-pink-500/10 text-pink-300 border-pink-500/30',
+    glow: 'bg-pink-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(236,72,153,0.35)]',
+    arrowHover: 'group-hover:border-pink-500/60 group-hover:text-pink-300',
+  },
+  {
+    key: 'AGENTTOP10',
+    name: 'OWASP Agentic AI Threats',
+    edition: '2026',
+    kind: 'Threat framework',
+    blurb: 'Goal hijack, tool misuse and identity abuse across autonomous multi-agent systems.',
+    icon: Bot,
+    count: OWASP_AGENTIC_THREATS_DATA.length,
+    countLabel: 'threats',
+    previewId: OWASP_AGENTIC_THREATS_DATA[0]?.id ?? '',
+    previewTitle: OWASP_AGENTIC_THREATS_DATA[0]?.title ?? '',
+    text: 'text-orange-400',
+    border: 'border-orange-500/25',
+    hoverBorder: 'hover:border-orange-400/70',
+    iconBox: 'bg-orange-500/10 border-orange-500/30',
+    chipBg: 'bg-orange-500/10 text-orange-300 border-orange-500/30',
+    glow: 'bg-orange-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(249,115,22,0.35)]',
+    arrowHover: 'group-hover:border-orange-500/60 group-hover:text-orange-300',
+  },
+  {
+    key: 'MLTOP10',
+    name: 'OWASP Machine Learning Top 10',
+    edition: '2023',
+    kind: 'Threat framework',
+    blurb: 'Adversarial examples, model stealing, membership inference and ML supply-chain risk.',
+    icon: Cpu,
+    count: OWASP_ML_TOP_10_DATA.length,
+    countLabel: 'threats',
+    previewId: OWASP_ML_TOP_10_DATA[0]?.id ?? '',
+    previewTitle: OWASP_ML_TOP_10_DATA[0]?.title ?? '',
+    text: 'text-emerald-400',
+    border: 'border-emerald-500/25',
+    hoverBorder: 'hover:border-emerald-400/70',
+    iconBox: 'bg-emerald-500/10 border-emerald-500/30',
+    chipBg: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
+    glow: 'bg-emerald-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(16,185,129,0.35)]',
+    arrowHover: 'group-hover:border-emerald-500/60 group-hover:text-emerald-300',
+  },
+  {
+    key: 'MCPTOP10',
+    name: 'OWASP MCP Top 10',
+    edition: 'v0.1',
+    kind: 'Threat framework',
+    blurb: 'Tool poisoning, confused-deputy auth and context exfiltration in Model Context Protocol stacks.',
+    icon: Network,
+    count: OWASP_MCP_TOP_10_DATA.length,
+    countLabel: 'threats',
+    previewId: OWASP_MCP_TOP_10_DATA[0]?.id ?? '',
+    previewTitle: OWASP_MCP_TOP_10_DATA[0]?.title ?? '',
+    text: 'text-cyan-400',
+    border: 'border-cyan-500/25',
+    hoverBorder: 'hover:border-cyan-400/70',
+    iconBox: 'bg-cyan-500/10 border-cyan-500/30',
+    chipBg: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
+    glow: 'bg-cyan-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(34,211,238,0.35)]',
+    arrowHover: 'group-hover:border-cyan-500/60 group-hover:text-cyan-300',
+  },
+  {
+    key: 'SAIFTOP10',
+    name: 'Google SAIF Risks',
+    edition: 'Secure AI Framework',
+    kind: 'Threat framework',
+    blurb: 'AI-lifecycle risk catalogue mapped to Google’s Secure AI Framework, from training to deployment.',
+    icon: Gavel,
+    count: OWASP_SAIF_THREATS_DATA.length,
+    countLabel: 'risks',
+    previewId: OWASP_SAIF_THREATS_DATA[0]?.id ?? '',
+    previewTitle: OWASP_SAIF_THREATS_DATA[0]?.title ?? '',
+    text: 'text-blue-400',
+    border: 'border-blue-500/25',
+    hoverBorder: 'hover:border-blue-400/70',
+    iconBox: 'bg-blue-500/10 border-blue-500/30',
+    chipBg: 'bg-blue-500/10 text-blue-300 border-blue-500/30',
+    glow: 'bg-blue-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(59,130,246,0.35)]',
+    arrowHover: 'group-hover:border-blue-500/60 group-hover:text-blue-300',
+  },
+  {
+    key: 'GENAIDATASECURITY',
+    name: 'OWASP GenAI Data Security',
+    edition: '2026',
+    kind: 'Guide · 3 tiers',
+    blurb: `${GENAI_DATA_SECURITY_RISKS.length} data-centric risks with tiered mitigations for buy & build decisions.`,
+    icon: Database,
+    count: GENAI_DATA_SECURITY_RISKS.length,
+    countLabel: 'risks',
+    previewId: GENAI_DATA_SECURITY_RISKS[0]?.id ?? '',
+    previewTitle: GENAI_DATA_SECURITY_RISKS[0]?.title ?? '',
+    text: 'text-teal-400',
+    border: 'border-teal-500/25',
+    hoverBorder: 'hover:border-teal-400/70',
+    iconBox: 'bg-teal-500/10 border-teal-500/30',
+    chipBg: 'bg-teal-500/10 text-teal-300 border-teal-500/30',
+    glow: 'bg-teal-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(45,212,191,0.35)]',
+    arrowHover: 'group-hover:border-teal-500/60 group-hover:text-teal-300',
+  },
+  {
+    key: 'SECUREMCPGUIDE',
+    name: 'Secure MCP Server Development',
+    edition: SECURE_MCP_GUIDE_META.version,
+    kind: 'Practical guide',
+    blurb: 'A step-by-step OWASP guide for building MCP servers that resist injection and over-privilege.',
+    icon: FileText,
+    count: SECURE_MCP_GUIDE_SECTIONS.length,
+    countLabel: 'sections',
+    previewId: SECURE_MCP_GUIDE_SECTIONS[0]?.id ?? '',
+    previewTitle: SECURE_MCP_GUIDE_SECTIONS[0]?.title ?? '',
+    text: 'text-indigo-400',
+    border: 'border-indigo-500/25',
+    hoverBorder: 'hover:border-indigo-400/70',
+    iconBox: 'bg-indigo-500/10 border-indigo-500/30',
+    chipBg: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
+    glow: 'bg-indigo-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(129,140,248,0.35)]',
+    arrowHover: 'group-hover:border-indigo-500/60 group-hover:text-indigo-300',
+  },
+];
+
+const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatModel, onSelectTest, onNavigateToOwasp }) => {
+  useRevealObserver();
+
+  /* ---------------- live aggregates ---------------- */
+  const stats = useMemo(() => {
+    const totalPayloads = TEST_DATA.reduce((acc, t) => acc + t.payloads.length, 0);
+    const byRisk: Record<TestItem['riskLevel'], number> = { Critical: 0, High: 0, Medium: 0, Low: 0 };
+    TEST_DATA.forEach((t) => { byRisk[t.riskLevel] += 1; });
+
+    const byPillar: Record<Pillar, TestItem[]> = { [Pillar.APP]: [], [Pillar.MODEL]: [], [Pillar.INFRA]: [], [Pillar.DATA]: [] };
+    TEST_DATA.forEach((t) => byPillar[t.pillar].push(t));
+
+    const tools = Object.values(TOOLS_BY_THREAT_ID).flat();
+    const uniqueTools = Array.from(new Map(tools.map((t) => [t.name.toLowerCase(), t])).values());
+    const toolCategories = {
+      Offensive: uniqueTools.filter((t) => t.category === 'Offensive').length,
+      Defensive: uniqueTools.filter((t) => t.category === 'Defensive').length,
+      Both: uniqueTools.filter((t) => t.category === 'Both').length,
+    };
+
+    const incidents = Object.entries(INCIDENTS_BY_THREAT_ID).flatMap(([threatId, list]) =>
+      list.map((r) => ({ threatId, title: r.title, url: r.url }))
+    );
+
+    const threatEntries = OWASP_TOP_10_DATA.length + OWASP_ML_TOP_10_DATA.length + OWASP_AGENTIC_THREATS_DATA.length + OWASP_SAIF_THREATS_DATA.length + OWASP_MCP_TOP_10_DATA.length;
+
+    const coverage = [
+      { key: 'TOP10' as const, label: 'LLM Top 10', count: TEST_DATA.filter((t) => t.owaspTop10Ref).length },
+      { key: 'MLTOP10' as const, label: 'ML Top 10', count: TEST_DATA.filter((t) => t.owaspMlTop10Ref).length },
+      { key: 'AGENTTOP10' as const, label: 'Agentic', count: TEST_DATA.filter((t) => t.owaspAgenticRef).length },
+      { key: 'SAIFTOP10' as const, label: 'SAIF', count: TEST_DATA.filter((t) => t.owaspSaifRef).length },
+      { key: 'MCPTOP10' as const, label: 'MCP Top 10', count: TEST_DATA.filter((t) => t.owaspMcpTop10Ref).length },
+    ];
+
+    const spotlight = TEST_DATA.filter((t) => t.riskLevel === 'Critical' || t.riskLevel === 'High').sort(
+      (a, b) => RISK_META[b.riskLevel].rank - RISK_META[a.riskLevel].rank || a.id.localeCompare(b.id)
+    );
+
+    return { totalPayloads, byRisk, byPillar, uniqueTools, toolCategories, incidents, threatEntries, coverage, spotlight, totalTests: TEST_DATA.length };
+  }, []);
+
+  const frameworks = useMemo(buildFrameworkCards, []);
+
+  /* ---------------- hero typewriter ---------------- */
+  const heroPhrases = useMemo(() => {
+    const titles = [...OWASP_TOP_10_DATA, ...OWASP_AGENTIC_THREATS_DATA, ...OWASP_MCP_TOP_10_DATA, ...OWASP_ML_TOP_10_DATA]
+      .slice(0, 14)
+      .map((e: OwaspTop10Entry) => e.title);
+    return Array.from(new Set(titles));
+  }, []);
+  const typed = useTypewriter(heroPhrases);
+
+  /* ---------------- featured test spotlight ---------------- */
+  const [spotIndex, setSpotIndex] = useState(0);
+  const [spotPaused, setSpotPaused] = useState(false);
+  const featured = stats.spotlight[spotIndex % stats.spotlight.length];
+
+  useEffect(() => {
+    if (spotPaused || stats.spotlight.length === 0) return;
+    const id = setInterval(() => setSpotIndex((i) => (i + 1) % stats.spotlight.length), 7000);
+    return () => clearInterval(id);
+  }, [spotPaused, stats.spotlight.length]);
+
+  /* ---------------- incident spotlight ---------------- */
+  const [incidentIndex, setIncidentIndex] = useState(0);
+  useEffect(() => {
+    if (stats.incidents.length === 0) return;
+    const id = setInterval(() => setIncidentIndex((i) => (i + 1) % stats.incidents.length), 6000);
+    return () => clearInterval(id);
+  }, [stats.incidents.length]);
+
+  /* ---------------- risk bar animation ---------------- */
+  const [riskRef, riskInView] = useInView<HTMLDivElement>(0.3);
+
+  const featuredCode = featured?.payloads.find((p) => p.code)?.code ?? featured?.payloads[0]?.code ?? '';
+
+  const refsFor = useCallback((test: TestItem) => {
+    const refs: { id: string; label: string }[] = [];
+    if (test.owaspTop10Ref) refs.push({ id: test.owaspTop10Ref, label: 'LLM' });
+    if (test.owaspMlTop10Ref) refs.push({ id: test.owaspMlTop10Ref, label: 'ML' });
+    if (test.owaspAgenticRef) refs.push({ id: test.owaspAgenticRef, label: 'AGT' });
+    if (test.owaspSaifRef) refs.push({ id: test.owaspSaifRef, label: 'SAIF' });
+    if (test.owaspMcpTop10Ref) refs.push({ id: test.owaspMcpTop10Ref, label: 'MCP' });
+    return refs;
+  }, []);
+
+  const incident = stats.incidents[incidentIndex % stats.incidents.length];
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 md:px-8 pb-8">
+      {/* ================================================================
+          HERO
+      ================================================================= */}
+      <section className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 mb-10">
+        {/* animated backdrop */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <div className="absolute inset-0 bg-grid-animated opacity-60 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_35%,black,transparent)]" />
+          <div className="absolute -top-32 -left-24 w-[420px] h-[420px] rounded-full bg-cyan-500/15 blur-[110px] animate-aurora-a" />
+          <div className="absolute top-10 right-0 w-[380px] h-[380px] rounded-full bg-purple-500/15 blur-[110px] animate-aurora-b" />
+          <div className="absolute -bottom-40 left-1/3 w-[460px] h-[460px] rounded-full bg-pink-500/10 blur-[120px] animate-aurora-c" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/60" />
         </div>
 
-        {/* Interactive Pipeline Architecture */}
-        <div className="relative w-full bg-slate-900/30 rounded-3xl border border-slate-800 p-6 md:p-10 mb-12 flex items-center justify-center">
-          {/* Background Glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-black opacity-80 rounded-3xl pointer-events-none" />
-          
-          <div className="relative flex flex-col lg:flex-row items-stretch gap-6 z-10 w-full animate-in fade-in zoom-in-95 duration-500">
-              {/* LEFT: User */}
-              <div className="flex flex-col lg:flex-row items-center justify-center shrink-0 lg:mr-4">
-                <div className="flex flex-col items-center space-y-4">
-                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center shadow-lg">
-                      <User className="w-8 h-8 md:w-10 md:h-10 text-slate-400" />
-                    </div>
-                    <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">User</span>
+        <div className="relative z-10 px-6 py-14 md:px-14 md:py-20">
+          {/* badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-cyan-500/30 bg-cyan-500/5 px-4 py-1.5 backdrop-blur-sm mb-7 animate-fade-up">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+            </span>
+            <span className="font-mono text-[11px] font-semibold tracking-[0.25em] text-cyan-300 uppercase">
+              AI Security Nexus · Live data
+            </span>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.05] mb-6 animate-fade-up [animation-delay:80ms]">
+            The offensive playbook for{' '}
+            <span className="relative inline-block">
+              <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-purple-400 bg-clip-text text-transparent">
+                AI security
+              </span>
+              <span className="absolute -inset-x-2 bottom-1 h-3 bg-cyan-500/20 blur-lg -z-10" aria-hidden="true" />
+            </span>
+          </h1>
+
+          <p className="max-w-2xl text-slate-400 text-base md:text-lg leading-relaxed mb-6 animate-fade-up [animation-delay:160ms]">
+            Every threat, test case and payload on this page is generated from the actual content of this app —
+            {` `}{stats.totalTests} red-team tests, {stats.threatEntries} framework threats and {stats.totalPayloads.toLocaleString()} ready-to-run attack payloads,
+            mapped across OWASP, SAIF and the Model Context Protocol.
+          </p>
+
+          {/* typewriter */}
+          <div className="flex items-center gap-3 mb-9 h-7 animate-fade-up [animation-delay:240ms]">
+            <Shield className="w-4 h-4 text-cyan-400 shrink-0" />
+            <span className="font-mono text-sm text-slate-300">
+              <span className="text-slate-500">defend against </span>
+              <span className="text-cyan-300 font-semibold">{typed}</span>
+              <span className="text-cyan-400 animate-caret">▍</span>
+            </span>
+          </div>
+
+          {/* CTA row */}
+          <div className="flex flex-wrap items-center gap-3 mb-12 animate-fade-up [animation-delay:320ms]">
+            <button
+              onClick={onSelectThreatModel}
+              className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-400/40 hover:-translate-y-0.5"
+            >
+              <Crosshair className="w-4 h-4 transition-transform group-hover:rotate-45" />
+              Launch Threat Modelling
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </button>
+            <button
+              onClick={() => onSelectPillar('ALL')}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/70 px-6 py-3 text-sm font-bold text-slate-200 backdrop-blur transition-all hover:border-slate-500 hover:bg-slate-800 hover:-translate-y-0.5"
+            >
+              <Terminal className="w-4 h-4 text-cyan-400" />
+              Browse {stats.totalTests} test suites
+            </button>
+            <button
+              onClick={() => onSelectPillar('TOP10')}
+              className="inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-pink-300/90 transition-colors hover:text-pink-300 hover:underline decoration-pink-400/50 underline-offset-4"
+            >
+              OWASP LLM Top 10 2026
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* live stat band */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 animate-fade-up [animation-delay:400ms]">
+            {[
+              { label: 'Test cases', value: stats.totalTests, icon: Bug, tint: 'text-red-400 bg-red-400/10 border-red-400/20' },
+              { label: 'Attack payloads', value: stats.totalPayloads, icon: Zap, tint: 'text-amber-400 bg-amber-400/10 border-amber-400/20' },
+              { label: 'Threat entries', value: stats.threatEntries, icon: AlertTriangle, tint: 'text-orange-400 bg-orange-400/10 border-orange-400/20' },
+              { label: 'Frameworks', value: frameworks.length, icon: Radar, tint: 'text-purple-400 bg-purple-400/10 border-purple-400/20' },
+              { label: 'Security tools', value: stats.uniqueTools.length, icon: Wrench, tint: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20' },
+              { label: 'Real incidents', value: stats.incidents.length, icon: Globe, tint: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' },
+            ].map((s) => (
+              <div
+                key={s.label}
+                className="rounded-2xl border border-slate-800/80 bg-slate-950/50 backdrop-blur px-4 py-4 transition-colors hover:border-slate-700 group"
+              >
+                <div className={`inline-flex p-2 rounded-lg border ${s.tint} mb-3`}>
+                  <s.icon className="w-4 h-4" />
                 </div>
-                <ArrowLeftRight className="hidden lg:block w-8 h-8 text-slate-700 ml-6" />
-                <div className="block lg:hidden w-px h-8 bg-slate-800 my-4" />
+                <div className="text-2xl font-extrabold text-white tabular-nums leading-none">
+                  <CountUp value={s.value} />
+                </div>
+                <div className="mt-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 group-hover:text-slate-400 transition-colors">
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
+          FRAMEWORK EXPLORER
+      ================================================================= */}
+      <section className="mb-16">
+        <SectionHeader
+          kicker="Threat frameworks"
+          title="Seven security frameworks, one explorer"
+          blurb="Every card below is wired straight to the corresponding view. The numbers are counted from the data, not hardcoded."
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {frameworks.map((f, i) => (
+            <button
+              key={f.key}
+              onClick={() => onSelectPillar(f.key)}
+              className={`reveal group relative overflow-hidden rounded-2xl border ${f.border} ${f.hoverBorder} bg-slate-900/60 backdrop-blur p-6 text-left transition-all duration-300 hover:-translate-y-1 ${f.ring}`}
+              style={{ transitionDelay: `${(i % 3) * 70}ms` }}
+            >
+              {/* corner glow */}
+              <div className={`absolute -top-16 -right-16 w-40 h-40 rounded-full ${f.glow} blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className={`inline-flex p-3 rounded-xl border ${f.iconBox}`}>
+                  <f.icon className={`w-6 h-6 ${f.text}`} />
+                </div>
+                <span className={`rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider ${f.chipBg}`}>
+                  {f.count} {f.countLabel.toUpperCase()}
+                </span>
               </div>
 
-              {/* RIGHT: Main Systems */}
-              <div className="flex-1 flex flex-col gap-6">
-                <div className="flex flex-col lg:flex-row gap-6 w-full">
-                    {/* Application Layer */}
-                    <div onClick={() => onSelectPillar(Pillar.APP)} className="flex-1 group cursor-pointer relative w-full">
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-3 py-0.5 rounded-full text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-lg pointer-events-none">VIEW TESTS</div>
-                      <div className="h-full bg-slate-900/80 backdrop-blur-sm border border-blue-500/20 hover:border-blue-500 rounded-xl p-6 flex flex-col items-center justify-center transition-all hover:bg-blue-500/5 shadow-lg relative z-10">
-                        <Layers className="w-10 h-10 text-blue-400 mb-3" />
-                        <h3 className="text-lg font-bold text-slate-200">Application</h3>
-                        <p className="text-xs text-center text-slate-500 mt-2">Orchestration, Agents & Plugins</p>
-                      </div>
-                    </div>
+              <h3 className="text-base font-bold text-white leading-snug mb-1.5">{f.name}</h3>
+              <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">{f.edition} · {f.kind}</p>
+              <p className="text-sm text-slate-400 leading-relaxed mb-4">{f.blurb}</p>
 
-                    <div className="hidden lg:block self-center"><ArrowLeftRight className="w-8 h-8 text-slate-700" /></div>
+              <div className="mt-auto flex items-center justify-between border-t border-slate-800 pt-4">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-0.5">Starts with</p>
+                  <p className="truncate font-mono text-xs text-slate-300">
+                    <span className={`${f.text} font-bold`}>{f.previewId}</span> — {f.previewTitle}
+                  </p>
+                </div>
+                <span className={`shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border border-slate-700 text-slate-400 transition-all group-hover:bg-slate-800/80 group-hover:translate-x-0.5 ${f.arrowHover}`}>
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            </button>
+          ))}
 
-                    {/* Model Layer */}
-                    <div onClick={() => onSelectPillar(Pillar.MODEL)} className="flex-1 group cursor-pointer relative w-full">
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white px-3 py-0.5 rounded-full text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-lg pointer-events-none">VIEW TESTS</div>
-                      <div className="h-full bg-slate-900/80 backdrop-blur-sm border border-purple-500/20 hover:border-purple-500 rounded-xl p-6 flex flex-col items-center justify-center transition-all hover:bg-purple-500/5 shadow-lg relative z-10">
-                        <Cpu className="w-10 h-10 text-purple-400 mb-3" />
-                        <h3 className="text-lg font-bold text-slate-200">AI Model</h3>
-                        <p className="text-xs text-center text-slate-500 mt-2">Inference, Weights</p>
-                      </div>
-                    </div>
+          {/* threat modelling card (special) */}
+          <button
+            onClick={onSelectThreatModel}
+            className="reveal group relative overflow-hidden rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-950 p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/60 hover:shadow-[0_0_40px_-8px_rgba(34,211,238,0.3)]"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(34,211,238,0.12),transparent_60%)] pointer-events-none" />
+            <div className="flex items-start justify-between gap-3 mb-4">
+              <div className="inline-flex p-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10">
+                <Crosshair className="w-6 h-6 text-cyan-400" />
+              </div>
+              <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider text-cyan-300">
+                INTERACTIVE
+              </span>
+            </div>
+            <h3 className="text-base font-bold text-white mb-1.5">AI Threat Modelling</h3>
+            <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">SAIF architecture · MITRE-style mapping</p>
+            <p className="text-sm text-slate-400 leading-relaxed mb-4">
+              Explore a full SAIF component diagram, trace 15 risk definitions across the AI lifecycle and jump from any risk straight into its test cases.
+            </p>
+            <div className="mt-auto flex items-center justify-between border-t border-slate-800 pt-4">
+              <p className="font-mono text-xs text-cyan-300">15 risks · 24 components</p>
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-slate-700 text-slate-400 group-hover:border-cyan-400/60 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all">
+                <ArrowRight className="w-4 h-4" />
+              </span>
+            </div>
+          </button>
+        </div>
+      </section>
 
-                    <div className="hidden lg:block self-center"><ArrowLeftRight className="w-8 h-8 text-slate-700" /></div>
+      {/* ================================================================
+          ATTACK SURFACE / PILLAR PIPELINE
+      ================================================================= */}
+      <section className="mb-16">
+        <SectionHeader
+          kicker="Attack surface"
+          title="Trace the AI system, layer by layer"
+          blurb="Each layer opens its dedicated test suite. The chips show the most dangerous test in that layer."
+        />
+        <div className="reveal relative rounded-3xl border border-slate-800/80 bg-slate-900/30 p-6 md:p-10 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.08),transparent_55%)] pointer-events-none" />
 
-                    {/* Data Layer */}
-                    <div onClick={() => onSelectPillar(Pillar.DATA)} className="flex-1 group cursor-pointer relative w-full">
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-3 py-0.5 rounded-full text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-lg pointer-events-none">VIEW TESTS</div>
-                      <div className="h-full bg-slate-900/80 backdrop-blur-sm border border-emerald-500/20 hover:border-emerald-500 rounded-xl p-6 flex flex-col items-center justify-center transition-all hover:bg-emerald-500/5 shadow-lg relative z-10">
-                        <Database className="w-10 h-10 text-emerald-400 mb-3" />
-                        <h3 className="text-lg font-bold text-slate-200">Data & Storage</h3>
-                        <p className="text-xs text-center text-slate-500 mt-2">Training Sets, RAG</p>
-                      </div>
-                    </div>
+          <div className="relative flex flex-col lg:flex-row items-stretch gap-6">
+            {/* source node */}
+            <div className="flex flex-row lg:flex-col items-center justify-center gap-4 lg:w-28 shrink-0">
+              <div className="relative">
+                <span className="absolute inset-0 rounded-2xl bg-slate-700/60 animate-pulse-ring" aria-hidden="true" />
+                <div className="relative w-16 h-16 rounded-2xl bg-slate-800 border border-slate-600 flex items-center justify-center">
+                  <User className="w-7 h-7 text-slate-300" />
+                </div>
+              </div>
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Adversary</span>
+            </div>
+
+            <FlowConnector className="hidden lg:flex" />
+
+            {/* pillar nodes */}
+            <div className="flex-1 flex flex-col gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[Pillar.APP, Pillar.MODEL, Pillar.DATA].map((pillar) => (
+                  <PillarNode
+                    key={pillar}
+                    pillar={pillar}
+                    tests={stats.byPillar[pillar]}
+                    onOpen={() => onSelectPillar(pillar)}
+                  />
+                ))}
+              </div>
+              <FlowConnector className="hidden lg:block w-full" horizontal />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="md:col-start-2">
+                  <PillarNode
+                    pillar={Pillar.INFRA}
+                    tests={stats.byPillar[Pillar.INFRA]}
+                    onOpen={() => onSelectPillar(Pillar.INFRA)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
+          RISK POSTURE + COVERAGE
+      ================================================================= */}
+      <section className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-16">
+        {/* risk distribution */}
+        <div ref={riskRef} className="reveal lg:col-span-3 rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 md:p-8">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Activity className="w-5 h-5 text-red-400" />
+              Risk posture across {stats.totalTests} tests
+            </h3>
+            <button
+              onClick={() => onSelectPillar('ALL')}
+              className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1"
+            >
+              Open all tests <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
+          <p className="text-sm text-slate-500 mb-6">Live severity distribution, computed from the test catalogue.</p>
+
+          <div className="space-y-5">
+            {(Object.keys(RISK_META) as TestItem['riskLevel'][]).map((level) => {
+              const meta = RISK_META[level];
+              const count = stats.byRisk[level];
+              const pct = stats.totalTests ? (count / stats.totalTests) * 100 : 0;
+              return (
+                <div key={level} className="group cursor-pointer" onClick={() => onSelectPillar('ALL')}>
+                  <div className="flex items-baseline justify-between mb-1.5">
+                    <span className={`text-sm font-bold ${meta.text}`}>{meta.label}</span>
+                    <span className="text-xs text-slate-500 font-mono tabular-nums">
+                      {count} tests · {pct.toFixed(0)}%
+                    </span>
+                  </div>
+                  <div className="h-2.5 rounded-full bg-slate-800 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full bg-gradient-to-r ${meta.bar} transition-all duration-[1200ms] ease-out shadow-[0_0_12px_rgba(255,255,255,0.15)]`}
+                      style={{ width: riskInView ? `${Math.max(pct, 2)}%` : '0%' }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-7 rounded-2xl border border-slate-800 bg-slate-950/60 p-4 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/30 shrink-0">
+              <Flame className="w-4 h-4 text-red-400" />
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              <span className="font-bold text-red-300">{stats.byRisk.Critical + stats.byRisk.High} of {stats.totalTests} tests</span> are
+              Critical or High severity — start your red-team there, or walk the{' '}
+              <button onClick={onSelectThreatModel} className="text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2">threat model</button>{' '}
+              to trace them back to architecture.
+            </p>
+          </div>
+        </div>
+
+        {/* coverage matrix */}
+        <div className="reveal lg:col-span-2 rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 md:p-8 flex flex-col">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-2">
+            <Radar className="w-5 h-5 text-purple-400" />
+            Framework coverage
+          </h3>
+          <p className="text-sm text-slate-500 mb-6">How many test cases map back into each threat framework.</p>
+
+          <div className="space-y-5 flex-1">
+            {stats.coverage.map((c, i) => {
+              const pct = stats.totalTests ? (c.count / stats.totalTests) * 100 : 0;
+              return (
+                <button key={c.key} onClick={() => onSelectPillar(c.key)} className="w-full text-left group">
+                  <div className="flex items-baseline justify-between mb-1.5">
+                    <span className="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">{c.label}</span>
+                    <span className="text-xs text-slate-500 font-mono tabular-nums">{c.count}</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-purple-500 to-cyan-400 transition-all duration-[1200ms] ease-out"
+                      style={{ width: riskInView ? `${Math.max(pct, 3)}%` : '0%', transitionDelay: `${i * 90}ms` }}
+                    />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 pt-5 border-t border-slate-800">
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              Every mapping is a clickable deep link to the exact threat entry.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
+          FEATURED TEST SPOTLIGHT
+      ================================================================= */}
+      <section className="mb-16">
+        <SectionHeader
+          kicker="Test spotlight"
+          title="A closer look at the deadliest tests"
+          blurb="Rotating through Critical and High severity cases — with the payloads you would actually run."
+        />
+
+        {featured && (
+          <div
+            className="reveal relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/50 backdrop-blur"
+            onMouseEnter={() => setSpotPaused(true)}
+            onMouseLeave={() => setSpotPaused(false)}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/[0.06] via-transparent to-purple-500/[0.06] pointer-events-none" />
+
+            <div className="relative grid grid-cols-1 lg:grid-cols-2">
+              {/* meta */}
+              <div className="p-6 md:p-9 flex flex-col">
+                <div className="flex items-center justify-between gap-3 mb-5">
+                  <span className="font-mono text-xs font-bold tracking-widest text-slate-500 bg-slate-950/70 border border-slate-800 rounded-lg px-3 py-1.5">
+                    {featured.id}
+                  </span>
+                  {/* rotation controls */}
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => setSpotIndex((i) => (i - 1 + stats.spotlight.length) % stats.spotlight.length)}
+                      aria-label="Previous test"
+                      className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:border-slate-600 transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setSpotIndex((i) => (i + 1) % stats.spotlight.length)}
+                      aria-label="Next test"
+                      className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:border-slate-600 transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Infra Layer */}
-                <div onClick={() => onSelectPillar(Pillar.INFRA)} className="w-full group cursor-pointer relative">
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-600 text-white px-3 py-0.5 rounded-full text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-lg pointer-events-none">VIEW TESTS</div>
-                  <div className="bg-slate-900/80 backdrop-blur-sm border border-amber-500/20 hover:border-amber-500 rounded-xl py-3 px-6 flex flex-col md:flex-row items-center justify-between transition-all hover:bg-amber-500/5 shadow-lg relative z-10">
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="p-2 bg-amber-500/10 rounded-lg border border-amber-500/20"><Server className="w-6 h-6 text-amber-400" /></div>
-                      <div><h3 className="text-lg font-bold text-slate-200">Infrastructure Layer</h3><p className="text-xs text-slate-500">Supply Chain, MLOps</p></div>
-                    </div>
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <span className={`rounded-full border px-2.5 py-1 text-[11px] font-bold ${RISK_META[featured.riskLevel].bg} ${RISK_META[featured.riskLevel].text} ${RISK_META[featured.riskLevel].border}`}>
+                    {RISK_META[featured.riskLevel].label}
+                  </span>
+                  <span className="rounded-full border border-slate-700 bg-slate-800/60 px-2.5 py-1 text-[11px] font-bold text-slate-300">
+                    {featured.pillar}
+                  </span>
+                  {refsFor(featured).map((r) => (
+                    <button
+                      key={r.id}
+                      onClick={() => onNavigateToOwasp(r.id)}
+                      className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2.5 py-1 font-mono text-[11px] font-bold text-cyan-300 hover:bg-cyan-500/20 transition-colors"
+                      title={`Open threat ${r.id}`}
+                    >
+                      {r.id}
+                    </button>
+                  ))}
+                </div>
+
+                <h3 key={featured.id} className="text-2xl md:text-3xl font-extrabold text-white leading-tight mb-3 animate-fade-up">
+                  {featured.title}
+                </h3>
+                <p className="text-sm text-slate-400 leading-relaxed mb-5 flex-1">{featured.summary}</p>
+
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                    <div className="font-mono text-lg font-bold text-white tabular-nums">{featured.objectives.length}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Objectives</div>
+                  </div>
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                    <div className="font-mono text-lg font-bold text-white tabular-nums">{featured.payloads.length}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Payloads</div>
+                  </div>
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                    <div className="font-mono text-lg font-bold text-white tabular-nums">{featured.mitigationStrategies.length}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Fixes</div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => onSelectTest(featured)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-5 py-3 text-sm font-bold text-red-300 hover:bg-red-500/20 hover:border-red-400 transition-all self-start"
+                >
+                  <Play className="w-4 h-4" />
+                  Open full test case
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* payload code */}
+              <div className="border-t lg:border-t-0 lg:border-l border-slate-800 bg-slate-950/70 p-6 md:p-9 flex flex-col">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="w-3 h-3 rounded-full bg-red-500/70" />
+                  <span className="w-3 h-3 rounded-full bg-amber-500/70" />
+                  <span className="w-3 h-3 rounded-full bg-emerald-500/70" />
+                  <span className="ml-2 font-mono text-[11px] text-slate-500">{featured.id.toLowerCase()}-payload.txt</span>
+                </div>
+                <div className="relative flex-1 rounded-xl border border-slate-800 bg-slate-950 p-5 overflow-hidden">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_90%_0%,rgba(239,68,68,0.08),transparent_50%)] pointer-events-none" />
+                  <pre key={featured.id} className="relative whitespace-pre-wrap break-words font-mono text-[13px] leading-relaxed text-emerald-300/90 animate-fade-up">
+                    <span className="text-slate-600 select-none">$ </span>{featuredCode || '// No payload snippet — open the test for full detail.'}
+                  </pre>
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-600 font-mono">try it against your own model — responsibly</span>
+                  {/* dots */}
+                  <div className="flex items-center gap-1.5">
+                    {stats.spotlight.slice(0, 8).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setSpotIndex(i)}
+                        aria-label={`Go to test ${i + 1}`}
+                        className={`h-1.5 rounded-full transition-all ${i === spotIndex % stats.spotlight.length ? 'w-6 bg-red-400' : 'w-1.5 bg-slate-700 hover:bg-slate-500'}`}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* progress bar */}
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-800">
+              <div
+                key={`prog-${spotIndex}-${spotPaused}`}
+                className="h-full bg-gradient-to-r from-red-500 to-purple-500"
+                style={{ animation: spotPaused ? 'none' : 'spotProgress 7s linear forwards', width: '0%' }}
+              />
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* ================================================================
+          TOOL MARQUEE
+      ================================================================= */}
+      <section className="mb-16 overflow-hidden">
+        <SectionHeader
+          kicker="Toolbox"
+          title={`${stats.uniqueTools.length} offensive & defensive tools, one marquee`}
+          blurb={`${stats.toolCategories.Offensive} offensive · ${stats.toolCategories.Defensive} defensive · ${stats.toolCategories.Both} dual-purpose. Sourced from the framework pages.`}
+        />
+        <div className="reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div className="flex overflow-hidden">
+            <div className="flex shrink-0 animate-marquee hover:[animation-play-state:paused]">
+              {[...stats.uniqueTools, ...stats.uniqueTools].map((tool, i) => (
+                <ToolChip key={`${tool.name}-${i}`} name={tool.name} cost={tool.cost} category={tool.category} />
+              ))}
+            </div>
+          </div>
+          <div className="flex overflow-hidden">
+            <div className="flex shrink-0 animate-marquee-reverse hover:[animation-play-state:paused]">
+              {[...stats.uniqueTools.slice().reverse(), ...stats.uniqueTools.slice().reverse()].map((tool, i) => (
+                <ToolChip key={`r-${tool.name}-${i}`} name={tool.name} cost={tool.cost} category={tool.category} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
+          INCIDENT RADAR
+      ================================================================= */}
+      <section className="mb-16">
+        <SectionHeader
+          kicker="Incident radar"
+          title="Real-world incidents behind the threats"
+          blurb="Rotating through the real breaches, leaks and attacks referenced throughout this app."
+        />
+        {incident && (
+          <div className="reveal relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 md:p-8">
+            <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
+            <div className="relative flex flex-col md:flex-row md:items-center gap-5">
+              <div className="shrink-0 inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-1.5 self-start md:self-center">
+                <Globe className="w-4 h-4 text-orange-400" />
+                <span className="font-mono text-[11px] font-bold tracking-wider text-orange-300 uppercase">Mapped to {incident.threatId}</span>
+              </div>
+              <p key={incidentIndex} className="flex-1 text-slate-200 font-medium leading-relaxed animate-fade-up text-base md:text-lg">
+                {incident.title}
+              </p>
+              <a
+                href={incident.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-bold text-slate-200 hover:border-orange-400/60 hover:text-white transition-all"
+              >
+                Read the report
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+            <div className="relative mt-5 flex items-center gap-1.5">
+              {stats.incidents.slice(0, 10).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setIncidentIndex(i)}
+                  aria-label={`Incident ${i + 1}`}
+                  className={`h-1 rounded-full transition-all ${i === incidentIndex % stats.incidents.length ? 'w-8 bg-orange-400' : 'w-4 bg-slate-700 hover:bg-slate-500'}`}
+                />
+              ))}
+              <span className="ml-auto font-mono text-[10px] text-slate-600 uppercase tracking-wider">{stats.incidents.length} incidents indexed</span>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* ================================================================
+          FOOTER
+      ================================================================= */}
+      <footer className="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-2 text-slate-400 text-sm">
+          <div className="p-1.5 bg-slate-900 rounded-lg border border-slate-800">
+            <BookOpen className="w-4 h-4 text-cyan-400" />
+          </div>
+          <span>© {new Date().getFullYear()} AI Security Nexus</span>
+          <span className="hidden sm:inline text-slate-700">·</span>
+          <span className="hidden sm:inline font-mono text-[11px] text-slate-600">
+            {stats.totalTests} tests · {stats.totalPayloads} payloads · v1.2.0
+          </span>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition-colors">
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-slate-400 text-sm font-medium">Critical Risks</span>
-              <Activity className="w-5 h-5 text-red-400" />
-            </div>
-            <div className="text-3xl font-bold text-white">15+</div>
-            <p className="text-xs text-slate-500 mt-2">Requires immediate attention</p>
-          </div>
-          
-          <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition-colors">
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-slate-400 text-sm font-medium">Test Coverage</span>
-              <ShieldAlert className="w-5 h-5 text-cyan-400" />
-            </div>
-            <div className="text-3xl font-bold text-white">50+</div>
-            <p className="text-xs text-slate-500 mt-2">Scenarios available</p>
-          </div>
-
-          <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition-colors">
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-slate-400 text-sm font-medium">Architecture</span>
-              <Lock className="w-5 h-5 text-amber-400" />
-            </div>
-            <div className="text-lg font-bold text-white">Zero Trust</div>
-            <p className="text-xs text-slate-500 mt-2">Security model</p>
-          </div>
-
-          <a 
-            href="https://artificialintelligenceact.eu/" 
-            target="_blank" 
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <span className="hidden md:flex items-center gap-1.5 text-[11px] text-slate-600 font-mono uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+            Powered by OWASP · SAIF · MCP
+          </span>
+          <a
+            href="https://github.com/WhatIsMox/OWASP-AI-Testing-Bible/tree/main"
+            target="_blank"
             rel="noopener noreferrer"
-            className="bg-slate-900 p-6 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-emerald-500/50 hover:bg-slate-900/50 transition-all cursor-pointer group"
+            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
           >
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-slate-400 text-sm font-medium group-hover:text-emerald-400 transition-colors">Compliance</span>
-              <BookOpen className="w-5 h-5 text-emerald-400" />
-            </div>
-            <div className="text-lg font-bold text-white group-hover:text-emerald-300 transition-colors flex items-center gap-2">
-              EU AI Act
-              <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <p className="text-xs text-slate-500 mt-2">Aligned with regulations</p>
+            <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-sm font-medium">Source Code</span>
+          </a>
+          <a
+            href="https://github.com/WhatIsMox/OWASP-AI-Testing-Bible/tree/main"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-1.5 bg-cyan-450/10 text-cyan-450 border border-cyan-450/20 rounded-full hover:bg-cyan-450/20 transition-all text-sm font-bold group"
+          >
+            <Star className="w-4 h-4 group-hover:fill-cyan-450 transition-all" />
+            Star this Project
           </a>
         </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="mt-auto pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 pb-4">
-          <div className="flex items-center gap-2 text-slate-400 text-sm">
-             <div className="p-1.5 bg-slate-900 rounded-lg border border-slate-800">
-               <BookOpen className="w-4 h-4 text-cyan-400" />
-             </div>
-             <span>© 2025 AI Security Nexus</span>
-          </div>
-          
-          <div className="flex items-center gap-6">
-              <a 
-                href="https://github.com/WhatIsMox/OWASP-AI-Testing-Bible/tree/main" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
-              >
-                <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium">Source Code</span>
-              </a>
-              
-              <a 
-                href="https://github.com/WhatIsMox/OWASP-AI-Testing-Bible/tree/main" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-1.5 bg-cyan-450/10 text-cyan-450 border border-cyan-450/20 rounded-full hover:bg-cyan-450/20 transition-all text-sm font-bold group"
-              >
-                <Star className="w-4 h-4 group-hover:fill-cyan-450 transition-all" />
-                Star this Project
-              </a>
-          </div>
       </footer>
     </div>
   );
 };
+
+/* ------------------------------------------------------------------ */
+/*  Sub-components                                                     */
+/* ------------------------------------------------------------------ */
+
+const SectionHeader: React.FC<{ kicker: string; title: string; blurb?: string }> = ({ kicker, title, blurb }) => (
+  <div className="reveal mb-8 max-w-3xl">
+    <p className="flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-cyan-400 mb-3">
+      <span className="inline-block h-px w-8 bg-cyan-400/60" />
+      {kicker}
+    </p>
+    <h2 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight mb-3">{title}</h2>
+    {blurb && <p className="text-sm md:text-base text-slate-400 leading-relaxed">{blurb}</p>}
+  </div>
+);
+
+const PillarNode: React.FC<{ pillar: Pillar; tests: TestItem[]; onOpen: () => void }> = ({ pillar, tests, onOpen }) => {
+  const meta = PILLAR_META[pillar];
+  const criticals = tests.filter((t) => t.riskLevel === 'Critical' || t.riskLevel === 'High').length;
+  const top = [...tests].sort((a, b) => RISK_META[b.riskLevel].rank - RISK_META[a.riskLevel].rank)[0];
+  return (
+    <button
+      onClick={onOpen}
+      className={`group relative w-full overflow-hidden rounded-2xl border ${meta.ring} bg-slate-900/80 backdrop-blur p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:bg-slate-900`}
+    >
+      <div className={`absolute inset-x-0 top-0 h-24 bg-gradient-to-b ${meta.glow} to-transparent opacity-40 group-hover:opacity-80 transition-opacity pointer-events-none`} />
+      <div className="relative flex items-start gap-4">
+        <div className={`p-3 rounded-xl border ${meta.iconBg} shrink-0`}>
+          <meta.icon className={`w-6 h-6 ${meta.text}`} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="font-bold text-white">{meta.name}</h4>
+            <span className="font-mono text-xs font-bold text-slate-400 tabular-nums">{tests.length}</span>
+          </div>
+          <p className="text-xs text-slate-500 mb-3">{meta.blurb}</p>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex-1 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-red-500 to-orange-400 transition-all duration-1000"
+                style={{ width: tests.length ? `${(criticals / tests.length) * 100}%` : '0%' }}
+              />
+            </div>
+            <span className="text-[10px] font-mono text-red-300/80 shrink-0">{criticals} crit</span>
+          </div>
+          {top && (
+            <div className="truncate rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-left">
+              <span className={`font-mono text-[10px] font-bold ${RISK_META[top.riskLevel].text}`}>{top.id}</span>
+              <span className="text-xs text-slate-400 ml-2 truncate">{top.title}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+};
+
+const FlowConnector: React.FC<{ className?: string; horizontal?: boolean }> = ({ className = '', horizontal }) => (
+  <div className={`${horizontal ? 'items-center justify-center py-1' : 'flex-col items-center justify-center'} ${className} pointer-events-none`} aria-hidden="true">
+    <span className="block w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-slate-800/60 border border-slate-700 flex items-center justify-center animate-float-y">
+      <ArrowLeftRight className="w-4 h-4 text-slate-500" />
+    </span>
+  </div>
+);
+
+const CATEGORY_DOT: Record<string, string> = {
+  Offensive: 'bg-red-400',
+  Defensive: 'bg-emerald-400',
+  Both: 'bg-amber-400',
+};
+
+const ToolChip: React.FC<{ name: string; cost: string; category?: 'Offensive' | 'Defensive' | 'Both' }> = ({ name, cost, category }) => (
+  <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-800 bg-slate-900/80 px-4 py-2 mr-3 text-sm text-slate-300 hover:border-cyan-500/40 hover:text-white transition-colors">
+    <span className={`h-1.5 w-1.5 rounded-full ${category ? CATEGORY_DOT[category] : 'bg-slate-500'}`} />
+    <span className="font-semibold">{name}</span>
+    <span className="font-mono text-[10px] text-slate-500 border-l border-slate-800 pl-2">{cost}</span>
+  </span>
+);
 
 export default Dashboard;

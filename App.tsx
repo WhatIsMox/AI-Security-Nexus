@@ -169,7 +169,12 @@ const App: React.FC = () => {
 
         <div className="relative z-10 py-8">
           {currentView === 'dashboard' && (
-            <Dashboard onSelectPillar={handleSelectPillar} />
+            <Dashboard 
+              onSelectPillar={handleSelectPillar} 
+              onSelectThreatModel={handleSelectThreatModel}
+              onSelectTest={handleSelectTest}
+              onNavigateToOwasp={handleNavigateToOwasp}
+            />
           )}
 
           {currentView === 'threat-model' && (
