@@ -98,11 +98,11 @@
   to   { transform: translateX(0); }
 }
 .animate-marquee {
-  animation: marquee 240s linear infinite;
+  animation: marquee 420s linear infinite;
   will-change: transform;
 }
 .animate-marquee-reverse {
-  animation: marquee-reverse 260s linear infinite;
+  animation: marquee-reverse 460s linear infinite;
   will-change: transform;
 }
 

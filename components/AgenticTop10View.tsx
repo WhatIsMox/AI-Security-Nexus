@@ -29,66 +29,79 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const currentSource = framework === 'applications'
+    ? {
+        label: 'Official ASI publication',
+        url: 'https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/',
+        className: 'text-orange-300 hover:text-orange-200',
+      }
+    : {
+        label: 'Official AST project',
+        url: 'https://owasp.org/www-project-agentic-skills-top-10/',
+        className: 'text-cyan-300 hover:text-cyan-200',
+      };
+
   return (
     <div>
-      <section className="px-4 md:px-8 pt-4 max-w-6xl mx-auto" aria-label="Agentic security framework selector">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 md:p-5 shadow-xl shadow-black/10">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-400 mb-1">OWASP agentic security</p>
-              <h1 className="text-xl font-bold text-white">Two complementary Top 10 frameworks</h1>
-              <p className="text-sm text-slate-400 mt-1 max-w-2xl">Choose the system-wide application risks (ASI) or the reusable skill-layer risks (AST). Both lists remain complete, independently sourced, and connected to the rest of the testing guide.</p>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-2 lg:w-[520px]" role="tablist" aria-label="Agentic Top 10 framework">
+      <section className="px-4 md:px-8 pt-5 max-w-6xl mx-auto" aria-label="Agentic security framework selector">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/70 p-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="hidden md:block pl-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 whitespace-nowrap">Agentic framework</span>
+            <div className="inline-flex w-full sm:w-auto rounded-lg border border-slate-700 bg-slate-950/80 p-1" role="tablist" aria-label="Agentic Top 10 framework">
               <button
+                id="agentic-applications-tab"
                 type="button"
                 role="tab"
                 aria-selected={framework === 'applications'}
+                aria-controls="agentic-applications-panel"
                 onClick={() => selectFramework('applications')}
-                className={`text-left rounded-xl border p-3 transition-colors ${framework === 'applications' ? 'border-orange-500/50 bg-orange-500/15 text-white' : 'border-slate-700 bg-slate-950/60 text-slate-400 hover:border-slate-600 hover:text-white'}`}
+                className={`flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-all ${framework === 'applications' ? 'bg-orange-500/15 text-orange-200 shadow-sm ring-1 ring-orange-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
               >
-                <span className="flex items-center gap-2 font-bold text-sm"><Bot className="w-4 h-4 text-orange-400" />Agentic Applications</span>
-                <span className="block text-[11px] mt-1 font-mono text-orange-300">ASI01-ASI10 · 2026</span>
+                <Bot className="w-4 h-4" />Applications <span className="font-mono text-[10px] opacity-75">ASI</span>
               </button>
               <button
+                id="agentic-skills-tab"
                 type="button"
                 role="tab"
                 aria-selected={framework === 'skills'}
+                aria-controls="agentic-skills-panel"
                 onClick={() => selectFramework('skills')}
-                className={`text-left rounded-xl border p-3 transition-colors ${framework === 'skills' ? 'border-cyan-500/50 bg-cyan-500/10 text-white' : 'border-slate-700 bg-slate-950/60 text-slate-400 hover:border-slate-600 hover:text-white'}`}
+                className={`flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-all ${framework === 'skills' ? 'bg-cyan-500/15 text-cyan-200 shadow-sm ring-1 ring-cyan-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}
               >
-                <span className="flex items-center gap-2 font-bold text-sm"><Blocks className="w-4 h-4 text-cyan-400" />Agentic Skills</span>
-                <span className="block text-[11px] mt-1 font-mono text-cyan-300">AST01-AST10 · August 2026</span>
+                <Blocks className="w-4 h-4" />Skills <span className="font-mono text-[10px] opacity-75">AST</span>
               </button>
             </div>
           </div>
-          <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-slate-800 text-xs">
-            <a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-orange-300 hover:text-orange-200">Official ASI publication <ExternalLink className="w-3 h-3" /></a>
-            <a href="https://owasp.org/www-project-agentic-skills-top-10/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-cyan-300 hover:text-cyan-200">Official AST project <ExternalLink className="w-3 h-3" /></a>
-          </div>
+          <a href={currentSource.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-1.5 px-2 text-xs font-medium whitespace-nowrap ${currentSource.className}`}>
+            {currentSource.label}<ExternalLink className="w-3 h-3" />
+          </a>
         </div>
       </section>
 
       {framework === 'applications' ? (
-        <OwaspTop10View
-          key="agentic-applications"
-          initialExpandedId={initialExpandedId?.startsWith('ASI') ? initialExpandedId : null}
-          data={OWASP_AGENTIC_APPLICATIONS_DATA}
-          title="OWASP Top 10 for Agentic Applications 2026"
-          description="Application-level risks across agent goals, tools, identities, supply chains, execution, memory, inter-agent coordination, systemic propagation, human trust, and behavioral integrity."
-          colorTheme="orange"
-          frameworkOverview={AGENTIC_APPLICATIONS_OVERVIEW}
-        />
+        <div id="agentic-applications-panel" role="tabpanel" aria-labelledby="agentic-applications-tab">
+          <OwaspTop10View
+            key="agentic-applications"
+            initialExpandedId={initialExpandedId?.startsWith('ASI') ? initialExpandedId : null}
+            data={OWASP_AGENTIC_APPLICATIONS_DATA}
+            title="OWASP Top 10 for Agentic Applications 2026"
+            description="Application-level risks across agent goals, tools, identities, supply chains, execution, memory, inter-agent coordination, systemic propagation, human trust, and behavioral integrity."
+            colorTheme="orange"
+            frameworkOverview={AGENTIC_APPLICATIONS_OVERVIEW}
+          />
+        </div>
       ) : (
-        <OwaspTop10View
-          key="agentic-skills"
-          initialExpandedId={initialExpandedId?.startsWith('AST') ? initialExpandedId : null}
-          data={OWASP_AGENTIC_THREATS_DATA}
-          title="OWASP Agentic Skills Top 10"
-          description="Skill-layer risks for reusable agent instructions, code, metadata, registries, runtime permissions, lifecycle controls, and cross-platform reuse."
-          colorTheme="cyan"
-          frameworkOverview={AGENTIC_SKILLS_OVERVIEW}
-        />
+        <div id="agentic-skills-panel" role="tabpanel" aria-labelledby="agentic-skills-tab">
+          <OwaspTop10View
+            key="agentic-skills"
+            initialExpandedId={initialExpandedId?.startsWith('AST') ? initialExpandedId : null}
+            data={OWASP_AGENTIC_THREATS_DATA}
+            title="OWASP Agentic Skills Top 10"
+            description="Skill-layer risks for reusable agent instructions, code, metadata, registries, runtime permissions, lifecycle controls, and cross-platform reuse."
+            colorTheme="cyan"
+            frameworkOverview={AGENTIC_SKILLS_OVERVIEW}
+          />
+        </div>
       )}
     </div>
   );

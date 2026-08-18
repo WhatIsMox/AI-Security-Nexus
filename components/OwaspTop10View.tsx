@@ -24,6 +24,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 }) => {
   const [expandedId, setExpandedId] = useState<string | null>(initialExpandedId || null);
   const [toolFilters, setToolFilters] = useState<Record<string, { category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>>({});
+  const [openOverviewSection, setOpenOverviewSection] = useState<'overview' | 'terminology' | 'triage' | null>(null);
 
   useEffect(() => {
     if (initialExpandedId) {
@@ -93,6 +94,33 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
   const currentTheme = theme[colorTheme];
 
+  const overviewSections = frameworkOverview ? [
+    {
+      id: 'overview' as const,
+      label: 'Framework overview',
+      summary: frameworkOverview.edition,
+      icon: BookOpen,
+      activeClass: 'border-orange-500/40 bg-orange-500/10 text-orange-200',
+      iconClass: 'text-orange-400',
+    },
+    {
+      id: 'terminology' as const,
+      label: 'Key terminology',
+      summary: `${frameworkOverview.terminology.length} concepts and definitions`,
+      icon: Info,
+      activeClass: 'border-cyan-500/40 bg-cyan-500/10 text-cyan-200',
+      iconClass: 'text-cyan-400',
+    },
+    {
+      id: 'triage' as const,
+      label: 'Finding triage',
+      summary: `${frameworkOverview.triageSteps.length} classification steps`,
+      icon: GitBranch,
+      activeClass: 'border-purple-500/40 bg-purple-500/10 text-purple-200',
+      iconClass: 'text-purple-400',
+    },
+  ] : [];
+
   const formatId = (id: string) => {
     if (id.includes(':')) return id.split(':')[0];
     return id;
@@ -110,54 +138,56 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
       </div>
 
       {frameworkOverview && (
-        <section className="mb-10 space-y-5" aria-label={`${title} overview`}>
-          <div className="rounded-2xl border border-orange-500/20 bg-gradient-to-br from-orange-500/10 via-slate-900/80 to-slate-950 p-6 md:p-8">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
-              <div>
-                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-orange-300 mb-3">
-                  <BookOpen className="w-4 h-4" /> {frameworkOverview.edition}
-                </div>
-                <p className="text-slate-300 leading-relaxed max-w-4xl">{frameworkOverview.scopeNote}</p>
-              </div>
-              {frameworkOverview.severityNote && (
-                <div className="shrink-0 md:max-w-sm rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-100/80 leading-relaxed">
-                  <span className="font-bold text-amber-300">Scoring note: </span>{frameworkOverview.severityNote}
-                </div>
-              )}
-            </div>
-            <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-              {frameworkOverview.riskGroups.map((group) => (
-                <div key={group.title} className="rounded-xl border border-slate-700/70 bg-slate-950/60 p-4">
-                  <h3 className="flex items-center gap-2 text-sm font-bold text-white mb-2"><Layers3 className="w-4 h-4 text-orange-400" />{group.title}</h3>
-                  <p className="font-mono text-[11px] text-orange-300 mb-2">{group.entries.join(' · ')}</p>
-                  <p className="text-xs text-slate-400 leading-relaxed">{group.description}</p>
-                </div>
-              ))}
-            </div>
+        <section className="mb-8" aria-label={`${title} supporting information`}>
+          <div className="grid sm:grid-cols-3 gap-3">
+            {overviewSections.map((section) => {
+              const isOpen = openOverviewSection === section.id;
+              return (
+                <button
+                  key={section.id}
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={`${section.id}-framework-panel`}
+                  onClick={() => setOpenOverviewSection(isOpen ? null : section.id)}
+                  className={`group flex items-center gap-3 rounded-xl border p-3.5 text-left transition-all ${isOpen ? section.activeClass : 'border-slate-800 bg-slate-900/55 text-slate-300 hover:border-slate-700 hover:bg-slate-900/80'}`}
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-700/70 bg-slate-950/70">
+                    <section.icon className={`w-4 h-4 ${section.iconClass}`} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-sm font-bold">{section.label}</span>
+                    <span className="block truncate text-[11px] text-slate-500 mt-0.5">{section.summary}</span>
+                  </span>
+                  <ChevronDown className={`w-4 h-4 shrink-0 text-slate-500 transition-transform ${isOpen ? 'rotate-180' : 'group-hover:text-slate-300'}`} />
+                </button>
+              );
+            })}
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-5">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-              <h2 className="flex items-center gap-2 text-sm font-bold text-slate-200 uppercase tracking-wider mb-4"><Info className="w-4 h-4 text-cyan-400" />Key terminology</h2>
-              <dl className="space-y-3">
-                {frameworkOverview.terminology.map((item) => (
-                  <div key={item.term} className="border-l-2 border-cyan-500/30 pl-3">
-                    <dt className="text-sm font-bold text-cyan-300">{item.term}</dt>
-                    <dd className="text-xs text-slate-400 leading-relaxed mt-1">{item.definition}</dd>
+          {openOverviewSection === 'overview' && (
+            <div id="overview-framework-panel" role="region" className="mt-3 rounded-2xl border border-orange-500/20 bg-gradient-to-br from-orange-500/10 via-slate-900/80 to-slate-950 p-5 md:p-7 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
+                <div>
+                  <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-orange-300 mb-3">
+                    <BookOpen className="w-4 h-4" /> {frameworkOverview.edition}
+                  </div>
+                  <p className="text-sm text-slate-300 leading-relaxed max-w-4xl">{frameworkOverview.scopeNote}</p>
+                </div>
+                {frameworkOverview.severityNote && (
+                  <div className="shrink-0 md:max-w-sm rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-100/80 leading-relaxed">
+                    <span className="font-bold text-amber-300">Scoring note: </span>{frameworkOverview.severityNote}
+                  </div>
+                )}
+              </div>
+              <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                {frameworkOverview.riskGroups.map((group) => (
+                  <div key={group.title} className="rounded-xl border border-slate-700/70 bg-slate-950/60 p-4">
+                    <h3 className="flex items-center gap-2 text-sm font-bold text-white mb-2"><Layers3 className="w-4 h-4 text-orange-400" />{group.title}</h3>
+                    <p className="font-mono text-[11px] text-orange-300 mb-2">{group.entries.join(' · ')}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed">{group.description}</p>
                   </div>
                 ))}
-              </dl>
-            </div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-              <h2 className="flex items-center gap-2 text-sm font-bold text-slate-200 uppercase tracking-wider mb-4"><GitBranch className="w-4 h-4 text-purple-400" />Finding triage</h2>
-              <ol className="space-y-3">
-                {frameworkOverview.triageSteps.map((step, index) => (
-                  <li key={step} className="flex gap-3 text-xs text-slate-400 leading-relaxed">
-                    <span className="w-6 h-6 shrink-0 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono flex items-center justify-center">{index + 1}</span>
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ol>
+              </div>
               <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-slate-800">
                 {frameworkOverview.resources.map((resource) => (
                   <a key={resource.url} href={resource.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 rounded-md hover:bg-blue-500/20 transition-colors">
@@ -166,7 +196,35 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                 ))}
               </div>
             </div>
-          </div>
+          )}
+
+          {openOverviewSection === 'terminology' && (
+            <div id="terminology-framework-panel" role="region" className="mt-3 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5 md:p-7 animate-in fade-in slide-in-from-top-2 duration-200">
+              <h2 className="flex items-center gap-2 text-sm font-bold text-slate-200 uppercase tracking-wider mb-5"><Info className="w-4 h-4 text-cyan-400" />Key terminology</h2>
+              <dl className="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                {frameworkOverview.terminology.map((item) => (
+                  <div key={item.term} className="border-l-2 border-cyan-500/30 pl-3">
+                    <dt className="text-sm font-bold text-cyan-300">{item.term}</dt>
+                    <dd className="text-xs text-slate-400 leading-relaxed mt-1">{item.definition}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+
+          {openOverviewSection === 'triage' && (
+            <div id="triage-framework-panel" role="region" className="mt-3 rounded-2xl border border-purple-500/20 bg-purple-500/5 p-5 md:p-7 animate-in fade-in slide-in-from-top-2 duration-200">
+              <h2 className="flex items-center gap-2 text-sm font-bold text-slate-200 uppercase tracking-wider mb-5"><GitBranch className="w-4 h-4 text-purple-400" />Finding triage</h2>
+              <ol className="grid lg:grid-cols-2 gap-4">
+                {frameworkOverview.triageSteps.map((step, index) => (
+                  <li key={step} className="flex gap-3 text-xs text-slate-400 leading-relaxed rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+                    <span className="w-6 h-6 shrink-0 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono flex items-center justify-center">{index + 1}</span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </section>
       )}
 
