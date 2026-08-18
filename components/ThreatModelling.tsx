@@ -40,7 +40,7 @@ interface ThreatDefinition {
   scenario: string;
   riskOwner: string;
   impact: string;
-  riskLevel: 'Critical' | 'High' | 'Medium' | 'Low';
+  riskLevel: 'Critical' | 'High' | 'Medium' | 'Low' | 'Unrated';
   relatedTestIds: string[]; 
   affectedComponents: string[]; 
   category: 'Security' | 'Responsible AI' | 'Privacy' | 'Social Engineering';
@@ -672,167 +672,29 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     mitigatedAt: ["12", "10"]
   },
 
-  // --- OWASP Agentic AI Threats (ASI) ---
-  { 
-    id: "ASI01", 
-    name: "Agent Goal Hijack", 
-    category: "Security", 
-    riskLevel: "Critical", 
-    relatedTestIds: ["AGT-01", "AITG-APP-01", "AITG-APP-02"], 
-    affectedComponents: ["1", "4", "5", "7", "9"], 
-    impact: "Redirection of autonomy, data exfiltration, unauthorized actions.", 
-    riskOwner: "Model User", 
-    scenario: "An attacker emails a crafted message that silently triggers an agent to execute hidden instructions.", 
-    description: "Attackers manipulate an agent’s objectives, task selection, or decision pathways.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["1", "6"],
-    exposedAt: ["5"],
-    mitigatedAt: ["4", "7"]
-  },
-  { 
-    id: "ASI02", 
-    name: "Tool Misuse and Exploitation", 
-    category: "Security", 
-    riskLevel: "Critical", 
-    relatedTestIds: ["AGT-02", "AITG-INF-03", "AITG-INF-04"], 
-    affectedComponents: ["4", "5", "6"], 
-    impact: "Unauthorized actions via unsafe tool calls or chaining.", 
-    riskOwner: "Model Consumer", 
-    scenario: "An agent chains tools to exfiltrate data or delete records.", 
-    description: "Agents misuse tools or chain calls to bypass controls.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["5"],
-    exposedAt: ["4", "6"],
-    mitigatedAt: ["4"]
-  },
-  { 
-    id: "ASI03", 
-    name: "Identity and Privilege Abuse", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AGT-03"], 
-    affectedComponents: ["4", "5", "11", "15"], 
-    impact: "Privilege escalation or cross-tenant access.", 
-    riskOwner: "Model Consumer", 
-    scenario: "An agent reuses cached credentials to access another tenant.", 
-    description: "Abuse of delegated identity or cached credentials enables escalation.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["4", "5"],
-    exposedAt: ["11", "4"],
-    mitigatedAt: ["4", "11"]
-  },
-  { 
-    id: "ASI04", 
-    name: "Agentic Supply Chain Vulnerabilities", 
-    category: "Security", 
-    riskLevel: "Critical", 
-    relatedTestIds: ["AGT-04", "AITG-INF-01"], 
-    affectedComponents: ["6", "5", "14", "10", "11"], 
-    impact: "Compromised tools or sub-agents introduce backdoors.", 
-    riskOwner: "Model Creator/Consumer", 
-    scenario: "A malicious MCP tool update injects hidden actions.", 
-    description: "Third-party agents, tools, or registries are compromised.",
-    responsibility: ["Model Creator", "Model Consumer"],
-    introducedAt: ["6", "14"],
-    exposedAt: ["5", "11"],
-    mitigatedAt: ["10", "14"]
-  },
-  { 
-    id: "ASI05", 
-    name: "Unexpected Code Execution (RCE)", 
-    category: "Security", 
-    riskLevel: "Critical", 
-    relatedTestIds: ["AGT-05", "AITG-APP-05"], 
-    affectedComponents: ["5", "11", "14"], 
-    impact: "Arbitrary code execution on agent infrastructure.", 
-    riskOwner: "Model Consumer", 
-    scenario: "Agent executes untrusted code from a tool response.", 
-    description: "Agents execute code or commands derived from untrusted input.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["5"],
-    exposedAt: ["11"],
-    mitigatedAt: ["11", "14"]
-  },
-  { 
-    id: "ASI06", 
-    name: "Memory & Context Poisoning", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AGT-06", "AITG-APP-08"], 
-    affectedComponents: ["15", "18", "19", "4"], 
-    impact: "Persistent manipulation of agent decisions across sessions.", 
-    riskOwner: "Model Consumer", 
-    scenario: "Poisoned RAG documents bias the agent's future responses.", 
-    description: "Long-term memory or context stores are poisoned or corrupted.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["18", "19"],
-    exposedAt: ["15", "4"],
-    mitigatedAt: ["17", "15"]
-  },
-  { 
-    id: "ASI07", 
-    name: "Insecure Inter-Agent Communication", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AGT-07"], 
-    affectedComponents: ["5", "11"], 
-    impact: "Message spoofing or tampering between agents.", 
-    riskOwner: "Model Consumer", 
-    scenario: "An attacker spoofs a supervisor agent message to disable controls.", 
-    description: "Inter-agent messages lack authentication or integrity.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["5"],
-    exposedAt: ["11"],
-    mitigatedAt: ["11"]
-  },
-  { 
-    id: "ASI08", 
-    name: "Cascading Failures", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AGT-08", "AITG-INF-02"], 
-    affectedComponents: ["4", "11"], 
-    impact: "Runaway loops, outages, or system-wide instability.", 
-    riskOwner: "Model Consumer", 
-    scenario: "Two agents trigger an infinite loop and exhaust resources.", 
-    description: "Failures propagate across agents and services.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["4", "5"],
-    exposedAt: ["11"],
-    mitigatedAt: ["11"]
-  },
-  { 
-    id: "ASI09", 
-    name: "Trust Exploitation", 
-    category: "Social Engineering", 
-    riskLevel: "Medium", 
-    relatedTestIds: ["AGT-09"], 
-    affectedComponents: ["1", "4"], 
-    impact: "Users are manipulated into unsafe approvals.", 
-    riskOwner: "Model Consumer", 
-    scenario: "Agent uses authority bias to pressure a user into approving a transfer.", 
-    description: "Agents exploit user trust to drive unsafe actions.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["1"],
-    exposedAt: ["4"],
-    mitigatedAt: ["4"]
-  },
-  { 
-    id: "ASI10", 
-    name: "Rogue Agent Behavior", 
-    category: "Security", 
-    riskLevel: "High", 
-    relatedTestIds: ["AGT-10", "AITG-APP-06"], 
-    affectedComponents: ["4", "5", "11"], 
-    impact: "Reward hacking, self-preservation, and scope violations.", 
-    riskOwner: "Model Consumer", 
-    scenario: "Agent prioritizes its objective over safety constraints.", 
-    description: "Agents exhibit behavior outside intended scope or controls.",
-    responsibility: ["Model Consumer"],
-    introducedAt: ["5"],
-    exposedAt: ["4", "11"],
-    mitigatedAt: ["4", "11"]
-  },
+  // --- OWASP Top 10 for Agentic Applications (ASI, 2026) ---
+  { id: "ASI01", name: "Agent Goal Hijack", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-APP-01", "AITG-APP-02"], affectedComponents: ["5", "6", "11", "18"], impact: "The agent's objective, constraints, plan, delegation, or tool selection is redirected toward attacker-chosen outcomes.", riskOwner: "Model Creator/Consumer", scenario: "Instructions hidden in retrieved content replace the approved goal and cause a privileged action.", description: "Untrusted prompts, documents, messages, tool output, or business data directly manipulate an agent's active goal or reasoning path.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["6", "18"], exposedAt: ["5", "11"], mitigatedAt: ["4", "12"] },
+  { id: "ASI02", name: "Tool Misuse and Exploitation", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-INF-03", "AITG-INF-04"], affectedComponents: ["5", "11", "15", "19"], impact: "Legitimate shell, browser, database, financial, messaging, or administrative capability is composed into an unsafe effect.", riskOwner: "Model Consumer", scenario: "A permitted CRM read and permitted outbound email are chained to exfiltrate customer records.", description: "An agent uses an available tool unsafely within nominal authorization because intent, arguments, destinations, budgets, or delegation are not constrained.", responsibility: ["Model Consumer"], introducedAt: ["5", "19"], exposedAt: ["11", "15"], mitigatedAt: ["4", "11"] },
+  { id: "ASI03", name: "Identity and Privilege Abuse", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-APP-01", "AITG-APP-06", "AITG-INF-04"], affectedComponents: ["4", "5", "11", "15"], impact: "Forged, shared, cached, inherited, or over-broad agent identity enables unauthorized action and destroys attribution.", riskOwner: "Model Consumer", scenario: "A low-privilege agent becomes a confused deputy by delegating to an administrator agent without preserving the original caller.", description: "Task identity, non-human credentials, delegated roles, and authorization context are abused or allowed to drift across workflow boundaries.", responsibility: ["Model Consumer"], introducedAt: ["4", "5"], exposedAt: ["11", "15"], mitigatedAt: ["4", "11"] },
+  { id: "ASI04", name: "Agentic Supply Chain Vulnerabilities", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-INF-01"], affectedComponents: ["6", "10", "14", "18", "19"], impact: "A compromised model, agent, tool, prompt, package, registry, knowledge source, or update gains trusted runtime influence.", riskOwner: "Model Creator/Consumer", scenario: "A forged agent card or poisoned MCP descriptor wins discovery and intercepts delegated data.", description: "Static and dynamically discovered agentic components lack sufficient provenance, integrity, attestation, pinning, or behavioral release controls.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["6", "10", "14"], exposedAt: ["5", "11"], mitigatedAt: ["10", "12", "14"] },
+  { id: "ASI05", name: "Unexpected Code Execution (RCE)", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-APP-05"], affectedComponents: ["5", "11", "14", "15"], impact: "Agent-controlled content executes as commands, packages, templates, serialized objects, scripts, or binaries on a host or production environment.", riskOwner: "Model Creator/Consumer", scenario: "An injected document value reaches an agent-generated shell command and executes a second attacker-controlled command.", description: "Model output or untrusted context crosses a code-execution boundary through unsafe output handling, dynamic loading, eval, deserialization, or autonomous coding workflows.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["5", "14"], exposedAt: ["11", "15"], mitigatedAt: ["11", "12"] },
+  { id: "ASI06", name: "Memory & Context Poisoning", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-APP-08"], affectedComponents: ["5", "7", "18", "19"], impact: "Corrupted summaries, embeddings, RAG stores, or long-term memory bias future sessions, leak tenant data, or plant persistent behavioral backdoors.", riskOwner: "Model Creator/Consumer", scenario: "Indirect prompt injection writes a false policy into shared memory and several later agents reuse it as trusted context.", description: "Retained or retrieved information is seeded or modified so future planning, reasoning, retrieval, and actions become unsafe.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["7", "18", "19"], exposedAt: ["5"], mitigatedAt: ["7", "12"] },
+  { id: "ASI07", name: "Insecure Inter-Agent Communication", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-INF-03"], affectedComponents: ["4", "5", "18", "19"], impact: "Messages and delegations are intercepted, forged, altered, replayed, downgraded, misrouted, or interpreted inconsistently.", riskOwner: "Model Consumer", scenario: "A cloned A2A agent card registers a fake peer and receives privileged coordination traffic.", description: "Live agent communication lacks sufficient authentication, confidentiality, integrity, audience binding, replay protection, routing trust, or semantic validation.", responsibility: ["Model Consumer"], introducedAt: ["4", "19"], exposedAt: ["5", "18"], mitigatedAt: ["4", "11"] },
+  { id: "ASI08", name: "Cascading Failures", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-INF-02"], affectedComponents: ["5", "7", "11", "15", "18"], impact: "One error or compromise fans out across agents, tenants, regions, queues, tools, or workflows into systemic loss.", riskOwner: "Model Creator/Consumer", scenario: "A poisoned planner changes risk limits and downstream trading agents automatically amplify the unsafe decision.", description: "Autonomy, delegation, retries, shared state, and feedback loops propagate an initial fault beyond its source and credible human response speed.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["5", "7", "18"], exposedAt: ["11", "15"], mitigatedAt: ["11", "12"] },
+  { id: "ASI09", name: "Human-Agent Trust Exploitation", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-APP-10"], affectedComponents: ["5", "11", "15"], impact: "Automation bias, emotional cues, urgency, authority, or fabricated explanations persuade a person to disclose data or approve harm.", riskOwner: "Model Consumer", scenario: "A finance copilot uses a poisoned invoice and confident rationale to obtain approval for an attacker-controlled transfer.", description: "Anthropomorphism and perceived expertise are exploited so the human becomes the final audited actor while agent influence remains hard to trace.", responsibility: ["Model Consumer"], introducedAt: ["5"], exposedAt: ["11", "15"], mitigatedAt: ["11", "12"] },
+  { id: "ASI10", name: "Rogue Agents", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AITG-APP-06"], affectedComponents: ["4", "5", "11", "15", "18"], impact: "An agent persistently schemes, hijacks workflows, colludes, self-replicates, games rewards, exfiltrates data, or resists containment.", riskOwner: "Model Creator/Consumer", scenario: "A compromised automation agent uses provisioning APIs to create unauthorized replicas and preserve access.", description: "Behavioral integrity and governance are lost after an agent deviates from its intended function or authorized scope.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["5", "18"], exposedAt: ["11", "15"], mitigatedAt: ["4", "11", "12"] },
+
+  // --- OWASP Agentic Skills Top 10 (AST, August 2026) ---
+  { id: "AST01", name: "Malicious Skills", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-01", "AITG-APP-08"], affectedComponents: ["5", "6", "11", "15"], impact: "Credential theft, persistent identity or memory compromise, data exfiltration, and host control.", riskOwner: "Model Creator/Consumer", scenario: "A marketplace skill combines a hidden executable payload with SKILL.md instructions and persists through SOUL.md.", description: "Apparently legitimate skills contain malicious code, instructions, or persistent state changes.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["6"], exposedAt: ["5", "11"], mitigatedAt: ["12", "11"] },
+  { id: "AST02", name: "Supply Chain Compromise", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-02", "AITG-INF-01"], affectedComponents: ["6", "10", "14", "5"], impact: "Poisoned skills, dependencies, configuration, or updates enter trusted environments.", riskOwner: "Model Creator/Consumer", scenario: "A clean top-level skill resolves a typosquatted dependency while weak registry provenance lets it pass.", description: "Registry, publisher, dependency, repository, and distribution controls fail to preserve provenance and integrity.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["6", "14"], exposedAt: ["5", "11"], mitigatedAt: ["10", "12"] },
+  { id: "AST03", name: "Over-Privileged Skills", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-03", "AITG-APP-01", "AITG-APP-06", "AITG-INF-04"], affectedComponents: ["4", "5", "11", "15"], impact: "A permitted but unintended tool, file, identity, or data action exceeds the user-approved task.", riskOwner: "Model Consumer", scenario: "Injected tool output turns a read-only database task into a destructive admin operation.", description: "Skill authority is broader than its function and is enforced at tool-call rather than intent level.", responsibility: ["Model Consumer"], introducedAt: ["4", "5"], exposedAt: ["11", "15"], mitigatedAt: ["4", "11"] },
+  { id: "AST04", name: "Insecure Metadata", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-04"], affectedComponents: ["5", "6", "14", "11"], impact: "Deceptive trust signals, unsafe deserialization, prototype pollution, or install-time execution.", riskOwner: "Model Creator/Consumer", scenario: "A brand-spoofed manifest understates permissions and reaches a legacy unsafe YAML loader.", description: "Attacker-controlled names, claims, permissions, risk tiers, and serialized definitions are trusted or parsed unsafely.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["6", "14"], exposedAt: ["5", "11"], mitigatedAt: ["12", "14"] },
+  { id: "AST05", name: "Untrusted External Instructions", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-05", "AITG-APP-02", "AITG-INF-02"], affectedComponents: ["6", "18", "19", "5"], impact: "Mutable documents or relay output hijack an action-taking skill or exhaust shared resources.", riskOwner: "Model Consumer", scenario: "A reviewed URL later serves malicious instructions that traverse model relays into a privileged skill.", description: "Remote prose and supplied documents enter the skill as mutable, unsigned instructions rather than untrusted data.", responsibility: ["Model Consumer"], introducedAt: ["6", "19"], exposedAt: ["5"], mitigatedAt: ["7", "12"] },
+  { id: "AST06", name: "Weak Isolation", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-06", "AITG-APP-05", "AITG-INF-03"], affectedComponents: ["5", "11", "15"], impact: "Host persistence, credential theft, network pivoting, workspace shadowing, and cross-agent contamination.", riskOwner: "Model Consumer", scenario: "A host-mode skill establishes persistence and alters state later trusted by another agent.", description: "Skills share the host agent's file, shell, network, browser, memory, or configuration context without strong containment.", responsibility: ["Model Consumer"], introducedAt: ["5"], exposedAt: ["11", "15"], mitigatedAt: ["11"] },
+  { id: "AST07", name: "Update Drift", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-07"], affectedComponents: ["5", "10", "11", "14"], impact: "Stale vulnerabilities, malicious updates, rollback, or hot-reloaded behavior diverges from approved state.", riskOwner: "Model Creator/Consumer", scenario: "A compromised publisher ships a plausible patch label whose changed digest activates without review.", description: "Installed skill state is not immutably pinned, verified, rescanned, inventoried, or governed through updates.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["10", "14"], exposedAt: ["5", "11"], mitigatedAt: ["10", "12"] },
+  { id: "AST08", name: "Poor Scanning", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-08"], affectedComponents: ["5", "12", "14", "11"], impact: "Malicious or misdeclared skills receive false clean verdicts or exploit the scanner itself.", riskOwner: "Model Creator/Consumer", scenario: "Prose, Unicode, padding, bytecode, and archives bypass a scanner that silently truncates and reports PASS.", description: "Scanning does not cover the hybrid skill format, adaptive adversaries, model-dependent behavior, or incomplete-analysis states.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["14"], exposedAt: ["5", "11"], mitigatedAt: ["12"] },
+  { id: "AST09", name: "No Governance", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-09"], affectedComponents: ["4", "5", "6", "11"], impact: "Shadow skills, orphaned credentials, missing approval, unverifiable actions, and ineffective revocation.", riskOwner: "Model Consumer", scenario: "An unreachable SaaS skill has no endpoint artifact, inventory record, owner, or bilateral execution receipts.", description: "Enterprises lack skill inventory, identity posture, approval, ownership, audit, offboarding, and revocation controls.", responsibility: ["Model Consumer"], introducedAt: ["4", "6"], exposedAt: ["5", "11"], mitigatedAt: ["4", "12"] },
+  { id: "AST10", name: "Cross-Platform Reuse", category: "Security", riskLevel: "Unrated", relatedTestIds: ["AGT-10"], affectedComponents: ["5", "6", "10", "14"], impact: "Porting strips permissions, denied paths, risk tiers, signatures, hashes, and scan evidence, creating implicit escalation.", riskOwner: "Model Creator/Consumer", scenario: "A constrained skill is imported into a target runtime that drops deny_write and replaces an egress allowlist with broad network access.", description: "Security properties are not translated or revalidated when skills move across formats, registries, and runtimes.", responsibility: ["Model Creator", "Model Consumer"], introducedAt: ["6", "14"], exposedAt: ["5", "11"], mitigatedAt: ["10", "12"] },
 
   // --- OWASP MCP Top 10 (v0.1) ---
   { 
@@ -1002,7 +864,7 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
 const getThreatTheme = (id: string) => {
   if (id.startsWith('LLM')) return { bg: 'bg-pink-500/10', text: 'text-pink-400', border: 'border-pink-500/20', hoverBg: 'hover:bg-pink-500/20', hoverBorder: 'hover:border-pink-500/40', icon: Brain };
   if (id.startsWith('ML')) return { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20', hoverBg: 'hover:bg-emerald-500/20', hoverBorder: 'hover:border-emerald-500/40', icon: Cpu };
-  if (id.startsWith('ASI') || id.startsWith('T')) return { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20', hoverBg: 'hover:bg-orange-500/20', hoverBorder: 'hover:border-orange-500/40', icon: Bot };
+  if (id.startsWith('ASI') || id.startsWith('AST')) return { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20', hoverBg: 'hover:bg-orange-500/20', hoverBorder: 'hover:border-orange-500/40', icon: Bot };
   if (id.startsWith('SAIF')) return { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20', hoverBg: 'hover:bg-blue-500/20', hoverBorder: 'hover:border-blue-500/40', icon: Shield };
   if (id.startsWith('MCP')) return { bg: 'bg-cyan-500/10', text: 'text-cyan-400', border: 'border-cyan-500/20', hoverBg: 'hover:bg-cyan-500/20', hoverBorder: 'hover:border-cyan-500/40', icon: Network };
   return { bg: 'bg-slate-500/10', text: 'text-slate-400', border: 'border-slate-500/20', hoverBg: 'hover:bg-slate-500/20', hoverBorder: 'hover:border-slate-500/40', icon: Shield };
@@ -1035,7 +897,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
   const sortedThreats = useMemo(() => {
     let list = [...THREAT_LIBRARY];
     if (sortMethod === 'severity') {
-      const weights = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+      const weights = { Critical: 4, High: 3, Medium: 2, Low: 1, Unrated: 0 };
       list.sort((a, b) => (weights[b.riskLevel] || 0) - (weights[a.riskLevel] || 0));
     }
     return list;
@@ -1239,7 +1101,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                     
                     <div className="mb-6">
                         <div className="flex justify-between items-start mb-2">
-                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${getSeverityTheme(selectedThreat?.riskLevel || 'Medium')}`}>{selectedThreat?.riskLevel} Risk</span>
+                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${getSeverityTheme(selectedThreat?.riskLevel || 'Medium')}`}>{selectedThreat?.riskLevel === 'Unrated' ? 'Officially unrated' : `${selectedThreat?.riskLevel} Risk`}</span>
                              <span className="font-mono text-xs text-slate-500">{selectedThreat?.id}</span>
                         </div>
                         <h3 className="text-2xl font-bold text-white mb-3">{selectedThreat?.name}</h3>
@@ -1434,7 +1296,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
-                           <div className={`w-2 h-2 rounded-full ${threat.riskLevel === 'Critical' ? 'bg-red-500' : threat.riskLevel === 'High' ? 'bg-orange-500' : 'bg-yellow-500'}`} />
+                           <div className={`w-2 h-2 rounded-full ${threat.riskLevel === 'Critical' ? 'bg-red-500' : threat.riskLevel === 'High' ? 'bg-orange-500' : threat.riskLevel === 'Unrated' ? 'bg-slate-500' : 'bg-yellow-500'}`} />
                            <span className="text-xs text-slate-300 font-medium">{threat.riskLevel}</span>
                         </div>
                       </td>

@@ -424,7 +424,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     references: [
       { title: 'Wiz CVE-2025-54795 entry', url: 'https://www.wiz.io/vulnerability-database/cve/cve-2025-54795' }
     ],
-    crossReferences: ['ASI03 - Identity & Privilege Abuse'],
+    crossReferences: ['ASI03 - Identity and Privilege Abuse', 'AST03 - Over-Privileged Skills'],
     keywords: ['NHI', 'OAuth', 'tokens', 'agents', 'credentials', 'JIT', 'PKI']
   },
   {
@@ -545,7 +545,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
       { title: 'Inference-Time Backdoors via Hidden Instructions in LLM Chat Templates', url: 'https://arxiv.org/abs/2602.04653' },
       { title: 'Anthropic - Small samples poison', url: 'https://www.anthropic.com/research/small-samples-poison' }
     ],
-    crossReferences: ['LLM04:2026 Supply Chain', 'ASI04', 'DSGAI02 for supply-chain identity controls', 'DSGAI21 for retrieval disinformation'],
+    crossReferences: ['LLM04:2026 Supply Chain', 'ASI04 - Agentic Supply Chain Vulnerabilities', 'AST02 - Supply Chain Compromise', 'DSGAI02 for supply-chain identity controls', 'DSGAI21 for retrieval disinformation'],
     keywords: ['poisoning', 'supply chain', 'DBOM', 'signing', 'canary', 'DP-SGD', 'RAG']
   },
   {

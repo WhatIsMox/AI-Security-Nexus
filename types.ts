@@ -60,11 +60,28 @@ export interface OwaspTop10Entry {
   id: string;
   title: string;
   description: string;
+  whyUnique?: string;
+  realWorldEvidence?: string[];
   commonRisks: string[];
   preventionStrategies: string[];
   attackScenarios: { title: string; description: string }[];
+  implementationNotes?: { title: string; content: string }[];
+  owaspMappings?: string[];
+  otherMappings?: string[];
+  maestroMappings?: { layer: string; name: string; details: string }[];
+  relatedRisks?: { id: string; title: string; relationship: string }[];
   references: ExternalResource[];
   suggestedTools?: SecurityTool[];
+}
+
+export interface FrameworkOverview {
+  edition: string;
+  scopeNote: string;
+  severityNote?: string;
+  riskGroups: { title: string; entries: string[]; description: string }[];
+  terminology: { term: string; definition: string }[];
+  triageSteps: string[];
+  resources: ExternalResource[];
 }
 
 export interface Stat {

@@ -2,16 +2,17 @@
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { Pillar, TestItem, OwaspTop10Entry } from '../types';
 import {
-  Activity, AlertTriangle, ArrowLeftRight, ArrowRight, ArrowUpRight,
+  Activity, AlertTriangle, ArrowRight,
   BookOpen, Bot, Brain, Bug, CheckCircle2, ChevronLeft, ChevronRight,
   Cpu, Crosshair, Database, ExternalLink, FileText, Flame, Gavel,
   Github, Globe, Layers, Network, Radar, Server,
-  Shield, Sparkles, Star, Terminal, User, Wrench, Zap, Play,
+  Shield, Sparkles, Star, Terminal, Wrench, Zap, Play,
 } from 'lucide-react';
 import {
   TEST_DATA,
   OWASP_TOP_10_DATA,
   OWASP_ML_TOP_10_DATA,
+  OWASP_AGENTIC_APPLICATIONS_DATA,
   OWASP_AGENTIC_THREATS_DATA,
   OWASP_SAIF_THREATS_DATA,
   OWASP_MCP_TOP_10_DATA,
@@ -197,15 +198,15 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   },
   {
     key: 'AGENTTOP10',
-    name: 'OWASP Agentic AI Threats',
-    edition: '2026',
-    kind: 'Threat framework',
-    blurb: 'Goal hijack, tool misuse and identity abuse across autonomous multi-agent systems.',
+    name: 'OWASP Agentic Top 10',
+    edition: 'ASI 2026 + AST 2026',
+    kind: 'Two complementary frameworks',
+    blurb: 'System-wide agentic application risks and the distinct risks of reusable agent skills, with complete ASI and AST coverage.',
     icon: Bot,
-    count: OWASP_AGENTIC_THREATS_DATA.length,
+    count: OWASP_AGENTIC_APPLICATIONS_DATA.length + OWASP_AGENTIC_THREATS_DATA.length,
     countLabel: 'threats',
-    previewId: OWASP_AGENTIC_THREATS_DATA[0]?.id ?? '',
-    previewTitle: OWASP_AGENTIC_THREATS_DATA[0]?.title ?? '',
+    previewId: OWASP_AGENTIC_APPLICATIONS_DATA[0]?.id ?? '',
+    previewTitle: OWASP_AGENTIC_APPLICATIONS_DATA[0]?.title ?? '',
     text: 'text-orange-400',
     border: 'border-orange-500/25',
     hoverBorder: 'hover:border-orange-400/70',
@@ -341,7 +342,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
       list.map((r) => ({ threatId, title: r.title, url: r.url }))
     );
 
-    const threatEntries = OWASP_TOP_10_DATA.length + OWASP_ML_TOP_10_DATA.length + OWASP_AGENTIC_THREATS_DATA.length + OWASP_SAIF_THREATS_DATA.length + OWASP_MCP_TOP_10_DATA.length;
+    const threatEntries = OWASP_TOP_10_DATA.length + OWASP_ML_TOP_10_DATA.length + OWASP_AGENTIC_APPLICATIONS_DATA.length + OWASP_AGENTIC_THREATS_DATA.length + OWASP_SAIF_THREATS_DATA.length + OWASP_MCP_TOP_10_DATA.length;
 
     const coverage = [
       { key: 'TOP10' as const, label: 'LLM Top 10', count: TEST_DATA.filter((t) => t.owaspTop10Ref).length },
@@ -362,7 +363,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
 
   /* ---------------- hero typewriter ---------------- */
   const heroPhrases = useMemo(() => {
-    const titles = [...OWASP_TOP_10_DATA, ...OWASP_AGENTIC_THREATS_DATA, ...OWASP_MCP_TOP_10_DATA, ...OWASP_ML_TOP_10_DATA]
+    const titles = [...OWASP_TOP_10_DATA, ...OWASP_AGENTIC_APPLICATIONS_DATA, ...OWASP_AGENTIC_THREATS_DATA, ...OWASP_MCP_TOP_10_DATA, ...OWASP_ML_TOP_10_DATA]
       .slice(0, 14)
       .map((e: OwaspTop10Entry) => e.title);
     return Array.from(new Set(titles));
@@ -397,7 +398,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
     const refs: { id: string; label: string }[] = [];
     if (test.owaspTop10Ref) refs.push({ id: test.owaspTop10Ref, label: 'LLM' });
     if (test.owaspMlTop10Ref) refs.push({ id: test.owaspMlTop10Ref, label: 'ML' });
-    if (test.owaspAgenticRef) refs.push({ id: test.owaspAgenticRef, label: 'AGT' });
+    if (test.owaspAgenticRef) refs.push({ id: test.owaspAgenticRef, label: test.owaspAgenticRef.startsWith('AST') ? 'AST' : 'ASI' });
     if (test.owaspSaifRef) refs.push({ id: test.owaspSaifRef, label: 'SAIF' });
     if (test.owaspMcpTop10Ref) refs.push({ id: test.owaspMcpTop10Ref, label: 'MCP' });
     return refs;
@@ -461,26 +462,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           {/* CTA row */}
           <div className="flex flex-wrap items-center gap-3 mb-12 animate-fade-up [animation-delay:320ms]">
             <button
-              onClick={onSelectThreatModel}
-              className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-400/40 hover:-translate-y-0.5"
-            >
-              <Crosshair className="w-4 h-4 transition-transform group-hover:rotate-45" />
-              Launch Threat Modelling
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
-            <button
               onClick={() => onSelectPillar('ALL')}
               className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/70 px-6 py-3 text-sm font-bold text-slate-200 backdrop-blur transition-all hover:border-slate-500 hover:bg-slate-800 hover:-translate-y-0.5"
             >
               <Terminal className="w-4 h-4 text-cyan-400" />
               Browse {stats.totalTests} test suites
-            </button>
-            <button
-              onClick={() => onSelectPillar('TOP10')}
-              className="inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-pink-300/90 transition-colors hover:text-pink-300 hover:underline decoration-pink-400/50 underline-offset-4"
-            >
-              OWASP LLM Top 10 2026
-              <ArrowUpRight className="w-4 h-4" />
             </button>
           </div>
 
@@ -590,54 +576,69 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
       </section>
 
       {/* ================================================================
-          ATTACK SURFACE / PILLAR PIPELINE
+          AI SYSTEM ARCHITECTURE
       ================================================================= */}
       <section className="mb-16">
         <SectionHeader
-          kicker="Attack surface"
-          title="Trace the AI system, layer by layer"
-          blurb="Each layer opens its dedicated test suite. The chips show the most dangerous test in that layer."
+          kicker="Security architecture"
+          title="Explore the AI stack by security layer"
+          blurb="The cards follow a real system hierarchy: user-facing orchestration sits above model reasoning and data, all supported by the infrastructure and delivery foundation. Select any card to open its dedicated test suite."
         />
-        <div className="reveal relative rounded-3xl border border-slate-800/80 bg-slate-900/30 p-6 md:p-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.08),transparent_55%)] pointer-events-none" />
+        <div className="reveal relative rounded-3xl border border-slate-800/80 bg-slate-900/30 p-5 md:p-8 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.08),transparent_52%)] pointer-events-none" />
+          <div className="absolute inset-0 opacity-[0.035] bg-[linear-gradient(rgba(148,163,184,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.7)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
 
-          <div className="relative flex flex-col lg:flex-row items-stretch gap-6">
-            {/* source node */}
-            <div className="flex flex-row lg:flex-col items-center justify-center gap-4 lg:w-28 shrink-0">
-              <div className="relative">
-                <span className="absolute inset-0 rounded-2xl bg-slate-700/60 animate-pulse-ring" aria-hidden="true" />
-                <div className="relative w-16 h-16 rounded-2xl bg-slate-800 border border-slate-600 flex items-center justify-center">
-                  <User className="w-7 h-7 text-slate-300" />
-                </div>
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Adversary</span>
+          <div className="relative space-y-3">
+            <ArchitectureBand
+              index="01"
+              title="Interaction & orchestration"
+              description="Interfaces, application logic, agents, plugins and user-facing workflows"
+            >
+              <PillarNode
+                pillar={Pillar.APP}
+                tests={stats.byPillar[Pillar.APP]}
+                onOpen={() => onSelectPillar(Pillar.APP)}
+              />
+            </ArchitectureBand>
+
+            <div className="ml-0 lg:ml-[230px] h-5 flex items-center justify-center" aria-hidden="true">
+              <span className="h-full w-px bg-gradient-to-b from-blue-400/50 to-purple-400/50" />
             </div>
 
-            <FlowConnector className="hidden lg:flex" />
+            <ArchitectureBand
+              index="02"
+              title="Intelligence & knowledge"
+              description="Model inference works with governed training, retrieval and operational data"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <PillarNode
+                  pillar={Pillar.MODEL}
+                  tests={stats.byPillar[Pillar.MODEL]}
+                  onOpen={() => onSelectPillar(Pillar.MODEL)}
+                />
+                <PillarNode
+                  pillar={Pillar.DATA}
+                  tests={stats.byPillar[Pillar.DATA]}
+                  onOpen={() => onSelectPillar(Pillar.DATA)}
+                />
+              </div>
+            </ArchitectureBand>
 
-            {/* pillar nodes */}
-            <div className="flex-1 flex flex-col gap-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[Pillar.APP, Pillar.MODEL, Pillar.DATA].map((pillar) => (
-                  <PillarNode
-                    key={pillar}
-                    pillar={pillar}
-                    tests={stats.byPillar[pillar]}
-                    onOpen={() => onSelectPillar(pillar)}
-                  />
-                ))}
-              </div>
-              <FlowConnector className="hidden lg:block w-full" horizontal />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="md:col-start-2">
-                  <PillarNode
-                    pillar={Pillar.INFRA}
-                    tests={stats.byPillar[Pillar.INFRA]}
-                    onOpen={() => onSelectPillar(Pillar.INFRA)}
-                  />
-                </div>
-              </div>
+            <div className="ml-0 lg:ml-[230px] h-5 flex items-center justify-center" aria-hidden="true">
+              <span className="h-full w-px bg-gradient-to-b from-purple-400/50 to-amber-400/50" />
             </div>
+
+            <ArchitectureBand
+              index="03"
+              title="Execution foundation"
+              description="Cloud, supply chain, deployment, runtime controls and MLOps services"
+            >
+              <PillarNode
+                pillar={Pillar.INFRA}
+                tests={stats.byPillar[Pillar.INFRA]}
+                onOpen={() => onSelectPillar(Pillar.INFRA)}
+              />
+            </ArchitectureBand>
           </div>
         </div>
       </section>
@@ -878,7 +879,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
       <section className="mb-16 overflow-hidden">
         <SectionHeader
           kicker="Toolbox"
-          title={`${stats.uniqueTools.length} offensive & defensive tools, one marquee`}
+          title={`${stats.uniqueTools.length} offensive & defensive security tools`}
           blurb={`${stats.toolCategories.Offensive} offensive · ${stats.toolCategories.Defensive} defensive · ${stats.toolCategories.Both} dual-purpose. Sourced from the framework pages.`}
         />
         <div className="reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
@@ -1003,6 +1004,26 @@ const SectionHeader: React.FC<{ kicker: string; title: string; blurb?: string }>
   </div>
 );
 
+const ArchitectureBand: React.FC<{
+  index: string;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}> = ({ index, title, description, children }) => (
+  <div className="grid lg:grid-cols-[210px_minmax(0,1fr)] gap-4 lg:gap-5 items-stretch">
+    <div className="rounded-2xl border border-slate-800/80 bg-slate-950/55 p-4 lg:p-5 flex lg:flex-col items-start gap-4 lg:gap-2">
+      <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-2 font-mono text-[11px] font-bold text-cyan-300">
+        {index}
+      </span>
+      <div>
+        <h3 className="text-sm font-bold text-slate-200">{title}</h3>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">{description}</p>
+      </div>
+    </div>
+    <div>{children}</div>
+  </div>
+);
+
 const PillarNode: React.FC<{ pillar: Pillar; tests: TestItem[]; onOpen: () => void }> = ({ pillar, tests, onOpen }) => {
   const meta = PILLAR_META[pillar];
   const criticals = tests.filter((t) => t.riskLevel === 'Critical' || t.riskLevel === 'High').length;
@@ -1043,14 +1064,6 @@ const PillarNode: React.FC<{ pillar: Pillar; tests: TestItem[]; onOpen: () => vo
     </button>
   );
 };
-
-const FlowConnector: React.FC<{ className?: string; horizontal?: boolean }> = ({ className = '', horizontal }) => (
-  <div className={`${horizontal ? 'items-center justify-center py-1' : 'flex-col items-center justify-center'} ${className} pointer-events-none`} aria-hidden="true">
-    <span className="block w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-slate-800/60 border border-slate-700 flex items-center justify-center animate-float-y">
-      <ArrowLeftRight className="w-4 h-4 text-slate-500" />
-    </span>
-  </div>
-);
 
 const CATEGORY_DOT: Record<string, string> = {
   Offensive: 'bg-red-400',

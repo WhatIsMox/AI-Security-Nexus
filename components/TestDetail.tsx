@@ -55,7 +55,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                     <button 
                       onClick={() => onNavigateToOwasp(test.owaspAgenticRef!)}
                       className="flex items-center gap-1.5 font-mono text-sm text-orange-400 bg-orange-500/10 px-3 py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/40 transition-all cursor-pointer"
-                      title="Go to OWASP Agentic Threats Entry"
+                      title="Go to OWASP Agentic Top 10 entry"
                     >
                       <Bot className="w-3.5 h-3.5" /> {test.owaspAgenticRef}
                     </button>
@@ -98,7 +98,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
             {isAgentic && (
                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded text-orange-300 text-xs font-medium self-start">
                   <AlertCircle className="w-3.5 h-3.5" />
-                  Sourced from OWASP Agentic AI Threats
+                  Mapped to OWASP {test.owaspAgenticRef?.startsWith('AST') ? 'Agentic Skills Top 10' : 'Top 10 for Agentic Applications'}
                </div>
             )}
 

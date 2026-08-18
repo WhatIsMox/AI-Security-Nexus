@@ -388,7 +388,7 @@ export const TEST_DATA: TestItem[] = [
     ],
     externalResources: [
         { title: "OWASP LLM03:2026 Excessive Agency", url: "https://genai.owasp.org/llm-top-10/" },
-        { title: "ASI Agentic Exploits & Incidents Tracker", url: "https://model-threats.org/" }
+        { title: "Agentic Exploits & Incidents Tracker", url: "https://model-threats.org/" }
     ]
   },
   {

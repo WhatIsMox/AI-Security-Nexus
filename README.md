@@ -8,7 +8,7 @@ The **AI Security Nexus** is an interactive, graphical exploration of global AI 
 Navigate the most influential AI security standards through specialized, color-coded interfaces:
 - **🧠 OWASP Top 10 for LLM Applications (2026)**: The updated OWASP GenAI/LLM risk list covering Prompt Injection, Sensitive Information Disclosure, Excessive Agency, Supply Chain, Data and Model Poisoning, Unbounded Consumption, Misinformation, Hidden Context Exposure, Vector and Embedding Weaknesses, and Improper Output Handling.
 - **⚙️ OWASP Machine Learning Security Top 10**: Critical risks for traditional ML systems including Adversarial Evasion and Data Poisoning.
-- **🤖 OWASP Agentic AI Threats**: Emerging risks for autonomous agents, such as Goal Hijacking and Tool Misuse.
+- **🤖 OWASP Agentic Top 10 — Applications and Skills**: Two coordinated views keep the frameworks distinct and complete. **ASI01-ASI10** covers application-wide risks such as goal hijack, tool misuse, identity abuse, agentic supply chains, RCE, poisoned memory, inter-agent communication, cascading failures, human trust, and rogue agents. **AST01-AST10** covers the reusable skill layer: malicious skills, supply-chain compromise, excessive permissions, metadata, external instructions, isolation, updates, scanning, governance, and cross-platform reuse.
 - **🔗 OWASP MCP Top 10 (v0.1)**: Security risks for Model Context Protocol ecosystems, including tool poisoning and context injection.
 - **🗄️ OWASP GenAI Data Security Risks and Mitigations 2026**: A detailed, searchable navigator for DSGAI01-DSGAI21 covering GenAI data leakage, agent credentials, shadow AI, poisoning, lifecycle governance, compliance, multimodal leakage, unsafe data gateways, vector stores, telemetry, context over-sharing, endpoint assistants, resilience, inference, labeler exposure, model exfiltration, and disinformation.
 - **📘 Secure MCP Server Development Guide (v1.0)**: An interactive MCP hardening workspace with expandable control families, search, concept drill-downs, and an implementation readiness checklist.
@@ -45,11 +45,12 @@ This application is built upon the following authoritative sources:
 2. **Google Secure AI Framework (SAIF)**
 3. **OWASP Top 10 for Large Language Model Applications (2026), Version 2026**, OWASP GenAI Security Project: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
 4. **OWASP Machine Learning Security Top 10**
-5. **OWASP Agentic AI Threats (ASI)**
-6. **OWASP MCP Top 10 (v0.1)**
-7. **OWASP GenAI Data Security Risks and Mitigations 2026, Version 1.0 (March 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/owasp-genai-data-security-risks-mitigations-2026/
-8. **Secure MCP Server Development, Version 1.0 (February 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/
-9. **EU AI Act & NIST AI RMF**
+5. **OWASP Top 10 for Agentic Applications for 2026 (ASI01-ASI10)**: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+6. **OWASP Agentic Skills Top 10 (AST01-AST10), August 2026**: https://owasp.org/www-project-agentic-skills-top-10/
+7. **OWASP MCP Top 10 (v0.1)**
+8. **OWASP GenAI Data Security Risks and Mitigations 2026, Version 1.0 (March 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/owasp-genai-data-security-risks-mitigations-2026/
+9. **Secure MCP Server Development, Version 1.0 (February 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/
+10. **EU AI Act & NIST AI RMF**
 
 ### Attribution for OWASP GenAI Data Security Risks and Mitigations 2026
 

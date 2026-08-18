@@ -126,7 +126,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             }`}
           >
             <Bot className="w-5 h-5 shrink-0" />
-            <span className="font-medium">OWASP Top 10 Agentic</span>
+            <span className="font-medium">OWASP Agentic Top 10</span>
           </button>
 
           <button

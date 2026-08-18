@@ -221,7 +221,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                           onNavigateToOwasp(test.owaspAgenticRef!);
                         }}
                         className="flex items-center gap-1 font-mono text-xs text-orange-400 bg-orange-500/10 px-2 py-1 rounded border border-orange-500/20 whitespace-nowrap hover:bg-orange-500/20 hover:border-orange-500/40 hover:scale-105 active:scale-95 transition-all z-20 cursor-pointer"
-                        title="Go to OWASP Agentic Threats Entry"
+                        title="Go to OWASP Agentic Top 10 entry"
                       >
                         <Bot className="w-3 h-3" /> {test.owaspAgenticRef}
                       </button>

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { OwaspTop10Entry } from '../types';
-import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock } from 'lucide-react';
+import { FrameworkOverview, OwaspTop10Entry } from '../types';
+import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock, BookOpen, Layers3, GitBranch, Info, ListChecks } from 'lucide-react';
 import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
 
@@ -11,6 +11,7 @@ interface OwaspTop10ViewProps {
   title: string;
   description: string;
   colorTheme?: 'pink' | 'emerald' | 'orange' | 'blue' | 'cyan';
+  frameworkOverview?: FrameworkOverview;
 }
 
 const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({ 
@@ -18,7 +19,8 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   data, 
   title, 
   description,
-  colorTheme = 'pink' 
+  colorTheme = 'pink',
+  frameworkOverview,
 }) => {
   const [expandedId, setExpandedId] = useState<string | null>(initialExpandedId || null);
   const [toolFilters, setToolFilters] = useState<Record<string, { category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>>({});
@@ -37,6 +39,13 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
+  };
+
+  const openRelatedEntry = (id: string) => {
+    setExpandedId(id);
+    window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const getToolFilter = (id: string) => toolFilters[id] || { category: 'all', pricing: 'all' };
@@ -100,6 +109,67 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
         </p>
       </div>
 
+      {frameworkOverview && (
+        <section className="mb-10 space-y-5" aria-label={`${title} overview`}>
+          <div className="rounded-2xl border border-orange-500/20 bg-gradient-to-br from-orange-500/10 via-slate-900/80 to-slate-950 p-6 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
+              <div>
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-orange-300 mb-3">
+                  <BookOpen className="w-4 h-4" /> {frameworkOverview.edition}
+                </div>
+                <p className="text-slate-300 leading-relaxed max-w-4xl">{frameworkOverview.scopeNote}</p>
+              </div>
+              {frameworkOverview.severityNote && (
+                <div className="shrink-0 md:max-w-sm rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-100/80 leading-relaxed">
+                  <span className="font-bold text-amber-300">Scoring note: </span>{frameworkOverview.severityNote}
+                </div>
+              )}
+            </div>
+            <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
+              {frameworkOverview.riskGroups.map((group) => (
+                <div key={group.title} className="rounded-xl border border-slate-700/70 bg-slate-950/60 p-4">
+                  <h3 className="flex items-center gap-2 text-sm font-bold text-white mb-2"><Layers3 className="w-4 h-4 text-orange-400" />{group.title}</h3>
+                  <p className="font-mono text-[11px] text-orange-300 mb-2">{group.entries.join(' · ')}</p>
+                  <p className="text-xs text-slate-400 leading-relaxed">{group.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-5">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+              <h2 className="flex items-center gap-2 text-sm font-bold text-slate-200 uppercase tracking-wider mb-4"><Info className="w-4 h-4 text-cyan-400" />Key terminology</h2>
+              <dl className="space-y-3">
+                {frameworkOverview.terminology.map((item) => (
+                  <div key={item.term} className="border-l-2 border-cyan-500/30 pl-3">
+                    <dt className="text-sm font-bold text-cyan-300">{item.term}</dt>
+                    <dd className="text-xs text-slate-400 leading-relaxed mt-1">{item.definition}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+              <h2 className="flex items-center gap-2 text-sm font-bold text-slate-200 uppercase tracking-wider mb-4"><GitBranch className="w-4 h-4 text-purple-400" />Finding triage</h2>
+              <ol className="space-y-3">
+                {frameworkOverview.triageSteps.map((step, index) => (
+                  <li key={step} className="flex gap-3 text-xs text-slate-400 leading-relaxed">
+                    <span className="w-6 h-6 shrink-0 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono flex items-center justify-center">{index + 1}</span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+              <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-slate-800">
+                {frameworkOverview.resources.map((resource) => (
+                  <a key={resource.url} href={resource.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 rounded-md hover:bg-blue-500/20 transition-colors">
+                    {resource.title}<ExternalLink className="w-3 h-3" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       <div className="space-y-4">
         {data.map((entry) => (
           <div 
@@ -139,15 +209,27 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
             <div className={`
               overflow-hidden transition-[max-height] duration-500 ease-in-out
-              ${expandedId === entry.id ? 'max-h-[6000px] opacity-100' : 'max-h-0 opacity-0'}
+              ${expandedId === entry.id ? 'max-h-[20000px] opacity-100' : 'max-h-0 opacity-0'}
             `}>
               <div className="p-6 pt-0 border-t border-slate-800/50">
+                <div className="grid lg:grid-cols-2 gap-5 mt-6 mb-8">
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-5">
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Description</h4>
+                    <p className="text-sm text-slate-300 leading-relaxed">{entry.description}</p>
+                  </div>
+                  {entry.whyUnique && (
+                    <div className="rounded-xl border border-orange-500/15 bg-orange-500/5 p-5">
+                      <h4 className="text-xs font-bold text-orange-300 uppercase tracking-wider mb-2">Why this risk is distinct</h4>
+                      <p className="text-sm text-slate-300 leading-relaxed">{entry.whyUnique}</p>
+                    </div>
+                  )}
+                </div>
                 <div className="grid lg:grid-cols-2 gap-8 mt-6">
                   <div className="space-y-6">
                     <div>
                       <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
                         <AlertTriangle className="w-4 h-4 text-orange-400" />
-                        Common Risks
+                        {entry.whyUnique ? 'Risk mechanics & impact' : 'Common risks'}
                       </h4>
                       <ul className="space-y-2">
                         {entry.commonRisks.map((risk, idx) => (
@@ -158,6 +240,23 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                         ))}
                       </ul>
                     </div>
+
+                    {entry.realWorldEvidence && entry.realWorldEvidence.length > 0 && (
+                      <div>
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
+                          <BookOpen className="w-4 h-4 text-blue-400" />
+                          Real-world evidence
+                        </h4>
+                        <ul className="space-y-2 max-h-[520px] overflow-y-auto pr-1" style={{ scrollbarGutter: 'stable' }}>
+                          {entry.realWorldEvidence.map((evidence, idx) => (
+                            <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm bg-blue-500/5 p-3 rounded-lg border border-blue-500/10">
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
+                              <span className="leading-relaxed">{evidence}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
                     {entry.attackScenarios.length > 0 && (
                       <div>
@@ -170,9 +269,9 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                           style={{ scrollbarGutter: 'stable' }}
                         >
                           {entry.attackScenarios.map((scenario, idx) => (
-                            <div key={idx} className="bg-red-500/5 p-4 rounded-lg border border-red-500/10 min-h-[120px]">
+                            <div key={idx} className="bg-red-500/5 p-4 rounded-lg border border-red-500/10">
                               <div className="font-bold text-red-400 text-sm mb-1">{scenario.title}</div>
-                              <p className="text-slate-400 text-sm line-clamp-3">{scenario.description}</p>
+                              <p className="text-slate-400 text-sm leading-relaxed">{scenario.description}</p>
                             </div>
                           ))}
                         </div>
@@ -227,6 +326,71 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                         ))}
                       </ul>
                     </div>
+
+                    {entry.implementationNotes && entry.implementationNotes.length > 0 && (
+                      <div>
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
+                          <ListChecks className="w-4 h-4 text-cyan-400" />
+                          Implementation guidance
+                        </h4>
+                        <div className="space-y-3">
+                          {entry.implementationNotes.map((note) => (
+                            <div key={note.title} className="rounded-lg border border-cyan-500/10 bg-cyan-500/5 p-4">
+                              <div className="font-bold text-cyan-300 text-sm mb-1">{note.title}</div>
+                              <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">{note.content}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {(entry.owaspMappings?.length || entry.otherMappings?.length) && (
+                      <div className="pt-6 border-t border-slate-800">
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3"><Shield className="w-4 h-4 text-purple-400" />Framework mappings</h4>
+                        <div className="space-y-4">
+                          {entry.owaspMappings && (
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-2">OWASP / AISVS</div>
+                              <div className="flex flex-wrap gap-2">{entry.owaspMappings.map((mapping) => <span key={mapping} className="px-2.5 py-1 rounded-md border border-purple-500/20 bg-purple-500/5 text-[11px] text-purple-200">{mapping}</span>)}</div>
+                            </div>
+                          )}
+                          {entry.otherMappings && entry.otherMappings.length > 0 && (
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-2">Other mappings</div>
+                              <div className="flex flex-wrap gap-2">{entry.otherMappings.map((mapping) => <span key={mapping} className="px-2.5 py-1 rounded-md border border-slate-700 bg-slate-950 text-[11px] text-slate-300">{mapping}</span>)}</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {entry.maestroMappings && entry.maestroMappings.length > 0 && (
+                      <div className="pt-6 border-t border-slate-800">
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3"><Layers3 className="w-4 h-4 text-indigo-400" />CSA MAESTRO layers</h4>
+                        <div className="space-y-2">
+                          {entry.maestroMappings.map((mapping) => (
+                            <div key={`${mapping.layer}-${mapping.name}`} className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
+                              <div className="flex flex-wrap gap-2 items-baseline mb-1"><span className="font-mono text-xs text-indigo-300">{mapping.layer}</span><span className="text-xs font-bold text-slate-200">{mapping.name}</span></div>
+                              <p className="text-xs text-slate-400 leading-relaxed">{mapping.details}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {entry.relatedRisks && entry.relatedRisks.length > 0 && (
+                      <div className="pt-6 border-t border-slate-800">
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3"><GitBranch className="w-4 h-4 text-orange-400" />Related risks</h4>
+                        <div className="space-y-2">
+                          {entry.relatedRisks.map((risk) => (
+                            <button key={risk.id} onClick={() => openRelatedEntry(risk.id)} className="w-full text-left rounded-lg border border-slate-800 bg-slate-950/60 hover:border-orange-500/30 p-3 transition-colors">
+                              <span className="font-mono text-xs text-orange-300 mr-2">{risk.id}</span><span className="text-xs font-bold text-slate-200">{risk.title}</span>
+                              <p className="text-xs text-slate-500 leading-relaxed mt-1">{risk.relationship}</p>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Best Tools Section - Now above Reference Links */}
                     {(() => {

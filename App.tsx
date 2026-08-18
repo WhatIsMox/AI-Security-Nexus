@@ -6,9 +6,10 @@ import TestList from './components/TestList';
 import TestDetail from './components/TestDetail';
 import ThreatModelling from './components/ThreatModelling';
 import OwaspTop10View from './components/OwaspTop10View';
+import AgenticTop10View from './components/AgenticTop10View';
 import SecureMcpGuideView from './components/SecureMcpGuideView';
 import GenAiDataSecurityView from './components/GenAiDataSecurityView';
-import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_AGENTIC_THREATS_DATA, OWASP_SAIF_THREATS_DATA, OWASP_MCP_TOP_10_DATA } from './data';
+import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_SAIF_THREATS_DATA, OWASP_MCP_TOP_10_DATA } from './data';
 import { Pillar, TestItem } from './types';
 import { Menu, Book } from 'lucide-react';
 
@@ -58,7 +59,7 @@ const App: React.FC = () => {
     if (id.startsWith("ML")) {
       setActivePillar('MLTOP10');
       setCurrentView('owasp-ml-top10');
-    } else if (id.startsWith("ASI") || (id.startsWith("T") && !id.startsWith("TEST"))) { 
+    } else if (id.startsWith("ASI") || id.startsWith("AST")) {
       setActivePillar('AGENTTOP10');
       setCurrentView('owasp-agent-top10');
     } else if (id.startsWith("SAIF")) {
@@ -205,13 +206,7 @@ const App: React.FC = () => {
           )}
 
           {currentView === 'owasp-agent-top10' && (
-            <OwaspTop10View 
-              initialExpandedId={owaspTargetId} 
-              data={OWASP_AGENTIC_THREATS_DATA}
-              title="OWASP Agentic AI Threats"
-              description="A threat-model-based reference of emerging agentic threats including memory poisoning, tool misuse, and cascading hallucinations."
-              colorTheme="orange"
-            />
+            <AgenticTop10View initialExpandedId={owaspTargetId} />
           )}
 
           {currentView === 'owasp-saif-top10' && (

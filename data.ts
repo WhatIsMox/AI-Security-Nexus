@@ -11,4 +11,5 @@ export * from './data_saif';
 export * from './data_mcp';
 export * from './data_secure_mcp_guide';
 export * from './data_genai_data_security';
-export { OWASP_AGENTIC_THREATS_DATA } from './data_agentic'; 
+export { AGENTIC_SKILLS_OVERVIEW, OWASP_AGENTIC_THREATS_DATA } from './data_agentic';
+export { AGENTIC_APPLICATIONS_OVERVIEW, OWASP_AGENTIC_APPLICATIONS_DATA } from './data_agentic_applications';

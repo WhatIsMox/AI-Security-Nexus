@@ -88,21 +88,6 @@
 }
 .animate-caret { animation: caret-blink 1s step-end infinite; }
 
-/* Pulsing ring around the adversary node */
-@keyframes pulse-ring {
-  0%   { transform: scale(0.92); opacity: 0.8; }
-  70%  { transform: scale(1.35); opacity: 0; }
-  100% { transform: scale(1.35); opacity: 0; }
-}
-.animate-pulse-ring { animation: pulse-ring 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-
-/* Floating connector arrows */
-@keyframes float-y {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-}
-.animate-float-y { animation: float-y 3.2s ease-in-out infinite; }
-
 /* Tool marquees */
 @keyframes marquee {
   from { transform: translateX(0); }
@@ -113,11 +98,11 @@
   to   { transform: translateX(0); }
 }
 .animate-marquee {
-  animation: marquee 60s linear infinite;
+  animation: marquee 240s linear infinite;
   will-change: transform;
 }
 .animate-marquee-reverse {
-  animation: marquee-reverse 60s linear infinite;
+  animation: marquee-reverse 260s linear infinite;
   will-change: transform;
 }
 
@@ -136,8 +121,6 @@
   .animate-aurora-c,
   .animate-marquee,
   .animate-marquee-reverse,
-  .animate-float-y,
-  .animate-pulse-ring,
   .animate-fade-up {
     animation: none !important;
   }
