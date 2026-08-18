@@ -43,7 +43,7 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
 
   return (
     <div>
-      <section className="px-4 md:px-8 pt-5 max-w-6xl mx-auto" aria-label="Agentic security framework selector">
+      <section className="container-fluid px-3 sm:px-4 md:px-8 pt-5 max-w-6xl mx-auto" aria-label="Agentic security framework selector">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/70 p-3">
           <div className="flex items-center gap-3 min-w-0">
             <span className="hidden md:block pl-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 whitespace-nowrap">Agentic framework</span>

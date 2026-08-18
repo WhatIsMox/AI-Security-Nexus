@@ -4,10 +4,153 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
+    min-width: 320px;
+    min-height: 100vh;
+    overflow-x: hidden;
     font-family: 'Inter', sans-serif;
     background-color: #020617;
     color: #e2e8f0;
+  }
+
+  button,
+  a,
+  input,
+  select {
+    touch-action: manipulation;
+  }
+
+  pre,
+  code,
+  samp {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Bootstrap provides the responsive grid; these shell rules preserve the
+   existing visual system while making the navigation phone-safe. */
+.app-shell {
+  --bs-gutter-x: 0;
+  padding-right: 0;
+  padding-left: 0;
+  overflow-x: clip;
+}
+
+.app-main,
+.app-content {
+  min-width: 0;
+}
+
+.mobile-header {
+  padding-top: env(safe-area-inset-top);
+  height: calc(4rem + env(safe-area-inset-top));
+}
+
+.app-sidebar {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mobile-menu-button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+}
+
+.mobile-menu-button:focus-visible,
+.app-sidebar a:focus-visible,
+.app-sidebar button:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+.threat-map-scroll {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+
+.threat-tabs {
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.threat-tabs > button {
+  min-height: 2.75rem;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 767.98px) {
+  .app-main {
+    padding-top: calc(4rem + env(safe-area-inset-top));
+  }
+
+  .app-content {
+    padding-top: 1rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  .app-sidebar {
+    width: min(20rem, calc(100vw - 2rem));
+    max-width: 100%;
+    box-shadow: 1.5rem 0 4rem rgb(0 0 0 / 0.45);
+  }
+
+  .mobile-nav-overlay {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .threat-tabs {
+    position: sticky;
+    top: calc(4rem + env(safe-area-inset-top));
+    z-index: 20;
+    margin-right: -0.75rem;
+    margin-left: -0.75rem;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+    background: rgb(2 6 23 / 0.94);
+    backdrop-filter: blur(14px);
+  }
+
+  .app-backdrop-orb {
+    width: 18rem;
+    height: 18rem;
+    filter: blur(80px);
+  }
+
+  main h1,
+  main h2,
+  main h3,
+  main p,
+  main li,
+  main a,
+  main button,
+  main dd {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .app-content > * {
+    min-width: 0;
+  }
+
+  .threat-map-scroll {
+    scroll-snap-type: x proximity;
+  }
+
+  .threat-map-scroll > svg {
+    scroll-snap-align: start;
   }
 }
 

@@ -61,7 +61,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
   });
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
+    <div className="container-fluid p-3 sm:p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
       {/* Header Section */}
       <div className="mb-8 border-b border-slate-800 pb-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6">
@@ -177,7 +177,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
             <div 
               key={test.id}
               onClick={() => onSelectTest(test)}
-              className="group bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-xl p-5 cursor-pointer transition-all duration-200 relative overflow-hidden"
+              className="group bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-200 relative overflow-hidden"
             >
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 relative z-10">
                 

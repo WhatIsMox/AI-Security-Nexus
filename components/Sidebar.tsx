@@ -34,13 +34,14 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Mobile Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
+          className="mobile-nav-overlay fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
           onClick={onClose}
+          aria-hidden="true"
         />
       )}
 
       {/* Sidebar Container */}
-      <div className={`
+      <aside id="primary-navigation" aria-label="Primary navigation" className={`app-sidebar
         fixed top-0 left-0 h-full w-64 bg-slate-950 border-r border-slate-800 
         flex flex-col z-40 transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
@@ -57,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <p className="text-[10px] text-cyan-500 font-mono">Nexus</p>
             </div>
           </div>
-          <button onClick={onClose} className="md:hidden text-slate-400 hover:text-white">
+          <button onClick={onClose} type="button" aria-label="Close navigation menu" className="mobile-menu-button md:hidden text-slate-400 hover:text-white">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -205,7 +206,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             v1.2.0 Stable
           </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 };

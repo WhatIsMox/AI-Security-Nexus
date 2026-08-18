@@ -13,7 +13,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
   const isAgentic = test.id.startsWith('AGT') || !!test.owaspAgenticRef;
 
   return (
-    <div className="p-8 max-w-5xl mx-auto animate-in slide-in-from-right-4 duration-300">
+    <div className="container-fluid p-3 sm:p-5 md:p-8 max-w-5xl mx-auto animate-in slide-in-from-right-4 duration-300">
       <button 
         onClick={onBack}
         className="flex items-center text-sm text-slate-400 hover:text-cyan-400 mb-6 transition-colors"
@@ -24,10 +24,10 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
 
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
         {/* Header */}
-        <div className="p-8 border-b border-slate-800 bg-slate-950">
+        <div className="p-4 sm:p-6 md:p-8 border-b border-slate-800 bg-slate-950">
           <div className="flex flex-col gap-4">
             
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
                {/* Identifiers */}
                <div className="flex flex-wrap items-center gap-3">
                   <span className="font-mono text-sm text-cyan-500 bg-cyan-950/30 px-3 py-1.5 rounded border border-cyan-900">
@@ -108,7 +108,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
           </div>
         </div>
 
-        <div className="p-8 space-y-10">
+        <div className="p-4 sm:p-6 md:p-8 space-y-8 md:space-y-10">
           {/* Objectives */}
           <section>
             <div className="flex items-center gap-2 mb-4 text-slate-100">

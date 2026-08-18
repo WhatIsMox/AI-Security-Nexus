@@ -580,7 +580,7 @@ const GenAiDataSecurityView: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl animate-in fade-in duration-500 overflow-hidden p-3 sm:p-4 md:p-8">
+    <div className="container-fluid mx-auto max-w-7xl animate-in fade-in duration-500 overflow-hidden p-3 sm:p-4 md:p-8">
       <div className="mb-6 rounded-xl border border-cyan-500/20 bg-slate-900/70 p-4 sm:p-6 md:mb-8 md:rounded-2xl md:p-8">
         <div className="mb-5 flex flex-wrap items-center gap-2">
           <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-cyan-300 sm:text-xs">

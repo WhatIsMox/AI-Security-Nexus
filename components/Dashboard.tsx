@@ -407,7 +407,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
   const incident = stats.incidents[incidentIndex % stats.incidents.length];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 md:px-8 pb-8">
+    <div className="container-fluid mx-auto max-w-7xl px-3 sm:px-4 md:px-8 pb-8">
       {/* ================================================================
           HERO
       ================================================================= */}
@@ -421,7 +421,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/60" />
         </div>
 
-        <div className="relative z-10 px-6 py-14 md:px-14 md:py-20">
+        <div className="relative z-10 px-4 py-10 sm:px-6 sm:py-14 md:px-14 md:py-20">
           {/* badge */}
           <div className="inline-flex items-center gap-2.5 rounded-full border border-cyan-500/30 bg-cyan-500/5 px-4 py-1.5 backdrop-blur-sm mb-7 animate-fade-up">
             <span className="relative flex h-2 w-2">
@@ -433,7 +433,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.05] mb-6 animate-fade-up [animation-delay:80ms]">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.05] mb-6 animate-fade-up [animation-delay:80ms]">
             The offensive playbook for{' '}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-purple-400 bg-clip-text text-transparent">
@@ -450,9 +450,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           </p>
 
           {/* typewriter */}
-          <div className="flex items-center gap-3 mb-9 h-7 animate-fade-up [animation-delay:240ms]">
+          <div className="flex items-start sm:items-center gap-3 mb-9 min-h-7 animate-fade-up [animation-delay:240ms]">
             <Shield className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span className="font-mono text-sm text-slate-300">
+            <span className="min-w-0 break-words font-mono text-sm text-slate-300">
               <span className="text-slate-500">defend against </span>
               <span className="text-cyan-300 font-semibold">{typed}</span>
               <span className="text-cyan-400 animate-caret">▍</span>
@@ -471,7 +471,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           </div>
 
           {/* live stat band */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 animate-fade-up [animation-delay:400ms]">
+          <div className="row g-3 animate-fade-up [animation-delay:400ms]">
             {[
               { label: 'Test cases', value: stats.totalTests, icon: Bug, tint: 'text-red-400 bg-red-400/10 border-red-400/20' },
               { label: 'Attack payloads', value: stats.totalPayloads, icon: Zap, tint: 'text-amber-400 bg-amber-400/10 border-amber-400/20' },
@@ -480,10 +480,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
               { label: 'Security tools', value: stats.uniqueTools.length, icon: Wrench, tint: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20' },
               { label: 'Real incidents', value: stats.incidents.length, icon: Globe, tint: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' },
             ].map((s) => (
-              <div
-                key={s.label}
-                className="rounded-2xl border border-slate-800/80 bg-slate-950/50 backdrop-blur px-4 py-4 transition-colors hover:border-slate-700 group"
-              >
+              <div key={s.label} className="col-6 col-sm-4 col-lg-2 flex">
+                <div className="w-full rounded-2xl border border-slate-800/80 bg-slate-950/50 backdrop-blur px-3 sm:px-4 py-4 transition-colors hover:border-slate-700 group">
                 <div className={`inline-flex p-2 rounded-lg border ${s.tint} mb-3`}>
                   <s.icon className="w-4 h-4" />
                 </div>
@@ -492,6 +490,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                 </div>
                 <div className="mt-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 group-hover:text-slate-400 transition-colors">
                   {s.label}
+                </div>
                 </div>
               </div>
             ))}
@@ -508,12 +507,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           title="Seven security frameworks, one explorer"
           blurb="Every card below is wired straight to the corresponding view. The numbers are counted from the data, not hardcoded."
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="row g-4">
           {frameworks.map((f, i) => (
-            <button
-              key={f.key}
+            <div key={f.key} className="col-12 col-md-6 col-xl-4 flex">
+              <button
               onClick={() => onSelectPillar(f.key)}
-              className={`reveal group relative overflow-hidden rounded-2xl border ${f.border} ${f.hoverBorder} bg-slate-900/60 backdrop-blur p-6 text-left transition-all duration-300 hover:-translate-y-1 ${f.ring}`}
+              className={`reveal group relative h-full w-full overflow-hidden rounded-2xl border ${f.border} ${f.hoverBorder} bg-slate-900/60 backdrop-blur p-5 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 ${f.ring}`}
               style={{ transitionDelay: `${(i % 3) * 70}ms` }}
             >
               {/* corner glow */}
@@ -543,14 +542,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                   <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
-            </button>
+              </button>
+            </div>
           ))}
 
           {/* threat modelling card (special) */}
-          <button
-            onClick={onSelectThreatModel}
-            className="reveal group relative overflow-hidden rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-950 p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/60 hover:shadow-[0_0_40px_-8px_rgba(34,211,238,0.3)]"
-          >
+          <div className="col-12 col-md-6 col-xl-4 flex">
+            <button
+              onClick={onSelectThreatModel}
+              className="reveal group relative h-full w-full overflow-hidden rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-950 p-5 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/60 hover:shadow-[0_0_40px_-8px_rgba(34,211,238,0.3)]"
+            >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(34,211,238,0.12),transparent_60%)] pointer-events-none" />
             <div className="flex items-start justify-between gap-3 mb-4">
               <div className="inline-flex p-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10">
@@ -571,7 +572,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                 <ArrowRight className="w-4 h-4" />
               </span>
             </div>
-          </button>
+            </button>
+          </div>
         </div>
       </section>
 

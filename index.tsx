@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './bootstrap-grid.scss';
 import './index.css';
 
 declare global {

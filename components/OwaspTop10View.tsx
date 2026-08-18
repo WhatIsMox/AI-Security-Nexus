@@ -127,7 +127,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
+    <div className="container-fluid p-3 sm:p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
       <div className="mb-10 text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
           {title}
@@ -241,11 +241,11 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
           >
             <div 
               onClick={() => toggleExpand(entry.id)}
-              className="p-5 cursor-pointer flex items-center justify-between group"
+              className="p-3 sm:p-5 cursor-pointer flex items-start sm:items-center justify-between gap-2 group"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex min-w-0 items-start sm:items-center gap-3 sm:gap-4">
                 <div className={`
-                  min-w-[90px] h-10 px-2 rounded-lg flex items-center justify-center font-mono font-bold text-[10px] md:text-xs shrink-0 transition-colors text-center
+                  min-w-[72px] sm:min-w-[90px] h-10 px-2 rounded-lg flex items-center justify-center font-mono font-bold text-[9px] sm:text-[10px] md:text-xs shrink-0 transition-colors text-center
                   ${expandedId === entry.id 
                     ? currentTheme.badgeActive
                     : `bg-slate-950 text-slate-500 border border-slate-800 ${currentTheme.badgeHover}`
@@ -253,8 +253,8 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                 `}>
                   {formatId(entry.id)}
                 </div>
-                <div>
-                  <h3 className={`text-xl font-bold transition-colors ${expandedId === entry.id ? 'text-white' : 'text-slate-200 group-hover:text-white'}`}>
+                <div className="min-w-0">
+                  <h3 className={`break-words text-base sm:text-xl font-bold transition-colors ${expandedId === entry.id ? 'text-white' : 'text-slate-200 group-hover:text-white'}`}>
                     {entry.title}
                   </h3>
                   <div className={`text-sm transition-colors mt-1 ${expandedId === entry.id ? 'text-slate-400' : 'text-slate-500 group-hover:text-slate-400 line-clamp-1'}`}>
@@ -262,14 +262,14 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown className={`w-6 h-6 text-slate-500 transition-transform duration-300 ${expandedId === entry.id ? `rotate-180 ${currentTheme.iconActive}` : 'group-hover:text-slate-300'}`} />
+              <ChevronDown className={`mt-2 sm:mt-0 w-5 h-5 sm:w-6 sm:h-6 shrink-0 text-slate-500 transition-transform duration-300 ${expandedId === entry.id ? `rotate-180 ${currentTheme.iconActive}` : 'group-hover:text-slate-300'}`} />
             </div>
 
             <div className={`
               overflow-hidden transition-[max-height] duration-500 ease-in-out
               ${expandedId === entry.id ? 'max-h-[20000px] opacity-100' : 'max-h-0 opacity-0'}
             `}>
-              <div className="p-6 pt-0 border-t border-slate-800/50">
+              <div className="p-3 sm:p-6 pt-0 border-t border-slate-800/50">
                 <div className="grid lg:grid-cols-2 gap-5 mt-6 mb-8">
                   <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-5">
                     <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Description</h4>
@@ -550,7 +550,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                         >
                           {filteredTools.map((tool, idx) => (
                             <div key={idx} className="bg-slate-950 border border-slate-800 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all">
-                              <div className="flex justify-between items-start mb-2">
+                              <div className="flex flex-col sm:flex-row sm:justify-between items-start gap-2 mb-2">
                                 <a 
                                   href={tool.url} 
                                   target="_blank" 
@@ -560,7 +560,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                                   {tool.name}
                                   <ExternalLink className="w-3 h-3 opacity-0 group-hover/tool:opacity-100 transition-opacity" />
                                 </a>
-                                <div className="flex gap-1.5 flex-wrap justify-end">
+                                <div className="flex gap-1.5 flex-wrap sm:justify-end">
                                   <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 ${
                                     tool.type === 'Local' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                                   }`}>

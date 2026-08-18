@@ -884,6 +884,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
   const [activeTab, setActiveTab] = useState<'architecture' | 'impact' | 'mapping'>('architecture');
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [selectedThreatId, setSelectedThreatId] = useState<string | null>(null);
+  const [mobileLayer, setMobileLayer] = useState<SAIFComponent['layer']>('Application');
   const [sortMethod, setSortMethod] = useState<'default' | 'severity'>('default');
   const [ownershipFilter, setOwnershipFilter] = useState<'all' | 'creator' | 'consumer' | 'shared'>('all');
 
@@ -920,6 +921,24 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
     setSelectedThreatId(null);
   };
 
+  const handleMobileComponentClick = (id: string) => {
+    setSelectedComponentId(id);
+    setSelectedThreatId(null);
+    window.setTimeout(() => {
+      document.getElementById('threat-inspector')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  };
+
+  const openThreatInArchitecture = (id: string) => {
+    setSelectedThreatId(id);
+    setActiveTab('architecture');
+    window.setTimeout(() => {
+      document.getElementById('threat-inspector')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  };
+
+  const mobileLayers: SAIFComponent['layer'][] = ['Application', 'Model', 'Infrastructure', 'Data'];
+
   const getLayerColor = (layer: string) => {
     switch (layer) {
       case 'Application': return 'border-blue-500 text-blue-400 bg-blue-500/10 hover:bg-blue-500/20';
@@ -931,12 +950,12 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
+    <div className="container-fluid p-3 sm:p-4 md:p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
       
       {/* Header */}
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start gap-6">
         <div>
-          <h2 className="text-3xl font-bold text-white mb-2">AI Threat Modelling (SAIF)</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">AI Threat Modelling (SAIF)</h2>
           <p className="text-slate-400 max-w-3xl">
             A holistic exploration of AI security risks based on <strong>Google's Secure AI Framework (SAIF)</strong>. 
             Visualize where risks are introduced, exposed, and mitigated across the entire AI pipeline.
@@ -955,9 +974,12 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-800 mb-6 overflow-x-auto scrollbar-hide">
+      <div className="threat-tabs flex gap-1 sm:gap-2 border-b border-slate-800 mb-6 overflow-x-auto scrollbar-hide" role="tablist" aria-label="Threat modelling views">
         <button 
           onClick={() => setActiveTab('architecture')}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'architecture'}
           className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${activeTab === 'architecture' ? 'border-cyan-500 text-cyan-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
         >
           <LayoutTemplate className="w-4 h-4" />
@@ -965,6 +987,9 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
         </button>
         <button 
           onClick={() => setActiveTab('impact')}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'impact'}
           className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${activeTab === 'impact' ? 'border-red-500 text-red-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
         >
           <AlertTriangle className="w-4 h-4" />
@@ -972,6 +997,9 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
         </button>
         <button 
           onClick={() => setActiveTab('mapping')}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'mapping'}
           className={`px-4 py-2 border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${activeTab === 'mapping' ? 'border-emerald-500 text-emerald-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
         >
           <GitBranch className="w-4 h-4" />
@@ -981,12 +1009,113 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
 
       {/* Architecture View */}
       {activeTab === 'architecture' && (
-        <div className="flex flex-col lg:flex-row gap-6 h-[950px]">
+        <div className="flex flex-col lg:flex-row gap-6 h-auto lg:h-[950px]">
+
+          {/* Mobile and tablet architecture explorer */}
+          <section className="lg:hidden rounded-xl border border-slate-800 bg-slate-950 overflow-hidden" aria-label="SAIF architecture explorer">
+            <div className="border-b border-slate-800 bg-slate-900/60 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="font-bold text-white">Architecture Explorer</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                    Choose a layer, then tap an asset to inspect its threats and security path.
+                  </p>
+                </div>
+                {selectedThreatId && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedThreatId(null)}
+                    className="shrink-0 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs font-semibold text-slate-300"
+                  >
+                    Clear path
+                  </button>
+                )}
+              </div>
+
+              <div className="mt-4 flex gap-2 overflow-x-auto pb-1 scrollbar-hide" role="tablist" aria-label="SAIF architecture layers">
+                {mobileLayers.map((layer) => (
+                  <button
+                    key={layer}
+                    type="button"
+                    role="tab"
+                    aria-selected={mobileLayer === layer}
+                    onClick={() => setMobileLayer(layer)}
+                    className={`min-h-11 shrink-0 rounded-lg border px-3 py-2 text-xs font-bold transition-colors ${
+                      mobileLayer === layer
+                        ? getLayerColor(layer)
+                        : 'border-slate-800 bg-slate-950 text-slate-400'
+                    }`}
+                  >
+                    {layer}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {selectedThreat && (
+              <div className="border-b border-slate-800 bg-slate-900/30 p-4">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <span className={`rounded border px-2 py-1 font-mono text-[10px] ${getThreatTheme(selectedThreat.id).bg} ${getThreatTheme(selectedThreat.id).text} ${getThreatTheme(selectedThreat.id).border}`}>
+                    {selectedThreat.id}
+                  </span>
+                  <span className="text-xs font-semibold text-slate-300">Lifecycle path highlighted</span>
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-2 text-[10px] font-bold uppercase tracking-wider">
+                  <span className="flex items-center gap-1.5 text-red-300"><span className="h-2 w-2 rounded-full bg-red-500" />Introduced</span>
+                  <span className="flex items-center gap-1.5 text-orange-300"><span className="h-2 w-2 rounded-full bg-orange-500" />Exposed</span>
+                  <span className="flex items-center gap-1.5 text-emerald-300"><span className="h-2 w-2 rounded-full bg-emerald-500" />Mitigated</span>
+                </div>
+              </div>
+            )}
+
+            <div className="grid gap-3 p-4 sm:grid-cols-2">
+              {SAIF_COMPONENTS.filter((component) => component.layer === mobileLayer).map((component) => {
+                const threatCount = THREAT_LIBRARY.filter((threat) => threat.affectedComponents.includes(component.id)).length;
+                const isSelected = selectedComponentId === component.id;
+                const isIntroduced = selectedThreat?.introducedAt?.includes(component.id);
+                const isExposed = selectedThreat?.exposedAt?.includes(component.id);
+                const isMitigated = selectedThreat?.mitigatedAt?.includes(component.id);
+                const isOnPath = isIntroduced || isExposed || isMitigated;
+
+                return (
+                  <button
+                    key={component.id}
+                    type="button"
+                    aria-pressed={isSelected}
+                    onClick={() => handleMobileComponentClick(component.id)}
+                    className={`min-h-[8rem] rounded-xl border p-4 text-left transition-all ${
+                      isSelected
+                        ? 'border-cyan-400 bg-cyan-500/10 shadow-[0_0_18px_rgba(34,211,238,0.12)]'
+                        : selectedThreat && !isOnPath
+                          ? 'border-slate-800 bg-slate-900/35 opacity-55'
+                          : `${getLayerColor(component.layer)} bg-slate-900/70`
+                    }`}
+                  >
+                    <span className="flex items-start justify-between gap-3">
+                      <span className="min-w-0">
+                        <span className="block break-words text-sm font-bold text-slate-100">{component.name}</span>
+                        <span className="mt-1 block text-[11px] leading-relaxed text-slate-400">{component.description}</span>
+                      </span>
+                      <span className="shrink-0 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 font-mono text-[10px] text-slate-400">
+                        {threatCount}
+                      </span>
+                    </span>
+                    <span className="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-wider">
+                      {isIntroduced && <span className="rounded bg-red-500/10 px-2 py-1 text-red-300">Introduced</span>}
+                      {isExposed && <span className="rounded bg-orange-500/10 px-2 py-1 text-orange-300">Exposed</span>}
+                      {isMitigated && <span className="rounded bg-emerald-500/10 px-2 py-1 text-emerald-300">Mitigated</span>}
+                      {!selectedThreat && <span className="text-cyan-300">{threatCount} threats <ArrowRight className="ml-1 inline h-3 w-3" /></span>}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
           
           {/* Interactive Diagram Area */}
-          <div className="flex-1 bg-slate-950 border border-slate-800 rounded-xl relative overflow-hidden flex flex-col">
+          <div className="hidden lg:flex lg:h-auto lg:flex-1 bg-slate-950 border border-slate-800 rounded-xl relative overflow-hidden flex-col">
             {/* Legend Overlay */}
-            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 flex flex-col gap-2">
                 <div className="bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-lg text-[10px] font-bold uppercase tracking-wider space-y-2">
                     <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-red-500" /> Risk Introduction</div>
                     <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-orange-500" /> Risk Exposure</div>
@@ -1002,8 +1131,8 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                 )}
             </div>
             
-            <div className="flex-1 overflow-auto relative p-2 flex items-center justify-center bg-slate-950">
-               <svg width="850" height="880" viewBox="0 0 850 880" className="w-full h-full">
+            <div className="threat-map-scroll flex-1 overflow-auto relative p-2 flex items-center justify-start lg:justify-center bg-slate-950">
+               <svg width="850" height="880" viewBox="0 0 850 880" className="h-full min-w-[760px] sm:min-w-[850px] lg:min-w-0 lg:w-full">
                   <defs>
                     <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                       <path d="M0,0 L0,6 L8,3 z" fill="#475569" />
@@ -1093,10 +1222,10 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
           </div>
 
           {/* Details Sidebar */}
-          <div className="w-full lg:w-96 bg-slate-950 border-l border-slate-800 flex flex-col shadow-2xl z-20 h-full">
+          <div id="threat-inspector" className="scroll-mt-28 w-full lg:w-96 bg-slate-950 border border-slate-800 lg:border-y-0 lg:border-r-0 lg:border-l flex flex-col shadow-2xl z-20 h-auto lg:h-full rounded-xl lg:rounded-none overflow-hidden">
             {selectedThreatId ? (
                 // Threat Detail View (When a specific threat is selected from list)
-                <div className="flex-1 overflow-y-auto p-6 animate-in slide-in-from-right duration-300">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 animate-in slide-in-from-right duration-300">
                     <button onClick={() => setSelectedThreatId(null)} className="text-xs text-slate-500 hover:text-white mb-4 flex items-center gap-1"><ArrowRight className="w-3 h-3 rotate-180" /> Back to components</button>
                     
                     <div className="mb-6">
@@ -1185,10 +1314,13 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
             ) : !selectedComponent ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-slate-500">
                 <LayoutTemplate className="w-16 h-16 mb-4 opacity-10" />
-                <p className="text-sm font-medium">Select a component in the diagram or a threat from the matrix to explore the SAIF security path.</p>
+                <p className="text-sm font-medium">
+                  <span className="lg:hidden">Select an asset above or a threat from another view to explore the SAIF security path.</span>
+                  <span className="hidden lg:inline">Select a component in the diagram or a threat from the matrix to explore the SAIF security path.</span>
+                </p>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto p-6 animate-in slide-in-from-right duration-300">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 animate-in slide-in-from-right duration-300">
                 <div className="mb-6 border-b border-slate-800 pb-4">
                   <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-900 border ${
                     selectedComponent.layer === 'Application' ? 'text-blue-400 border-blue-900' :
@@ -1209,10 +1341,11 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                   {threatsForComponent.map(threat => {
                     const theme = getThreatTheme(threat.id);
                     return (
-                      <div 
+                      <button
                         key={threat.id}
                         onClick={() => setSelectedThreatId(threat.id)}
-                        className="bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-lg p-4 transition-all group cursor-pointer"
+                        type="button"
+                        className="w-full min-h-11 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-lg p-4 text-left transition-all group cursor-pointer"
                       >
                         <div className="flex justify-between items-center mb-2">
                             <span className={`flex items-center gap-1.5 font-mono text-[9px] px-1.5 py-0.5 rounded border ${theme.bg} ${theme.text} ${theme.border}`}>{threat.id}</span>
@@ -1223,7 +1356,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                         <div className="mt-2 pt-2 border-t border-slate-800 flex justify-end">
                             <span className="text-[10px] text-cyan-400 font-bold flex items-center gap-1">Analyze Path <ArrowRight className="w-3 h-3" /></span>
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -1236,35 +1369,71 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
       {/* Impact Analysis Tab */}
       {activeTab === 'impact' && (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden animate-in fade-in duration-300 shadow-2xl">
-          <div className="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+          <div className="p-4 sm:p-6 border-b border-slate-800 bg-slate-950 flex flex-col xl:flex-row xl:justify-between xl:items-center gap-4">
             <div>
               <h3 className="text-xl font-bold text-white mb-1">Business Impact Matrix</h3>
               <p className="text-xs text-slate-500">Correlation of technical failures to business consequences.</p>
             </div>
-            <div className="flex items-center gap-2">
-                <ListFilter className="w-4 h-4 text-slate-500" />
+            <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:w-auto">
+              <label className="flex min-h-11 items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3">
+                <ListFilter className="w-4 h-4 shrink-0 text-slate-500" />
                 <select 
+                    aria-label="Sort threats"
                     value={sortMethod} 
                     onChange={(e) => setSortMethod(e.target.value as 'default' | 'severity')}
-                    className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+                    className="min-w-0 flex-1 bg-transparent py-2 text-xs text-slate-300 focus:outline-none"
                 >
                     <option value="default">Default (ID)</option>
                     <option value="severity">Risk Level</option>
                 </select>
-                <UserCheck className="w-4 h-4 text-slate-500 ml-2" />
+              </label>
+              <label className="flex min-h-11 items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3">
+                <UserCheck className="w-4 h-4 shrink-0 text-slate-500" />
                 <select 
+                    aria-label="Filter by ownership"
                     value={ownershipFilter} 
                     onChange={(e) => setOwnershipFilter(e.target.value as 'all' | 'creator' | 'consumer' | 'shared')}
-                    className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+                    className="min-w-0 flex-1 bg-transparent py-2 text-xs text-slate-300 focus:outline-none"
                 >
                     <option value="all">All Ownership</option>
                     <option value="creator">Model Creator</option>
                     <option value="consumer">Model Consumer</option>
                     <option value="shared">Shared</option>
                 </select>
+              </label>
             </div>
           </div>
-          <div className="overflow-x-auto">
+
+          <div className="grid gap-3 p-3 sm:p-4 md:hidden">
+            {impactThreats.map((threat) => {
+              const theme = getThreatTheme(threat.id);
+              return (
+                <button
+                  key={threat.id}
+                  type="button"
+                  onClick={() => openThreatInArchitecture(threat.id)}
+                  className="rounded-xl border border-slate-800 bg-slate-950 p-4 text-left transition-colors hover:border-cyan-500/30"
+                >
+                  <span className="flex flex-wrap items-center justify-between gap-2">
+                    <span className={`rounded border px-2 py-1 font-mono text-[10px] ${theme.bg} ${theme.text} ${theme.border}`}>{threat.id}</span>
+                    <span className={`rounded border px-2 py-1 text-[10px] font-bold ${getSeverityTheme(threat.riskLevel)}`}>{threat.riskLevel}</span>
+                  </span>
+                  <span className="mt-3 block font-bold text-slate-200">{threat.name}</span>
+                  <span className="mt-2 block text-xs italic leading-relaxed text-slate-400">“{threat.impact}”</span>
+                  <span className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-800 pt-3">
+                    {threat.responsibility?.map((responsibility) => (
+                      <span key={responsibility} className="rounded border border-slate-700 bg-slate-900 px-2 py-1 text-[10px] font-bold uppercase text-slate-300">
+                        {responsibility}
+                      </span>
+                    ))}
+                    <span className="ml-auto flex items-center gap-1 text-xs font-bold text-cyan-300">Analyze <ArrowRight className="h-3 w-3" /></span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-950/50 text-slate-400 text-[10px] uppercase tracking-widest border-b border-slate-800">
@@ -1278,7 +1447,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                 {impactThreats.map((threat) => {
                   const theme = getThreatTheme(threat.id);
                   return (
-                    <tr key={threat.id} className="hover:bg-slate-800/50 transition-colors group cursor-pointer" onClick={() => { setSelectedThreatId(threat.id); setActiveTab('architecture'); }}>
+                    <tr key={threat.id} className="hover:bg-slate-800/50 transition-colors group cursor-pointer" onClick={() => openThreatInArchitecture(threat.id)}>
                       <td className="p-4 min-w-[200px]">
                         <div className="flex items-center gap-2 mb-1.5">
                            <span className={`font-mono text-[10px] px-1.5 py-0.5 rounded border ${theme.bg} ${theme.text} ${theme.border}`}>
@@ -1346,9 +1515,9 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
                             {threat.riskLevel}
                           </span>
                       </div>
-                      <h4 className="font-bold text-slate-200 text-lg leading-tight group-hover:text-cyan-400 transition-colors cursor-pointer" onClick={() => setSelectedThreatId(threat.id)}>
+                      <button type="button" className="text-left font-bold text-slate-200 text-lg leading-tight group-hover:text-cyan-400 transition-colors" onClick={() => openThreatInArchitecture(threat.id)}>
                         {threat.name}
-                      </h4>
+                      </button>
                     </div>
 
                     <div className="p-5 flex-1 flex flex-col gap-4">

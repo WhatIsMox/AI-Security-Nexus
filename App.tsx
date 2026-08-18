@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import TestList from './components/TestList';
@@ -19,6 +19,23 @@ const App: React.FC = () => {
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [owaspTargetId, setOwaspTargetId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isSidebarOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsSidebarOpen(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isSidebarOpen]);
 
   const filteredTests = useMemo(() => {
     if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'SECUREMCPGUIDE' || activePillar === 'GENAIDATASECURITY') return TEST_DATA;
@@ -124,10 +141,10 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30">
+    <div className="app-shell container-fluid min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30">
       
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-950 border-b border-slate-800 z-30 flex items-center justify-between px-4">
+      <header className="mobile-header md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-950 border-b border-slate-800 z-30 flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <div className="p-1.5 bg-cyan-950 rounded border border-cyan-500/30">
             <Book className="w-5 h-5 text-cyan-400" />
@@ -136,11 +153,15 @@ const App: React.FC = () => {
         </div>
         <button 
           onClick={() => setIsSidebarOpen(true)}
-          className="p-2 text-slate-400 hover:text-white"
+          className="mobile-menu-button p-2 text-slate-400 hover:text-white"
+          type="button"
+          aria-label="Open navigation menu"
+          aria-controls="primary-navigation"
+          aria-expanded={isSidebarOpen}
         >
           <Menu className="w-6 h-6" />
         </button>
-      </div>
+      </header>
 
       <Sidebar 
         activePillar={activePillar} 
@@ -158,17 +179,17 @@ const App: React.FC = () => {
         onClose={() => setIsSidebarOpen(false)}
       />
       
-      <main className={`
+      <main className={`app-main
         min-h-screen relative transition-all duration-300
         pt-16 md:pt-0
         md:ml-64
       `}>
-        <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-64 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[100px]" />
+        <div className="app-backdrop fixed inset-0 pointer-events-none z-0">
+          <div className="app-backdrop-orb absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[100px]" />
+          <div className="app-backdrop-orb absolute bottom-0 left-64 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[100px]" />
         </div>
 
-        <div className="relative z-10 py-8">
+        <div className="app-content relative z-10 py-8">
           {currentView === 'dashboard' && (
             <Dashboard 
               onSelectPillar={handleSelectPillar} 
