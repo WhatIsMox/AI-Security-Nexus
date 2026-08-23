@@ -38,19 +38,19 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
 
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
         {/* Header */}
-        <div className="p-4 sm:p-6 md:p-8 border-b border-slate-800 bg-slate-950">
-          <div className="flex flex-col gap-4">
+        <div className="p-3.5 sm:p-6 md:p-8 border-b border-slate-800 bg-slate-950">
+          <div className="flex flex-col gap-3 sm:gap-4">
             
             <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
                {/* Identifiers */}
-               <div className="flex flex-wrap items-center gap-3">
-                  <span className="font-mono text-sm text-cyan-500 bg-cyan-950/30 px-3 py-1.5 rounded border border-cyan-900">
+               <div className="flex flex-wrap items-center gap-1.5 sm:gap-3">
+                  <span className="font-mono text-xs sm:text-sm text-cyan-500 bg-cyan-950/30 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-cyan-900">
                     {test.id}
                   </span>
                   {test.owaspTop10Ref && (
                     <button 
                       onClick={() => onNavigateToOwasp(test.owaspTop10Ref!)}
-                      className="flex items-center gap-1.5 font-mono text-sm text-pink-400 bg-pink-500/10 px-3 py-1.5 rounded border border-pink-500/20 hover:bg-pink-500/20 hover:border-pink-500/40 transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-pink-400 bg-pink-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-pink-500/20 hover:bg-pink-500/20 hover:border-pink-500/40 transition-all cursor-pointer"
                       title="Go to OWASP LLM Top 10 Entry"
                     >
                       <Brain className="w-3.5 h-3.5" /> {test.owaspTop10Ref}
@@ -59,7 +59,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   {test.owaspMlTop10Ref && (
                     <button 
                       onClick={() => onNavigateToOwasp(test.owaspMlTop10Ref!)}
-                      className="flex items-center gap-1.5 font-mono text-sm text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-emerald-400 bg-emerald-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all cursor-pointer"
                       title="Go to OWASP ML Top 10 Entry"
                     >
                       <Cpu className="w-3.5 h-3.5" /> {test.owaspMlTop10Ref}
@@ -68,7 +68,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   {test.owaspAgenticRef && (
                     <button 
                       onClick={() => onNavigateToOwasp(test.owaspAgenticRef!)}
-                      className="flex items-center gap-1.5 font-mono text-sm text-orange-400 bg-orange-500/10 px-3 py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/40 transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-orange-400 bg-orange-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/40 transition-all cursor-pointer"
                       title="Go to OWASP Agentic Top 10 entry"
                     >
                       <Bot className="w-3.5 h-3.5" /> {test.owaspAgenticRef}
@@ -77,7 +77,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   {test.owaspSaifRef && (
                     <button 
                       onClick={() => onNavigateToOwasp(test.owaspSaifRef!)}
-                      className="flex items-center gap-1.5 font-mono text-sm text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-blue-400 bg-blue-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 transition-all cursor-pointer"
                       title="Go to Google SAIF Risk Entry"
                     >
                       <Gavel className="w-3.5 h-3.5" /> {test.owaspSaifRef}
@@ -86,54 +86,53 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   {test.owaspMcpTop10Ref && (
                     <button 
                       onClick={() => onNavigateToOwasp(test.owaspMcpTop10Ref!)}
-                      className="flex items-center gap-1.5 font-mono text-sm text-cyan-400 bg-cyan-500/10 px-3 py-1.5 rounded border border-cyan-500/20 hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-cyan-400 bg-cyan-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-cyan-500/20 hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all cursor-pointer"
                       title="Go to OWASP MCP Top 10 Entry"
                     >
                       <Network className="w-3.5 h-3.5" /> {test.owaspMcpTop10Ref}
                     </button>
                   )}
-                  <span className="text-slate-400 text-sm font-medium border-l border-slate-800 pl-3">
+                  <span className="text-slate-400 text-xs sm:text-sm font-medium border-l border-slate-800 pl-2 sm:pl-3">
                     {test.pillar}
                   </span>
                </div>
 
-               <span className={`px-4 py-1.5 rounded-full text-sm font-bold border shrink-0 ${
-                  test.riskLevel === 'Critical' ? 'text-red-400 bg-red-400/10 border-red-400/20' :
-                  test.riskLevel === 'High' ? 'text-orange-400 bg-orange-400/10 border-orange-400/20' :
-                  'text-yellow-400 bg-yellow-400/10 border-yellow-400/20'
-                }`}>
-                  {test.riskLevel}
+               <span className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold border shrink-0 ${
+                 test.riskLevel === 'Critical' ? 'text-red-400 bg-red-950/30 border-red-900' :
+                 test.riskLevel === 'High' ? 'text-orange-400 bg-orange-950/30 border-orange-900' :
+                 test.riskLevel === 'Medium' ? 'text-yellow-400 bg-yellow-950/30 border-yellow-900' :
+                 'text-green-400 bg-green-950/30 border-green-900'
+               }`}>
+                 {test.riskLevel} Risk
                </span>
             </div>
 
-            <h1 className="text-3xl font-bold text-white mt-2">{test.title}</h1>
-            
-            {/* Source Highlight for Agentic Tests */}
-            {isAgentic && (
-               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded text-orange-300 text-xs font-medium self-start">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  Mapped to OWASP {test.owaspAgenticRef?.startsWith('AST') ? 'Agentic Skills Top 10' : 'Top 10 for Agentic Applications'}
-               </div>
-            )}
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-100 tracking-tight break-words">
+                {test.title}
+              </h1>
+              <p className="text-slate-400 text-xs sm:text-sm md:text-base mt-2 leading-relaxed">
+                {test.summary}
+              </p>
+            </div>
 
-            <p className="text-slate-300 text-lg leading-relaxed border-t border-slate-900/50 pt-4 mt-2">
-              {test.summary}
-            </p>
           </div>
         </div>
 
-        <div className="p-4 sm:p-6 md:p-8 space-y-8 md:space-y-10">
+        {/* Content Body */}
+        <div className="p-3.5 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
+          
           {/* Objectives */}
           <section>
-            <div className="flex items-center gap-2 mb-4 text-slate-100">
-              <Target className="w-5 h-5 text-cyan-400" />
-              <h3 className="text-xl font-bold">Test Objectives</h3>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4 text-slate-100">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 shrink-0" />
+              <h3 className="text-lg sm:text-xl font-bold">Testing Objectives</h3>
             </div>
-            <ul className="grid gap-2">
+            <ul className="space-y-2">
               {test.objectives.map((obj, i) => (
-                <li key={i} className="flex items-start gap-3 text-slate-300 bg-slate-800/30 p-3 rounded-lg border border-slate-800">
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 shrink-0" />
-                  {obj}
+                <li key={i} className="flex items-start gap-2.5 sm:gap-3 text-slate-300 bg-slate-950 p-3 sm:p-4 rounded-lg border border-slate-800/80">
+                  <span className="font-mono text-cyan-500 font-bold text-xs sm:text-sm">{i + 1}.</span>
+                  <span className="text-xs sm:text-sm leading-relaxed">{obj}</span>
                 </li>
               ))}
             </ul>
@@ -141,20 +140,20 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
 
           {/* Payloads / Test Vectors */}
           <section>
-            <div className="flex items-center gap-2 mb-4 text-slate-100">
-              <Code className="w-5 h-5 text-purple-400" />
-              <h3 className="text-xl font-bold">How to Test / Payloads</h3>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4 text-slate-100">
+              <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 shrink-0" />
+              <h3 className="text-lg sm:text-xl font-bold">How to Test / Payloads</h3>
             </div>
-            <div className="grid gap-4">
+            <div className="grid gap-3 sm:gap-4">
               {test.payloads.map((payload, i) => (
                 <div key={i} className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                  <div className="px-4 py-2 bg-slate-900 border-b border-slate-800 flex justify-between items-center">
-                    <span className="font-semibold text-slate-200">{payload.name}</span>
+                  <div className="px-3.5 py-2.5 sm:px-4 sm:py-2 bg-slate-900 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <span className="font-semibold text-xs sm:text-sm text-slate-200 break-words">{payload.name}</span>
                     {payload.code && (
                       <button
                         onClick={() => handleCopyPayload(payload.code!, i)}
                         type="button"
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-all ${
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-all self-end sm:self-auto ${
                           copiedPayloadIndex === i
                             ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                             : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700'
@@ -175,12 +174,12 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                       </button>
                     )}
                   </div>
-                  <div className="p-4">
-                    <p className="text-slate-400 text-sm mb-3 whitespace-pre-line">{payload.description}</p>
+                  <div className="p-3.5 sm:p-4">
+                    <p className="text-slate-400 text-xs sm:text-sm mb-3 whitespace-pre-line leading-relaxed">{payload.description}</p>
                     {payload.code && (
                       <div className="relative group mt-2">
-                        <div className="absolute top-0 right-0 px-2 py-1 text-[10px] text-slate-500 font-mono">PAYLOAD / CODE</div>
-                        <pre className="bg-black/50 text-green-400 p-4 pt-6 rounded-lg font-mono text-sm whitespace-pre-wrap break-words border border-slate-800">
+                        <div className="absolute top-0 right-0 px-2 py-0.5 text-[9px] sm:text-[10px] text-slate-500 font-mono">PAYLOAD / CODE</div>
+                        <pre className="bg-black/50 text-green-400 p-3 pt-5 sm:p-4 sm:pt-6 rounded-lg font-mono text-xs sm:text-sm whitespace-pre-wrap break-words border border-slate-800 overflow-x-auto">
                           {payload.code}
                         </pre>
                       </div>
