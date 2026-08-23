@@ -47,7 +47,7 @@ const POISONING_TOOLS: SecurityTool[] = [
   { name: "BackdoorBench", description: "Benchmark suite for backdoor attacks in ML models.", url: "https://github.com/SCLBD/BackdoorBench", cost: "Free", type: "Local", category: "Offensive" },
   { name: "Cleanlab", description: "Detect and fix label issues and noisy/poisoned data.", url: "https://github.com/cleanlab/cleanlab", cost: "Free", type: "Local", category: "Defensive" },
   { name: "Great Expectations", description: "Data quality testing to detect anomalous or poisoned data.", url: "https://github.com/great-expectations/great_expectations", cost: "Free", type: "Local", category: "Defensive" },
-  { name: "TensorFlow Data Validation", description: "Validate and detect anomalies in training datasets.", url: "https://www.tensorflow.org/tfx/data_validation", cost: "Free", type: "Local", category: "Defensive" },
+  { name: "TensorFlow Data Validation", description: "Validate and detect anomalies in training datasets.", url: "https://github.com/tensorflow/data-validation", cost: "Free", type: "Local", category: "Defensive" },
   { name: "Amazon Deequ", description: "Data quality validation for large-scale datasets.", url: "https://github.com/awslabs/deequ", cost: "Free", type: "Local", category: "Defensive" },
   { name: "whylogs", description: "Data logging and quality checks for ML pipelines.", url: "https://github.com/whylabs/whylogs", cost: "Free+Paid", type: "Local", category: "Defensive" },
   { name: "MLflow", description: "Tracking, model registry, and governance controls.", url: "https://github.com/mlflow/mlflow", cost: "Free", type: "Local", category: "Defensive" },
@@ -65,7 +65,7 @@ const OUTPUT_HANDLING_TOOLS: SecurityTool[] = [
   { name: "DOMPurify", description: "Sanitize HTML outputs to prevent XSS.", url: "https://github.com/cure53/dompurify", cost: "Free", type: "Local", category: "Defensive" },
   { name: "Bleach", description: "Python HTML sanitization to prevent XSS.", url: "https://github.com/mozilla/bleach", cost: "Free", type: "Local", category: "Defensive" },
   { name: "OWASP ZAP", description: "Dynamic testing for XSS/SQLi in LLM wrappers.", url: "https://www.zaproxy.org/", cost: "Free", type: "Local", category: "Offensive" },
-  { name: "Burp Suite", description: "Web security testing for output handling flaws.", url: "https://portswigger.net/burp", cost: "Free+Paid", type: "Third-party", category: "Offensive" }
+  { name: "Burp Suite", description: "Web security testing for output handling flaws.", url: "https://portswigger.net/", cost: "Free+Paid", type: "Third-party", category: "Offensive" }
 ];
 
 const EXCESSIVE_AGENCY_TOOLS: SecurityTool[] = [
@@ -75,7 +75,7 @@ const EXCESSIVE_AGENCY_TOOLS: SecurityTool[] = [
   { name: "AgentOps", description: "Observability and guardrails for agent behavior.", url: "https://www.agentops.ai/", cost: "Paid", type: "Third-party", category: "Defensive" },
   { name: "promptfoo", description: "Evaluate tool-call safety with adversarial prompts.", url: "https://github.com/promptfoo/promptfoo", cost: "Free+Paid", type: "Local", category: "Both" },
   { name: "Giskard", description: "Automated red-teaming for agent behavior.", url: "https://github.com/Giskard-AI/giskard", cost: "Free+Paid", type: "Local", category: "Both" },
-  { name: "Agentic Security Scanner", description: "Scans agent flows for unsafe tool use and hijacks.", url: "https://github.com/agentic-security/scanner", cost: "Free", type: "Local", category: "Offensive" }
+  { name: "AgentOps SDK", description: "Scans agent flows for unsafe tool use and hijacks.", url: "https://github.com/agentops-ai/agentops", cost: "Free", type: "Local", category: "Offensive" }
 ];
 
 const PROMPT_LEAKAGE_TOOLS: SecurityTool[] = [
@@ -156,7 +156,7 @@ const MODEL_SKEWING_TOOLS: SecurityTool[] = [
 ];
 
 const OUTPUT_INTEGRITY_TOOLS: SecurityTool[] = [
-  { name: "Burp Suite", description: "Tampering and proxy testing of inference outputs.", url: "https://portswigger.net/burp", cost: "Free+Paid", type: "Third-party", category: "Offensive" },
+  { name: "Burp Suite", description: "Tampering and proxy testing of inference outputs.", url: "https://portswigger.net/", cost: "Free+Paid", type: "Third-party", category: "Offensive" },
   { name: "OWASP ZAP", description: "Proxy testing for output manipulation paths.", url: "https://www.zaproxy.org/", cost: "Free", type: "Local", category: "Offensive" },
   { name: "HashiCorp Vault", description: "Key management for signing model outputs.", url: "https://www.vaultproject.io/", cost: "Free+Paid", type: "Third-party", category: "Defensive" },
   { name: "Sigstore Cosign", description: "Sign inference artifacts for integrity checks.", url: "https://github.com/sigstore/cosign", cost: "Free", type: "Local", category: "Defensive" }
@@ -179,7 +179,7 @@ const RCE_TOOLS: SecurityTool[] = [
   { name: "gVisor", description: "Sandbox untrusted tool execution.", url: "https://gvisor.dev/", cost: "Free", type: "Local", category: "Defensive" },
   { name: "Firecracker", description: "MicroVM isolation for safe execution.", url: "https://github.com/firecracker-microvm/firecracker", cost: "Free", type: "Local", category: "Defensive" },
   { name: "AppArmor", description: "Linux MAC profiles to constrain execution.", url: "https://apparmor.net/", cost: "Free", type: "Third-party", category: "Defensive" },
-  { name: "SELinux", description: "Mandatory access control to confine processes.", url: "https://selinuxproject.org/", cost: "Free", type: "Third-party", category: "Defensive" }
+  { name: "SELinux", description: "Mandatory access control to confine processes.", url: "https://github.com/SELinuxProject/selinux", cost: "Free", type: "Third-party", category: "Defensive" }
 ];
 
 const AUTHZ_TOOLS: SecurityTool[] = [
@@ -189,7 +189,7 @@ const AUTHZ_TOOLS: SecurityTool[] = [
   { name: "Zitadel", description: "Open-source IAM and identity management.", url: "https://github.com/zitadel/zitadel", cost: "Free", type: "Local", category: "Defensive" },
   { name: "Open Policy Agent (OPA)", description: "Policy-based authorization at runtime.", url: "https://www.openpolicyagent.org/", cost: "Free", type: "Local", category: "Defensive" },
   { name: "Permit.io", description: "Fine-grained authorization controls.", url: "https://www.permit.io/", cost: "Paid", type: "Third-party", category: "Defensive" },
-  { name: "Burp Suite", description: "Auth and access-control testing for MCP endpoints.", url: "https://portswigger.net/burp", cost: "Free+Paid", type: "Third-party", category: "Offensive" }
+  { name: "Burp Suite", description: "Auth and access-control testing for MCP endpoints.", url: "https://portswigger.net/", cost: "Free+Paid", type: "Third-party", category: "Offensive" }
 ];
 
 const AUDIT_TELEMETRY_TOOLS: SecurityTool[] = [
@@ -213,7 +213,7 @@ const SHADOW_SERVER_TOOLS: SecurityTool[] = [
 const SECRET_EXPOSURE_TOOLS: SecurityTool[] = [
   { name: "HashiCorp Vault", description: "Central secrets management with rotation.", url: "https://www.vaultproject.io/", cost: "Free+Paid", type: "Third-party", category: "Defensive" },
   { name: "AWS Secrets Manager", description: "Managed secrets storage with rotation.", url: "https://aws.amazon.com/secrets-manager/", cost: "Paid", type: "Third-party", category: "Defensive" },
-  { name: "Azure Key Vault", description: "Managed keys and secrets with access policies.", url: "https://azure.microsoft.com/products/key-vault/", cost: "Paid", type: "Third-party", category: "Defensive" },
+  { name: "Azure Key Vault", description: "Managed keys and secrets with access policies.", url: "https://azure.microsoft.com/en-us/products/key-vault/", cost: "Paid", type: "Third-party", category: "Defensive" },
   { name: "Google Secret Manager", description: "Managed secret storage with IAM policies.", url: "https://cloud.google.com/secret-manager", cost: "Paid", type: "Third-party", category: "Defensive" },
   { name: "SOPS", description: "Encrypt secrets in configuration files.", url: "https://github.com/getsops/sops", cost: "Free", type: "Local", category: "Defensive" },
   { name: "TruffleHog", description: "Detect secrets in code and storage with verification.", url: "https://github.com/trufflesecurity/trufflehog", cost: "Free+Paid", type: "Local", category: "Offensive" },
