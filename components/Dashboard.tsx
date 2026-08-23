@@ -40,12 +40,21 @@ interface DashboardProps {
 /* ------------------------------------------------------------------ */
 
 /** Observe an element and report once when it enters the viewport. */
-function useInView<T extends HTMLElement>(threshold = 0.15): [React.RefObject<T>, boolean] {
+function useInView<T extends HTMLElement>(threshold = 0.05): [React.RefObject<T>, boolean] {
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      setInView(true);
+      return;
+    }
+    if (!('IntersectionObserver' in window)) {
+      setInView(true);
+      return;
+    }
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -55,7 +64,7 @@ function useInView<T extends HTMLElement>(threshold = 0.15): [React.RefObject<T>
           }
         });
       },
-      { threshold, rootMargin: '0px 0px -40px 0px' }
+      { threshold, rootMargin: '40px 0px 40px 0px' }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -65,9 +74,9 @@ function useInView<T extends HTMLElement>(threshold = 0.15): [React.RefObject<T>
 
 /** Animated counter that eases from 0 to `value` once visible. */
 const CountUp: React.FC<{ value: number; duration?: number; className?: string; suffix?: string }> = ({
-  value, duration = 1400, className = '', suffix = '',
+  value, duration = 800, className = '', suffix = '',
 }) => {
-  const [ref, inView] = useInView<HTMLSpanElement>(0.4);
+  const [ref, inView] = useInView<HTMLSpanElement>(0.05);
   const [display, setDisplay] = useState(0);
   useEffect(() => {
     if (!inView) return;
@@ -84,7 +93,7 @@ const CountUp: React.FC<{ value: number; duration?: number; className?: string; 
   }, [inView, value, duration]);
   return (
     <span ref={ref} className={className}>
-      {display.toLocaleString()}{suffix}
+      {(inView ? display : value).toLocaleString()}{suffix}
     </span>
   );
 };
@@ -117,6 +126,14 @@ const useTypewriter = (phrases: string[], typeMs = 45, holdMs = 2200) => {
 function useRevealObserver() {
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal'));
+    // Mark elements already in or near viewport as visible immediately
+    els.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 100) {
+        el.classList.add('is-visible');
+      }
+    });
+
     if (!('IntersectionObserver' in window)) {
       els.forEach((el) => el.classList.add('is-visible'));
       return;
@@ -130,7 +147,7 @@ function useRevealObserver() {
           }
         });
       },
-      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+      { threshold: 0.02, rootMargin: '60px 0px 60px 0px' }
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
