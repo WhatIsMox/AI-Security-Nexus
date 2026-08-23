@@ -97,16 +97,19 @@ npm test
 # 2. Run data catalog schema & referential integrity validator
 npm run test:data
 
-# 3. Synchronize auto-generated documentation and project statistics
+# 3. Verify live HTTP resolution of all external links (incidents, tools, references)
+npm run test:links
+
+# 4. Synchronize auto-generated documentation and project statistics
 npm run docs:sync
 
-# 4. Verify documentation is in sync (CI check mode)
+# 5. Verify documentation is in sync (CI check mode)
 npm run docs:check
 
-# 5. Compile TypeScript and build production bundle
+# 6. Compile TypeScript and build production bundle
 npm run build
 
-# 6. Run local development preview
+# 7. Run local development preview
 npm run dev
 ```
 
@@ -135,10 +138,12 @@ npm run dev
 3. Add a test in `tests/unit/data-schema.test.mjs` asserting the new entry's existence, structure, and non-empty properties.
 4. Run `npm test` and `npm run docs:sync`.
 
-### Adding a UI Component or Route
-1. Build the component following UI/UX rules.
-2. Add a functional test in `tests/functional/` asserting its view transitions, state parameters, or search/filter handling.
-3. Run `npm test` and `npm run build`.
+### Adding or Modifying External Incident / Tool Links
+1. When adding or updating incident citations (`incidents_catalog.ts`), security tools (`tools_catalog.ts`), or framework references (`data_*.ts`):
+   - **Mandatory Live Verification**: Run `npm run test:links` to execute live HTTP `GET` requests against all external endpoints and confirm `HTTP 200 OK`.
+   - **No Bot-Challenged Paywalls / Broken 404s**: Never use paywalled news links or anti-bot portals that return 401/403/404. Prefer permanent, open-access scholarly/official records (arXiv.org, NVD/NIST, CISA advisories, US DOJ, FTC, EDPB, US Copyright Office, verified Wikipedia).
+   - **Security Attributes**: External links rendered in React components must strictly specify `target="_blank"` and `rel="noopener noreferrer"`.
+   - Run `npm test && npm run test:data && npm run test:links` before concluding.
 
 ---
 

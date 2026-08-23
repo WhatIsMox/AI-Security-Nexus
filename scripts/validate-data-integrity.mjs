@@ -198,19 +198,37 @@ function validateTestData() {
   }
 }
 
-// 8. Validate Tools & Incidents catalogs
+// 8. Validate Tools & Incidents catalogs & external link health
 function validateCatalogs() {
   const toolsContent = readFileContent('tools_catalog.ts');
   const incidentsContent = readFileContent('incidents_catalog.ts');
 
   if (toolsContent) {
-    const toolUrls = [...toolsContent.matchAll(/url:\s*["'](https?:\/\/[^"']+)["']/g)].map(m => m[1]);
-    logPass(`tools_catalog.ts: Verified ${toolUrls.length} security tool references with valid URLs`);
+    const toolUrls = [...toolsContent.matchAll(/url:\s*["']([^"']+)["']/g)].map(m => m[1]);
+    let malformedCount = 0;
+    for (const u of toolUrls) {
+      if (!u.startsWith('https://') && !u.startsWith('http://')) malformedCount++;
+      try { new URL(u); } catch { malformedCount++; }
+    }
+    if (malformedCount > 0) {
+      logFail(`tools_catalog.ts: Found ${malformedCount} malformed or invalid URLs`);
+    } else {
+      logPass(`tools_catalog.ts: Verified ${toolUrls.length} security tool references with valid URLs`);
+    }
   }
 
   if (incidentsContent) {
-    const incidentUrls = [...incidentsContent.matchAll(/url:\s*["'](https?:\/\/[^"']+)["']/g)].map(m => m[1]);
-    logPass(`incidents_catalog.ts: Verified ${incidentUrls.length} real-world incident citations`);
+    const incidentUrls = [...incidentsContent.matchAll(/url:\s*["']([^"']+)["']/g)].map(m => m[1]);
+    let malformedCount = 0;
+    for (const u of incidentUrls) {
+      if (!u.startsWith('https://') && !u.startsWith('http://')) malformedCount++;
+      try { new URL(u); } catch { malformedCount++; }
+    }
+    if (malformedCount > 0) {
+      logFail(`incidents_catalog.ts: Found ${malformedCount} malformed or invalid URLs`);
+    } else {
+      logPass(`incidents_catalog.ts: Verified ${incidentUrls.length} real-world incident citations`);
+    }
   }
 }
 

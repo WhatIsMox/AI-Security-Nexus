@@ -34,19 +34,20 @@ The UI is a state-driven single page application. Navigation is controlled via `
 
 When delegating tasks to subagents:
 1. **Data Curation Agent**:
-   - Focus: Updating `data_*.ts`, verifying taxonomy references, adding test cases.
-   - Requirement: Must run `npm run test:data` and `npm run docs:sync` upon completion.
+   - Focus: Updating `data_*.ts`, verifying taxonomy references, adding test cases, managing incident/tool citations.
+   - Requirement: Must run `npm run test:data`, `npm run test:links`, and `npm run docs:sync` upon completion.
 2. **Frontend UI/UX Agent**:
    - Focus: Styling components, updating SVG diagrams, enhancing micro-interactions, maintaining dark mode aesthetics.
    - Requirement: Keep bundle size in check; ensure `npm run build` succeeds with zero TypeScript errors.
 3. **Security Reviewer Agent**:
-   - Focus: Verifying CSP compliance in `vite.config.ts`, ensuring payloads in test cases are safely handled without XSS risks.
+   - Focus: Verifying CSP compliance in `vite.config.ts`, ensuring payloads in test cases are safely handled without XSS risks, validating `target="_blank"` and `rel="noopener noreferrer"` on all external links.
 
 ---
 
 ## 🛠️ Automated Operations & Knowledge Hooks
 
 - **Automated Validation**: Whenever modifying data catalogs, run `npm run test:data`.
+- **Live Link Verification**: Whenever modifying or adding external URLs, run `npm run test:links` to ensure 100% resolution with HTTP 200 OK.
 - **Dynamic Stats & Project Map**: Auto-generated into `docs/PROJECT_MAP.md` and `docs/AUTO_GENERATED_STATS.json`.
 - **Pre-commit / CI**: `.github/workflows/agent-docs-sync.yml` guarantees documentation freshness on every push and weekly cron.
 - **GitHub Pages Continuous Deployment**: Verified via `.github/workflows/deploy.yml`. Ensure all asset references, static bundle outputs (`npm run build`), and CSP rules stay compatible with GitHub Pages hosting under subdirectory paths.
