@@ -2145,6 +2145,636 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
       "Complain and Enforce execution modes for safe profile authoring"
     ],
     installationOrQuickstart: "apparmor_parser -r -W /etc/apparmor.d/ai_sandbox_profile\ndocker run --security-opt apparmor=ai_sandbox_profile my-tool-server"
+  },
+
+  "Nightfall AI": {
+    name: "Nightfall AI",
+    description: "AI-native data loss prevention and PII/secrets detection API.",
+    url: "https://www.nightfall.ai/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Nightfall AI Inc.",
+    license: "Commercial / SaaS API",
+    ecosystem: ["Python", "JavaScript", "AWS", "Slack", "Jira", "REST API"],
+    longDescription: "Nightfall AI is a cloud-based data security and DLP platform that uses machine learning to detect and classify over 150+ sensitive data types (PII, PHI, PCI, secrets, credentials) across SaaS applications and GenAI prompts in real time.",
+    typicalUseCase: "Inline scanning of prompts and completions in enterprise AI workflows to prevent employees from leaking API credentials, patient records, or financial data into LLMs.",
+    keyFeatures: [
+      "150+ pre-trained ML detectors for sensitive tokens and personal data",
+      "Real-time API latency (<50ms) for inline gateway integration",
+      "Automated webhook alerts and compliance audit logs",
+      "Native SaaS integrations with Slack, GitHub, Confluence, and Google Drive"
+    ],
+    installationOrQuickstart: "pip install nightfall\nfrom nightfall import Nightfall\nnf = Nightfall(key='$NIGHTFALL_API_KEY')\nres = nf.scan_text('Patient SSN: 000-12-3456')"
+  },
+
+  "AWS Macie": {
+    name: "AWS Macie",
+    description: "Managed data security service that uses ML to discover sensitive data in S3.",
+    url: "https://aws.amazon.com/macie/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Amazon Web Services",
+    license: "Commercial / AWS Cloud",
+    ecosystem: ["AWS", "S3", "CloudWatch", "IAM", "EventBridge"],
+    longDescription: "Amazon Macie is a fully managed data security and privacy service that uses machine learning and pattern matching to discover, monitor, and protect sensitive data stored in Amazon S3 buckets.",
+    typicalUseCase: "Scanning training datasets, model weights, and fine-tuning caches in AWS S3 buckets to identify unencrypted PII, credentials, or unprotected customer data.",
+    keyFeatures: [
+      "Automated sensitive data discovery across S3 buckets",
+      "Custom regex and keyword identifiers for proprietary enterprise data",
+      "Risk scoring of storage access permissions and public bucket alerts",
+      "Integrated with AWS Security Hub and Amazon EventBridge"
+    ],
+    installationOrQuickstart: "aws macie2 create-classification-job --job-type ONE_OFF --name s3-ai-data-scan --s3-job-definition '{\"bucketDefinitions\":[{\"accountId\":\"123456789012\",\"buckets\":[\"ai-training-data\"]}]}'"
+  },
+
+  "Microsoft Purview DLP": {
+    name: "Microsoft Purview DLP",
+    description: "Enterprise data loss prevention for Microsoft Copilot and cloud apps.",
+    url: "https://www.microsoft.com/en-us/security/business/information-protection/microsoft-purview-data-loss-prevention",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Microsoft",
+    license: "Commercial / Microsoft 365 Enterprise",
+    ecosystem: ["Microsoft 365", "Azure", "Windows", "macOS", "REST API"],
+    longDescription: "Microsoft Purview Data Loss Prevention (DLP) helps prevent the unauthorized sharing, transfer, or leakage of sensitive data across endpoints, Microsoft Copilot, cloud apps, and on-premises repositories.",
+    typicalUseCase: "Enforcing sensitivity labels and blocking users from copying confidential financial or engineering data into public generative AI tools or internal Copilots.",
+    keyFeatures: [
+      "Native integration with Microsoft 365 Copilot and Teams",
+      "OCR sensitive data inspection inside images and documents",
+      "Adaptive protection based on user risk levels",
+      "Unified compliance auditing and policy simulation testing"
+    ],
+    installationOrQuickstart: "Configure DLP Policy in Microsoft Purview Compliance Portal -> Select Generative AI & Copilot locations"
+  },
+
+  "Privacy Meter": {
+    name: "Privacy Meter",
+    description: "Membership inference attack tool to quantify model privacy leakage.",
+    url: "https://github.com/privacytrustlab/ml_privacy_meter",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "Privacy Trust Lab (NUS / SUTD)",
+    license: "MIT",
+    ecosystem: ["Python", "PyTorch", "TensorFlow", "Scikit-learn"],
+    longDescription: "ML Privacy Meter is an open-source Python tool developed by academic privacy researchers to rigorously audit and quantify data privacy risks in machine learning models via Membership Inference Attacks (MIA).",
+    typicalUseCase: "Auditing a trained or fine-tuned model checkpoint before release to mathematically verify that proprietary training records cannot be reconstructed by adversaries.",
+    keyFeatures: [
+      "Population and Shadow model attack algorithms",
+      "ROC curve generation for empirical privacy leakage (epsilon bounds)",
+      "Support for PyTorch and TensorFlow computational graphs",
+      "Automated privacy scorecard and audit report generation"
+    ],
+    installationOrQuickstart: "pip install ml-privacy-meter\n# Initialize audit metric with target model and dataset splits"
+  },
+
+  "ML Privacy Meter": {
+    name: "ML Privacy Meter",
+    description: "Auditing tool for data privacy risks in machine learning models.",
+    url: "https://github.com/privacytrustlab/ml_privacy_meter",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "Privacy Trust Lab",
+    license: "MIT",
+    ecosystem: ["Python", "PyTorch", "TensorFlow"],
+    longDescription: "ML Privacy Meter provides standardized mathematical auditing for membership inference attacks and empirical privacy leakage metrics in deep neural networks.",
+    typicalUseCase: "Benchmarking the empirical privacy budget of fine-tuned language and vision models against black-box membership inference probes.",
+    keyFeatures: [
+      "Empirical differential privacy quantification",
+      "Shadow model attack simulations",
+      "Detailed ROC curve and false positive rate profiling",
+      "Integrates with standard deep learning training loops"
+    ],
+    installationOrQuickstart: "pip install ml-privacy-meter\n# Run privacy audit on PyTorch checkpoint"
+  },
+
+  "PrivacyRaven": {
+    name: "PrivacyRaven",
+    description: "Privacy testing framework for deep learning systems.",
+    url: "https://github.com/trailofbits/PrivacyRaven",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "Trail of Bits",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "NumPy"],
+    longDescription: "PrivacyRaven is a privacy testing framework developed by Trail of Bits for deep learning systems, enabling researchers to perform membership inference, model extraction, and model inversion attacks.",
+    typicalUseCase: "Red-teaming neural network APIs to measure how accurately an attacker can steal model weights or extract private training samples.",
+    keyFeatures: [
+      "Modular attack pipeline (Membership Inference, Model Extraction, Model Inversion)",
+      "Automated target querying and query budget optimization",
+      "Detailed privacy risk reporting and metric visualizations",
+      "Designed specifically for security researchers and red teams"
+    ],
+    installationOrQuickstart: "pip install privacyraven\n# Execute PrivacyRaven attack module against model target"
+  },
+
+  "Sonatype Nexus IQ": {
+    name: "Sonatype Nexus IQ",
+    description: "Software supply chain intelligence and open-source governance platform.",
+    url: "https://www.sonatype.com/products/nexus-platform",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Sonatype",
+    license: "Commercial / Enterprise",
+    ecosystem: ["Java", "Python", "Node.js", "Jenkins", "GitLab", "GitHub"],
+    longDescription: "Sonatype Nexus IQ provides deep binary and dependency analysis to enforce software supply chain policies, block vulnerable packages, and detect malicious open-source packages in automated pipelines.",
+    typicalUseCase: "Scanning Python ML dependencies and PyTorch libraries in CI/CD pipelines to block packages with malicious install scripts or critical CVEs.",
+    keyFeatures: [
+      "Nexus Intelligence vulnerability and license compliance database",
+      "Automated policy enforcement blocking risky builds",
+      "IDE and CI/CD plugins for continuous developer feedback",
+      "Component lifecycle and architectural risk management"
+    ],
+    installationOrQuickstart: "nexus-iq-cli -i my-ai-app -s http://nexus-iq:8070 -a admin:admin ./requirements.txt"
+  },
+
+  "OWASP AIBOM Generator": {
+    name: "OWASP AIBOM Generator",
+    description: "Standardized AI Bill of Materials generation for models and training data.",
+    url: "https://github.com/OWASP/www-project-ai-security-and-privacy-guide",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "OWASP AI Exchange & GenAI Project",
+    license: "Creative Commons / Apache-2.0",
+    ecosystem: ["JSON", "YAML", "CycloneDX", "Python"],
+    longDescription: "The OWASP AIBOM Generator produces structured AI Bills of Materials detailing model architectures, base models, training dataset hashes, licensing constraints, and ethical assessments.",
+    typicalUseCase: "Creating auditable compliance documentation for generative AI and LLM applications to comply with the EU AI Act and enterprise procurement security standards.",
+    keyFeatures: [
+      "Captures dataset provenance, model lineage, and fine-tuning history",
+      "Exports to standard CycloneDX AIBOM format",
+      "Maps to OWASP Top 10 for LLMs and ISO/IEC 42001 requirements",
+      "Lightweight CLI and library for automated build integration"
+    ],
+    installationOrQuickstart: "npm install -g @owasp/aibom-generator\naibom generate --config aibom-config.yaml"
+  },
+
+  "BackdoorBench": {
+    name: "BackdoorBench",
+    description: "Comprehensive benchmark for backdoor poisoning attacks and defenses.",
+    url: "https://github.com/SCLBD/BackdoorBench",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "SCLBD Lab / Academic Research",
+    license: "MIT",
+    ecosystem: ["Python", "PyTorch", "CUDA"],
+    longDescription: "BackdoorBench is an open-source benchmarking framework for machine learning backdoor attacks and defense algorithms, implementing over 20+ poison injection techniques and 15+ defense mechanisms.",
+    typicalUseCase: "Evaluating computer vision and NLP model resilience against targeted trigger poisoning and clean-label backdoor injections.",
+    keyFeatures: [
+      "Standardized implementations of BadNets, Blended, WaNet, and Clean-Label backdoor attacks",
+      "Defense algorithms including Neural Cleanse, STRIP, and Fine-Pruning",
+      "Automated benchmark scoring across accuracy and attack success rate (ASR)",
+      "Extensive dataset support across CIFAR, ImageNet, and Tiny-ImageNet"
+    ],
+    installationOrQuickstart: "git clone https://github.com/SCLBD/BackdoorBench && cd BackdoorBench\npython attack/badnet.py --dataset cifar10"
+  },
+
+  "TensorFlow Data Validation": {
+    name: "TensorFlow Data Validation",
+    description: "Scalable dataset validation and schema anomaly detection.",
+    url: "https://github.com/tensorflow/data-validation",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Google / TensorFlow Extended (TFX)",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "Apache Beam", "TensorFlow", "PySpark"],
+    longDescription: "TFDV is part of TensorFlow Extended (TFX) for analyzing and validating machine learning data, calculating descriptive statistics, inferring schemas, and detecting data anomalies and drift.",
+    typicalUseCase: "Detecting data distribution skew, missing features, and anomalous tokens in streaming training and inference pipelines.",
+    keyFeatures: [
+      "Computes summary statistics over multi-gigabyte datasets via Apache Beam",
+      "Infers feature schemas with automated validation rules",
+      "Generates interactive Facets visualizations for anomaly inspection",
+      "Detects training-serving skew and dataset drift"
+    ],
+    installationOrQuickstart: "pip install tensorflow-data-validation\nimport tensorflow_data_validation as tfdv\nstats = tfdv.generate_statistics_from_dataframe(df)"
+  },
+
+  "Amazon Deequ": {
+    name: "Amazon Deequ",
+    description: "Unit tests for data on top of Apache Spark.",
+    url: "https://github.com/awslabs/deequ",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "AWS Labs",
+    license: "Apache-2.0",
+    ecosystem: ["Scala", "Java", "Python (pydeequ)", "Apache Spark"],
+    longDescription: "Amazon Deequ is an open-source library built on Apache Spark for defining 'unit tests for data', measuring data quality metrics on large datasets and verifying data integrity constraints.",
+    typicalUseCase: "Verifying that large-scale data lakes and token repositories ingested for model pre-training satisfy non-null, uniqueness, and value range constraints.",
+    keyFeatures: [
+      "Declarative VerificationSuite with checks for completeness, uniqueness, and correlations",
+      "Automated constraint suggestion based on historical distributions",
+      "Anomaly detection over incremental dataset updates",
+      "Native execution on petabyte-scale Apache Spark clusters"
+    ],
+    installationOrQuickstart: "pip install pydeequ\nfrom pydeequ.checks import Check, CheckLevel\ncheck = Check(spark, CheckLevel.Error, 'Integrity Check')"
+  },
+
+  "OpenLineage": {
+    name: "OpenLineage",
+    description: "Open standard for metadata and data lineage collection.",
+    url: "https://openlineage.io/",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Linux Foundation / OpenLineage",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "Java", "Apache Spark", "Airflow", "dbt"],
+    longDescription: "OpenLineage defines an open standard for observing dataset dependencies, ETL transformations, and pipeline runs, mapping end-to-end data lineage across disparate processing systems.",
+    typicalUseCase: "Tracking the exact origin, transformation steps, and intermediate storage locations of datasets that feed LLM fine-tuning pipelines to guarantee auditability.",
+    keyFeatures: [
+      "Standard JSON specification for dataset and job metadata",
+      "Automated lineage extractors for Apache Spark, Airflow, and dbt",
+      "Integration with Marquez, DataHub, and Amundsen catalog backends",
+      "Fine-grained column-level lineage tracking"
+    ],
+    installationOrQuickstart: "pip install openlineage-python openlineage-airflow\n# Configure OPENLINEAGE_URL in Airflow or Spark environment"
+  },
+
+  "DataHub": {
+    name: "DataHub",
+    description: "Metadata platform for modern data stack discovery and governance.",
+    url: "https://datahubproject.io/",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "LinkedIn / DataHub Project",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "React", "Kafka", "Elasticsearch", "Docker"],
+    longDescription: "DataHub is an extensible metadata platform for data discovery, data observability, and federated governance across data warehouses, ML features, and AI model registries.",
+    typicalUseCase: "Mapping enterprise data catalogs to AI training pipelines to enforce access restrictions, verify data ownership, and track regulatory compliance.",
+    keyFeatures: [
+      "Real-time search and discovery for datasets, pipelines, and ML models",
+      "Automated data lineage graphs and dependency visualization",
+      "Policy-based access governance and metadata tagging",
+      "GraphQL and OpenAPI programmatic interfaces"
+    ],
+    installationOrQuickstart: "pip install acryl-datahub\ndatahub docker quickstart"
+  },
+
+  "CodeQL": {
+    name: "CodeQL",
+    description: "Semantic code analysis engine for discovering security vulnerabilities.",
+    url: "https://codeql.github.com/",
+    cost: "Free+Paid",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "GitHub / Microsoft",
+    license: "Free for Open Source / GitHub Advanced Security",
+    ecosystem: ["Python", "TypeScript", "Java", "C/C++", "Go", "GitHub Actions"],
+    longDescription: "CodeQL treats code as data, compiling codebases into relational databases and allowing security engineers to write declarative queries that discover complex taint-tracking vulnerabilities.",
+    typicalUseCase: "Finding untrusted data flow from LLM model completions to SQL execution engines, command shells, or dynamic deserialization routines in backend code.",
+    keyFeatures: [
+      "Powerful object-oriented query language (QL) for code analysis",
+      "Deep taint-tracking across complex function call graphs and microservices",
+      "Comprehensive library of pre-built queries for OWASP and CWE vulnerabilities",
+      "Integrated into GitHub Actions and pull request security checks"
+    ],
+    installationOrQuickstart: "codeql database create my-db --language=python\ncodeql query run --database=my-db ./queries/llm-rce.ql"
+  },
+
+  "AgentOps SDK": {
+    name: "AgentOps SDK",
+    description: "Observability and guardrails for agent behavior.",
+    url: "https://www.agentops.ai/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "AgentOps Inc.",
+    license: "Commercial / Free Tier",
+    ecosystem: ["Python", "CrewAI", "AutoGen", "LangChain"],
+    longDescription: "AgentOps SDK provides specialized observability, monitoring, and compliance guardrails for autonomous AI agent workflows, tracking multi-agent tool execution, goal deviation, and recursive loop traps.",
+    typicalUseCase: "Monitoring production autonomous agent sessions to detect rogue loops, excessive tool invocation costs, and unintended external actions.",
+    keyFeatures: [
+      "Session replay and step-by-step visual trace of agent reasoning chains",
+      "Detection of recursive infinite loops and goal deviation",
+      "Multi-agent communication topology mapping",
+      "Cost and latency tracking per tool execution"
+    ],
+    installationOrQuickstart: "pip install agentops\nimport agentops\nagentops.init(api_key='...')"
+  },
+
+  "LlamaIndex Evaluations": {
+    name: "LlamaIndex Evaluations",
+    description: "Evaluation modules for RAG retrieval and response generation.",
+    url: "https://docs.llamaindex.ai/en/stable/module_guides/evaluating/",
+    cost: "Free",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "LlamaIndex Inc.",
+    license: "MIT",
+    ecosystem: ["Python", "TypeScript", "OpenAI", "Hugging Face"],
+    longDescription: "LlamaIndex Evaluations is a suite of evaluation modules specifically designed to test the correctness, relevancy, faithfulness, and semantic retrieval accuracy of RAG query engines.",
+    typicalUseCase: "Evaluating retrieval quality and answer groundedness across enterprise document collections to detect hallucination and context poisoning.",
+    keyFeatures: [
+      "FaithfulnessEvaluator and RelevancyEvaluator metrics",
+      "Pairwise LLM comparison and response grading",
+      "Batch evaluation runners for CI/CD integration",
+      "Seamless integration with LlamaIndex vector indices"
+    ],
+    installationOrQuickstart: "pip install llama-index\nfrom llama_index.core.evaluation import FaithfulnessEvaluator\nevaluator = FaithfulnessEvaluator()"
+  },
+
+  "Pinecone Security Scans": {
+    name: "Pinecone Security Scans",
+    description: "Managed vector database access controls and data isolation.",
+    url: "https://www.pinecone.io/security/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Pinecone Systems",
+    license: "Commercial / SaaS",
+    ecosystem: ["Python", "Node.js", "Go", "AWS", "GCP", "Azure"],
+    longDescription: "Pinecone provides managed vector search with enterprise security features, including namespace-level data isolation, private VPC endpoints, metadata filtering, and encryption at rest.",
+    typicalUseCase: "Restricting vector embeddings access in multi-tenant RAG applications using namespace isolation and metadata-based authorization filters.",
+    keyFeatures: [
+      "Multi-tenant namespace isolation for vector indexes",
+      "AWS and GCP PrivateLink dedicated network endpoints",
+      "SOC 2 Type II, HIPAA, and GDPR compliance certifications",
+      "Vector-level role-based access control policies"
+    ],
+    installationOrQuickstart: "pip install pinecone-client\nfrom pinecone import Pinecone\npc = Pinecone(api_key='...')"
+  },
+
+  "Galileo": {
+    name: "Galileo",
+    description: "GenAI evaluation, guardrails, and observability platform.",
+    url: "https://www.rungalileo.io/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Both",
+    authorOrMaintainer: "Galileo Technologies",
+    license: "Commercial / Enterprise",
+    ecosystem: ["Python", "LangChain", "LlamaIndex", "SaaS"],
+    longDescription: "Galileo is an enterprise GenAI evaluation and observability platform that helps teams evaluate, protect, and observe LLMs and RAG systems from development to production.",
+    typicalUseCase: "Real-time hallucination scoring and prompt injection interception on high-volume enterprise generative AI endpoints.",
+    keyFeatures: [
+      "Galileo Guard for sub-50ms runtime firewalls",
+      "Fine-grained RAG metrics including ChainPoll and Chunk Attribution",
+      "Automated prompt evaluation benchmarks and drift tracking",
+      "Custom metric authoring and human-in-the-loop annotations"
+    ],
+    installationOrQuickstart: "pip install dataquality\nimport dataquality as dq\ndq.init(project_name='ai-security-audit')"
+  },
+
+  "Locust": {
+    name: "Locust",
+    description: "Python-based load testing tool for scalable user simulation.",
+    url: "https://github.com/locustio/locust",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "Locust.io Community",
+    license: "MIT",
+    ecosystem: ["Python", "HTTP", "WebSocket", "CLI"],
+    longDescription: "Locust is an open-source load testing tool where user behavior is defined completely in regular Python code, allowing distributed swarms of concurrent users to stress-test APIs.",
+    typicalUseCase: "Simulating thousands of concurrent streaming users against LLM endpoints to benchmark rate limiters, token throttlers, and GPU memory saturation.",
+    keyFeatures: [
+      "Test scenarios written in clean, idiomatic Python code",
+      "Distributed master-worker architecture supporting millions of simulated users",
+      "Real-time web UI dashboard displaying latency percentiles and error rates",
+      "Extensible protocol support for HTTP, REST, and WebSockets"
+    ],
+    installationOrQuickstart: "pip install locust\nlocust -f locustfile.py --headless -u 100 -r 10 -t 1m"
+  },
+
+  "Apache JMeter": {
+    name: "Apache JMeter",
+    description: "Java application designed to load test functional behavior and measure performance.",
+    url: "https://jmeter.apache.org/",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "Apache Software Foundation",
+    license: "Apache-2.0",
+    ecosystem: ["Java", "XML", "Cross-platform"],
+    longDescription: "Apache JMeter is a battle-tested, Java-based load testing tool designed to test performance, simulate heavy loads on servers, and analyze overall performance under different load types.",
+    typicalUseCase: "Stress-testing AI API gateways and microservices with high concurrency to identify Denial-of-Wallet vulnerabilities and GPU timeout thresholds.",
+    keyFeatures: [
+      "Comprehensive protocol support (HTTP, HTTPS, REST, SOAP, JDBC, JMS)",
+      "Multithreaded framework for simulating high concurrent user loads",
+      "Extensive charting, reporting, and statistical plugins",
+      "Headless CLI execution for CI/CD pipeline automation"
+    ],
+    installationOrQuickstart: "jmeter -n -t llm_load_test.jmx -l results.jtl -e -o ./report"
+  },
+
+  "Upstash Rate Limit": {
+    name: "Upstash Rate Limit",
+    description: "Serverless rate limiting SDK built on Serverless Redis.",
+    url: "https://github.com/upstash/ratelimit",
+    cost: "Free+Paid",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Upstash Inc.",
+    license: "MIT",
+    ecosystem: ["TypeScript", "JavaScript", "Node.js", "Next.js", "Cloudflare Workers"],
+    longDescription: "Upstash Rate Limit is an open-source, ultra-fast rate limiting SDK designed for serverless architectures (Next.js, Cloudflare Workers, AWS Lambda) using sliding window and token bucket algorithms over Redis.",
+    typicalUseCase: "Enforcing per-user and per-IP rate limits in frontend and Edge serverless functions to stop bot scraping and denial-of-wallet attacks against LLM APIs.",
+    keyFeatures: [
+      "Sliding window, fixed window, and token bucket rate limiting algorithms",
+      "Sub-millisecond latency over globally replicated Redis",
+      "Zero-infrastructure serverless deployment model",
+      "Native Edge runtime compatibility (Cloudflare Workers, Vercel Edge)"
+    ],
+    installationOrQuickstart: "npm install @upstash/ratelimit @upstash/redis\nimport { Ratelimit } from '@upstash/ratelimit';"
+  },
+
+  "Azure API Management": {
+    name: "Azure API Management",
+    description: "Hybrid, multi-cloud API management platform with AI gateway capabilities.",
+    url: "https://azure.microsoft.com/en-us/products/api-management",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Microsoft Azure",
+    license: "Commercial / Azure Cloud",
+    ecosystem: ["Azure", "REST", "OpenAPI", "Entra ID"],
+    longDescription: "Azure API Management provides a scalable, multi-cloud API gateway with specialized GenAI policies for OpenAI and model endpoints, including token rate limiting, multi-model load balancing, and semantic caching.",
+    typicalUseCase: "Managing enterprise access to Azure OpenAI models with per-team token quotas, circuit breaking, and centralized security telemetry.",
+    keyFeatures: [
+      "GenAI policy toolkit (llm-token-limit, llm-emit-token-metric, llm-semantic-cache)",
+      "OAuth 2.0 and Microsoft Entra ID token validation",
+      "Comprehensive Azure Monitor logging and diagnostic tracing",
+      "Multi-model load balancing and automated failover"
+    ],
+    installationOrQuickstart: "az apim create --name my-ai-gateway --resource-group my-rg --location eastus --sku-name Consumption"
+  },
+
+  "RobustBench": {
+    name: "RobustBench",
+    description: "Standardized benchmark for adversarial robustness evaluation.",
+    url: "https://github.com/RobustBench/robustbench",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "RobustBench Team (Univ. of Tübingen)",
+    license: "MIT",
+    ecosystem: ["Python", "PyTorch", "AutoAttack"],
+    longDescription: "RobustBench is a community-driven benchmark for adversarial robustness evaluation in computer vision, maintaining an official leaderboard across multiple perturbation norms (Linf, L2, Common Corruptions).",
+    typicalUseCase: "Evaluating and tracking model robustness against standardized adversarial perturbation attacks to prevent evasion exploits.",
+    keyFeatures: [
+      "Standardized AutoAttack evaluation harness",
+      "Unified model zoo with 100+ pre-trained robust model weights",
+      "Clean, reproducible PyTorch evaluation API",
+      "Official leaderboard rankings across CIFAR-10, CIFAR-100, and ImageNet"
+    ],
+    installationOrQuickstart: "pip install git+https://github.com/RobustBench/robustbench.git\nfrom robustbench.eval import benchmark\nclean_acc, robust_acc = benchmark(model, dataset='cifar10', threat_model='Linf')"
+  },
+
+  "WhyLabs": {
+    name: "WhyLabs",
+    description: "AI observability and continuous monitoring platform.",
+    url: "https://whylabs.ai/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "WhyLabs Inc.",
+    license: "Commercial / Free Community Tier",
+    ecosystem: ["Python", "whylogs", "Cloud", "SaaS"],
+    longDescription: "WhyLabs provides continuous observability and guardrails for machine learning models and LLM applications, tracking statistical data drift, anomalies, and safety violations in real time.",
+    typicalUseCase: "Monitoring production LLM embeddings, user query distributions, and output toxicity scores with automated Slack/PagerDuty alerts on drift detection.",
+    keyFeatures: [
+      "Privacy-preserving profiling using whylogs (zero raw data retention)",
+      "Real-time statistical anomaly and drift detection",
+      "Customizable guardrail rules and hallucination metrics",
+      "Historical trend dashboards and compliance reporting"
+    ],
+    installationOrQuickstart: "pip install whylabs-client whylogs\n# Upload statistical profiles to WhyLabs observability hub"
+  },
+
+  "River": {
+    name: "River",
+    description: "Online machine learning library for streaming data and concept drift detection.",
+    url: "https://github.com/online-ml/river",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "River Online ML Team",
+    license: "BSD-3-Clause",
+    ecosystem: ["Python", "Streaming", "NumPy", "Scikit-learn"],
+    longDescription: "River is a Python library for dynamic online machine learning on streaming data, featuring algorithms for continuous learning, streaming classification, and statistical concept drift detection (ADWIN, PageHinkley).",
+    typicalUseCase: "Monitoring streaming inference traffic in real time to detect statistical distribution shifts and adversarial evasion attempts on a per-sample basis.",
+    keyFeatures: [
+      "Online incremental learning algorithms designed for one-instance-at-a-time data",
+      "Dedicated drift detection algorithms (ADWIN, DDM, EDDM, Page-Hinkley)",
+      "High-throughput streaming pipeline execution",
+      "Extensive evaluation metrics for streaming data"
+    ],
+    installationOrQuickstart: "pip install river\nfrom river import drift\ndrift_detector = drift.ADWIN()"
+  },
+
+  "AWS Config": {
+    name: "AWS Config",
+    description: "Continual assessment, audit, and evaluation of AWS resource configurations.",
+    url: "https://aws.amazon.com/config/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Amazon Web Services",
+    license: "Commercial / AWS Cloud",
+    ecosystem: ["AWS Cloud", "CloudTrail", "IAM", "Systems Manager"],
+    longDescription: "AWS Config continuously monitors and records AWS resource configurations, evaluating recorded configurations against desired secure configurations and compliance rules.",
+    typicalUseCase: "Auditing Amazon Bedrock, SageMaker notebooks, and S3 vector data stores to ensure encryption-at-rest is enabled and public access is strictly blocked.",
+    keyFeatures: [
+      "Continuous configuration tracking and resource relationship mapping",
+      "Pre-built conformance packs for CIS and NIST AI benchmarks",
+      "Automated remediation workflows via AWS Systems Manager",
+      "Immutable configuration history timeline for security forensics"
+    ],
+    installationOrQuickstart: "aws configservice put-configuration-recorder --configuration-recorder name=default,roleARN=arn:aws:iam::..."
+  },
+
+  "git-secrets": {
+    name: "git-secrets",
+    description: "Prevents committing secrets and credentials into git repositories.",
+    url: "https://github.com/awslabs/git-secrets",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "AWS Labs",
+    license: "Apache-2.0",
+    ecosystem: ["Shell", "Git", "AWS"],
+    longDescription: "git-secrets is a CLI tool developed by AWS Labs that scans commits, commit messages, and diffs to prevent secrets and sensitive credentials from entering Git repositories.",
+    typicalUseCase: "Installing pre-commit hooks on developer workstations to prevent accidentally committing AWS access keys or OpenAI API tokens into source code.",
+    keyFeatures: [
+      "Fast pre-commit hook integration preventing accidental commits",
+      "Customizable regex patterns for proprietary keys and tokens",
+      "AWS provider pattern presets covering AWS Access Keys and Secrets",
+      "Scans commit histories and unstaged files"
+    ],
+    installationOrQuickstart: "brew install git-secrets\ngit secrets --register-aws --install"
+  },
+
+  "detect-secrets": {
+    name: "detect-secrets",
+    description: "Enterprise tool for detecting secrets in codebase with baseline support.",
+    url: "https://github.com/Yelp/detect-secrets",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "Yelp",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "Git", "Pre-commit", "CI/CD"],
+    longDescription: "detect-secrets is an open-source secret scanning framework created by Yelp that uses heuristics, regex patterns, and Shannon entropy analysis to identify credentials without noise.",
+    typicalUseCase: "Generating a version-controlled `.secrets.baseline` file in machine learning repositories to prevent new API keys from being introduced in PRs while managing existing legacy secrets.",
+    keyFeatures: [
+      "Heuristic and Shannon entropy plugins for high precision detection",
+      "Baseline file support for gradual codebase remediation",
+      "Pre-commit framework integration and CI/CD audit mode",
+      "Custom plugin architecture for proprietary API tokens"
+    ],
+    installationOrQuickstart: "pip install detect-secrets\ndetect-secrets scan > .secrets.baseline"
+  },
+
+  "NIST AI RMF": {
+    name: "NIST AI RMF",
+    description: "NIST Artificial Intelligence Risk Management Framework (NIST AI 100-1).",
+    url: "https://www.nist.gov/itl/ai-risk-management-framework",
+    cost: "Free",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "National Institute of Standards and Technology (NIST)",
+    license: "Public Domain / US Federal Standard",
+    ecosystem: ["Framework", "Governance", "ISO 42001", "Compliance"],
+    longDescription: "The NIST AI RMF is a voluntary guidance framework designed to improve the ability to incorporate trustworthiness considerations into the design, development, use, and evaluation of AI products, services, and systems.",
+    typicalUseCase: "Structuring enterprise AI governance programs, establishing risk tolerance thresholds, and conducting formal AI risk assessments across Govern, Map, Measure, and Manage functions.",
+    keyFeatures: [
+      "Four core functions: Govern, Map, Measure, and Manage",
+      "Comprehensive Playbook with actionable risk mitigation tasks",
+      "Cross-mappings to ISO/IEC 42001 and EU AI Act requirements",
+      "Standardized AI risk taxonomy covering validity, safety, and security"
+    ],
+    installationOrQuickstart: "Review NIST AI RMF Playbook -> Align internal model validation checklists with Measure & Manage categories"
+  },
+
+  "OWASP ASVS": {
+    name: "OWASP ASVS",
+    description: "OWASP Application Security Verification Standard.",
+    url: "https://owasp.org/www-project-application-security-verification-standard/",
+    cost: "Free",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "OWASP Foundation",
+    license: "Creative Commons Attribution-ShareAlike 4.0",
+    ecosystem: ["Framework", "AppSec", "OWASP", "Compliance"],
+    longDescription: "The OWASP Application Security Verification Standard (ASVS) provides a basis for testing web application technical security controls and also provides developers with a list of requirements for secure development.",
+    typicalUseCase: "Establishing baseline security requirements for web applications, APIs, and microservices that wrap LLM models and Model Context Protocol servers.",
+    keyFeatures: [
+      "Three verification levels: Level 1 (Basic), Level 2 (Standard), Level 3 (Advanced)",
+      "Comprehensive coverage of authentication, access control, input validation, and cryptography",
+      "Industry-standard penetration testing and security review benchmark",
+      "Actionable security controls for secure software architectures"
+    ],
+    installationOrQuickstart: "Download OWASP ASVS v4.0.3 checklist -> Audit API gateway and authentication architecture"
   }
 };
 

@@ -94,3 +94,20 @@ test('Unit - Security Test Catalogs (AITG-* and AGT-*) Conformance', (t) => {
   const total = standardIds.length + agenticIds.length;
   assert.ok(total >= 40, `Expected at least 40 total security tests, found ${total}`);
 });
+
+test('Unit - AI Security Tooling Matrix Full Metadata Catalog Completeness', (t) => {
+  const toolsCatalogContent = readFile('tools_catalog.ts');
+  const toolDetailsContent = readFile('tool_details_catalog.ts');
+
+  const toolNameMatches = [...toolsCatalogContent.matchAll(/name:\s*["\x27]([^"\x27]+)["\x27]/g)].map(m => m[1]);
+  const uniqueToolNames = [...new Set(toolNameMatches)];
+
+  assert.ok(uniqueToolNames.length >= 60, `Expected at least 60 unique tools, found ${uniqueToolNames.length}`);
+
+  const dbMatches = [...toolDetailsContent.matchAll(/"([^"]+)":\s*\{/g)].map(m => m[1].toLowerCase());
+  const dbSet = new Set(dbMatches);
+
+  const missing = uniqueToolNames.filter(name => !dbSet.has(name.toLowerCase()));
+  assert.equal(missing.length, 0, `All tools must have verified entries in TOOL_DATABASE. Missing: ${missing.join(', ')}`);
+});
+

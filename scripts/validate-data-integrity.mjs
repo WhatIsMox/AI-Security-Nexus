@@ -215,6 +215,19 @@ function validateCatalogs() {
     } else {
       logPass(`tools_catalog.ts: Verified ${toolUrls.length} security tool references with valid URLs`);
     }
+
+    // Validate coverage in tool_details_catalog.ts
+    const detailsContent = readFileContent('tool_details_catalog.ts');
+    if (detailsContent) {
+      const toolNames = [...new Set([...toolsContent.matchAll(/name:\s*["\x27]([^"\x27]+)["\x27]/g)].map(m => m[1]))];
+      const dbNames = new Set([...detailsContent.matchAll(/"([^"]+)":\s*\{/g)].map(m => m[1].toLowerCase()));
+      const missing = toolNames.filter(n => !dbNames.has(n.toLowerCase()));
+      if (missing.length > 0) {
+        logFail(`tool_details_catalog.ts: Missing ${missing.length} tool entries in TOOL_DATABASE: ${missing.join(', ')}`);
+      } else {
+        logPass(`tool_details_catalog.ts: 100% metadata coverage verified across all ${toolNames.length} unique security tools`);
+      }
+    }
   }
 
   if (incidentsContent) {
