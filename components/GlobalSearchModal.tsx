@@ -15,8 +15,9 @@ import {
   GENAI_DSPM_CAPABILITIES
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
+import { getEnrichedTool } from '../tool_details_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
-import { TestItem } from '../types';
+import { TestItem, SecurityTool } from '../types';
 
 export interface SearchResultItem {
   id: string;
@@ -27,6 +28,7 @@ export interface SearchResultItem {
   badgeColor: string;
   targetId?: string;
   testItem?: TestItem;
+  tool?: SecurityTool & { mappedThreats?: string[] };
   url?: string;
 }
 
@@ -36,6 +38,7 @@ interface GlobalSearchModalProps {
   onSelectTest: (test: TestItem) => void;
   onNavigateToOwasp: (id: string) => void;
   onNavigateToView?: (view: string) => void;
+  onSelectTool?: (tool: SecurityTool & { mappedThreats?: string[] }) => void;
 }
 
 export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
@@ -43,7 +46,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   onClose,
   onSelectTest,
   onNavigateToOwasp,
-  onNavigateToView
+  onNavigateToView,
+  onSelectTool
 }) => {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -182,24 +186,38 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     }
 
     // 10. Tools Catalog
-    const seenToolNames = new Set<string>();
+    const toolItemsMap = new Map<string, { tool: SecurityTool & { mappedThreats: string[] } }>();
     for (const [threatId, tools] of Object.entries(TOOLS_BY_THREAT_ID)) {
-      for (const tool of tools) {
-        const key = tool.name.toLowerCase();
-        if (!seenToolNames.has(key)) {
-          seenToolNames.add(key);
-          items.push({
-            id: `tool-${tool.name}`,
-            title: tool.name,
-            subtitle: `${tool.description} (Mapped to ${threatId})`,
-            category: 'tool',
-            categoryLabel: `Tool (${tool.type})`,
-            badgeColor: 'border-purple-500/30 bg-purple-500/10 text-purple-300',
-            targetId: threatId,
-            url: tool.url
+      for (const rawTool of tools) {
+        const key = rawTool.name.toLowerCase();
+        if (toolItemsMap.has(key)) {
+          const entry = toolItemsMap.get(key)!;
+          if (!entry.tool.mappedThreats.includes(threatId)) {
+            entry.tool.mappedThreats.push(threatId);
+          }
+        } else {
+          const enriched = getEnrichedTool(rawTool);
+          toolItemsMap.set(key, {
+            tool: {
+              ...enriched,
+              mappedThreats: [threatId]
+            }
           });
         }
       }
+    }
+
+    for (const { tool } of toolItemsMap.values()) {
+      items.push({
+        id: `tool-${tool.name}`,
+        title: tool.name,
+        subtitle: `${tool.description}${tool.authorOrMaintainer ? ` • ${tool.authorOrMaintainer}` : ''} • Mapped to ${tool.mappedThreats.slice(0, 3).join(', ')}`,
+        category: 'tool',
+        categoryLabel: `Tool (${tool.type} • ${tool.cost})`,
+        badgeColor: 'border-purple-500/30 bg-purple-500/10 text-purple-300',
+        tool: tool,
+        url: tool.url
+      });
     }
 
     // 11. Incidents Catalog
@@ -276,10 +294,12 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   const handleSelectItem = (item: SearchResultItem) => {
     if (item.testItem) {
       onSelectTest(item.testItem);
-    } else if (item.targetId) {
-      onNavigateToOwasp(item.targetId);
+    } else if (item.category === 'tool' && item.tool && onSelectTool) {
+      onSelectTool(item.tool);
     } else if (item.category === 'tool' && onNavigateToView) {
       onNavigateToView('tools');
+    } else if (item.targetId) {
+      onNavigateToOwasp(item.targetId);
     } else if (item.category === 'incident' && onNavigateToView) {
       onNavigateToView('incidents');
     }

@@ -106,8 +106,15 @@ test('Unit - AI Security Tooling Matrix Full Metadata Catalog Completeness', (t)
 
   const dbMatches = [...toolDetailsContent.matchAll(/"([^"]+)":\s*\{/g)].map(m => m[1].toLowerCase());
   const dbSet = new Set(dbMatches);
-
   const missing = uniqueToolNames.filter(name => !dbSet.has(name.toLowerCase()));
   assert.equal(missing.length, 0, `All tools must have verified entries in TOOL_DATABASE. Missing: ${missing.join(', ')}`);
+
+  // Assert presence of mandatory rich metadata fields across the database
+  const requiredFields = ['longDescription', 'typicalUseCase', 'keyFeatures', 'installationOrQuickstart', 'license', 'authorOrMaintainer', 'ecosystem'];
+  for (const field of requiredFields) {
+    const matches = (toolDetailsContent.match(new RegExp(`${field}:\\s*`, 'g')) || []).length;
+    assert.ok(matches >= uniqueToolNames.length, `Expected at least ${uniqueToolNames.length} '${field}' definitions in tool_details_catalog.ts, found ${matches}`);
+  }
 });
+
 

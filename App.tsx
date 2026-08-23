@@ -13,8 +13,9 @@ import AuditChecklistView from './components/AuditChecklistView';
 import ToolsDirectoryView from './components/ToolsDirectoryView';
 import IncidentsDirectoryView from './components/IncidentsDirectoryView';
 import GlobalSearchModal from './components/GlobalSearchModal';
+import ToolDetailModal from './components/ToolDetailModal';
 import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_SAIF_THREATS_DATA, OWASP_MCP_TOP_10_DATA } from './data';
-import { Pillar, TestItem } from './types';
+import { Pillar, TestItem, SecurityTool } from './types';
 import { Menu, Book, Search } from 'lucide-react';
 
 const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKey; id: string | null } => {
@@ -115,6 +116,7 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [owaspTargetId, setOwaspTargetId] = useState<string | null>(initialHashState.id);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [activeModalTool, setActiveModalTool] = useState<(SecurityTool & { mappedThreats?: string[] }) | null>(null);
 
   // Sync state to URL hash
   const syncHash = useCallback((view: AppView, pillar: ActivePillarKey, testId?: string | null, threatId?: string | null) => {
@@ -370,6 +372,14 @@ const App: React.FC = () => {
           if (view === 'tools') handleSelectTools();
           if (view === 'incidents') handleSelectIncidents();
         }}
+        onSelectTool={(tool) => setActiveModalTool(tool)}
+      />
+
+      {/* Global Tool Detail Inspection Modal */}
+      <ToolDetailModal 
+        tool={activeModalTool} 
+        onClose={() => setActiveModalTool(null)} 
+        onNavigateToOwasp={handleNavigateToOwasp} 
       />
       
       <main className={`app-main

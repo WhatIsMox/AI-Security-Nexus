@@ -138,6 +138,23 @@ npm run dev
 3. Add a test in `tests/unit/data-schema.test.mjs` asserting the new entry's existence, structure, and non-empty properties.
 4. Run `npm test` and `npm run docs:sync`.
 
+### Adding or Modifying Security Tools & Metadata (MANDATORY DIRECTIVE)
+1. Whenever adding or referencing a security tool in [`tools_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/tools_catalog.ts):
+   - You MUST define the base tool with `name`, `description`, `url`, `cost` (`'Free' | 'Free+Paid' | 'Paid'`), `type` (`'Local' | 'Third-party'`), and `category` (`'Offensive' | 'Defensive' | 'Both'`).
+   - You **MUST ALWAYS** add a corresponding verified metadata entry in [`tool_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/tool_details_catalog.ts) (`TOOL_DATABASE`) supplying ALL mandatory fields:
+     - `authorOrMaintainer`: Engineering team, foundation, or company (e.g. `NVIDIA / Leon Derczynski`, `Microsoft AI Red Team`, `CNCF`, `Aqua Security`).
+     - `license`: Verified software license (e.g. `Apache-2.0`, `MIT`, `Commercial / SaaS API`).
+     - `longDescription`: Detailed technical architecture and inner mechanics (minimum 30 characters).
+     - `typicalUseCase`: Concrete real-world offensive or defensive security workflow (minimum 20 characters).
+     - `keyFeatures`: Array of at least 3 concrete technical capabilities.
+     - `installationOrQuickstart`: Exact, copyable shell installation command or quickstart code snippet.
+     - `ecosystem`: Supported language runtimes and platforms (e.g. `['Python', 'PyTorch', 'Docker']`).
+2. Run automated validation and link checks:
+   ```bash
+   npm test && npm run test:data && npm run test:links
+   ```
+   *(The CI data integrity validator `validate-data-integrity.mjs` will strictly fail if any tool lacks verified metadata!)*
+
 ### Adding or Modifying External Incident / Tool Links
 1. When adding or updating incident citations (`incidents_catalog.ts`), security tools (`tools_catalog.ts`), or framework references (`data_*.ts`):
    - **Mandatory Live Verification**: Run `npm run test:links` to execute live HTTP `GET` requests against all external endpoints and confirm `HTTP 200 OK`.

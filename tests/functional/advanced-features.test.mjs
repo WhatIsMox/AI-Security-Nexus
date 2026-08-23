@@ -71,6 +71,11 @@ test('Advanced Features - Global Omnisearch (Cmd+K) Component & Shortcuts', (t) 
   assert.ok(searchModalContent.includes("e.key === 'Enter'"), 'GlobalSearchModal must support Enter selection');
   assert.ok(searchModalContent.includes("e.key === 'Escape'"), 'GlobalSearchModal must support Escape closing');
 
+  // Tool selection integration
+  assert.ok(searchModalContent.includes('onSelectTool'), 'GlobalSearchModal must support onSelectTool');
+  assert.ok(searchModalContent.includes('getEnrichedTool'), 'GlobalSearchModal must enrich tools with verified metadata');
+  assert.ok(appContent.includes('onSelectTool={(tool) => setActiveModalTool(tool)}'), 'App.tsx must open ToolDetailModal when tool selected in search');
+
   // Quick button in Sidebar
   assert.ok(sidebarContent.includes('Search Nexus'), 'Sidebar must include search button');
   assert.ok(sidebarContent.includes('⌘K'), 'Sidebar must display ⌘K shortcut hint');

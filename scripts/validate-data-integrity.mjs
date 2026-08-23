@@ -216,7 +216,7 @@ function validateCatalogs() {
       logPass(`tools_catalog.ts: Verified ${toolUrls.length} security tool references with valid URLs`);
     }
 
-    // Validate coverage in tool_details_catalog.ts
+    // Validate coverage and strict schema completeness in tool_details_catalog.ts
     const detailsContent = readFileContent('tool_details_catalog.ts');
     if (detailsContent) {
       const toolNames = [...new Set([...toolsContent.matchAll(/name:\s*["\x27]([^"\x27]+)["\x27]/g)].map(m => m[1]))];
@@ -226,6 +226,20 @@ function validateCatalogs() {
         logFail(`tool_details_catalog.ts: Missing ${missing.length} tool entries in TOOL_DATABASE: ${missing.join(', ')}`);
       } else {
         logPass(`tool_details_catalog.ts: 100% metadata coverage verified across all ${toolNames.length} unique security tools`);
+      }
+
+      // Check required schema fields for each tool block in tool_details_catalog.ts
+      const requiredFields = ['longDescription', 'typicalUseCase', 'keyFeatures', 'installationOrQuickstart', 'license', 'authorOrMaintainer', 'ecosystem'];
+      let schemaErrors = 0;
+      for (const field of requiredFields) {
+        const fieldCount = (detailsContent.match(new RegExp(`${field}:\\s*`, 'g')) || []).length;
+        if (fieldCount < toolNames.length) {
+          logFail(`tool_details_catalog.ts: Expected at least ${toolNames.length} '${field}' definitions, found ${fieldCount}`);
+          schemaErrors++;
+        }
+      }
+      if (schemaErrors === 0) {
+        logPass(`tool_details_catalog.ts: Strict schema verified (longDescription, typicalUseCase, keyFeatures, quickstart, ecosystem, license, maintainer)`);
       }
     }
   }
