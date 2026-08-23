@@ -89,8 +89,10 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
           </p>
         </div>
 
-        <div className="bg-slate-900 px-3 py-2 rounded-full border border-slate-800 text-xs md:text-sm text-slate-400 font-mono">
-          {filteredIncidents.length} / {allIncidents.length} CASE STUDIES
+        <div className="bg-slate-900/90 px-4 py-2 rounded-full border border-slate-800 text-xs md:text-sm text-slate-300 font-mono whitespace-nowrap shrink-0 flex items-center justify-center text-center self-start md:self-auto shadow-sm">
+          <span className="font-semibold text-amber-300">{filteredIncidents.length}</span>
+          <span className="text-slate-600 mx-1.5">/</span>
+          <span>{allIncidents.length} CASE STUDIES</span>
         </div>
       </div>
 

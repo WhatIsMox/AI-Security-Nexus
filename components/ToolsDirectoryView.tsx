@@ -99,8 +99,10 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
           </p>
         </div>
 
-        <div className="bg-slate-900 px-3 py-2 rounded-full border border-slate-800 text-xs md:text-sm text-slate-400 font-mono">
-          {filteredTools.length} / {allTools.length} TOOLS
+        <div className="bg-slate-900/90 px-4 py-2 rounded-full border border-slate-800 text-xs md:text-sm text-slate-300 font-mono whitespace-nowrap shrink-0 flex items-center justify-center text-center self-start md:self-auto shadow-sm">
+          <span className="font-semibold text-purple-300">{filteredTools.length}</span>
+          <span className="text-slate-600 mx-1.5">/</span>
+          <span>{allTools.length} TOOLS</span>
         </div>
       </div>
 
