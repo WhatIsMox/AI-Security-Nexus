@@ -18,11 +18,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: "agent-docs-sync-${{ github.ref }}"
+  cancel-in-progress: true
 
 jobs:
   validate-and-sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
