@@ -155,6 +155,26 @@ npm run dev
    ```
    *(The CI data integrity validator `validate-data-integrity.mjs` will strictly fail if any tool lacks verified metadata!)*
 
+### Adding or Modifying Real-World Incidents & Case Studies (MANDATORY DIRECTIVE)
+1. Whenever adding or referencing a real-world incident, CVE, or academic case study in [`incidents_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/incidents_catalog.ts):
+   - You MUST define the base incident citation with `title` and active `url` (resolving `HTTP 200 OK`).
+   - You **MUST ALWAYS** add a corresponding verified intelligence entry in [`incident_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/incident_details_catalog.ts) (`INCIDENT_DATABASE`) supplying ALL mandatory fields:
+     - `year`: Event or publication year (e.g. `'2024'`, `'2023'`).
+     - `targetOrVictim`: Affected organization, model, company, or target system (e.g. `'Samsung Semiconductor'`, `'Air Canada'`, `'OpenAI ChatGPT'`).
+     - `cveOrAdvisoryId`: Official CVE ID, advisory number, or arXiv code (e.g. `'CVE-2024-5184'`, `'arXiv:2302.12173'`).
+     - `severity`: Severity classification (`'Critical' | 'High' | 'Medium' | 'Low'`).
+     - `attackVector`: Detailed technical breakdown of exploit methodology and delivery mechanics.
+     - `impact`: Concrete business, data, system, or operational damage.
+     - `recoveryTime`: Documented time to patch, isolate, or resolve.
+     - `repercussions`: Legal, regulatory, financial, or corporate fallout (FTC/GDPR investigations, civil suits, bans).
+     - `remediation`: Specific technical controls, architectural patterns, and defensive guardrails.
+     - `lessonsLearned`: Practical takeaway for AI security engineers and system architects.
+2. Run automated validation and link checks:
+   ```bash
+   npm test && npm run test:data && npm run test:links
+   ```
+   *(The CI data integrity validator `validate-data-integrity.mjs` will strictly fail if any incident lacks verified intelligence!)*
+
 ### Adding or Modifying External Incident / Tool Links
 1. When adding or updating incident citations (`incidents_catalog.ts`), security tools (`tools_catalog.ts`), or framework references (`data_*.ts`):
    - **Mandatory Live Verification**: Run `npm run test:links` to execute live HTTP `GET` requests against all external endpoints and confirm `HTTP 200 OK`.

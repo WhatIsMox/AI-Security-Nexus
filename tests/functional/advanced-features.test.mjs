@@ -167,3 +167,38 @@ test('Advanced Features - Security Tool Detail Modal & Enriched Database Verific
   assert.ok(owaspViewContent.includes('setSelectedTool'), 'OwaspTop10View must manage selectedTool state');
 });
 
+test('Advanced Features - Real-World Incident Detail Modal & Enriched Intelligence Verification', (t) => {
+  const incidentModalContent = readFile('components/IncidentDetailModal.tsx');
+  const incidentCatalogContent = readFile('incident_details_catalog.ts');
+  const incidentsViewContent = readFile('components/IncidentsDirectoryView.tsx');
+  const searchModalContent = readFile('components/GlobalSearchModal.tsx');
+  const appContent = readFile('App.tsx');
+
+  // Verify Incident Detail Modal accessibility & layout
+  assert.ok(incidentModalContent.includes('role="dialog"'), 'IncidentDetailModal must specify role="dialog"');
+  assert.ok(incidentModalContent.includes('aria-modal="true"'), 'IncidentDetailModal must specify aria-modal="true"');
+  assert.ok(incidentModalContent.includes("e.key === 'Escape'"), 'IncidentDetailModal must listen to Escape key');
+  assert.ok(incidentModalContent.includes('rel="noopener noreferrer"'), 'IncidentDetailModal links must specify rel="noopener noreferrer"');
+  assert.ok(incidentModalContent.includes('target="_blank"'), 'IncidentDetailModal links must specify target="_blank"');
+
+  // Verify rich content sections in modal
+  assert.ok(incidentModalContent.includes('Attack Vector & Technical Mechanics'), 'Must render Attack Vector section');
+  assert.ok(incidentModalContent.includes('Security & Operational Impact'), 'Must render Impact section');
+  assert.ok(incidentModalContent.includes('Recovery Timeline & Response'), 'Must render Recovery Timeline section');
+  assert.ok(incidentModalContent.includes('Repercussions & Legal Fallout'), 'Must render Repercussions section');
+  assert.ok(incidentModalContent.includes('Remediation & Defensive Architecture'), 'Must render Remediation section');
+  assert.ok(incidentModalContent.includes('Key Takeaway for AI Security Practitioners'), 'Must render Lessons Learned section');
+
+  // Verify Enriched Database coverage
+  assert.ok(incidentCatalogContent.includes('getEnrichedIncident'), 'incident_details_catalog.ts must export getEnrichedIncident');
+  assert.ok(incidentCatalogContent.includes('INCIDENT_DATABASE'), 'incident_details_catalog.ts must export INCIDENT_DATABASE');
+
+  // Verify integration in views
+  assert.ok(incidentsViewContent.includes('<IncidentDetailModal'), 'IncidentsDirectoryView must render IncidentDetailModal');
+  assert.ok(incidentsViewContent.includes('setSelectedIncident'), 'IncidentsDirectoryView must manage selectedIncident state');
+  assert.ok(searchModalContent.includes('onSelectIncident'), 'GlobalSearchModal must support onSelectIncident');
+  assert.ok(appContent.includes('<IncidentDetailModal'), 'App.tsx must render IncidentDetailModal');
+  assert.ok(appContent.includes('onSelectIncident={(incident) => setActiveModalIncident(incident)}'), 'App.tsx must handle search incident selection');
+});
+
+

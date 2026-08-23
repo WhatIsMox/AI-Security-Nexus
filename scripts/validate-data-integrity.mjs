@@ -256,6 +256,33 @@ function validateCatalogs() {
     } else {
       logPass(`incidents_catalog.ts: Verified ${incidentUrls.length} real-world incident citations`);
     }
+
+    // Validate coverage and strict schema completeness in incident_details_catalog.ts
+    const incidentDetailsContent = readFileContent('incident_details_catalog.ts');
+    if (incidentDetailsContent) {
+      const incidentTitles = [...new Set([...incidentsContent.matchAll(/title:\s*(?:"([^"]+)"|\x27([^\x27]+)\x27)/g)].map(m => m[1] || m[2]))];
+      const dbTitles = new Set([...incidentDetailsContent.matchAll(/"([^"]+)":\s*\{/g)].map(m => m[1].toLowerCase()));
+      const missingIncidents = incidentTitles.filter(t => !dbTitles.has(t.toLowerCase()));
+      if (missingIncidents.length > 0) {
+        logFail(`incident_details_catalog.ts: Missing ${missingIncidents.length} incident entries in INCIDENT_DATABASE: ${missingIncidents.join(', ')}`);
+      } else {
+        logPass(`incident_details_catalog.ts: 100% metadata coverage verified across all ${incidentTitles.length} unique real-world incidents`);
+      }
+
+      // Check required schema fields for each incident block
+      const requiredFields = ['attackVector', 'impact', 'recoveryTime', 'repercussions', 'remediation', 'lessonsLearned', 'year', 'targetOrVictim', 'severity'];
+      let schemaErrors = 0;
+      for (const field of requiredFields) {
+        const fieldCount = (incidentDetailsContent.match(new RegExp(`"${field}":\\s*`, 'g')) || []).length;
+        if (fieldCount < incidentTitles.length) {
+          logFail(`incident_details_catalog.ts: Expected at least ${incidentTitles.length} '${field}' definitions, found ${fieldCount}`);
+          schemaErrors++;
+        }
+      }
+      if (schemaErrors === 0) {
+        logPass(`incident_details_catalog.ts: Strict schema verified (attackVector, impact, recoveryTime, repercussions, remediation, lessonsLearned, victim, severity)`);
+      }
+    }
   }
 }
 

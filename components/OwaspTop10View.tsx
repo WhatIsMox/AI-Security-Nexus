@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import { FrameworkOverview, OwaspTop10Entry, SecurityTool } from '../types';
-import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock, BookOpen, Layers3, GitBranch, Info, ListChecks } from 'lucide-react';
+import { FrameworkOverview, OwaspTop10Entry, SecurityTool, RealWorldIncident } from '../types';
+import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock, BookOpen, Layers3, GitBranch, Info, ListChecks, Flame } from 'lucide-react';
 import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
+import { getEnrichedIncident } from '../incident_details_catalog';
 import { ToolDetailModal } from './ToolDetailModal';
+import { IncidentDetailModal } from './IncidentDetailModal';
 
 interface OwaspTop10ViewProps {
   initialExpandedId?: string | null;
@@ -27,6 +29,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   const [toolFilters, setToolFilters] = useState<Record<string, { category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>>({});
   const [openOverviewSection, setOpenOverviewSection] = useState<'overview' | 'terminology' | 'triage' | null>(null);
   const [selectedTool, setSelectedTool] = useState<SecurityTool | null>(null);
+  const [selectedIncident, setSelectedIncident] = useState<RealWorldIncident | null>(null);
 
   useEffect(() => {
     if (initialExpandedId) {
@@ -345,26 +348,36 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                       return (
                         <div>
                           <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
-                            <ExternalLink className="w-4 h-4 text-blue-400" />
-                            Real-World Incidents
+                            <Flame className="w-4 h-4 text-amber-400" />
+                            Real-World Incidents & Case Studies
                           </h4>
                           <div
                             className={`space-y-2 ${incidentLinks.length > 4 ? 'max-h-[240px] overflow-y-auto pr-1' : ''}`}
                             style={{ scrollbarGutter: 'stable' }}
                           >
                             {incidentLinks.map((incident, idx) => (
-                              <a
+                              <div
                                 key={idx}
-                                href={incident.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-start gap-2 bg-slate-950/60 p-3 rounded-lg border border-slate-800/60 hover:border-blue-500/30 transition-colors group"
+                                onClick={() => setSelectedIncident(getEnrichedIncident(incident, entry.id))}
+                                className="flex items-center justify-between gap-2 bg-slate-950/60 p-3 rounded-lg border border-slate-800/60 hover:border-amber-500/40 transition-all group cursor-pointer hover:bg-slate-900/80"
                               >
-                                <ExternalLink className="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0" />
-                                <span className="text-sm text-slate-300 group-hover:text-blue-300 line-clamp-2">
-                                  {incident.title}
-                                </span>
-                              </a>
+                                <div className="flex items-start gap-2 min-w-0">
+                                  <Flame className="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0" />
+                                  <span className="text-sm text-slate-300 group-hover:text-amber-300 line-clamp-2 transition-colors">
+                                    {incident.title}
+                                  </span>
+                                </div>
+                                <a
+                                  href={incident.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="p-1 text-slate-500 hover:text-amber-400 transition-colors shrink-0"
+                                  title="Open direct external citation"
+                                >
+                                  <ExternalLink className="w-3.5 h-3.5" />
+                                </a>
+                              </div>
                             ))}
                           </div>
                         </div>
@@ -625,6 +638,12 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
           </div>
         ))}
       </div>
+
+      {/* Incident Detail Inspection Modal */}
+      <IncidentDetailModal 
+        incident={selectedIncident} 
+        onClose={() => setSelectedIncident(null)} 
+      />
     </div>
   );
 };

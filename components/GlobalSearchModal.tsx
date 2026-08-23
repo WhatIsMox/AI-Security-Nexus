@@ -17,7 +17,8 @@ import {
 import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
 import { getEnrichedTool } from '../tool_details_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
-import { TestItem, SecurityTool } from '../types';
+import { getEnrichedIncident } from '../incident_details_catalog';
+import { TestItem, SecurityTool, RealWorldIncident } from '../types';
 
 export interface SearchResultItem {
   id: string;
@@ -29,6 +30,7 @@ export interface SearchResultItem {
   targetId?: string;
   testItem?: TestItem;
   tool?: SecurityTool & { mappedThreats?: string[] };
+  incident?: RealWorldIncident;
   url?: string;
 }
 
@@ -39,6 +41,7 @@ interface GlobalSearchModalProps {
   onNavigateToOwasp: (id: string) => void;
   onNavigateToView?: (view: string) => void;
   onSelectTool?: (tool: SecurityTool & { mappedThreats?: string[] }) => void;
+  onSelectIncident?: (incident: RealWorldIncident) => void;
 }
 
 export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
@@ -47,7 +50,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   onSelectTest,
   onNavigateToOwasp,
   onNavigateToView,
-  onSelectTool
+  onSelectTool,
+  onSelectIncident
 }) => {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -221,24 +225,38 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     }
 
     // 11. Incidents Catalog
-    const seenIncidentTitles = new Set<string>();
+    const incidentItemsMap = new Map<string, { incident: RealWorldIncident }>();
     for (const [threatId, incidents] of Object.entries(INCIDENTS_BY_THREAT_ID)) {
       for (const inc of incidents) {
-        const key = inc.title.toLowerCase();
-        if (!seenIncidentTitles.has(key)) {
-          seenIncidentTitles.add(key);
-          items.push({
-            id: `inc-${inc.title}`,
-            title: inc.title,
-            subtitle: `Real-world exploit/research citation mapped to ${threatId}`,
-            category: 'incident',
-            categoryLabel: 'Incident / CVE',
-            badgeColor: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
-            targetId: threatId,
-            url: inc.url
+        const key = inc.title.toLowerCase().trim();
+        if (incidentItemsMap.has(key)) {
+          const entry = incidentItemsMap.get(key)!;
+          if (entry.incident.mappedThreats && !entry.incident.mappedThreats.includes(threatId)) {
+            entry.incident.mappedThreats.push(threatId);
+          }
+        } else {
+          const enriched = getEnrichedIncident(inc, threatId);
+          incidentItemsMap.set(key, {
+            incident: {
+              ...enriched,
+              mappedThreats: [threatId]
+            }
           });
         }
       }
+    }
+
+    for (const { incident } of incidentItemsMap.values()) {
+      items.push({
+        id: `inc-${incident.title}`,
+        title: incident.title,
+        subtitle: `${incident.targetOrVictim ? `${incident.targetOrVictim} • ` : ''}${incident.severity ? `[${incident.severity}] ` : ''}Mapped to ${(incident.mappedThreats || []).slice(0, 3).join(', ')}`,
+        category: 'incident',
+        categoryLabel: 'Incident / Case Study',
+        badgeColor: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
+        incident: incident,
+        url: incident.url
+      });
     }
 
     return items;
@@ -298,10 +316,12 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       onSelectTool(item.tool);
     } else if (item.category === 'tool' && onNavigateToView) {
       onNavigateToView('tools');
-    } else if (item.targetId) {
-      onNavigateToOwasp(item.targetId);
+    } else if (item.category === 'incident' && item.incident && onSelectIncident) {
+      onSelectIncident(item.incident);
     } else if (item.category === 'incident' && onNavigateToView) {
       onNavigateToView('incidents');
+    } else if (item.targetId) {
+      onNavigateToOwasp(item.targetId);
     }
     onClose();
   };

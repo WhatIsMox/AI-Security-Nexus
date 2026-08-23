@@ -117,4 +117,28 @@ test('Unit - AI Security Tooling Matrix Full Metadata Catalog Completeness', (t)
   }
 });
 
+test('Unit - Real-World Incidents & Case Studies Full Metadata Completeness', (t) => {
+  const incidentsCatalogContent = readFile('incidents_catalog.ts');
+  const incidentDetailsContent = readFile('incident_details_catalog.ts');
+
+  const incidentTitles = [...incidentsCatalogContent.matchAll(/title:\s*(?:"([^"]+)"|\x27([^\x27]+)\x27)/g)].map(m => m[1] || m[2]);
+  const uniqueTitles = [...new Set(incidentTitles)];
+
+  assert.ok(uniqueTitles.length >= 100, `Expected at least 100 unique incidents, found ${uniqueTitles.length}`);
+
+  const dbMatches = [...incidentDetailsContent.matchAll(/"([^"]+)":\s*\{/g)].map(m => m[1].toLowerCase());
+  const dbSet = new Set(dbMatches);
+
+  const missing = uniqueTitles.filter(title => !dbSet.has(title.toLowerCase()));
+  assert.equal(missing.length, 0, `All incidents must have verified entries in INCIDENT_DATABASE. Missing: ${missing.join(', ')}`);
+
+  // Assert presence of mandatory fields
+  const requiredFields = ['attackVector', 'impact', 'recoveryTime', 'repercussions', 'remediation', 'lessonsLearned', 'year', 'targetOrVictim', 'severity'];
+  for (const field of requiredFields) {
+    const matches = (incidentDetailsContent.match(new RegExp(`"${field}":\\s*`, 'g')) || []).length;
+    assert.ok(matches >= uniqueTitles.length, `Expected at least ${uniqueTitles.length} '${field}' definitions in incident_details_catalog.ts, found ${matches}`);
+  }
+});
+
+
 

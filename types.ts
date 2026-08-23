@@ -17,6 +17,24 @@ export interface ExternalResource {
   url: string;
 }
 
+export interface RealWorldIncident extends ExternalResource {
+  id?: string;
+  title: string;
+  url: string;
+  year?: string;
+  targetOrVictim?: string;
+  attackVector?: string;
+  impact?: string;
+  recoveryTime?: string;
+  repercussions?: string;
+  remediation?: string;
+  lessonsLearned?: string;
+  cveOrAdvisoryId?: string;
+  severity?: 'Critical' | 'High' | 'Medium' | 'Low';
+  mappedThreats?: string[];
+  additionalReferences?: ExternalResource[];
+}
+
 export interface SecurityTool {
   name: string;
   description: string;

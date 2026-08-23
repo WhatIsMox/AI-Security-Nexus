@@ -1,14 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Flame, Search, Filter, ExternalLink, Shield, AlertTriangle, 
-  BookOpen, Layers, ArrowRight, Globe, Building2, Calendar
+  BookOpen, Layers, ArrowRight, Globe, Building2, Calendar, Tag, Info
 } from 'lucide-react';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
-import { ExternalResource } from '../types';
-
-interface IncidentDirectoryEntry extends ExternalResource {
-  mappedThreats: string[];
-}
+import { getEnrichedIncident } from '../incident_details_catalog';
+import { IncidentDetailModal } from './IncidentDetailModal';
+import { ExternalResource, RealWorldIncident } from '../types';
 
 interface IncidentsDirectoryViewProps {
   onNavigateToOwasp: (threatId: string) => void;
@@ -17,22 +15,24 @@ interface IncidentsDirectoryViewProps {
 export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ onNavigateToOwasp }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [frameworkFilter, setFrameworkFilter] = useState<'All' | 'LLM' | 'ML' | 'ASI' | 'AST' | 'SAIF' | 'MCP'>('All');
+  const [selectedIncident, setSelectedIncident] = useState<RealWorldIncident | null>(null);
 
-  // Consolidate unique incidents with all mapped threats
-  const allIncidents = useMemo<IncidentDirectoryEntry[]>(() => {
-    const incidentMap = new Map<string, IncidentDirectoryEntry>();
+  // Consolidate unique incidents with all mapped threats and enriched verified metadata
+  const allIncidents = useMemo<RealWorldIncident[]>(() => {
+    const incidentMap = new Map<string, RealWorldIncident>();
 
     for (const [threatId, incidents] of Object.entries(INCIDENTS_BY_THREAT_ID)) {
       for (const incident of incidents) {
         const key = incident.title.toLowerCase().trim();
         if (incidentMap.has(key)) {
           const existing = incidentMap.get(key)!;
-          if (!existing.mappedThreats.includes(threatId)) {
+          if (existing.mappedThreats && !existing.mappedThreats.includes(threatId)) {
             existing.mappedThreats.push(threatId);
           }
         } else {
+          const enriched = getEnrichedIncident(incident, threatId);
           incidentMap.set(key, {
-            ...incident,
+            ...enriched,
             mappedThreats: [threatId]
           });
         }
@@ -48,18 +48,31 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
 
     return allIncidents.filter(incident => {
       if (frameworkFilter !== 'All') {
-        const hasMatchingThreat = incident.mappedThreats.some(tid => tid.startsWith(frameworkFilter));
+        const hasMatchingThreat = (incident.mappedThreats || []).some(tid => tid.startsWith(frameworkFilter));
         if (!hasMatchingThreat) return false;
       }
 
       if (query) {
-        const text = `${incident.title} ${incident.url} ${incident.mappedThreats.join(' ')}`.toLowerCase();
+        const text = `${incident.title} ${incident.url} ${(incident.mappedThreats || []).join(' ')} ${incident.targetOrVictim || ''} ${incident.cveOrAdvisoryId || ''} ${incident.attackVector || ''} ${incident.impact || ''}`.toLowerCase();
         if (!text.includes(query)) return false;
       }
 
       return true;
     });
   }, [allIncidents, searchQuery, frameworkFilter]);
+
+  const getSeverityBadge = (severity?: string) => {
+    switch (severity) {
+      case 'Critical':
+        return 'border-rose-500/30 bg-rose-500/10 text-rose-300';
+      case 'High':
+        return 'border-amber-500/30 bg-amber-500/10 text-amber-300';
+      case 'Medium':
+        return 'border-yellow-500/30 bg-yellow-500/10 text-yellow-300';
+      default:
+        return 'border-blue-500/30 bg-blue-500/10 text-blue-300';
+    }
+  };
 
   return (
     <div className="container-fluid p-3 sm:p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
@@ -90,8 +103,8 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search real-world exploits by keyword, company, arXiv ID, CVE, or threat ID (e.g. 'Samsung', 'Bing', 'SolarWinds', 'CVE-2026')..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+            placeholder="Search real-world exploits by keyword, company, arXiv ID, CVE, or threat ID (e.g. 'Samsung', 'Bing', 'SolarWinds', 'CVE-2024')..."
+            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-500/50"
           />
         </div>
 
@@ -124,9 +137,34 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
           filteredIncidents.map((incident, idx) => (
             <div 
               key={idx}
-              className="bg-slate-900/60 border border-slate-800 hover:border-amber-500/40 rounded-xl p-4 transition-all flex flex-col justify-between group hover:bg-slate-900/90"
+              onClick={() => setSelectedIncident(incident)}
+              className="bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer hover:shadow-lg hover:shadow-amber-500/5"
             >
               <div>
+                {/* Meta Badges */}
+                <div className="flex items-center gap-1.5 flex-wrap mb-2.5">
+                  {incident.severity && (
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${getSeverityBadge(incident.severity)}`}>
+                      {incident.severity}
+                    </span>
+                  )}
+                  {incident.year && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700 text-slate-300">
+                      {incident.year}
+                    </span>
+                  )}
+                  {incident.targetOrVictim && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 truncate max-w-[200px]">
+                      {incident.targetOrVictim}
+                    </span>
+                  )}
+                  {incident.cveOrAdvisoryId && incident.cveOrAdvisoryId !== 'N/A' && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-300">
+                      {incident.cveOrAdvisoryId}
+                    </span>
+                  )}
+                </div>
+
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex items-start gap-2.5">
                     <div className="p-1.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 shrink-0 mt-0.5">
@@ -141,22 +179,32 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
                     href={incident.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
                     className="p-1 text-slate-500 hover:text-amber-400 transition-colors shrink-0"
                     title="Read full advisory / research paper"
                   >
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 </div>
+
+                {incident.attackVector && (
+                  <p className="text-xs text-slate-400 line-clamp-2 mt-2 leading-relaxed">
+                    {incident.attackVector}
+                  </p>
+                )}
               </div>
 
-              {/* Mapped Threats */}
+              {/* Mapped Threats & Drilldown */}
               <div className="pt-3 border-t border-slate-800/80 mt-3 flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-1 flex-wrap">
                   <span className="text-[10px] text-slate-500 uppercase font-mono mr-1">Threats:</span>
-                  {incident.mappedThreats.map(tid => (
+                  {(incident.mappedThreats || []).map(tid => (
                     <button
                       key={tid}
-                      onClick={() => onNavigateToOwasp(tid)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onNavigateToOwasp(tid);
+                      }}
                       className="px-1.5 py-0.5 bg-slate-950 hover:bg-amber-950/40 border border-slate-800 hover:border-amber-500/40 rounded text-[10px] font-mono text-slate-400 hover:text-amber-300 transition-colors"
                     >
                       {tid}
@@ -164,21 +212,24 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
                   ))}
                 </div>
 
-                <a 
-                  href={incident.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[11px] text-amber-400/80 hover:text-amber-300 flex items-center gap-1 font-mono group-hover:translate-x-0.5 transition-transform"
-                >
-                  <span>Source</span>
-                  <ArrowRight className="w-3 h-3" />
-                </a>
+                <div className="flex items-center gap-1 text-[11px] text-amber-400/80 group-hover:text-amber-300 font-medium group-hover:translate-x-0.5 transition-transform">
+                  <Info className="w-3.5 h-3.5" />
+                  <span>Inspect Case Study</span>
+                </div>
               </div>
             </div>
           ))
         )}
       </div>
+
+      {/* Incident Detail Modal */}
+      <IncidentDetailModal 
+        incident={selectedIncident} 
+        onClose={() => setSelectedIncident(null)} 
+        onNavigateToOwasp={onNavigateToOwasp} 
+      />
     </div>
   );
 };
+
 export default IncidentsDirectoryView;
