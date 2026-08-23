@@ -77,21 +77,44 @@ The build injects strict CSP and Referrer headers via [`vite.config.ts`](file://
 - `font-src 'self' https://fonts.gstatic.com`
 - `img-src 'self' data:`
 - `object-src 'none'`
+- `base-uri 'self'`
+- `form-action 'self'`
+- `upgrade-insecure-requests`
+- `X-Content-Type-Options: nosniff`
+- `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()`
 
-**Agent Rules for CSP**:
-- ❌ **NEVER** use inline `javascript:` URLs or dynamic `eval()`.
+**Agent Rules for Security**:
+- ❌ **NEVER** use inline `javascript:` URLs, `eval()`, `new Function()`, or string-based `setTimeout`/`setInterval`.
+- ❌ **NEVER** use `dangerouslySetInnerHTML`, `.innerHTML`, or `.outerHTML` for dynamic content or payloads.
 - ❌ **NEVER** insert external scripts from unapproved CDNs.
 - ✅ Always use standard React `onClick` event listeners and React state.
-- ✅ Attack payloads in test items (`TestItem.payloads[].code`) must be rendered as raw text inside `<pre><code>` blocks, never rendered directly as active HTML.
+- ✅ External links with `target="_blank"` MUST unconditionally declare `rel="noopener noreferrer"`.
+- ✅ Attack payloads in test items (`TestItem.payloads[].code`) must be rendered as raw text inside semantic `<pre><code>` blocks, never rendered directly as active HTML.
+- ✅ Deserialized `localStorage` data must validate against strict whitelists and guard against prototype poisoning (`__proto__`, `constructor`).
 
 ---
 
-## 5. Verification & Maintenance Commands
+## 5. Mobile Responsiveness & Performance Guidelines
+
+1. **Mobile Modal & Header Clearance**:
+   - Modal backdrops must specify `pt-[calc(env(safe-area-inset-top,0px)+3.5rem)]` so modal headers clear the fixed mobile menu bar and device notch.
+   - Modal containers must specify `max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-4.5rem)]` with `overflow-y-auto`.
+2. **0ms Initial Paint & Mobile Visibility**:
+   - `.reveal` animation classes must default to `opacity: 1; transform: none;` on mobile viewports (`< 768px`) to prevent blank-screen rendering latency.
+   - Keep the pre-render branded shell inside `<div id="root">` in `index.html` for instant visual response.
+3. **CSS Layout Containment (`content-visibility: auto`)**:
+   - Long lists and directories (`IncidentsDirectoryView`, `ToolsDirectoryView`, `TestList`, `AuditChecklistView`) must use `.content-auto` to skip off-screen layout calculations.
+4. **Dynamic Code Splitting**:
+   - Keep secondary views lazy-loaded via `React.lazy()` wrapped in `<Suspense>` to keep initial JS bundle size under 450 kB.
+
+---
+
+## 6. Verification & Maintenance Commands
 
 Every change made by an agent MUST be verified before concluding:
 
 ```bash
-# 1. Run complete automated test suite (Unit, Functional, Security, Build)
+# 1. Run complete automated test suite (69 tests: Unit, Functional, Performance, Security/SAST, Build)
 npm test
 
 # 2. Run data catalog schema & referential integrity validator
@@ -106,16 +129,19 @@ npm run docs:sync
 # 5. Verify documentation is in sync (CI check mode)
 npm run docs:check
 
-# 6. Compile TypeScript and build production bundle
+# 6. Audit dependencies for security vulnerabilities
+npm audit
+
+# 7. Compile TypeScript and build production bundle
 npm run build
 
-# 7. Run local development preview
+# 8. Run local development preview
 npm run dev
 ```
 
 ---
 
-## 6. How to Add or Modify Security Data & Features
+## 7. How to Add or Modify Security Data & Features
 
 > 🧪 **MANDATORY TESTING DIRECTIVE**: Every new implementation, UI feature, framework addition, or security test case **MUST be accompanied by an automated test** in [`tests/`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/tests/) verifying that it functions as expected and preserves data integrity.
 
@@ -184,16 +210,16 @@ npm run dev
 
 ---
 
-## 7. Automated Synchronization & CI/CD Pipeline
+## 8. Automated Synchronization & CI/CD Pipeline
 
 The project includes an automated GitHub Actions workflow ([`.github/workflows/agent-docs-sync.yml`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/.github/workflows/agent-docs-sync.yml)) that:
-- Runs data integrity assertions on every push and PR.
+- Runs data integrity assertions and security static analysis on every push and PR.
 - Runs a scheduled scan every Monday at 03:00 UTC.
-- Automatically commits updated documentation stats if any data changes were made.
+- Enforces strict read-only least-privilege permissions and concurrency controls.
 
 ---
 
-## 8. GitHub Pages Deployment & Continuous Operability Mandate
+## 9. GitHub Pages Deployment & Continuous Operability Mandate
 
 > ⚠️ **CRITICAL DIRECTIVE**: This application is deployed as a **GitHub Pages** static website via [`.github/workflows/deploy.yml`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/.github/workflows/deploy.yml). It **MUST CONTINUE TO DEPLOY AND RUN WITHOUT DEFECTS AFTER EVERY CHANGE**.
 
@@ -213,7 +239,7 @@ The project includes an automated GitHub Actions workflow ([`.github/workflows/a
 
 ---
 
-## 9. Process Lifecycle, Debugging Shells & Resource Cleanup Mandate
+## 10. Process Lifecycle, Debugging Shells & Resource Cleanup Mandate
 
 > 🧹 **PROCESS LIFECYCLE DIRECTIVE**: If testing, debugging, or verification requires spawning background processes, dev servers, local test environments, child processes, or debugging shells, **they MUST be cleanly terminated and shut down upon completion** to prevent zombie processes from lingering and consuming system resources (CPU, RAM, or occupied ports).
 
