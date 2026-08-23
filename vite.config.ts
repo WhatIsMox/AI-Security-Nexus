@@ -14,14 +14,13 @@ export default defineConfig(({ command }) => {
       react(),
       {
         name: 'html-security-meta',
-        apply: 'build',
         transformIndexHtml() {
           return [
             {
               tag: 'meta',
               attrs: {
                 'http-equiv': 'Content-Security-Policy',
-                content: "default-src 'self'; script-src 'self' https://stats.byreference.net; connect-src 'self' https://stats.byreference.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'",
+                content: "default-src 'self'; script-src 'self' https://stats.byreference.net; connect-src 'self' https://stats.byreference.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
               },
               injectTo: 'head-prepend',
             },
@@ -33,6 +32,22 @@ export default defineConfig(({ command }) => {
               },
               injectTo: 'head-prepend',
             },
+            {
+              tag: 'meta',
+              attrs: {
+                'http-equiv': 'X-Content-Type-Options',
+                content: 'nosniff',
+              },
+              injectTo: 'head-prepend',
+            },
+            {
+              tag: 'meta',
+              attrs: {
+                'http-equiv': 'Permissions-Policy',
+                content: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+              },
+              injectTo: 'head-prepend',
+            },
           ]
         },
       },
@@ -40,6 +55,20 @@ export default defineConfig(({ command }) => {
     base,
     server: {
       host: '127.0.0.1',
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+      },
+    },
+    preview: {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+      },
     },
     css: {
       preprocessorOptions: {

@@ -47,12 +47,28 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
     }
   };
 
-  // Load audit state from localStorage
+  // Load audit state from localStorage with strict input validation
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        setRecords(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          const sanitized: Record<string, AuditRecord> = {};
+          const validStatuses = new Set<AuditStatus>(['NOT_TESTED', 'PASSED', 'VULNERABLE', 'MITIGATED', 'NA']);
+          for (const [key, val] of Object.entries(parsed)) {
+            // Guard against prototype poisoning and oversized input
+            if (typeof key === 'string' && key.length <= 50 && key !== '__proto__' && key !== 'constructor' && val && typeof val === 'object') {
+              const rec = val as Partial<AuditRecord>;
+              sanitized[key] = {
+                status: rec.status && validStatuses.has(rec.status) ? rec.status : 'NOT_TESTED',
+                notes: typeof rec.notes === 'string' ? rec.notes.slice(0, 5000) : '',
+                updatedAt: typeof rec.updatedAt === 'string' ? rec.updatedAt.slice(0, 50) : ''
+              };
+            }
+          }
+          setRecords(sanitized);
+        }
       }
     } catch {
       // Ignore storage errors

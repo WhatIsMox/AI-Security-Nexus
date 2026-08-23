@@ -21,9 +21,13 @@ test('Security - Content Security Policy (CSP) & Referrer Policy Configuration',
   assert.ok(viteConfig.includes("object-src 'none'"), 'CSP must disallow object/plugins (object-src none)');
   assert.ok(viteConfig.includes("base-uri 'self'"), 'CSP must restrict base-uri to self');
   assert.ok(viteConfig.includes("form-action 'self'"), 'CSP must restrict form-action to self');
+  assert.ok(viteConfig.includes("upgrade-insecure-requests"), 'CSP must mandate upgrade-insecure-requests');
   
-  // Verify Referrer header
+  // Verify Referrer header & additional security headers
   assert.ok(viteConfig.includes("strict-origin-when-cross-origin"), 'Vite config must inject strict-origin-when-cross-origin referrer policy');
+  assert.ok(viteConfig.includes("X-Content-Type-Options"), 'Vite config must inject X-Content-Type-Options');
+  assert.ok(viteConfig.includes("nosniff"), 'Vite config must mandate nosniff');
+  assert.ok(viteConfig.includes("Permissions-Policy"), 'Vite config must inject Permissions-Policy');
 });
 
 test('Security - Test Payload Safe Rendering (Zero dangerouslySetInnerHTML for Payloads)', (t) => {
@@ -47,4 +51,13 @@ test('Security - No Dynamic Code Execution (eval / Function constructor)', (t) =
       assert.ok(!code.includes('new Function('), `File components/${file} must not contain new Function()`);
     }
   }
+});
+
+test('Security - LocalStorage State Deserialization Sanitization', (t) => {
+  const auditView = readFile('components/AuditChecklistView.tsx');
+
+  // Verify prototype poisoning defense & schema validation
+  assert.ok(auditView.includes('__proto__'), 'AuditChecklistView must guard against __proto__ prototype poisoning');
+  assert.ok(auditView.includes('constructor'), 'AuditChecklistView must guard against constructor prototype poisoning');
+  assert.ok(auditView.includes('validStatuses'), 'AuditChecklistView must validate status against allowed whitelist');
 });

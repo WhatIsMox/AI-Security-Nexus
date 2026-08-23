@@ -1027,7 +1027,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             Powered by OWASP · SAIF · MCP
           </span>
           <a
-            href="https://github.com/WhatIsMox/OWASP-AI-Testing-Bible/tree/main"
+            href="https://github.com/WhatIsMox/AI-Security-Nexus"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
@@ -1036,7 +1036,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             <span className="text-sm font-medium">Source Code</span>
           </a>
           <a
-            href="https://github.com/WhatIsMox/OWASP-AI-Testing-Bible/tree/main"
+            href="https://github.com/WhatIsMox/AI-Security-Nexus"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-4 py-1.5 bg-cyan-450/10 text-cyan-450 border border-cyan-450/20 rounded-full hover:bg-cyan-450/20 transition-all text-sm font-bold group"
