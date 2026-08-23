@@ -345,7 +345,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-6 md:p-12 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center pt-[calc(env(safe-area-inset-top,0px)+3.5rem)] sm:pt-6 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:pb-6 px-3 sm:px-6 md:p-12 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -353,7 +353,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       aria-labelledby="global-search-title"
     >
       <div 
-        className="w-full max-w-3xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] sm:max-h-[85vh] animate-in zoom-in-95 duration-200 mt-2 sm:mt-6"
+        className="w-full max-w-3xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-4.5rem)] sm:max-h-[85vh] animate-in zoom-in-95 duration-200"
         onClick={e => e.stopPropagation()}
       >
         {/* Search Header */}

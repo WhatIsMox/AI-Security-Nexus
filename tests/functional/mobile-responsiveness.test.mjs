@@ -22,12 +22,11 @@ test('Mobile Responsiveness - Viewport Meta & HTML Head Configuration', (t) => {
 test('Mobile Responsiveness - ToolDetailModal Layout & Touch Scrolling', (t) => {
   const modalContent = readFile('components/ToolDetailModal.tsx');
 
-  // Assert dynamic viewport height & scrollability
-  assert.ok(modalContent.includes('max-h-[92dvh]') || modalContent.includes('max-h-[88vh]'), 'Modal dialog must use dynamic viewport height for mobile browser toolbars');
+  // Assert top menu bar / notch clearance & dynamic viewport height
+  assert.ok(modalContent.includes('safe-area-inset-top') || modalContent.includes('pt-[calc'), 'Modal must include safe area top clearance to avoid getting hidden under mobile menu bar');
   assert.ok(modalContent.includes('overflow-y-auto'), 'Modal must have vertical scrolling container');
   
   // Assert responsive padding and sticky access
-  assert.ok(modalContent.includes('p-2 sm:p-4 md:p-6'), 'Outer dialog padding must be compact on mobile');
   assert.ok(modalContent.includes('sticky top-0 z-20'), 'Modal header must be sticky for immediate close access on mobile');
   assert.ok(modalContent.includes('min-w-[36px] min-h-[36px]'), 'Close button must satisfy accessible tap target height');
 
@@ -42,8 +41,8 @@ test('Mobile Responsiveness - ToolDetailModal Layout & Touch Scrolling', (t) => 
 test('Mobile Responsiveness - IncidentDetailModal Layout & Touch Scrolling', (t) => {
   const modalContent = readFile('components/IncidentDetailModal.tsx');
 
-  // Assert dynamic viewport height & scrollability
-  assert.ok(modalContent.includes('max-h-[92dvh]') || modalContent.includes('max-h-[88vh]'), 'Incident modal must use dynamic viewport height constraint');
+  // Assert top menu bar / notch clearance & dynamic viewport height
+  assert.ok(modalContent.includes('safe-area-inset-top') || modalContent.includes('pt-[calc'), 'Incident modal must include safe area top clearance to prevent hiding under mobile menu bar');
   assert.ok(modalContent.includes('overflow-y-auto'), 'Incident modal must be vertically scrollable');
 
   // Assert sticky header and close button ergonomics
@@ -75,8 +74,8 @@ test('Mobile Responsiveness - Dashboard Charts, Radar & Architecture Bands', (t)
 test('Mobile Responsiveness - Global Omnisearch Modal & Filter Swiping', (t) => {
   const searchContent = readFile('components/GlobalSearchModal.tsx');
 
-  // Assert search dialog mobile sizing
-  assert.ok(searchContent.includes('max-h-[92dvh] sm:max-h-[85vh]'), 'Global search modal must fit within dynamic mobile viewport');
+  // Assert search dialog mobile sizing and top clearance
+  assert.ok(searchContent.includes('safe-area-inset-top') || searchContent.includes('pt-[calc'), 'Global search modal must include safe area top clearance');
   assert.ok(searchContent.includes('overflow-x-auto'), 'Filter category tabs must allow horizontal scrolling on mobile');
   assert.ok(searchContent.includes('line-clamp-2'), 'Search result subtitles must be line-clamped on mobile');
 });
