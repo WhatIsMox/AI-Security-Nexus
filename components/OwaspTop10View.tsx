@@ -270,18 +270,12 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
               ${expandedId === entry.id ? 'max-h-[20000px] opacity-100' : 'max-h-0 opacity-0'}
             `}>
               <div className="p-3 sm:p-6 pt-0 border-t border-slate-800/50">
-                <div className="grid lg:grid-cols-2 gap-5 mt-6 mb-8">
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-5">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Description</h4>
-                    <p className="text-sm text-slate-300 leading-relaxed">{entry.description}</p>
+                {entry.whyUnique && (
+                  <div className="mt-6 mb-6 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
+                    <h4 className="text-xs font-bold text-orange-300 uppercase tracking-wider mb-1.5">Why this risk is distinct</h4>
+                    <p className="text-sm text-slate-300 leading-relaxed">{entry.whyUnique}</p>
                   </div>
-                  {entry.whyUnique && (
-                    <div className="rounded-xl border border-orange-500/15 bg-orange-500/5 p-5">
-                      <h4 className="text-xs font-bold text-orange-300 uppercase tracking-wider mb-2">Why this risk is distinct</h4>
-                      <p className="text-sm text-slate-300 leading-relaxed">{entry.whyUnique}</p>
-                    </div>
-                  )}
-                </div>
+                )}
                 <div className="grid lg:grid-cols-2 gap-8 mt-6">
                   <div className="space-y-6">
                     <div>
