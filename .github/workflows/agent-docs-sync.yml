@@ -39,11 +39,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Full Test Suite (Unit, Functional, Security, Build)
-        run: npm test
-
       - name: Verify TypeScript & Build
         run: npm run build
+
+      - name: Run Full Test Suite (Unit, Functional, Security, Build)
+        run: npm test
 
       - name: Synchronize Agent Documentation
         run: npm run docs:sync

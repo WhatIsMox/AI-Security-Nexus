@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +17,9 @@ function readFile(relativePath) {
 
 test('Build - GitHub Pages Static Assets & Directory Structure', (t) => {
   const distDir = path.join(rootDir, 'dist');
+  if (!fs.existsSync(distDir)) {
+    execSync('npm run build', { cwd: rootDir, stdio: 'pipe' });
+  }
   assert.ok(fs.existsSync(distDir), 'Production dist/ directory must exist');
 
   const indexHtml = readFile('dist/index.html');
