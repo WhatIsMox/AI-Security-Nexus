@@ -616,8 +616,7 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
           {GENAI_DATA_SECURITY_META.title}
         </h1>
         <p className="mt-4 max-w-4xl text-sm leading-relaxed text-slate-400 md:text-base">
-          A structured, interactive version of the OWASP GenAI data-security risk and mitigation guide,
-          focused on LLM, RAG, agentic, multimodal, vector, telemetry, governance, and lifecycle risks.
+          Interactive guide to OWASP GenAI Data Security—featuring 21 risk deep-dives and 13 AI-DSPM capabilities to govern LLM pipelines, RAG stores, agent memory, and multimodal datasets.
         </p>
 
         <div className="mt-6">

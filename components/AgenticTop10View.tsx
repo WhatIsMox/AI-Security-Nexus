@@ -84,8 +84,8 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
             key="agentic-applications"
             initialExpandedId={initialExpandedId?.startsWith('ASI') ? initialExpandedId : null}
             data={OWASP_AGENTIC_APPLICATIONS_DATA}
-            title="OWASP Top 10 for Agentic Applications 2026"
-            description="Application-level risks across agent goals, tools, identities, supply chains, execution, memory, inter-agent coordination, systemic propagation, human trust, and behavioral integrity."
+            title="OWASP Top 10 for Agentic Applications (2026)"
+            description="System-wide security threats for autonomous multi-agent environments—covering goal hijacking, over-privileged tool invocation, rogue memory poisoning, cascading failures, and unauthorized inter-agent messaging."
             colorTheme="orange"
             frameworkOverview={AGENTIC_APPLICATIONS_OVERVIEW}
           />
@@ -97,7 +97,7 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
             initialExpandedId={initialExpandedId?.startsWith('AST') ? initialExpandedId : null}
             data={OWASP_AGENTIC_THREATS_DATA}
             title="OWASP Agentic Skills Top 10"
-            description="Skill-layer risks for reusable agent instructions, code, metadata, registries, runtime permissions, lifecycle controls, and cross-platform reuse."
+            description="Focused security standards for modular, reusable agent tool definitions—addressing malicious skill packages, metadata poisoning, permission creep, unverified updates, and cross-platform isolation failures."
             colorTheme="cyan"
             frameworkOverview={AGENTIC_SKILLS_OVERVIEW}
           />

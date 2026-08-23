@@ -25,7 +25,7 @@ Navigate the most influential AI security standards through specialized, color-c
 - **Business Impact Matrix**: Align technical vulnerabilities with high-level business consequences and ownership responsibilities.
 
 ### 3. Comprehensive Security Test Library
-Access a curated database of **30+ specific AI security test cases**, each including:
+Access a curated database of **42+ structured AI security test cases**, each including:
 - **Objectives**: Clear goals for what to verify.
 - **Payloads & Test Vectors**: Actual attack strings, "DAN" prompts, and adversarial code snippets.
 - **Indicators of Vulnerability**: What "success" looks like for an attacker.

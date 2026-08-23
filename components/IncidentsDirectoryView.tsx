@@ -70,9 +70,9 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
             <Flame className="w-3.5 h-3.5 text-amber-400" />
             AI Threat Intelligence & Case Studies
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Real-World AI Incidents & Exploits</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Real-World Incidents & Exploit Disclosures</h2>
           <p className="text-slate-400 text-sm md:text-base mt-1">
-            Empirical breach reports, CVE advisories, and peer-reviewed research papers mapped to AI threat categories.
+            Documented breach investigations, verified CVE advisories, and academic exploit papers demonstrating real-world impacts across AI threats.
           </p>
         </div>
 

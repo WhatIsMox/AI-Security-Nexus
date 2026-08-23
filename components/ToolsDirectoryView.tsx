@@ -81,9 +81,9 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
             <Terminal className="w-3.5 h-3.5 text-purple-400" />
             Security Tools Directory
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">AI Security Tools Matrix</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">AI Security Tooling Matrix</h2>
           <p className="text-slate-400 text-sm md:text-base mt-1">
-            Curated offensive red-teaming scanners, defensive guardrails, and compliance platforms mapped to threats.
+            Curated catalog of open-source red-team scanners, runtime guardrails, adversarial fuzzers, and DSPM platforms mapped directly to specific threats.
           </p>
         </div>
 

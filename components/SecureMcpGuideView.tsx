@@ -307,9 +307,7 @@ const SecureMcpGuideView: React.FC = () => {
           {meta.title}
         </h1>
         <p className="mt-4 max-w-4xl text-sm leading-relaxed text-slate-400 md:text-base">
-          A practical, interactive MCP hardening workspace for architects, platform engineers,
-          and security teams. Expand each control family to understand the threat, the required
-          design decision, and the implementation guardrails.
+          Practical hardening guide and readiness checklist for platform engineers and security teams building on the Model Context Protocol. Explore each control family to implement defense-in-depth against tool abuse, data exfiltration, and confused-deputy attacks.
         </p>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">

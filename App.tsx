@@ -422,8 +422,8 @@ const App: React.FC = () => {
             <OwaspTop10View 
               initialExpandedId={owaspTargetId} 
               data={OWASP_TOP_10_DATA}
-              title="OWASP Top 10 for LLM Applications 2026"
-              description="The 2026 OWASP GenAI/LLM Top 10, covering the most critical security risks in LLM applications across prompts, data, agents, supply chain, retrieval, and output handling."
+              title="OWASP Top 10 for LLM Applications (2026 Edition)"
+              description="The definitive industry benchmark for Large Language Model security—covering prompt injection, data poisoning, vector store vulnerabilities, over-permissioned tools, and output handling."
               colorTheme="pink"
             />
           )}
@@ -433,7 +433,7 @@ const App: React.FC = () => {
               initialExpandedId={owaspTargetId} 
               data={OWASP_ML_TOP_10_DATA}
               title="OWASP Machine Learning Security Top 10"
-              description="The comprehensive list of top security issues for Machine Learning systems, covering adversarial attacks, data poisoning, and more."
+              description="Essential vulnerability catalog for predictive models and deep learning pipelines, covering adversarial evasion, dataset poisoning, model inversion, and supply-chain threats."
               colorTheme="emerald"
             />
           )}
@@ -446,8 +446,8 @@ const App: React.FC = () => {
             <OwaspTop10View 
               initialExpandedId={owaspTargetId} 
               data={OWASP_SAIF_THREATS_DATA}
-              title="Google SAIF: Secure AI Framework Risks"
-              description="A comprehensive mapping of risks across the AI lifecycle, based on Google's Secure AI Framework."
+              title="Google Secure AI Framework (SAIF) Threats"
+              description="End-to-end AI security lifecycle model mapping 15 distinct threat vectors across dataset curation, model training, deployment infrastructure, and live operations."
               colorTheme="blue"
             />
           )}
@@ -456,8 +456,8 @@ const App: React.FC = () => {
             <OwaspTop10View 
               initialExpandedId={owaspTargetId} 
               data={OWASP_MCP_TOP_10_DATA}
-              title="OWASP MCP Top 10 (v0.1)"
-              description="The top risks for Model Context Protocol ecosystems, covering tool integrity, authorization, and context safety."
+              title="OWASP Model Context Protocol (MCP) Top 10"
+              description="Dedicated security standards for Model Context Protocol architectures—focusing on tool integrity, rogue server containment, confused-deputy authorization, and context isolation."
               colorTheme="cyan"
             />
           )}

@@ -224,9 +224,9 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
             <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
             Interactive Audit Suite
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Security Audit Checklist</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">AI Security Audit & Readiness Checklist</h2>
           <p className="text-slate-400 text-sm md:text-base mt-1">
-            Track assessment progress, document findings, and export professional audit reports.
+            Conduct interactive readiness reviews, track remediation milestones, and export structured assessment reports in Markdown, JSON, or printable PDF.
           </p>
         </div>
 

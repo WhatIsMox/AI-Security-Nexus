@@ -179,9 +179,9 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   {
     key: 'TOP10',
     name: 'OWASP Top 10 for LLM Applications',
-    edition: '2026',
-    kind: 'Threat framework',
-    blurb: 'Prompt injection, data poisoning, agent jailbreaks and the rest of the LLM threat landscape.',
+    edition: '2026 Edition',
+    kind: 'Vulnerability Standard',
+    blurb: 'The definitive industry benchmark for GenAI security—covering prompt injection, sensitive data leakage, vector database flaws, and over-privileged agents.',
     icon: Brain,
     count: OWASP_TOP_10_DATA.length,
     countLabel: 'threats',
@@ -199,9 +199,9 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   {
     key: 'AGENTTOP10',
     name: 'OWASP Agentic Top 10',
-    edition: 'ASI 2026 + AST 2026',
-    kind: 'Two complementary frameworks',
-    blurb: 'System-wide agentic application risks and the distinct risks of reusable agent skills, with complete ASI and AST coverage.',
+    edition: 'ASI & AST 2026',
+    kind: 'Dual Framework',
+    blurb: 'Autonomous agent security across two complementary layers: systemic application hazards (ASI01–ASI10) and compromised reusable tool skills (AST01–AST10).',
     icon: Bot,
     count: OWASP_AGENTIC_APPLICATIONS_DATA.length + OWASP_AGENTIC_THREATS_DATA.length,
     countLabel: 'threats',
@@ -219,9 +219,9 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   {
     key: 'MLTOP10',
     name: 'OWASP Machine Learning Top 10',
-    edition: '2023',
-    kind: 'Threat framework',
-    blurb: 'Adversarial examples, model stealing, membership inference and ML supply-chain risk.',
+    edition: 'Classic ML & Deep Learning',
+    kind: 'Threat Taxonomy',
+    blurb: 'Core vulnerabilities in predictive AI and deep learning: adversarial evasion, training data poisoning, model extraction, and membership inference attacks.',
     icon: Cpu,
     count: OWASP_ML_TOP_10_DATA.length,
     countLabel: 'threats',
@@ -239,9 +239,9 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   {
     key: 'MCPTOP10',
     name: 'OWASP MCP Top 10',
-    edition: 'v0.1',
-    kind: 'Threat framework',
-    blurb: 'Tool poisoning, confused-deputy auth and context exfiltration in Model Context Protocol stacks.',
+    edition: 'v0.1 Release',
+    kind: 'Protocol Security',
+    blurb: 'Emerging attack surfaces in Model Context Protocol stacks—addressing tool poisoning, rogue servers, confused-deputy authorization, and context leakage.',
     icon: Network,
     count: OWASP_MCP_TOP_10_DATA.length,
     countLabel: 'threats',
@@ -260,8 +260,8 @@ const buildFrameworkCards = (): FrameworkCard[] => [
     key: 'SAIFTOP10',
     name: 'Google SAIF Risks',
     edition: 'Secure AI Framework',
-    kind: 'Threat framework',
-    blurb: 'AI-lifecycle risk catalogue mapped to Google’s Secure AI Framework, from training to deployment.',
+    kind: 'Lifecycle Matrix',
+    blurb: 'Google’s holistic risk model mapping 15 distinct threat vectors across dataset curation, model fine-tuning, inference infrastructure, and live operations.',
     icon: Gavel,
     count: OWASP_SAIF_THREATS_DATA.length,
     countLabel: 'risks',
@@ -279,9 +279,9 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   {
     key: 'GENAIDATASECURITY',
     name: 'OWASP GenAI Data Security',
-    edition: '2026',
-    kind: 'Guide · 3 tiers',
-    blurb: `${GENAI_DATA_SECURITY_RISKS.length} data-centric risks with tiered mitigations for buy & build decisions.`,
+    edition: '2026 Guide',
+    kind: 'Data Governance & DSPM',
+    blurb: 'A 3-tiered data protection blueprint featuring 21 risk deep-dives and 13 AI-DSPM capabilities for governing enterprise training and inference data.',
     icon: Database,
     count: GENAI_DATA_SECURITY_RISKS.length,
     countLabel: 'risks',
@@ -299,9 +299,9 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   {
     key: 'SECUREMCPGUIDE',
     name: 'Secure MCP Server Development',
-    edition: SECURE_MCP_GUIDE_META.version,
-    kind: 'Practical guide',
-    blurb: 'A step-by-step OWASP guide for building MCP servers that resist injection and over-privilege.',
+    edition: `Guide v${SECURE_MCP_GUIDE_META.version}`,
+    kind: 'Engineering Blueprint',
+    blurb: 'Concrete architectural controls and readiness checklist for building hardened, production-grade MCP servers that resist tool abuse and prompt injection.',
     icon: FileText,
     count: SECURE_MCP_GUIDE_SECTIONS.length,
     countLabel: 'sections',
@@ -430,31 +430,31 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
             </span>
             <span className="font-mono text-[11px] font-semibold tracking-[0.25em] text-cyan-300 uppercase">
-              AI Security Nexus · Live data
+              AI Red-Teaming & Testing Platform
             </span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.05] mb-6 animate-fade-up [animation-delay:80ms]">
-            The offensive playbook for{' '}
+            Offensive testing & defense for{' '}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-purple-400 bg-clip-text text-transparent">
-                AI security
+                modern AI systems
               </span>
               <span className="absolute -inset-x-2 bottom-1 h-3 bg-cyan-500/20 blur-lg -z-10" aria-hidden="true" />
             </span>
           </h1>
 
           <p className="max-w-2xl text-slate-400 text-base md:text-lg leading-relaxed mb-6 animate-fade-up [animation-delay:160ms]">
-            Every threat, test case and payload on this page is generated from the actual content of this app —
-            {` `}{stats.totalTests} red-team tests, {stats.threatEntries} framework threats and {stats.totalPayloads.toLocaleString()} ready-to-run attack payloads,
-            mapped across OWASP, SAIF and the Model Context Protocol.
+            A hands-on, community-driven security guide for engineers, red teams, and auditors.
+            Test real-world prompt injections, agent privilege escalation, training data poisoning, and supply chain flaws
+            with {stats.totalTests} practical test suites, {stats.threatEntries} framework threats, and {stats.totalPayloads.toLocaleString()} attack payloads.
           </p>
 
           {/* typewriter */}
           <div className="flex items-start sm:items-center gap-3 mb-9 min-h-7 animate-fade-up [animation-delay:240ms]">
             <Shield className="w-4 h-4 text-cyan-400 shrink-0" />
             <span className="min-w-0 break-words font-mono text-sm text-slate-300">
-              <span className="text-slate-500">defend against </span>
+              <span className="text-slate-500">test defenses against </span>
               <span className="text-cyan-300 font-semibold">{typed}</span>
               <span className="text-cyan-400 animate-caret">▍</span>
             </span>
@@ -464,10 +464,17 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           <div className="flex flex-wrap items-center gap-3 mb-12 animate-fade-up [animation-delay:320ms]">
             <button
               onClick={() => onSelectPillar('ALL')}
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/70 px-6 py-3 text-sm font-bold text-slate-200 backdrop-blur transition-all hover:border-slate-500 hover:bg-slate-800 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-6 py-3 text-sm font-bold text-cyan-300 backdrop-blur transition-all hover:border-cyan-400 hover:bg-cyan-500/20 hover:-translate-y-0.5"
             >
               <Terminal className="w-4 h-4 text-cyan-400" />
-              Browse {stats.totalTests} test suites
+              Explore {stats.totalTests} Test Cases
+            </button>
+            <button
+              onClick={onSelectThreatModel}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/70 px-6 py-3 text-sm font-bold text-slate-200 backdrop-blur transition-all hover:border-slate-500 hover:bg-slate-800 hover:-translate-y-0.5"
+            >
+              <Crosshair className="w-4 h-4 text-purple-400" />
+              Interactive Threat Model
             </button>
           </div>
 
@@ -476,10 +483,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
             {[
               { label: 'Test cases', value: stats.totalTests, icon: Bug, tint: 'text-red-400 bg-red-400/10 border-red-400/20' },
               { label: 'Attack payloads', value: stats.totalPayloads, icon: Zap, tint: 'text-amber-400 bg-amber-400/10 border-amber-400/20' },
-              { label: 'Threat entries', value: stats.threatEntries, icon: AlertTriangle, tint: 'text-orange-400 bg-orange-400/10 border-orange-400/20' },
-              { label: 'Frameworks', value: frameworks.length, icon: Radar, tint: 'text-purple-400 bg-purple-400/10 border-purple-400/20' },
-              { label: 'Security tools', value: stats.uniqueTools.length, icon: Wrench, tint: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20' },
-              { label: 'Real incidents', value: stats.incidents.length, icon: Globe, tint: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' },
+              { label: 'Framework threats', value: stats.threatEntries, icon: AlertTriangle, tint: 'text-orange-400 bg-orange-400/10 border-orange-400/20' },
+              { label: 'Security standards', value: frameworks.length, icon: Radar, tint: 'text-purple-400 bg-purple-400/10 border-purple-400/20' },
+              { label: 'Curated tools', value: stats.uniqueTools.length, icon: Wrench, tint: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20' },
+              { label: 'Real-world exploits', value: stats.incidents.length, icon: Globe, tint: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' },
             ].map((s) => (
               <div key={s.label} className="col-6 col-sm-4 col-lg-2 flex">
                 <div className="w-full rounded-2xl border border-slate-800/80 bg-slate-950/50 backdrop-blur px-3 sm:px-4 py-4 transition-colors hover:border-slate-700 group">
@@ -504,9 +511,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
       ================================================================= */}
       <section className="mb-16">
         <SectionHeader
-          kicker="Threat frameworks"
-          title="Seven security frameworks, one explorer"
-          blurb="Every card below is wired straight to the corresponding view. The numbers are counted from the data, not hardcoded."
+          kicker="Security standards"
+          title="All major AI security frameworks in one place"
+          blurb="Navigate official vulnerability catalogs, threat taxonomies, and hardening guides side by side—with cross-references to live test cases, recommended tools, and real breaches."
         />
         <div className="row g-4">
           {frameworks.map((f, i) => (
@@ -534,7 +541,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
 
               <div className="mt-auto flex items-center justify-between border-t border-slate-800 pt-4">
                 <div className="min-w-0">
-                  <p className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-0.5">Starts with</p>
+                  <p className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-0.5">Threat preview</p>
                   <p className="truncate font-mono text-xs text-slate-300">
                     <span className={`${f.text} font-bold`}>{f.previewId}</span> — {f.previewTitle}
                   </p>
@@ -562,10 +569,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                 INTERACTIVE
               </span>
             </div>
-            <h3 className="text-base font-bold text-white mb-1.5">AI Threat Modelling</h3>
-            <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">SAIF architecture · MITRE-style mapping</p>
+            <h3 className="text-base font-bold text-white mb-1.5">AI Threat Modeling Pipeline</h3>
+            <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">SAIF Architecture & Risk Flow</p>
             <p className="text-sm text-slate-400 leading-relaxed mb-4">
-              Explore a full SAIF component diagram, trace 15 risk definitions across the AI lifecycle and jump from any risk straight into its test cases.
+              Explore an interactive AI pipeline diagram. Trace where threats enter the system, where they manifest, and how to apply controls across 24 core components.
             </p>
             <div className="mt-auto flex items-center justify-between border-t border-slate-800 pt-4">
               <p className="font-mono text-xs text-cyan-300">15 risks · 24 components</p>
@@ -583,9 +590,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
       ================================================================= */}
       <section className="mb-16">
         <SectionHeader
-          kicker="Security architecture"
-          title="Explore the AI stack by security layer"
-          blurb="The cards follow a real system hierarchy: user-facing orchestration sits above model reasoning and data, all supported by the infrastructure and delivery foundation. Select any card to open its dedicated test suite."
+          kicker="Four Pillars"
+          title="Explore defenses across every architectural layer"
+          blurb="AI systems fail in layers. A robust security strategy examines how vulnerabilities move between user interfaces, agent reasoning, model weights, RAG knowledge bases, and underlying infrastructure."
         />
         <div className="reveal relative rounded-3xl border border-slate-800/80 bg-slate-900/30 p-5 md:p-8 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.08),transparent_52%)] pointer-events-none" />
@@ -594,8 +601,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           <div className="relative space-y-3">
             <ArchitectureBand
               index="01"
-              title="Interaction & orchestration"
-              description="Interfaces, application logic, agents, plugins and user-facing workflows"
+              title="Application & Agent Layer"
+              description="User interfaces, autonomous agents, plugin orchestration, and API gateways where prompts enter the system"
             >
               <PillarNode
                 pillar={Pillar.APP}
@@ -610,8 +617,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
 
             <ArchitectureBand
               index="02"
-              title="Intelligence & knowledge"
-              description="Model inference works with governed training, retrieval and operational data"
+              title="Model & Knowledge Layer"
+              description="Model inference checkpoints, weights, embeddings, RAG vector databases, and curated training data"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <PillarNode
@@ -633,8 +640,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
 
             <ArchitectureBand
               index="03"
-              title="Execution foundation"
-              description="Cloud, supply chain, deployment, runtime controls and MLOps services"
+              title="Infrastructure & Runtime Layer"
+              description="Cloud execution environments, container registries, MLOps CI/CD pipelines, and third-party dependencies"
             >
               <PillarNode
                 pillar={Pillar.INFRA}
@@ -655,16 +662,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Activity className="w-5 h-5 text-red-400" />
-              Risk posture across {stats.totalTests} tests
+              Test severity breakdown
             </h3>
             <button
               onClick={() => onSelectPillar('ALL')}
               className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1"
             >
-              Open all tests <ArrowRight className="w-3 h-3" />
+              View all {stats.totalTests} tests <ArrowRight className="w-3 h-3" />
             </button>
           </div>
-          <p className="text-sm text-slate-500 mb-6">Live severity distribution, computed from the test catalogue.</p>
+          <p className="text-sm text-slate-500 mb-6">Distribution of verified test procedures organized by severity rating and potential blast radius.</p>
 
           <div className="space-y-5">
             {(Object.keys(RISK_META) as TestItem['riskLevel'][]).map((level) => {
@@ -676,7 +683,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                   <div className="flex items-baseline justify-between mb-1.5">
                     <span className={`text-sm font-bold ${meta.text}`}>{meta.label}</span>
                     <span className="text-xs text-slate-500 font-mono tabular-nums">
-                      {count} tests · {pct.toFixed(0)}%
+                      {count} test cases · {pct.toFixed(0)}%
                     </span>
                   </div>
                   <div className="h-2.5 rounded-full bg-slate-800 overflow-hidden">
@@ -695,10 +702,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
               <Flame className="w-4 h-4 text-red-400" />
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
-              <span className="font-bold text-red-300">{stats.byRisk.Critical + stats.byRisk.High} of {stats.totalTests} tests</span> are
-              Critical or High severity — start your red-team there, or walk the{' '}
-              <button onClick={onSelectThreatModel} className="text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2">threat model</button>{' '}
-              to trace them back to architecture.
+              <span className="font-bold text-red-300">{stats.byRisk.Critical + stats.byRisk.High} of {stats.totalTests} test cases</span> carry Critical or High severity. We recommend prioritizing these high-impact attack vectors in your audits, or tracing them in the{' '}
+              <button onClick={onSelectThreatModel} className="text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2">threat model</button>.
             </p>
           </div>
         </div>
@@ -707,9 +712,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
         <div className="reveal lg:col-span-2 rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 md:p-8 flex flex-col">
           <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-2">
             <Radar className="w-5 h-5 text-purple-400" />
-            Framework coverage
+            Framework cross-coverage
           </h3>
-          <p className="text-sm text-slate-500 mb-6">How many test cases map back into each threat framework.</p>
+          <p className="text-sm text-slate-500 mb-6">How our testing procedures map back to major industry security frameworks.</p>
 
           <div className="space-y-5 flex-1">
             {stats.coverage.map((c, i) => {
@@ -718,7 +723,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                 <button key={c.key} onClick={() => onSelectPillar(c.key)} className="w-full text-left group">
                   <div className="flex items-baseline justify-between mb-1.5">
                     <span className="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">{c.label}</span>
-                    <span className="text-xs text-slate-500 font-mono tabular-nums">{c.count}</span>
+                    <span className="text-xs text-slate-500 font-mono tabular-nums">{c.count} mapped</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
                     <div
@@ -734,7 +739,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           <div className="mt-6 pt-5 border-t border-slate-800">
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              Every mapping is a clickable deep link to the exact threat entry.
+              Click any framework to jump directly to its complete threat catalog and test cases.
             </div>
           </div>
         </div>
@@ -745,9 +750,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
       ================================================================= */}
       <section className="mb-16">
         <SectionHeader
-          kicker="Test spotlight"
-          title="A closer look at the deadliest tests"
-          blurb="Rotating through Critical and High severity cases — with the payloads you would actually run."
+          kicker="Featured test case"
+          title="High-impact test procedures & attack payloads"
+          blurb="Step-by-step testing workflows featuring realistic attack payloads, vulnerability indicators, and actionable remediation steps."
         />
 
         {featured && (
@@ -819,7 +824,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                   </div>
                   <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
                     <div className="font-mono text-lg font-bold text-white tabular-nums">{featured.mitigationStrategies.length}</div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Fixes</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Mitigations</div>
                   </div>
                 </div>
 
@@ -828,7 +833,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-5 py-3 text-sm font-bold text-red-300 hover:bg-red-500/20 hover:border-red-400 transition-all self-start"
                 >
                   <Play className="w-4 h-4" />
-                  Open full test case
+                  View complete test case
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -848,7 +853,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                   </pre>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-600 font-mono">try it against your own model — responsibly</span>
+                  <span className="text-[11px] text-slate-500 font-mono">For authorized testing and security research</span>
                   {/* dots */}
                   <div className="flex items-center gap-1.5">
                     {stats.spotlight.slice(0, 8).map((_, i) => (
@@ -881,9 +886,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
       ================================================================= */}
       <section className="mb-16 overflow-hidden">
         <SectionHeader
-          kicker="Toolbox"
-          title={`${stats.uniqueTools.length} offensive & defensive security tools`}
-          blurb={`${stats.toolCategories.Offensive} offensive · ${stats.toolCategories.Defensive} defensive · ${stats.toolCategories.Both} dual-purpose. Sourced from the framework pages.`}
+          kicker="Security tooling"
+          title={`${stats.uniqueTools.length} curated offensive & defensive security tools`}
+          blurb={`${stats.toolCategories.Offensive} offensive scanners · ${stats.toolCategories.Defensive} defensive guardrails · ${stats.toolCategories.Both} dual-purpose platforms mapped directly to specific threats.`}
         />
         <div className="reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
           <div className="flex overflow-hidden">
@@ -908,9 +913,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
       ================================================================= */}
       <section className="mb-16">
         <SectionHeader
-          kicker="Incident radar"
-          title="Real-world incidents behind the threats"
-          blurb="Rotating through the real breaches, leaks and attacks referenced throughout this app."
+          kicker="Threat intelligence"
+          title="Documented security incidents & research disclosures"
+          blurb="Verified real-world breaches, CVE advisories, and academic exploit papers demonstrating how these threats occur in the wild."
         />
         {incident && (
           <div className="reveal relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 md:p-8">
@@ -929,7 +934,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
                 rel="noopener noreferrer"
                 className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-bold text-slate-200 hover:border-orange-400/60 hover:text-white transition-all"
               >
-                Read the report
+                Read Case Study
                 <ExternalLink className="w-4 h-4" />
               </a>
             </div>

@@ -955,10 +955,10 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
       {/* Header */}
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start gap-6">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">AI Threat Modelling (SAIF)</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">AI Threat Modeling & Risk Flow (SAIF)</h2>
           <p className="text-slate-400 max-w-3xl">
-            A holistic exploration of AI security risks based on <strong>Google's Secure AI Framework (SAIF)</strong>. 
-            Visualize where risks are introduced, exposed, and mitigated across the entire AI pipeline.
+            Visual threat modeling based on <strong>Google's Secure AI Framework (SAIF)</strong>. 
+            Trace where threats are introduced, where they surface, and where to apply controls across 24 core architectural components.
           </p>
         </div>
         <div className="flex gap-4">
