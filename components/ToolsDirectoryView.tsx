@@ -1,12 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Terminal, Search, Filter, ExternalLink, Shield, Wrench, 
-  Tag, Layers, ArrowRight, Zap, CheckCircle2, Lock, Cpu, Globe
+  Tag, Layers, ArrowRight, Zap, CheckCircle2, Lock, Cpu, Globe, Info
 } from 'lucide-react';
 import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
+import { getEnrichedTool } from '../tool_details_catalog';
+import { ToolDetailModal } from './ToolDetailModal';
 import { SecurityTool } from '../types';
 
-interface ToolDirectoryEntry extends SecurityTool {
+export interface ToolDirectoryEntry extends SecurityTool {
   mappedThreats: string[];
 }
 
@@ -19,13 +21,15 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
   const [categoryFilter, setCategoryFilter] = useState<'All' | 'Defensive' | 'Offensive' | 'Both'>('All');
   const [typeFilter, setTypeFilter] = useState<'All' | 'Local' | 'Third-party'>('All');
   const [costFilter, setCostFilter] = useState<'All' | 'Free' | 'Paid'>('All');
+  const [selectedTool, setSelectedTool] = useState<ToolDirectoryEntry | null>(null);
 
   // Consolidate unique tools with all mapped threats
   const allTools = useMemo<ToolDirectoryEntry[]>(() => {
     const toolMap = new Map<string, ToolDirectoryEntry>();
 
     for (const [threatId, tools] of Object.entries(TOOLS_BY_THREAT_ID)) {
-      for (const tool of tools) {
+      for (const rawTool of tools) {
+        const tool = getEnrichedTool(rawTool);
         const key = tool.name.toLowerCase().trim();
         if (toolMap.has(key)) {
           const existing = toolMap.get(key)!;
@@ -64,7 +68,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
       }
 
       if (query) {
-        const text = `${tool.name} ${tool.description} ${tool.type} ${tool.cost} ${tool.mappedThreats.join(' ')}`.toLowerCase();
+        const text = `${tool.name} ${tool.description} ${tool.authorOrMaintainer || ''} ${tool.license || ''} ${tool.type} ${tool.cost} ${tool.mappedThreats.join(' ')}`.toLowerCase();
         if (!text.includes(query)) return false;
       }
 
@@ -74,6 +78,13 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
 
   return (
     <div className="container-fluid p-3 sm:p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
+      {/* Tool Detail Modal Window */}
+      <ToolDetailModal 
+        tool={selectedTool} 
+        onClose={() => setSelectedTool(null)} 
+        onNavigateToOwasp={onNavigateToOwasp} 
+      />
+
       {/* Header */}
       <div className="mb-8 border-b border-slate-800 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
@@ -101,7 +112,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search tools by name, description, capability, or threat ID (e.g. 'garak', 'guardrail', 'LLM01', 'SBOM')..."
+            placeholder="Search tools by name, author, capability, or threat ID (e.g. 'garak', 'guardrail', 'NVIDIA', 'LLM01', 'SBOM')..."
             className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
@@ -174,31 +185,41 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
           filteredTools.map(tool => (
             <div 
               key={tool.name}
-              className="bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 rounded-xl p-4 transition-all flex flex-col justify-between group hover:bg-slate-900/90"
+              onClick={() => setSelectedTool(tool)}
+              className="bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 rounded-xl p-4 transition-all flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer shadow-sm hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-md bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                    <div className="p-1.5 rounded-md bg-purple-500/10 border border-purple-500/20 text-purple-400 group-hover:scale-105 transition-transform">
                       <Terminal className="w-4 h-4" />
                     </div>
-                    <h3 className="font-bold text-slate-100 group-hover:text-purple-300 transition-colors text-base">
-                      {tool.name}
-                    </h3>
+                    <div>
+                      <h3 className="font-bold text-slate-100 group-hover:text-purple-300 transition-colors text-base leading-tight">
+                        {tool.name}
+                      </h3>
+                      {tool.authorOrMaintainer && (
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          {tool.authorOrMaintainer}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  <a 
-                    href={tool.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1 text-slate-500 hover:text-purple-400 transition-colors"
-                    title={`Visit ${tool.name}`}
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedTool(tool);
+                    }}
+                    className="p-1 text-slate-500 hover:text-purple-300 transition-colors"
+                    title={`Inspect ${tool.name} details`}
                   >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                    <Info className="w-4 h-4" />
+                  </button>
                 </div>
 
-                <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                <p className="text-xs text-slate-400 leading-relaxed mb-4 line-clamp-3">
                   {tool.description}
                 </p>
               </div>
@@ -226,12 +247,20 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
                 {/* Threat Mappings */}
                 {tool.mappedThreats.length > 0 && (
                   <div className="pt-2 border-t border-slate-800/80">
-                    <span className="text-[10px] text-slate-500 uppercase font-mono block mb-1">Mapped Threats:</span>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] text-slate-500 uppercase font-mono">Mapped Threats:</span>
+                      <span className="text-[10px] text-purple-400/80 font-mono group-hover:text-purple-300 inline-flex items-center gap-0.5">
+                        Inspect <ArrowRight className="w-2.5 h-2.5" />
+                      </span>
+                    </div>
                     <div className="flex items-center gap-1 flex-wrap">
                       {tool.mappedThreats.slice(0, 4).map(tid => (
                         <button
                           key={tid}
-                          onClick={() => onNavigateToOwasp(tid)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigateToOwasp(tid);
+                          }}
                           className="px-1.5 py-0.5 bg-slate-950 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/40 rounded text-[10px] font-mono text-slate-400 hover:text-purple-300 transition-colors"
                         >
                           {tid}
@@ -254,3 +283,4 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
   );
 };
 export default ToolsDirectoryView;
+

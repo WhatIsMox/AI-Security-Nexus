@@ -24,6 +24,13 @@ export interface SecurityTool {
   cost: 'Free' | 'Free+Paid' | 'Paid' | '€' | '€€' | '€€€' | '€€€€';
   type: 'Local' | 'Third-party';
   category?: 'Offensive' | 'Defensive' | 'Both';
+  longDescription?: string;
+  typicalUseCase?: string;
+  keyFeatures?: string[];
+  installationOrQuickstart?: string;
+  ecosystem?: string[];
+  license?: string;
+  authorOrMaintainer?: string;
 }
 
 export interface SuggestedTool {

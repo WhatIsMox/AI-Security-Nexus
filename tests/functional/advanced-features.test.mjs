@@ -128,3 +128,37 @@ test('Advanced Features - Consolidated Tools Matrix & Incidents Explorer Views',
   assert.ok(dashboardContent.includes('onSelectTools'), 'Dashboard must support onSelectTools callback');
   assert.ok(dashboardContent.includes('onClick={onSelectIncidents}'), 'Dashboard Read Case Study button must trigger onSelectIncidents');
 });
+
+test('Advanced Features - Security Tool Detail Modal & Enriched Database Verification', (t) => {
+  const toolModalContent = readFile('components/ToolDetailModal.tsx');
+  const toolCatalogContent = readFile('tool_details_catalog.ts');
+  const toolsViewContent = readFile('components/ToolsDirectoryView.tsx');
+  const owaspViewContent = readFile('components/OwaspTop10View.tsx');
+
+  // Verify Tool Detail Modal accessibility & interactions
+  assert.ok(toolModalContent.includes('role="dialog"'), 'ToolDetailModal must specify role="dialog"');
+  assert.ok(toolModalContent.includes('aria-modal="true"'), 'ToolDetailModal must specify aria-modal="true"');
+  assert.ok(toolModalContent.includes("e.key === 'Escape'"), 'ToolDetailModal must listen to Escape key to close');
+  assert.ok(toolModalContent.includes('navigator.clipboard.writeText'), 'ToolDetailModal must implement copy command');
+  assert.ok(toolModalContent.includes('rel="noopener noreferrer"'), 'ToolDetailModal external links must specify rel="noopener noreferrer"');
+  assert.ok(toolModalContent.includes('target="_blank"'), 'ToolDetailModal external links must specify target="_blank"');
+
+  // Verify Enriched Database coverage
+  const keyTools = ['garak', 'PyRIT', 'promptfoo', 'Giskard', 'NVIDIA NeMo Guardrails', 'Presidio', 'ModelScan', 'Trivy', 'Open Policy Agent (OPA)'];
+  for (const toolName of keyTools) {
+    assert.ok(toolCatalogContent.includes(toolName), `tool_details_catalog.ts must contain verified metadata for '${toolName}'`);
+  }
+
+  assert.ok(toolCatalogContent.includes('longDescription'), 'Tool database entries must have longDescription');
+  assert.ok(toolCatalogContent.includes('typicalUseCase'), 'Tool database entries must have typicalUseCase');
+  assert.ok(toolCatalogContent.includes('keyFeatures'), 'Tool database entries must have keyFeatures');
+  assert.ok(toolCatalogContent.includes('installationOrQuickstart'), 'Tool database entries must have installationOrQuickstart');
+  assert.ok(toolCatalogContent.includes('getEnrichedTool'), 'tool_details_catalog.ts must export getEnrichedTool');
+
+  // Verify integration in views
+  assert.ok(toolsViewContent.includes('<ToolDetailModal'), 'ToolsDirectoryView must render ToolDetailModal');
+  assert.ok(toolsViewContent.includes('setSelectedTool'), 'ToolsDirectoryView must manage selectedTool state');
+  assert.ok(owaspViewContent.includes('<ToolDetailModal'), 'OwaspTop10View must render ToolDetailModal');
+  assert.ok(owaspViewContent.includes('setSelectedTool'), 'OwaspTop10View must manage selectedTool state');
+});
+

@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { FrameworkOverview, OwaspTop10Entry } from '../types';
+import { FrameworkOverview, OwaspTop10Entry, SecurityTool } from '../types';
 import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock, BookOpen, Layers3, GitBranch, Info, ListChecks } from 'lucide-react';
 import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
+import { ToolDetailModal } from './ToolDetailModal';
 
 interface OwaspTop10ViewProps {
   initialExpandedId?: string | null;
@@ -25,6 +26,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   const [expandedId, setExpandedId] = useState<string | null>(initialExpandedId || null);
   const [toolFilters, setToolFilters] = useState<Record<string, { category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>>({});
   const [openOverviewSection, setOpenOverviewSection] = useState<'overview' | 'terminology' | 'triage' | null>(null);
+  const [selectedTool, setSelectedTool] = useState<SecurityTool | null>(null);
 
   useEffect(() => {
     if (initialExpandedId) {
@@ -128,6 +130,13 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
   return (
     <div className="container-fluid p-3 sm:p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
+      {/* Tool Detail Inspection Window */}
+      <ToolDetailModal 
+        tool={selectedTool} 
+        onClose={() => setSelectedTool(null)} 
+        onNavigateToOwasp={openRelatedEntry} 
+      />
+
       <div className="mb-10 text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
           {title}
@@ -543,17 +552,18 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                           style={{ scrollbarGutter: 'stable' }}
                         >
                           {filteredTools.map((tool, idx) => (
-                            <div key={idx} className="bg-slate-950 border border-slate-800 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all">
+                            <div 
+                              key={idx} 
+                              onClick={() => setSelectedTool(tool)}
+                              className="bg-slate-950 border border-slate-800 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all cursor-pointer hover:bg-slate-900/40 shadow-sm"
+                            >
                               <div className="flex flex-col sm:flex-row sm:justify-between items-start gap-2 mb-2">
-                                <a 
-                                  href={tool.url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="text-white font-bold text-sm hover:text-cyan-400 flex items-center gap-2 transition-colors"
-                                >
-                                  {tool.name}
-                                  <ExternalLink className="w-3 h-3 opacity-0 group-hover/tool:opacity-100 transition-opacity" />
-                                </a>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-white font-bold text-sm group-hover/tool:text-cyan-300 transition-colors">
+                                    {tool.name}
+                                  </span>
+                                  <Info className="w-3.5 h-3.5 text-slate-500 group-hover/tool:text-cyan-400 transition-colors" />
+                                </div>
                                 <div className="flex gap-1.5 flex-wrap sm:justify-end">
                                   <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 ${
                                     tool.type === 'Local' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
