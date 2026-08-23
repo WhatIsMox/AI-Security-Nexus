@@ -79,10 +79,10 @@ const Sidebar: React.FC<SidebarProps> = ({
       `}>
         {/* Brand Header */}
         <div className="p-5 flex items-center justify-between border-b border-slate-800">
-          <div className="flex items-center space-x-3">
-            <div className="relative p-2 bg-cyan-950 rounded-lg border border-cyan-500/30 group overflow-hidden">
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => { onSelectDashboard(); onClose(); }}>
+            <div className="relative p-1.5 bg-slate-900 rounded-xl border border-cyan-500/30 group overflow-hidden shadow-[0_0_15px_rgba(6,182,212,0.2)]">
               <div className="absolute inset-0 bg-cyan-500/20 blur-md group-hover:bg-cyan-400/30 transition-all"></div>
-              <Book className="w-6 h-6 text-cyan-400 relative z-10" />
+              <img src="./favicon.svg" alt="AI Security Nexus" className="w-7 h-7 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
             </div>
             <div>
               <h1 className="font-bold text-slate-100 leading-tight tracking-tight uppercase text-sm">AI Security</h1>

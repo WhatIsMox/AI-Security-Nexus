@@ -423,7 +423,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
 
         <div className="relative z-10 px-4 py-10 sm:px-6 sm:py-14 md:px-14 md:py-20">
           {/* badge */}
-          <div className="inline-flex items-center gap-2.5 rounded-full border border-cyan-500/30 bg-cyan-500/5 px-4 py-1.5 backdrop-blur-sm mb-7 animate-fade-up">
+          <div className="inline-flex items-center gap-3 rounded-full border border-cyan-500/30 bg-slate-900/80 px-4 py-1.5 backdrop-blur-md mb-7 animate-fade-up shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+            <img src="./favicon.svg" alt="AI Security Nexus Emblem" className="w-5 h-5 object-contain drop-shadow-[0_0_6px_rgba(34,211,238,0.7)]" />
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />

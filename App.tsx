@@ -318,11 +318,11 @@ const App: React.FC = () => {
       
       {/* Mobile Header */}
       <header className="mobile-header md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-950 border-b border-slate-800 z-30 flex items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-cyan-950 rounded border border-cyan-500/30">
-            <Book className="w-5 h-5 text-cyan-400" />
+        <div className="flex items-center gap-2.5 cursor-pointer" onClick={handleSelectDashboard}>
+          <div className="p-1 bg-slate-900 rounded-lg border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+            <img src="./favicon.svg" alt="AI Security Nexus" className="w-5 h-5 object-contain" />
           </div>
-          <span className="font-bold text-slate-100 uppercase text-xs">AI Security Nexus</span>
+          <span className="font-bold text-slate-100 uppercase text-xs tracking-wider">AI Security Nexus</span>
         </div>
         <div className="flex items-center gap-2">
           <button

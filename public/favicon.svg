@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.2" />
+    </linearGradient>
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded plate -->
+  <rect width="100" height="100" rx="22" fill="#020617" />
+  <rect x="2" y="2" width="96" height="96" rx="20" stroke="#083344" stroke-width="1.5" />
+
+  <!-- Outer Protective Shield -->
+  <path d="M50 14 L80 26 C80 58 50 82 50 82 C50 82 20 58 20 26 Z" 
+        stroke="url(#shieldGrad)" stroke-width="3.5" stroke-linejoin="round" fill="url(#glowGrad)" filter="url(#neonGlow)" />
+
+  <!-- Inner Shield Inset -->
+  <path d="M50 22 L73 31 C73 54 50 73 50 73 C50 73 27 54 27 31 Z" 
+        stroke="#06b6d4" stroke-width="1.2" stroke-opacity="0.6" fill="#0f172a" fill-opacity="0.7" />
+
+  <!-- Quantum Brain Neural Synapse Mesh -->
+  <!-- Left Hemisphere Lattice -->
+  <path d="M50 32 Q36 32 35 44 Q33 54 42 60 Q48 64 50 65" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" fill="none" />
+  <!-- Right Hemisphere Lattice -->
+  <path d="M50 32 Q64 32 65 44 Q67 54 58 60 Q52 64 50 65" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" fill="none" />
+
+  <!-- Central Synapse Divider -->
+  <line x1="50" y1="32" x2="50" y2="65" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="2 2" />
+
+  <!-- Interconnecting Neural Nodes -->
+  <line x1="50" y1="36" x2="40" y2="42" stroke="#06b6d4" stroke-width="1" />
+  <line x1="50" y1="36" x2="60" y2="42" stroke="#06b6d4" stroke-width="1" />
+  <line x1="40" y1="42" x2="42" y2="52" stroke="#06b6d4" stroke-width="1" />
+  <line x1="60" y1="42" x2="58" y2="52" stroke="#06b6d4" stroke-width="1" />
+  <line x1="42" y1="52" x2="50" y2="58" stroke="#06b6d4" stroke-width="1" />
+  <line x1="58" y1="52" x2="50" y2="58" stroke="#06b6d4" stroke-width="1" />
+  <line x1="40" y1="42" x2="50" y2="46" stroke="#06b6d4" stroke-width="1" />
+  <line x1="60" y1="42" x2="50" y2="46" stroke="#06b6d4" stroke-width="1" />
+
+  <!-- Glowing Synapse Hubs -->
+  <circle cx="50" cy="32" r="2.5" fill="#e0f2fe" filter="url(#neonGlow)" />
+  <circle cx="40" cy="42" r="2.2" fill="#38bdf8" />
+  <circle cx="60" cy="42" r="2.2" fill="#38bdf8" />
+  <circle cx="50" cy="46" r="2.8" fill="#e0f2fe" filter="url(#neonGlow)" />
+  <circle cx="42" cy="52" r="2.2" fill="#38bdf8" />
+  <circle cx="58" cy="52" r="2.2" fill="#38bdf8" />
+  <circle cx="50" cy="58" r="2.5" fill="#22d3ee" />
+  <circle cx="50" cy="65" r="2" fill="#38bdf8" />
+  <circle cx="35" cy="44" r="1.8" fill="#0284c7" />
+  <circle cx="65" cy="44" r="1.8" fill="#0284c7" />
+</svg>

@@ -1,4 +1,9 @@
-# AI Security Nexus
+<p align="center">
+  <img src="./public/icon.png" width="128" height="128" alt="AI Security Nexus Logo" style="border-radius: 24px; box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);" />
+</p>
+
+<h1 align="center">AI Security Nexus</h1>
+<p align="center"><b>Interactive AI Security Framework Navigator, Threat Modeling & Red-Teaming Test Bible</b></p>
 
 The **AI Security Nexus** is an interactive, graphical exploration of global AI security frameworks. It serves as a dynamic "Security Bible" for AI systems, transforming static documentation from OWASP and Google into a functional navigator for security professionals, auditors, and developers.
 
