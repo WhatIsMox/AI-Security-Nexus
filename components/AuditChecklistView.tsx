@@ -34,8 +34,18 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
   const [records, setRecords] = useState<Record<string, AuditRecord>>({});
   const [selectedPillar, setSelectedPillar] = useState<Pillar | 'ALL'>('ALL');
   const [selectedStatus, setSelectedStatus] = useState<AuditStatus | 'ALL'>('ALL');
+  const [sortMethod, setSortMethod] = useState<'severity' | 'id'>('severity');
   const [searchQuery, setSearchQuery] = useState('');
   const [isCopied, setIsCopied] = useState(false);
+
+  const getRiskWeight = (level: string) => {
+    switch (level) {
+      case 'Critical': return 4;
+      case 'High': return 3;
+      case 'Medium': return 2;
+      default: return 1;
+    }
+  };
 
   // Load audit state from localStorage
   useEffect(() => {
@@ -109,11 +119,11 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
     return { total, passed, vulnerable, mitigated, na, notTested, tested, progressPercent };
   }, [records]);
 
-  // Filter tests
-  const filteredTests = useMemo(() => {
+  // Filter & sort tests by Criticality (highest severity first)
+  const sortedTests = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
-    return TEST_DATA.filter(test => {
+    const filtered = TEST_DATA.filter(test => {
       if (selectedPillar !== 'ALL' && test.pillar !== selectedPillar) return false;
       
       const status = records[test.id]?.status || 'NOT_TESTED';
@@ -126,15 +136,29 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
 
       return true;
     });
-  }, [selectedPillar, selectedStatus, searchQuery, records]);
 
-  // Export JSON report
+    return [...filtered].sort((a, b) => {
+      if (sortMethod === 'severity') {
+        const diff = getRiskWeight(b.riskLevel) - getRiskWeight(a.riskLevel);
+        if (diff !== 0) return diff;
+      }
+      return a.id.localeCompare(b.id);
+    });
+  }, [selectedPillar, selectedStatus, searchQuery, records, sortMethod]);
+
+  // Export JSON report (sorted by criticality)
   const exportJson = () => {
+    const sortedExportTests = [...TEST_DATA].sort((a, b) => {
+      const diff = getRiskWeight(b.riskLevel) - getRiskWeight(a.riskLevel);
+      if (diff !== 0) return diff;
+      return a.id.localeCompare(b.id);
+    });
+
     const reportData = {
       title: "AI Security Nexus - Audit Assessment Report",
       generatedAt: new Date().toISOString(),
       metrics: stats,
-      results: TEST_DATA.map(test => ({
+      results: sortedExportTests.map(test => ({
         id: test.id,
         title: test.title,
         pillar: test.pillar,
@@ -159,17 +183,23 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
     URL.revokeObjectURL(url);
   };
 
-  // Export Markdown report
+  // Export Markdown report (sorted by criticality)
   const exportMarkdown = () => {
+    const sortedExportTests = [...TEST_DATA].sort((a, b) => {
+      const diff = getRiskWeight(b.riskLevel) - getRiskWeight(a.riskLevel);
+      if (diff !== 0) return diff;
+      return a.id.localeCompare(b.id);
+    });
+
     let md = `# AI Security Assessment Report\n\n`;
     md += `**Date**: ${new Date().toLocaleDateString()}  \n`;
     md += `**Overall Progress**: ${stats.progressPercent}% (${stats.tested}/${stats.total} tests evaluated)  \n`;
     md += `**Findings Summary**: Passed: ${stats.passed} | Vulnerable: ${stats.vulnerable} | Mitigated: ${stats.mitigated} | N/A: ${stats.na}\n\n`;
-    md += `## Detailed Assessment Matrix\n\n`;
+    md += `## Detailed Assessment Matrix (Sorted by Criticality)\n\n`;
     md += `| Test ID | Title | Pillar | Risk | Status | Notes |\n`;
     md += `| :--- | :--- | :--- | :--- | :--- | :--- |\n`;
 
-    for (const test of TEST_DATA) {
+    for (const test of sortedExportTests) {
       const rec = records[test.id];
       const status = rec?.status || 'NOT_TESTED';
       const notes = (rec?.notes || '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
@@ -327,37 +357,67 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
           </div>
         </div>
 
-        {/* Pillar Filter */}
-        <div className="flex items-center gap-1.5 pt-2 border-t border-slate-800/50 text-xs overflow-x-auto">
-          <span className="text-slate-500 text-[11px] font-mono uppercase mr-2">Pillar:</span>
-          <button
-            onClick={() => setSelectedPillar('ALL')}
-            className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${selectedPillar === 'ALL' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'}`}
-          >
-            All ({TEST_DATA.length})
-          </button>
-          {[Pillar.APP, Pillar.MODEL, Pillar.INFRA, Pillar.DATA].map(p => (
+        {/* Pillar & Sort Controls */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2 border-t border-slate-800/50 text-xs">
+          {/* Pillar Filter */}
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+            <span className="text-slate-500 text-[11px] font-mono uppercase mr-1">Pillar:</span>
             <button
-              key={p}
-              onClick={() => setSelectedPillar(p)}
-              className={`px-2.5 py-1 rounded text-xs font-medium transition-all whitespace-nowrap ${
-                selectedPillar === p ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'
-              }`}
+              onClick={() => setSelectedPillar('ALL')}
+              className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${selectedPillar === 'ALL' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              {p}
+              All ({TEST_DATA.length})
             </button>
-          ))}
+            {[Pillar.APP, Pillar.MODEL, Pillar.INFRA, Pillar.DATA].map(p => (
+              <button
+                key={p}
+                onClick={() => setSelectedPillar(p)}
+                className={`px-2.5 py-1 rounded text-xs font-medium transition-all whitespace-nowrap ${
+                  selectedPillar === p ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+
+          {/* Sort Control */}
+          <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
+            <span className="text-slate-500 text-[11px] font-mono uppercase mr-1">Sort:</span>
+            <button
+              onClick={() => setSortMethod('severity')}
+              className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
+                sortMethod === 'severity'
+                  ? 'bg-red-500/20 text-red-300 border border-red-500/40 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+              title="Sort by Criticality: Critical -> High -> Medium -> Low"
+            >
+              Criticality (High → Low)
+            </button>
+            <button
+              onClick={() => setSortMethod('id')}
+              className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
+                sortMethod === 'id'
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+              title="Sort alphabetically by Test ID"
+            >
+              By ID
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Checklist Table / List */}
       <div className="space-y-3">
-        {filteredTests.length === 0 ? (
+        {sortedTests.length === 0 ? (
           <div className="py-12 text-center text-slate-500 bg-slate-900/30 border border-dashed border-slate-800 rounded-xl">
             <p className="text-sm">No test cases match the active filter criteria.</p>
           </div>
         ) : (
-          filteredTests.map((test) => {
+          sortedTests.map((test) => {
             const rec = records[test.id] || { status: 'NOT_TESTED', notes: '', updatedAt: '' };
             const statusConfig = STATUS_CONFIG[rec.status];
 

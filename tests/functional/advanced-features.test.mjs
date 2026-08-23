@@ -103,6 +103,8 @@ test('Advanced Features - Interactive Audit Checklist & Export Suite', (t) => {
   assert.ok(auditContent.includes('exportMarkdown'), 'Audit checklist must support Markdown assessment export');
   assert.ok(auditContent.includes('window.print()'), 'Audit checklist must support print to PDF');
   assert.ok(auditContent.includes('progressPercent'), 'Audit checklist must compute percentage progress');
+  assert.ok(auditContent.includes("sortMethod === 'severity'"), 'Audit checklist must implement sorting by severity / criticality');
+  assert.ok(auditContent.includes('getRiskWeight'), 'Audit checklist must assign risk weights for criticality sorting');
 });
 
 test('Advanced Features - Consolidated Tools Matrix & Incidents Explorer Views', (t) => {
