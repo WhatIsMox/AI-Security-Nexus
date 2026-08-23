@@ -39,7 +39,7 @@ export interface SecurityTool {
   name: string;
   description: string;
   url: string;
-  cost: 'Free' | 'Free+Paid' | 'Paid' | '€' | '€€' | '€€€' | '€€€€';
+  cost: string;
   type: 'Local' | 'Third-party';
   category?: 'Offensive' | 'Defensive' | 'Both';
   longDescription?: string;

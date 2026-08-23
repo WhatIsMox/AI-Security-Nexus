@@ -97,13 +97,21 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
             <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md border font-semibold ${categoryColor}`}>
               {tool.category || 'Dual-Purpose'}
             </span>
-            <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md border ${
-              tool.cost === 'Free' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' :
-              tool.cost === 'Free+Paid' ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20' :
-              'text-amber-400 bg-amber-500/10 border-amber-500/20'
-            }`}>
-              Cost: {tool.cost}
-            </span>
+            {(() => {
+              const displayCost = enriched.cost || tool.cost;
+              const isFreeOnly = displayCost.trim().toLowerCase() === 'free';
+              const hasFreeTier = displayCost.toLowerCase().includes('free');
+              const costStyle = isFreeOnly
+                ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                : hasFreeTier
+                ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20'
+                : 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+              return (
+                <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md border ${costStyle}`}>
+                  Cost: {displayCost}
+                </span>
+              );
+            })()}
             <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md border border-slate-800 bg-slate-950 text-slate-300">
               Deploy: {tool.type}
             </span>

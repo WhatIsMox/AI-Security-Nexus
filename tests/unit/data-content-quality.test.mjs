@@ -208,17 +208,21 @@ test('Content Quality - OwaspTop10Entry: SAIF threat entries have non-empty mand
 
 // ─── 3. Security Tool Catalog Quality ────────────────────────────────────────
 
-test('Content Quality - SecurityTool: cost and type enum values are valid', (t) => {
+test('Content Quality - SecurityTool: cost and type values are valid and realistic', (t) => {
   const content = readFile('tools_catalog.ts');
 
   const costValues = [...content.matchAll(/cost:\s*['"](.*?)['"]/g)].map(m => m[1]);
   const typeValues = [...content.matchAll(/type:\s*['"](Local|Third-party)['"]/g)].map(m => m[1]);
   const categoryValues = [...content.matchAll(/category:\s*['"](Offensive|Defensive|Both)['"]/g)].map(m => m[1]);
 
-  assert.ok(costValues.length >= 60, `Expected at least 60 cost enum values, found ${costValues.length}`);
+  assert.ok(costValues.length >= 60, `Expected at least 60 cost values, found ${costValues.length}`);
 
   for (const cost of costValues) {
-    assert.ok(VALID_COST_VALUES.has(cost), `Invalid SecurityTool.cost value: "${cost}"`);
+    assert.ok(cost && cost.trim().length >= 4, `SecurityTool.cost must be non-trivial, found: "${cost}"`);
+    assert.ok(
+      cost.startsWith('Free') || cost.includes('$') || cost.includes('€') || cost.startsWith('~') || cost.includes('/'),
+      `Invalid SecurityTool.cost format: "${cost}"`
+    );
   }
 
   for (const type of typeValues) {

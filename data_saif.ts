@@ -27,7 +27,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "Cleanlab", description: "Automatically detect and clean label noise and outliers in training data.", url: "https://github.com/cleanlab/cleanlab", cost: "Free", type: "Local" },
+      { name: "Cleanlab", description: "Automatically detect and clean label noise and outliers in training data.", url: "https://github.com/cleanlab/cleanlab", cost: "~$34/host/mo", type: "Local" },
       { name: "Hugging Face Model Hub Scanners", description: "Check datasets for known poisoning patterns before download.", url: "https://huggingface.co/", cost: "Free", type: "Third-party" }
     ]
   },
@@ -56,7 +56,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "OneTrust Data Governance", description: "Manage data consent and usage rights for model training.", url: "https://www.onetrust.com/", cost: "€€€", type: "Third-party" }
+      { name: "OneTrust Data Governance", description: "Manage data consent and usage rights for model training.", url: "https://www.onetrust.com/", cost: "~$10k - $50k/yr (Enterprise)", type: "Third-party" }
     ]
   },
   {
@@ -84,7 +84,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "Checkmarx AI", description: "Scan model code and framework dependencies for tampered logic.", url: "https://checkmarx.com/", cost: "€€€", type: "Third-party" },
+      { name: "Checkmarx AI", description: "Scan model code and framework dependencies for tampered logic.", url: "https://checkmarx.com/", cost: "~$15k - $40k/yr (Enterprise)", type: "Third-party" },
       { name: "ModelScan", description: "Detect unsafe code hidden in model weight files.", url: "https://github.com/protectai/modelscan", cost: "Free", type: "Local" }
     ]
   },
@@ -113,7 +113,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "Privacera", description: "Data access governance and policy enforcement for data lakes.", url: "https://www.privacera.com/", cost: "€€€", type: "Third-party" }
+      { name: "Privacera", description: "Data access governance and policy enforcement for data lakes.", url: "https://www.privacera.com/", cost: "~$25k - $80k/yr (Enterprise)", type: "Third-party" }
     ]
   },
   {
@@ -141,8 +141,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "Datadog Cloud SIEM", description: "Monitor for abnormal data exfiltration patterns in storage buckets.", url: "https://www.datadoghq.com/", cost: "€€", type: "Third-party" },
-      { name: "HashiCorp Vault", description: "Secrets management for controlling access to weight storage.", url: "https://www.vaultproject.io/", cost: "€€", type: "Local" }
+      { name: "Datadog Cloud SIEM", description: "Monitor for abnormal data exfiltration patterns in storage buckets.", url: "https://www.datadoghq.com/", cost: "~$15 - $23/host/mo", type: "Third-party" },
+      { name: "HashiCorp Vault", description: "Secrets management for controlling access to weight storage.", url: "https://www.vaultproject.io/", cost: "Free OSS / ~$25/mo (Cloud)", type: "Local" }
     ]
   },
   {
@@ -170,7 +170,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "Sysdig Secure", description: "Runtime security for model containers with anomaly detection.", url: "https://sysdig.com/", cost: "€€", type: "Third-party" }
+      { name: "Sysdig Secure", description: "Runtime security for model containers with anomaly detection.", url: "https://sysdig.com/", cost: "~$34/host/mo", type: "Third-party" }
     ]
   },
   {
@@ -198,7 +198,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "Cloudflare WAF", description: "L7 protection with specific rate-limiting and bot detection.", url: "https://www.cloudflare.com/waf/", cost: "€€", type: "Third-party" }
+      { name: "Cloudflare WAF", description: "L7 protection with specific rate-limiting and bot detection.", url: "https://www.cloudflare.com/waf/", cost: "Free tier / $20 - $200/mo", type: "Third-party" }
     ]
   },
   {
@@ -254,7 +254,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "Snyk", description: "Automated vulnerability scanning for plugins and integrated frameworks.", url: "https://snyk.io/", cost: "€€", type: "Third-party" }
+      { name: "Snyk", description: "Automated vulnerability scanning for plugins and integrated frameworks.", url: "https://snyk.io/", cost: "Free tier / $25/dev/mo", type: "Third-party" }
     ]
   },
   {
@@ -282,7 +282,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "Lakera Guard", description: "Real-time prompt protection and filtering.", url: "https://www.lakera.ai/", cost: "€€€", type: "Third-party" },
+      { name: "Lakera Guard", description: "Real-time prompt protection and filtering.", url: "https://www.lakera.ai/", cost: "Free tier / $0.002/req", type: "Third-party" },
       { name: "Garak", description: "Local tool to probe models for prompt injection susceptibility.", url: "https://github.com/leondz/garak", cost: "Free", type: "Local" }
     ]
   },
@@ -423,7 +423,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     ],
     references: [{ title: "SAIF Risks", url: "https://saif.google/secure-ai-framework/risks" }],
     suggestedTools: [
-      { name: "AgentOps", description: "Audit trail and safety checks for autonomous agent tool usage.", url: "https://www.agentops.ai/", cost: "€€", type: "Third-party" }
+      { name: "AgentOps", description: "Audit trail and safety checks for autonomous agent tool usage.", url: "https://www.agentops.ai/", cost: "Free tier / $39/mo", type: "Third-party" }
     ]
   }
 ];

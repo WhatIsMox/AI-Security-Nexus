@@ -29,7 +29,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "OWASP ML Security Top 10 - ML01", url: "https://mltop10.org/" }
       ],
       suggestedTools: [
-        { name: "ART (Adversarial Robustness Toolbox)", description: "The industry standard for generating and defending against evasion attacks.", url: "https://github.com/Trusted-AI/adversarial-robustness-toolbox", cost: "Free", type: "Local" },
+        { name: "ART (Adversarial Robustness Toolbox)", description: "The industry standard for generating and defending against evasion attacks.", url: "https://github.com/Trusted-AI/adversarial-robustness-toolbox", cost: "Free OSS / ~$25/mo (Cloud)", type: "Local" },
         { name: "Foolbox", description: "Python library to benchmark the robustness of ML models against adversarial attacks.", url: "https://github.com/bethgelab/foolbox", cost: "Free", type: "Local" }
       ]
     },
@@ -273,7 +273,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "OWASP ML Security Top 10 - ML09", url: "https://mltop10.org/" }
       ],
       suggestedTools: [
-        { name: "HashiCorp Vault", description: "Securely store and manage keys for signing model outputs.", url: "https://www.vaultproject.io/", cost: "€€", type: "Local" }
+        { name: "HashiCorp Vault", description: "Securely store and manage keys for signing model outputs.", url: "https://www.vaultproject.io/", cost: "Free OSS / ~$25/mo (Cloud)", type: "Local" }
       ]
     },
     {

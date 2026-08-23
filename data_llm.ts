@@ -32,8 +32,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
       { title: "OWASP LLM01:2026 Prompt Injection", url: OWASP_2026_REFERENCE }
     ],
     suggestedTools: [
-      { name: "garak", description: "LLM vulnerability scanner with prompt-injection and jailbreak probes.", url: "https://github.com/NVIDIA/garak", cost: "Free", type: "Local" },
-      { name: "promptfoo", description: "Adversarial prompt testing and regression suite for LLM applications.", url: "https://github.com/promptfoo/promptfoo", cost: "Free+Paid", type: "Local" },
+      { name: "garak", description: "LLM vulnerability scanner with prompt-injection and jailbreak probes.", url: "https://github.com/NVIDIA/garak", cost: "Free tier / $0.20/100k req", type: "Local" },
+      { name: "promptfoo", description: "Adversarial prompt testing and regression suite for LLM applications.", url: "https://github.com/promptfoo/promptfoo", cost: "Free OSS / $50/mo (Team)", type: "Local" },
       { name: "PyRIT", description: "Microsoft's open-source framework for automated LLM red teaming.", url: "https://github.com/microsoft/pyrit", cost: "Free", type: "Local" }
     ]
   },
@@ -67,7 +67,7 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "Presidio", description: "PII detection and anonymization for prompts, outputs, and logs.", url: "https://github.com/microsoft/presidio", cost: "Free", type: "Local" },
-      { name: "Nightfall AI", description: "DLP for finding and redacting sensitive information in model workflows.", url: "https://www.nightfall.ai/", cost: "Paid", type: "Third-party" },
+      { name: "Nightfall AI", description: "DLP for finding and redacting sensitive information in model workflows.", url: "https://www.nightfall.ai/", cost: "Free tier / $49/mo", type: "Third-party" },
       { name: "Privacy Meter", description: "Evaluate membership inference and privacy leakage risks.", url: "https://github.com/privacytrustlab/ml_privacy_meter", cost: "Free", type: "Local" }
     ]
   },
@@ -102,7 +102,7 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     suggestedTools: [
       { name: "Open Policy Agent (OPA)", description: "Policy engine for deterministic authorization of agent actions.", url: "https://www.openpolicyagent.org/", cost: "Free", type: "Local" },
       { name: "Keycloak", description: "Identity and access management with scoped user tokens.", url: "https://www.keycloak.org/", cost: "Free", type: "Local" },
-      { name: "AgentOps", description: "Observability and safety monitoring for agent workflows.", url: "https://www.agentops.ai/", cost: "Paid", type: "Third-party" }
+      { name: "AgentOps", description: "Observability and safety monitoring for agent workflows.", url: "https://www.agentops.ai/", cost: "Free tier / $39/mo", type: "Third-party" }
     ]
   },
   {
@@ -202,9 +202,9 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
       { title: "OWASP LLM06:2026 Unbounded Consumption", url: OWASP_2026_REFERENCE }
     ],
     suggestedTools: [
-      { name: "Kong Gateway", description: "API gateway for rate limiting, quotas, and enforcement controls.", url: "https://konghq.com/", cost: "Paid", type: "Third-party" },
+      { name: "Kong Gateway", description: "API gateway for rate limiting, quotas, and enforcement controls.", url: "https://konghq.com/", cost: "Free OSS / $250/service/mo", type: "Third-party" },
       { name: "k6", description: "Load testing for LLM endpoints, quotas, and degradation behavior.", url: "https://github.com/grafana/k6", cost: "Free", type: "Local" },
-      { name: "Upstash Rate Limit", description: "Serverless rate limiting for AI application endpoints.", url: "https://upstash.com/", cost: "Paid", type: "Third-party" }
+      { name: "Upstash Rate Limit", description: "Serverless rate limiting for AI application endpoints.", url: "https://upstash.com/", cost: "Free tier / $0.20/100k req", type: "Third-party" }
     ]
   },
   {
@@ -305,7 +305,7 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "Ragas", description: "Evaluate retrieval quality, relevance, and RAG behavior.", url: "https://github.com/explodinggradients/ragas", cost: "Free", type: "Local" },
-      { name: "Pinecone Security Scans", description: "Enterprise controls and checks for vector database deployments.", url: "https://www.pinecone.io/", cost: "Paid", type: "Third-party" },
+      { name: "Pinecone Security Scans", description: "Enterprise controls and checks for vector database deployments.", url: "https://www.pinecone.io/", cost: "Free tier / $0.33/1M reads", type: "Third-party" },
       { name: "Adversarial Robustness Toolbox (ART)", description: "Probe model and embedding robustness against adversarial manipulation.", url: "https://github.com/Trusted-AI/adversarial-robustness-toolbox", cost: "Free", type: "Local" }
     ]
   },
@@ -339,8 +339,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "DOMPurify", description: "Sanitize LLM-generated HTML before rendering.", url: "https://github.com/cure53/dompurify", cost: "Free", type: "Local" },
-      { name: "Semgrep", description: "Static analysis for unsafe output handling and execution sinks.", url: "https://github.com/semgrep/semgrep", cost: "Free+Paid", type: "Local" },
-      { name: "Burp Suite", description: "Web security testing for XSS, injection, and unsafe rendering paths.", url: "https://portswigger.net/burp", cost: "Free+Paid", type: "Third-party" }
+      { name: "Semgrep", description: "Static analysis for unsafe output handling and execution sinks.", url: "https://github.com/semgrep/semgrep", cost: "Free OSS / $40/dev/mo", type: "Local" },
+      { name: "Burp Suite", description: "Web security testing for XSS, injection, and unsafe rendering paths.", url: "https://portswigger.net/burp", cost: "Free tier / $449/yr (Pro)", type: "Third-party" }
     ]
   }
 ];

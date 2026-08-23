@@ -35,9 +35,9 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
       { title: "OWASP Practical Guide for Secure MCP Server Development", url: "https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/" }
     ],
     suggestedTools: [
-      { name: "Gitleaks", description: "Secret-scanning for repositories and CI pipelines to prevent credential leaks.", url: "https://github.com/gitleaks/gitleaks", cost: "Free", type: "Local" },
-      { name: "TruffleHog", description: "Detects secrets in code, history, and cloud storage with verified checks.", url: "https://github.com/trufflesecurity/trufflehog", cost: "Free", type: "Local" },
-      { name: "HashiCorp Vault", description: "Centralized secrets management with leasing, rotation, and access policies.", url: "https://www.vaultproject.io/", cost: "€€", type: "Third-party" }
+      { name: "Gitleaks", description: "Secret-scanning for repositories and CI pipelines to prevent credential leaks.", url: "https://github.com/gitleaks/gitleaks", cost: "Free tier / $49/mo", type: "Local" },
+      { name: "TruffleHog", description: "Detects secrets in code, history, and cloud storage with verified checks.", url: "https://github.com/trufflesecurity/trufflehog", cost: "Free OSS / $25/user/mo", type: "Local" },
+      { name: "HashiCorp Vault", description: "Centralized secrets management with leasing, rotation, and access policies.", url: "https://www.vaultproject.io/", cost: "Free OSS / ~$25/mo (Cloud)", type: "Third-party" }
     ]
   },
   {
@@ -74,7 +74,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "Open Policy Agent (OPA)", description: "Policy engine for enforcing least-privilege and runtime authorization decisions.", url: "https://www.openpolicyagent.org/", cost: "Free", type: "Local" },
-      { name: "Permit.io", description: "Authorization service for fine-grained, time-bound access control.", url: "https://www.permit.io/", cost: "€€", type: "Third-party" }
+      { name: "Permit.io", description: "Authorization service for fine-grained, time-bound access control.", url: "https://www.permit.io/", cost: "Free tier / $249/mo", type: "Third-party" }
     ]
   },
   {
@@ -149,7 +149,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "Syft / Grype", description: "Generate SBOMs and scan MCP dependencies for vulnerabilities.", url: "https://github.com/anchore/syft", cost: "Free", type: "Local" },
-      { name: "Snyk", description: "Dependency scanning and prioritization for vulnerable MCP components.", url: "https://snyk.io/", cost: "€€", type: "Third-party" }
+      { name: "Snyk", description: "Dependency scanning and prioritization for vulnerable MCP components.", url: "https://snyk.io/", cost: "Free tier / $25/dev/mo", type: "Third-party" }
     ]
   },
   {
@@ -185,7 +185,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
       { title: "OWASP Practical Guide for Secure MCP Server Development", url: "https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/" }
     ],
     suggestedTools: [
-      { name: "Semgrep", description: "Static analysis to detect unsafe command execution patterns in tool code.", url: "https://github.com/semgrep/semgrep", cost: "Free", type: "Local" },
+      { name: "Semgrep", description: "Static analysis to detect unsafe command execution patterns in tool code.", url: "https://github.com/semgrep/semgrep", cost: "Free OSS / $40/dev/mo", type: "Local" },
       { name: "ShellCheck", description: "Linting for shell scripts to catch injection and quoting issues.", url: "https://github.com/koalaman/shellcheck", cost: "Free", type: "Local" }
     ]
   },
@@ -260,7 +260,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "Keycloak", description: "Open-source identity and access management for MCP services.", url: "https://www.keycloak.org/", cost: "Free", type: "Local" },
-      { name: "Auth0", description: "Managed identity platform for secure authentication flows.", url: "https://auth0.com/", cost: "€€", type: "Third-party" }
+      { name: "Auth0", description: "Managed identity platform for secure authentication flows.", url: "https://auth0.com/", cost: "Free tier / $35 - $240/mo", type: "Third-party" }
     ]
   },
   {
@@ -297,7 +297,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "OpenTelemetry", description: "Standardized tracing and metrics for end-to-end MCP observability.", url: "https://opentelemetry.io/", cost: "Free", type: "Local" },
-      { name: "Datadog", description: "Managed observability platform for alerting and audit analysis.", url: "https://www.datadoghq.com/", cost: "€€€", type: "Third-party" }
+      { name: "Datadog", description: "Managed observability platform for alerting and audit analysis.", url: "https://www.datadoghq.com/", cost: "~$15 - $23/host/mo", type: "Third-party" }
     ]
   },
   {
@@ -334,7 +334,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "Cloud Custodian", description: "Policy-as-code for discovering and enforcing approved cloud resources.", url: "https://github.com/cloud-custodian/cloud-custodian", cost: "Free", type: "Local" },
-      { name: "Wiz", description: "Cloud security platform for asset discovery and misconfiguration detection.", url: "https://www.wiz.io/", cost: "€€€", type: "Third-party" }
+      { name: "Wiz", description: "Cloud security platform for asset discovery and misconfiguration detection.", url: "https://www.wiz.io/", cost: "~$15k - $60k/yr (Enterprise)", type: "Third-party" }
     ]
   },
   {
@@ -371,7 +371,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ],
     suggestedTools: [
       { name: "Presidio", description: "Detect and redact PII before storing or sharing context.", url: "https://github.com/microsoft/presidio", cost: "Free", type: "Local" },
-      { name: "Nightfall AI", description: "Cloud DLP for identifying and masking sensitive content in logs and prompts.", url: "https://www.nightfall.ai/", cost: "€€€", type: "Third-party" }
+      { name: "Nightfall AI", description: "Cloud DLP for identifying and masking sensitive content in logs and prompts.", url: "https://www.nightfall.ai/", cost: "Free tier / $49/mo", type: "Third-party" }
     ]
   }
 ];

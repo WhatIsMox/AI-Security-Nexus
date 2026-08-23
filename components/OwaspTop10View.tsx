@@ -472,8 +472,8 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                       const mergedTools = mergeTools(mappedTools, entry.suggestedTools || []);
                       if (mergedTools.length === 0) return null;
                       const filter = getToolFilter(entry.id);
-                      const isCostFree = (cost: string) => cost === 'Free' || cost === 'Free+Paid';
-                      const isCostPaid = (cost: string) => cost === 'Paid' || cost === 'Free+Paid' || cost.includes('€');
+                      const isCostFree = (cost: string) => cost.toLowerCase().includes('free');
+                      const isCostPaid = (cost: string) => !cost.toLowerCase().startsWith('free') || cost.includes('/') || cost.includes('$') || cost.includes('€') || cost.includes('~');
                       const freeCount = mergedTools.filter(t => isCostFree(t.cost)).length;
                       const paidCount = mergedTools.filter(t => isCostPaid(t.cost)).length;
                       const filteredTools = mergedTools.filter(tool => {
@@ -584,9 +584,20 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                                     {tool.type === 'Local' ? <Lock className="w-2 h-2" /> : <Globe className="w-2 h-2" />}
                                     {tool.type}
                                   </span>
-                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-900 text-slate-400 border border-slate-800 font-mono">
-                                    {tool.cost}
-                                  </span>
+                                  {(() => {
+                                    const isFreeOnly = tool.cost.trim().toLowerCase() === 'free';
+                                    const hasFreeTier = tool.cost.toLowerCase().includes('free');
+                                    const costStyle = isFreeOnly
+                                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                                      : hasFreeTier
+                                      ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20'
+                                      : 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+                                    return (
+                                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border font-mono ${costStyle}`}>
+                                        {tool.cost}
+                                      </span>
+                                    );
+                                  })()}
                                   <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
                                     (tool.category || 'Defensive') === 'Offensive'
                                       ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'

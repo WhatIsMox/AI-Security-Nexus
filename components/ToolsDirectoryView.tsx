@@ -62,9 +62,10 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
       }
 
       if (costFilter !== 'All') {
-        const isFree = tool.cost === 'Free' || tool.cost === 'Free+Paid';
-        if (costFilter === 'Free' && !isFree) return false;
-        if (costFilter === 'Paid' && isFree && tool.cost !== 'Free+Paid') return false;
+        const isFreeOnly = tool.cost.trim().toLowerCase() === 'free';
+        const hasFreeOption = tool.cost.toLowerCase().includes('free');
+        if (costFilter === 'Free' && !hasFreeOption) return false;
+        if (costFilter === 'Paid' && isFreeOnly) return false;
       }
 
       if (query) {
@@ -227,13 +228,20 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
               <div>
                 {/* Meta badges */}
                 <div className="flex items-center gap-1.5 flex-wrap mb-3 text-[11px] font-mono">
-                  <span className={`px-2 py-0.5 rounded border ${
-                    tool.cost === 'Free' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' :
-                    tool.cost === 'Free+Paid' ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20' :
-                    'text-amber-400 bg-amber-500/10 border-amber-500/20'
-                  }`}>
-                    {tool.cost}
-                  </span>
+                  {(() => {
+                    const isFreeOnly = tool.cost.trim().toLowerCase() === 'free';
+                    const hasFreeTier = tool.cost.toLowerCase().includes('free');
+                    const costStyle = isFreeOnly
+                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                      : hasFreeTier
+                      ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20'
+                      : 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+                    return (
+                      <span className={`px-2 py-0.5 rounded border ${costStyle}`}>
+                        {tool.cost}
+                      </span>
+                    );
+                  })()}
                   <span className="px-2 py-0.5 rounded border border-slate-800 bg-slate-950 text-slate-400">
                     {tool.type}
                   </span>
