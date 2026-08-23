@@ -140,5 +140,61 @@ test('Unit - Real-World Incidents & Case Studies Full Metadata Completeness', (t
   }
 });
 
+test('Unit - Premier AI Security Tools and Threat Mappings Verification', (t) => {
+  const toolsCatalogContent = readFile('tools_catalog.ts');
+  const toolDetailsContent = readFile('tool_details_catalog.ts');
 
+  // Verify specific premier tools required by user and industry standards
+  const premierTools = [
+    'Azure AI Content Safety',
+    'OpenAI Moderation API',
+    'AWS Bedrock Guardrails',
+    'Google Cloud Model Armor',
+    'HarmBench',
+    'EasyJailbreak',
+    'Inspect AI',
+    'CyberSecEval',
+    'Mindgard',
+    'Protect AI Guardian',
+    'Aporia AI Guardrails',
+    'CalypsoAI',
+    'Arthur Shield',
+    'Palo Alto Networks AI Access Security',
+    'Private AI',
+    'Cyera',
+    'Diffprivlib',
+    'CrypTen',
+    'Gretel AI',
+    'Safetensors',
+    'PickleScan',
+    'HiddenLayer AISec Platform',
+    'SecML',
+    'E2B Sandbox',
+    'Langfuse',
+    'Arize Phoenix',
+    'Fiddler AI',
+    'MarkLLM',
+    'Google DeepMind SynthID',
+    'Robust Intelligence'
+  ];
 
+  for (const tool of premierTools) {
+    assert.ok(
+      toolsCatalogContent.includes(`"${tool}"`) || toolsCatalogContent.includes(`'${tool}'`) || toolsCatalogContent.includes(tool),
+      `tools_catalog.ts must include premier tool: ${tool}`
+    );
+    assert.ok(
+      toolDetailsContent.includes(`"${tool}": {`),
+      `tool_details_catalog.ts must define full metadata for premier tool: ${tool}`
+    );
+  }
+
+  // Verify threat mapping coverage in TOOLS_BY_THREAT_ID
+  const expectedThreatPrefixes = ['LLM', 'ML', 'ASI', 'AST', 'MCP', 'SAIF-R', 'DSGAI'];
+  for (const prefix of expectedThreatPrefixes) {
+    assert.ok(
+      toolsCatalogContent.includes(`'${prefix}`) || toolsCatalogContent.includes(`"${prefix}`),
+      `TOOLS_BY_THREAT_ID must contain entries for framework prefix: ${prefix}`
+    );
+  }
+});

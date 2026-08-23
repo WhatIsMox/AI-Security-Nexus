@@ -142,6 +142,7 @@ test('Cross-Framework - Tools Catalog Threat IDs Resolution', (t) => {
   const astContent = readFile('data_agentic.ts');
   const saifContent = readFile('data_saif.ts');
   const mcpContent = readFile('data_mcp.ts');
+  const dsgaiContent = readFile('data_genai_data_security.ts');
 
   const allValidThreatIds = new Set([
     ...[...llmContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
@@ -149,7 +150,8 @@ test('Cross-Framework - Tools Catalog Threat IDs Resolution', (t) => {
     ...[...asiContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
     ...[...astContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
     ...[...saifContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
-    ...[...mcpContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1])
+    ...[...mcpContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...dsgaiContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1])
   ]);
 
   // Match keys in TOOLS_BY_THREAT_ID: 'LLM01:2026': [ ... ]

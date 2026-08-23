@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-23T21:35:57.717Z",
+  "timestamp": "2026-08-23T21:55:37.332Z",
   "frameworks": {
     "owaspLlmTop10_2026": {
       "count": 10,
@@ -153,7 +153,7 @@
     }
   },
   "catalogs": {
-    "toolsCount": 188,
+    "toolsCount": 241,
     "incidentsCount": 156
   }
 }

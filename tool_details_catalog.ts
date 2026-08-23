@@ -2775,6 +2775,636 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
       "Actionable security controls for secure software architectures"
     ],
     installationOrQuickstart: "Download OWASP ASVS v4.0.3 checklist -> Audit API gateway and authentication architecture"
+  },
+
+  "HarmBench": {
+    name: "HarmBench",
+    description: "Standardized evaluation framework for automated red teaming and safety evaluation of LLMs.",
+    url: "https://github.com/centerforaisafety/HarmBench",
+    cost: "Free",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "Center for AI Safety (CAIS)",
+    license: "MIT",
+    ecosystem: ["Python", "PyTorch", "Transformers", "vLLM", "Ray"],
+    longDescription: "HarmBench is a standardized, reproducible evaluation framework for automated red teaming and safety benchmarking of Large Language Models. It features 510 diverse malicious behavior prompts across seven functional categories (cybercrime, chemical/biological threats, harassment, misinformation, illegal acts) and standardizes test environments for attack algorithms (AutoDAN, GCG, PAIR, TAP) to objectively compare model safety robustness.",
+    typicalUseCase: "Benchmarking base and aligned LLMs in CI/CD against state-of-the-art automated jailbreak and optimization attacks to quantify refusal robustness.",
+    keyFeatures: [
+      "510 curated malicious behavior test cases across 7 threat categories",
+      "Automated jailbreak evaluation algorithms including GCG, AutoDAN, PAIR, and TAP",
+      "Standardized scoring pipeline with fine-tuned Llama-based safety evaluators",
+      "Parallelized evaluation harness compatible with vLLM and HuggingFace"
+    ],
+    installationOrQuickstart: "git clone https://github.com/centerforaisafety/HarmBench.git\ncd HarmBench\npip install -r requirements.txt\npython -m scripts.run_eval --model meta-llama/Llama-3-8B-Instruct --behaviors standard"
+  },
+
+  "EasyJailbreak": {
+    name: "EasyJailbreak",
+    description: "Unified framework for constructing and evaluating adversarial jailbreak attacks on LLMs.",
+    url: "https://github.com/easyjailbreak/EasyJailbreak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "EasyJailbreak Team / Fudan University",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Transformers", "OpenAI API"],
+    longDescription: "EasyJailbreak is an open-source, modular Python framework designed for constructing, decomposing, and systematically evaluating adversarial jailbreak attacks against LLMs. It decomposes jailbreak attacks into distinct components (initializer, mutator, constraint, selector, and evaluator), enabling practitioners to create novel attack strategies or evaluate existing ones like ReNeLLM, AutoDAN, ICA, and PAIR.",
+    typicalUseCase: "Red-teaming custom conversational assistants by generating semantic mutations and cipher/translation-wrapped prompts to test defensive guardrail resilience.",
+    keyFeatures: [
+      "Modular architecture breaking jailbreak techniques into 5 composable stages",
+      "Out-of-the-box implementations of 10+ popular jailbreak algorithms",
+      "Support for multi-lingual, persona-adoption, and cipher-based prompt mutation",
+      "Integrated attack success rate (ASR) and semantic preservation metrics"
+    ],
+    installationOrQuickstart: "git clone https://github.com/easyjailbreak/EasyJailbreak\ncd EasyJailbreak\npip install -e .\npython -m easyjailbreak.attacker.AutoDAN --target_model gpt-4o"
+  },
+
+  "Inspect AI": {
+    name: "Inspect AI",
+    description: "UK AI Safety Institute framework for LLM evaluation, safety testing, and red-teaming.",
+    url: "https://github.com/UKGovernmentBEIS/inspect_ai",
+    cost: "Free",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "UK AI Safety Institute (UK AISI) / DSIT",
+    license: "MIT",
+    ecosystem: ["Python", "AsyncIO", "Docker", "Sandboxes", "CLI"],
+    longDescription: "Inspect AI is an open-source framework developed by the UK AI Safety Institute for evaluating the capabilities, safety risks, and cyber-offensive behaviors of frontier AI models. Inspect provides a standardized evaluation architecture supporting multi-turn evaluations, autonomous tool use, sandboxed execution, and interactive human-in-the-loop red teaming.",
+    typicalUseCase: "Running comprehensive pre-deployment safety assessments on autonomous AI agents to measure autonomous cyber capabilities, CTF task solving, and model safeguard bypasses.",
+    keyFeatures: [
+      "High-throughput asynchronous evaluation engine with built-in retry and rate limiting",
+      "Sandboxed execution environments using Docker for safe agent code execution",
+      "Rich web-based visual log viewer and evaluation dashboard",
+      "Extensive task library for cybersecurity, hazardous science, and agent autonomy"
+    ],
+    installationOrQuickstart: "pip install inspect-ai\ninspect eval cyber_security_bench.py --model openai/gpt-4o --limit 50\ninspect view"
+  },
+
+  "CyberSecEval": {
+    name: "CyberSecEval",
+    description: "Meta benchmark suite for quantifying cybersecurity risks in LLM generations and agents.",
+    url: "https://github.com/meta-llama/PurpleLlama",
+    cost: "Free",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "Meta AI / Purple Llama",
+    license: "Llama 3 Community License",
+    ecosystem: ["Python", "PyTorch", "Docker", "Static Analysis", "CodeQL"],
+    longDescription: "CyberSecEval (part of Meta's Purple Llama project) is an open-source evaluation suite designed to quantify cybersecurity risks in LLM models. It evaluates whether models generate insecure code (CWE vulnerabilities), assist users in carrying out cyberattacks (reconnaissance, exploit execution), assist in social engineering, or succumb to autonomous exploit execution.",
+    typicalUseCase: "Evaluating AI code assistants and developer Copilots in CI/CD to prevent models from suggesting vulnerable code patterns or insecure cryptographic implementations.",
+    keyFeatures: [
+      "Insecure code generation evaluation covering 50+ Common Weakness Enumerations (CWEs)",
+      "Cyberattack assistance evaluation measuring model refusal boundaries on offensive requests",
+      "Autonomous exploit generation and spear-phishing vulnerability benchmarks",
+      "Integration with static analysis tools (Semgrep, CodeQL) for automated grading"
+    ],
+    installationOrQuickstart: "git clone https://github.com/meta-llama/PurpleLlama.git\ncd PurpleLlama/CyberSecEval\npip install -r requirements.txt\npython -m cyberseceval.run --eval insecure_code --model openai:gpt-4o"
+  },
+
+  "Mindgard": {
+    name: "Mindgard",
+    description: "Automated AI red teaming and security testing platform for enterprise AI and LLM models.",
+    url: "https://mindgard.ai/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Offensive",
+    authorOrMaintainer: "Mindgard Ltd.",
+    license: "Commercial / SaaS API",
+    ecosystem: ["Python CLI", "REST API", "GitHub Actions", "Azure", "AWS"],
+    longDescription: "Mindgard is an enterprise automated AI red teaming and security posture management platform designed to continuously test, detect, and assess vulnerabilities in LLMs, RAG applications, and multi-agent systems against prompt injection, data extraction, and evasive jailbreaks.",
+    typicalUseCase: "Integrating continuous automated red-teaming scans into enterprise MLOps release pipelines to validate that model updates do not introduce security regressions.",
+    keyFeatures: [
+      "Automated continuous red-teaming across OWASP Top 10 for LLMs and MITRE ATLAS",
+      "Comprehensive vulnerability assessment for custom RAG pipelines and vector stores",
+      "Risk scoring and remediation guidance tailored to security engineering teams",
+      "Enterprise CI/CD integration via CLI and native GitHub Actions"
+    ],
+    installationOrQuickstart: "pip install mindgard\nmindgard scan --target-url https://api.internal.ai/chat --api-key $MINDGARD_KEY"
+  },
+
+  "Azure AI Content Safety": {
+    name: "Azure AI Content Safety",
+    description: "Multi-modal AI safety service with Prompt Shields and groundedness detection.",
+    url: "https://learn.microsoft.com/en-us/azure/ai-services/content-safety/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Microsoft Azure",
+    license: "Commercial / SaaS API",
+    ecosystem: ["Python", "C#", "JavaScript", "REST API", "Azure OpenAI"],
+    longDescription: "Azure AI Content Safety is a cloud-based AI service developed by Microsoft that detects offensive, harmful, or undesirable text and image content. It includes advanced Prompt Shields to detect and mitigate both direct (jailbreak) and indirect prompt injection attacks, Groundedness Detection to verify RAG responses against source documents, and Protected Material Detection for code and text.",
+    typicalUseCase: "Protecting enterprise Azure OpenAI and Copilot deployments with real-time prompt shield filters that intercept indirect injections in external documents and block hallucinations.",
+    keyFeatures: [
+      "Prompt Shields for detecting direct jailbreaks and indirect document-borne prompt injections",
+      "Groundedness Detection measuring factual consistency between RAG source data and model output",
+      "Multi-severity content filtering across Hate, Violence, Sexual, and Self-Harm categories",
+      "Protected Material Detection identifying copyrighted source code and published literature"
+    ],
+    installationOrQuickstart: "pip install azure-ai-contentsafety azure-core\n# Initialize ContentSafetyClient and call analyze_text or detect_jailbreak"
+  },
+
+  "AWS Bedrock Guardrails": {
+    name: "AWS Bedrock Guardrails",
+    description: "Managed safety guardrails, prompt attack filters, and PII masking for foundation models.",
+    url: "https://aws.amazon.com/bedrock/guardrails/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Amazon Web Services (AWS)",
+    license: "Commercial / SaaS API",
+    ecosystem: ["Python (Boto3)", "AWS SDK", "AWS Lambda", "Bedrock"],
+    longDescription: "Amazon Bedrock Guardrails allows developers to implement customizable safeguards for generative AI applications built on Amazon Bedrock or custom models. It provides configurable filters to block prompt injection attacks, deny sensitive topics, redact or block PII entities, filter profanity, and evaluate contextual grounding to prevent hallucinations.",
+    typicalUseCase: "Applying centralized enterprise security guardrails across multiple foundation models (Claude, Llama, Titan) in AWS to ensure compliance with HIPAA, GDPR, and acceptable use policies.",
+    keyFeatures: [
+      "Prompt attack filters mitigating user prompt injections and adversarial jailbreaks",
+      "Contextual Grounding check evaluating relevance and factual grounding against RAG sources",
+      "Sensitive information filtering with built-in PII entity detection and custom regex patterns",
+      "Denied topics filtering restricting conversational agents to permitted business domains"
+    ],
+    installationOrQuickstart: "import boto3\nbedrock = boto3.client('bedrock-runtime')\nresponse = bedrock.apply_guardrail(guardrailIdentifier='gr-...', guardrailVersion='DRAFT', source='INPUT', content=[{'text': {'text': 'User query to evaluate'}}])"
+  },
+
+  "Google Cloud Model Armor": {
+    name: "Google Cloud Model Armor",
+    description: "Enterprise LLM security proxy for prompt sanitization and safety filtering.",
+    url: "https://cloud.google.com/security/products/model-armor",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Google Cloud",
+    license: "Commercial / SaaS API",
+    ecosystem: ["Vertex AI", "Google Cloud", "REST API", "Python"],
+    longDescription: "Google Cloud Model Armor is an enterprise AI security solution designed to protect large language model applications from malicious inputs and unsafe outputs. Model Armor provides a centralized inspection proxy that sanitizes user prompts for prompt injections, jailbreaks, and sensitive data leakage, while validating model responses against safety policies before returning them to users.",
+    typicalUseCase: "Securing multi-model enterprise architectures and Vertex AI applications against prompt injection payloads, data exfiltration, and sensitive data exposure.",
+    keyFeatures: [
+      "Inline prompt sanitization and adversarial injection detection",
+      "Sensitive data loss prevention integrated with Cloud DLP engines",
+      "Policy-based model response validation and harmful content blocking",
+      "Unified security posture monitoring and compliance telemetry across GCP"
+    ],
+    installationOrQuickstart: "# Configure Model Armor proxy template in Google Cloud Console -> Route LLM API requests through Model Armor endpoint"
+  },
+
+  "Protect AI Guardian": {
+    name: "Protect AI Guardian",
+    description: "Secure LLM gateway enforcing security policies against prompt injection and PII leakage.",
+    url: "https://protectai.com/guardian",
+    cost: "Free+Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Protect AI",
+    license: "Commercial / Community Edition",
+    ecosystem: ["Python", "Docker", "FastAPI", "Kubernetes", "OpenAI Proxy"],
+    longDescription: "Guardian is a secure LLM gateway and proxy designed by Protect AI that intercepts traffic between AI applications and LLM backends. It applies fine-grained security policies, detecting and blocking prompt injections, jailbreak payloads, PII exposure, and malicious tool calls with sub-millisecond latency.",
+    typicalUseCase: "Deploying a centralized security proxy in front of internal OpenAI and Anthropic API endpoints to enforce zero-trust security policies and scrub PII.",
+    keyFeatures: [
+      "Drop-in OpenAI API compatible reverse proxy architecture",
+      "Real-time scanning for prompt injection, jailbreaks, and prompt extraction",
+      "Automated PII detection, redaction, and tokenization",
+      "Granular policy enforcement and detailed security event auditing"
+    ],
+    installationOrQuickstart: "docker run -p 8080:8080 -e GUARDIAN_API_KEY='...' protectai/guardian:latest\n# Configure client base_url='http://localhost:8080/v1'"
+  },
+
+  "Aporia AI Guardrails": {
+    name: "Aporia AI Guardrails",
+    description: "Real-time guardrail proxy with sub-10ms latency for hallucinations and jailbreaks.",
+    url: "https://www.aporia.com/ai-guardrails/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Aporia",
+    license: "Commercial / SaaS API",
+    ecosystem: ["Python", "TypeScript", "REST API", "LangChain"],
+    longDescription: "Aporia AI Guardrails is a high-performance, real-time security proxy for generative AI applications that inspects prompts and responses with ultra-low latency (<10ms). It prevents hallucinations, prompt injections, toxic generations, PII leaks, and unintended tool executions.",
+    typicalUseCase: "Protecting high-concurrency customer-facing chatbots from prompt injections, hallucinations, and brand reputation risks without introducing latency bottlenecks.",
+    keyFeatures: [
+      "Ultra-low latency inference protection (<10ms overhead)",
+      "Real-time hallucination and groundedness validation",
+      "Prompt injection, jailbreak, and system prompt extraction defenses",
+      "Automated PII detection and customizable redaction operators"
+    ],
+    installationOrQuickstart: "pip install aporia\nfrom aporia import Guardrails\nguard = Guardrails(api_key='...')\nclean_input = guard.validate_prompt(user_input)"
+  },
+
+  "CalypsoAI": {
+    name: "CalypsoAI",
+    description: "Enterprise AI security platform providing scanner and runtime guardrails for LLMs.",
+    url: "https://calypsoai.com/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "CalypsoAI",
+    license: "Commercial / SaaS API",
+    ecosystem: ["REST API", "Python", "Kubernetes", "Enterprise Proxy"],
+    longDescription: "CalypsoAI (formerly Moderato) is an enterprise security and observability platform for generative AI. It serves as an inline AI security gateway that detects and blocks adversarial prompt attacks, data exfiltration, malware injection, and compliance policy violations across multi-cloud enterprise deployments.",
+    typicalUseCase: "Providing enterprise security teams with centralized visibility, audit logging, and inline threat prevention for all employee and application interactions with generative AI models.",
+    keyFeatures: [
+      "Comprehensive threat detection for prompt injection, jailbreaking, and data leakage",
+      "Customizable policy engine for enterprise compliance and acceptable use enforcement",
+      "Centralized audit dashboard with session tracing and risk scoring",
+      "Enterprise-grade integration with SIEMs (Splunk, Sentinel) and identity providers"
+    ],
+    installationOrQuickstart: "curl -X POST https://api.calypsoai.com/v1/scan -H 'Authorization: Bearer $CALYPSO_KEY' -d '{\"prompt\": \"...\"}'"
+  },
+
+  "Arthur Shield": {
+    name: "Arthur Shield",
+    description: "Real-time firewall for LLMs detecting prompt injections and toxic outputs.",
+    url: "https://www.arthur.ai/arthur-shield",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Arthur AI",
+    license: "Commercial / SaaS API",
+    ecosystem: ["Python", "FastAPI", "Docker", "REST API"],
+    longDescription: "Arthur Shield is a real-time firewall for Large Language Models designed to detect and block threats before they reach downstream models or end users. It provides low-latency streaming inspection for prompt injections, hallucinated responses, toxic speech, sensitive data leakage (PII), and intellectual property theft.",
+    typicalUseCase: "Deploying as an inline safety middleware in enterprise RAG pipelines to intercept direct prompt injections and sanitize generated answers before client delivery.",
+    keyFeatures: [
+      "Real-time streaming validation of prompts and model completions",
+      "Dynamic prompt injection and jailbreak classification",
+      "PII and sensitive credential identification and masking",
+      "Model hallucination scoring against reference documents"
+    ],
+    installationOrQuickstart: "pip install arthur-shield\nfrom arthur_shield import Shield\nshield = Shield(api_key='...')\nresult = shield.verify_prompt(prompt=user_query)"
+  },
+
+  "Palo Alto Networks AI Access Security": {
+    name: "Palo Alto Networks AI Access Security",
+    description: "Enterprise GenAI security gateway with Shadow AI discovery and inline DLP.",
+    url: "https://www.paloaltonetworks.com/network-security/ai-access-security",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Palo Alto Networks",
+    license: "Commercial / SaaS Platform",
+    ecosystem: ["Next-Gen Firewall", "Prisma SASE", "Cloud Gateway"],
+    longDescription: "Palo Alto Networks AI Access Security is an enterprise-grade GenAI security platform that gives organizations comprehensive visibility and control over generative AI usage. It discovers Shadow AI applications, inspects user prompts in real-time for sensitive data leaks (PII, source code, financial data), and prevents prompt injection and malware delivery.",
+    typicalUseCase: "Discovering unsanctioned employee use of public AI SaaS tools (ChatGPT, Claude, Perplexity) and enforcing inline enterprise data loss prevention policies.",
+    keyFeatures: [
+      "Comprehensive Shadow AI application discovery and risk rating across enterprise traffic",
+      "Inline Data Loss Prevention (DLP) preventing confidential corporate data from entering AI prompts",
+      "Real-time prompt injection detection and malicious payload filtering",
+      "Granular access control policies by user, department, and application risk profile"
+    ],
+    installationOrQuickstart: "Configure AI Access Security profile in Palo Alto Networks Strata / Prisma Access -> Apply policy to outbound web traffic"
+  },
+
+  "OpenAI Moderation API": {
+    name: "OpenAI Moderation API",
+    description: "Multi-modal content moderation and sensitive policy filtering API.",
+    url: "https://platform.openai.com/docs/guides/moderation",
+    cost: "Free",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "OpenAI",
+    license: "Free Developer API",
+    ecosystem: ["Python", "Node.js", "REST API", "OpenAI SDK"],
+    longDescription: "The OpenAI Moderation API is a multi-modal safety classification service that evaluates input text and images against OpenAI's usage policies. It classifies content across categories including hate speech, harassment, self-harm, sexual content, and violence, providing per-category confidence scores to enable fine-grained automated filtering.",
+    typicalUseCase: "Pre-screening user prompts and post-screening model completions in production applications to ensure compliance with acceptable use policies and prevent abusive interactions.",
+    keyFeatures: [
+      "Multi-category safety classification (hate, harassment, self-harm, sexual, violence)",
+      "Raw category confidence scores allowing custom sensitivity thresholding",
+      "Support for multi-modal text and image moderation",
+      "Completely free to use for all OpenAI developers and platforms"
+    ],
+    installationOrQuickstart: "from openai import OpenAI\nclient = OpenAI()\nresponse = client.moderations.create(input='Sample prompt to evaluate')\nprint(response.results[0].flagged)"
+  },
+
+  "Private AI": {
+    name: "Private AI",
+    description: "High-precision PII/PHI detection and de-identification engine for AI prompts.",
+    url: "https://www.private-ai.com/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Private AI Inc.",
+    license: "Commercial / On-Premise Container",
+    ecosystem: ["Python SDK", "Docker", "Kubernetes", "REST API"],
+    longDescription: "Private AI is an advanced PII, PHI, and PCI de-identification and redaction engine capable of identifying and masking 50+ sensitive entity types across 50+ languages in text, audio, and documents with >99% precision using transformer-based contextual models.",
+    typicalUseCase: "Scrubbing medical records and customer support transcripts of PHI and PII before ingesting into RAG knowledge bases or fine-tuning models.",
+    keyFeatures: [
+      "Identifies 50+ entity types across 50+ languages with state-of-the-art accuracy",
+      "Format-preserving pseudonymization and reversible synthetic replacement",
+      "On-premise Docker container deployment ensuring zero data egress",
+      "Ultra-low latency processing engineered for streaming LLM pipelines"
+    ],
+    installationOrQuickstart: "pip install private-ai-sdk\nfrom private_ai_sdk import PIIClient\nclient = PIIClient(base_url='http://localhost:8080')\nresult = client.process_text(text='Patient John Doe SSN 000-12-3456')"
+  },
+
+  "Cyera": {
+    name: "Cyera",
+    description: "AI-DSPM platform discovering and securing sensitive data across AI and RAG stores.",
+    url: "https://www.cyera.com/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Cyera Ltd.",
+    license: "Commercial / Cloud SaaS",
+    ecosystem: ["AWS", "Azure", "GCP", "Snowflake", "Databricks", "Pinecone"],
+    longDescription: "Cyera is an AI Data Security Posture Management (AI-DSPM) platform that continuously discovers, classifies, and protects sensitive data across multi-cloud environments, enterprise data lakes, and generative AI pipelines (including vector databases, RAG corpora, and training sets).",
+    typicalUseCase: "Mapping sensitive corporate data flows into AI training pipelines and vector databases to detect overshared RAG sources and prevent regulatory compliance violations.",
+    keyFeatures: [
+      "Automated discovery of structured and unstructured sensitive data across cloud and AI data stores",
+      "AI-powered contextual classification identifying proprietary IP, PII, and financial records",
+      "Data exposure and over-permission analysis for RAG knowledge stores and embedding indexes",
+      "Automated remediation workflows and compliance tracking for GDPR, HIPAA, and CCPA"
+    ],
+    installationOrQuickstart: "Connect Cyera SaaS platform to Cloud AWS/Azure/GCP environments -> Enable AI data store discovery and DSPM policy scanning"
+  },
+
+  "Diffprivlib": {
+    name: "Diffprivlib",
+    description: "IBM library for differential privacy in machine learning models and data pipelines.",
+    url: "https://github.com/IBM/diffprivlib",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "IBM / Trusted AI",
+    license: "MIT",
+    ecosystem: ["Python", "Scikit-learn", "NumPy", "Pandas"],
+    longDescription: "Diffprivlib is an open-source Python library developed by IBM Research for implementing differential privacy in data analytics and machine learning. It includes privacy-preserving Scikit-learn estimators (logistic regression, PCA, random forest, naive Bayes), generic DP mechanisms (Laplace, Gaussian), and privacy budget accounting tools.",
+    typicalUseCase: "Training classification and embedding models on sensitive healthcare or financial datasets with strict differential privacy epsilon bounds to eliminate membership inference attacks.",
+    keyFeatures: [
+      "Scikit-learn compatible drop-in privacy-preserving machine learning models",
+      "Extensive collection of generic differential privacy mechanisms (Laplace, Gaussian, Exponential)",
+      "Privacy budget tracking and accounting across multi-query workflows",
+      "Tools for differentially private histograms, statistical queries, and data sanitization"
+    ],
+    installationOrQuickstart: "pip install diffprivlib\nfrom diffprivlib.models import LogisticRegression\nmodel = LogisticRegression(epsilon=1.0)\nmodel.fit(X_train, y_train)"
+  },
+
+  "CrypTen": {
+    name: "CrypTen",
+    description: "Privacy-preserving machine learning framework based on Secure Multi-Party Computation.",
+    url: "https://github.com/facebookresearch/CrypTen",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Meta AI Research",
+    license: "MIT",
+    ecosystem: ["Python", "PyTorch", "CUDA", "Multi-Party Computation"],
+    longDescription: "CrypTen is an open-source software framework built on PyTorch for privacy-preserving machine learning using Secure Multi-Party Computation (MPC). It enables multiple parties to collaboratively train models or perform private inference on encrypted data without revealing underlying raw weights or user inputs.",
+    typicalUseCase: "Performing confidential model inference on proprietary or encrypted customer data where neither party needs to reveal their private weights or input tokens.",
+    keyFeatures: [
+      "Native PyTorch look-and-feel for encrypted tensor operations",
+      "Secure Multi-Party Computation (MPC) protocols including secret sharing and Beaver triples",
+      "Support for private training and encrypted inference across distributed workers",
+      "Cryptographic data encapsulation protecting both model IP and input privacy"
+    ],
+    installationOrQuickstart: "pip install crypten\nimport crypten\ncrypten.init()\nx_enc = crypten.cryptensor([1.0, 2.0, 3.0])"
+  },
+
+  "Gretel AI": {
+    name: "Gretel AI",
+    description: "Privacy-preserving synthetic data generation platform with differential privacy guarantees.",
+    url: "https://gretel.ai/",
+    cost: "Free+Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Gretel Labs",
+    license: "Commercial / Community Tier",
+    ecosystem: ["Python SDK", "REST API", "Docker", "Apache Spark"],
+    longDescription: "Gretel is an advanced synthetic data generation platform that enables organizations to generate mathematically private, high-fidelity synthetic tabular, text, and time-series data using generative models equipped with differential privacy guarantees.",
+    typicalUseCase: "Replacing sensitive production databases with high-utility synthetic datasets for training and fine-tuning internal LLMs without exposing actual customer PII.",
+    keyFeatures: [
+      "Differential privacy synthetic data generators for tabular, relational, and text data",
+      "Synthetic data quality and privacy metric reporting (SPS, field correlation, privacy loss)",
+      "Automated PII detection, redaction, and synthetic token substitution",
+      "Integration with developer pipelines via Python SDK and REST APIs"
+    ],
+    installationOrQuickstart: "pip install gretel-client\nfrom gretel_client import configure_session\nconfigure_session(api_key='...')"
+  },
+
+  "Safetensors": {
+    name: "Safetensors",
+    description: "Safe, fast tensor serialization format eliminating pickle arbitrary code execution risks.",
+    url: "https://github.com/huggingface/safetensors",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Hugging Face",
+    license: "Apache-2.0",
+    ecosystem: ["Rust", "Python", "PyTorch", "TensorFlow", "Flax", "Transformers"],
+    longDescription: "Safetensors is a simple, safe, and ultra-fast tensor serialization format developed by Hugging Face. Designed as a secure alternative to Python's pickle format (.pt, .bin, .pkl), Safetensors prevents arbitrary code execution vulnerabilities by design through zero-copy deserialization, strict header boundary validation, and prevention of arbitrary object instantiation.",
+    typicalUseCase: "Replacing PyTorch pickle weights with Safetensors across model repositories and CI/CD pipelines to completely eliminate deserialization-based RCE vulnerabilities.",
+    keyFeatures: [
+      "Eliminates arbitrary code execution vulnerabilities inherent in Python pickle formats",
+      "Zero-copy deserialization enabling blazing-fast model loading via memory mapping",
+      "Deterministic header formatting with strict memory allocation bounds",
+      "Native first-class support in Hugging Face Transformers, Diffusers, and vLLM"
+    ],
+    installationOrQuickstart: "pip install safetensors\nfrom safetensors.torch import save_file, load_file\nsave_file(model.state_dict(), 'model.safetensors')\ntensors = load_file('model.safetensors')"
+  },
+
+  "PickleScan": {
+    name: "PickleScan",
+    description: "Security scanner for Python Pickle, PyTorch, and NumPy serialized model files.",
+    url: "https://github.com/mmaitre314/picklescan",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Matthieu Maitre / Hugging Face Community",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "CLI", "Hugging Face Hub", "CI/CD"],
+    longDescription: "PickleScan is an open-source security scanner that inspects serialized Python Pickle files, PyTorch checkpoints (.pt, .bin), NumPy archives (.npy, .npz), and zip archives for malicious globals, remote code execution payloads, and unauthorized OS commands without executing or deserializing the untrusted payloads.",
+    typicalUseCase: "Scanning model files downloaded from public hubs in CI/CD pipelines before passing them to PyTorch torch.load().",
+    keyFeatures: [
+      "Static AST inspection of pickle bytecode without executing code",
+      "Detects dangerous globals (os.system, subprocess.Popen, eval, builtins)",
+      "Scans PyTorch (.pt, .bin), NumPy, Joblib, and zip-compressed archives",
+      "High-speed CLI scanner designed for automated pre-commit and pipeline verification"
+    ],
+    installationOrQuickstart: "pip install picklescan\npicklescan -p ./models/pytorch_model.bin"
+  },
+
+  "HiddenLayer AISec Platform": {
+    name: "HiddenLayer AISec Platform",
+    description: "ML detection & response (MLDR), automated model scanner, and AI runtime firewall.",
+    url: "https://hiddenlayer.com/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "HiddenLayer Inc.",
+    license: "Commercial Platform / SaaS",
+    ecosystem: ["Python", "MLOps", "Kubernetes", "AWS", "Azure", "Databricks"],
+    longDescription: "HiddenLayer is an enterprise MLSecOps platform that provides end-to-end security for AI and machine learning algorithms. The platform includes Machine Learning Detection & Response (MLDR) for identifying adversarial inference attacks in real time, an automated Model Scanner for detecting malicious payloads in model files, and an AI Security Gateway.",
+    typicalUseCase: "Defending enterprise predictive models and LLM endpoints against adversarial evasion, data poisoning, and model theft while scanning third-party model weights for supply-chain malware.",
+    keyFeatures: [
+      "Machine Learning Detection & Response (MLDR) monitoring inference traffic for evasion attacks",
+      "Automated Model Scanner inspecting PyTorch, ONNX, and TensorFlow artifacts for embedded malware",
+      "AI Security Gateway providing runtime guardrails and prompt-injection filtering",
+      "Continuous AI asset inventory and posture compliance tracking"
+    ],
+    installationOrQuickstart: "pip install hiddenlayer-sdk\n# Connect model endpoint to HiddenLayer MLDR agent for telemetry capture"
+  },
+
+  "SecML": {
+    name: "SecML",
+    description: "Python library for security evaluation and adversarial attacks on machine learning algorithms.",
+    url: "https://github.com/pralab/secml",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "PRA Lab - University of Cagliari",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Scikit-learn", "NumPy"],
+    longDescription: "SecML is an open-source Python library designed to evaluate the security and adversarial robustness of machine learning classifiers. It provides tools to simulate evasion attacks (gradient-based and black-box), poisoning attacks (clean-label and backdoor injection), and evaluate model security curves under adversarial perturbation.",
+    typicalUseCase: "Evaluating the vulnerability of ML classifiers (malware detectors, fraud detection models) to adversarial perturbations and poisoning attacks during model training.",
+    keyFeatures: [
+      "Evasion attack algorithms (gradient-based, C&W, Carlini, boundary attacks)",
+      "Data poisoning attack simulations against SVMs, neural networks, and random forests",
+      "Security evaluation curves measuring model performance degradation under attack",
+      "Modular architecture compatible with PyTorch and Scikit-learn"
+    ],
+    installationOrQuickstart: "pip install secml\nfrom secml.adv.attacks import CAttackEvasionPGD"
+  },
+
+  "E2B Sandbox": {
+    name: "E2B Sandbox",
+    description: "Secure cloud sandboxing for AI agent tool execution and LLM code interpreting.",
+    url: "https://github.com/e2b-dev/E2B",
+    cost: "Free+Paid",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "E2B Team",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "TypeScript", "MicroVMs", "Docker", "LangChain", "CrewAI"],
+    longDescription: "E2B is an open-source, secure cloud sandboxing environment designed specifically for autonomous AI agents and LLMs. It creates isolated MicroVM sandboxes in milliseconds (<200ms), allowing agents to execute arbitrary Python, JavaScript, and shell commands safely without risking the host system or exposing local credentials.",
+    typicalUseCase: "Isolating code execution, data analysis, and shell tools invoked by autonomous agents (e.g. LangChain, AutoGen, CrewAI) in hardened MicroVMs to prevent Remote Code Execution (RCE).",
+    keyFeatures: [
+      "Sub-200ms MicroVM startup time for high-throughput agent workflows",
+      "Strict hardware-level process and network isolation preventing sandbox escapes",
+      "Full support for custom filesystem environments, packages, and internet access policies",
+      "Native SDKs for Python and TypeScript with integrations for major agent frameworks"
+    ],
+    installationOrQuickstart: "pip install e2b_code_interpreter\nfrom e2b_code_interpreter import CodeInterpreter\nwith CodeInterpreter() as sandbox:\n    result = sandbox.notebook.exec_cell(\"print('Safe Execution')\")"
+  },
+
+  "Langfuse": {
+    name: "Langfuse",
+    description: "Open-source LLM observability, tracing, evaluation, and prompt management platform.",
+    url: "https://github.com/langfuse/langfuse",
+    cost: "Free+Paid",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "Langfuse",
+    license: "MIT",
+    ecosystem: ["Python", "TypeScript", "OpenTelemetry", "Docker", "LangChain", "LlamaIndex"],
+    longDescription: "Langfuse is an open-source LLM observability and engineering platform. It provides distributed tracing for complex LLM applications and multi-agent systems, tracking prompt versions, token consumption, latency, user feedback, and security evaluations (hallucination scores, prompt injections, refusal tracking).",
+    typicalUseCase: "Instrumenting multi-step agent reasoning loops to audit tool parameters, monitor token costs, and capture unauthorized tool execution attempts in real-time.",
+    keyFeatures: [
+      "Detailed nested distributed traces capturing prompts, completions, and tool calls",
+      "Automated model-based and human-in-the-loop safety and quality evaluations",
+      "Prompt management with versioning, staging, and rollbacks",
+      "Open-source self-hostable container stack or managed cloud service"
+    ],
+    installationOrQuickstart: "pip install langfuse\nfrom langfuse.openai import openai\n# Wrap OpenAI client with Langfuse for automatic tracing"
+  },
+
+  "Arize Phoenix": {
+    name: "Arize Phoenix",
+    description: "AI observability, tracing, and evaluation platform for LLM, RAG, and Agent workflows.",
+    url: "https://github.com/Arize-ai/phoenix",
+    cost: "Free",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "Arize AI",
+    license: "ELv2 / Open Source",
+    ecosystem: ["Python", "OpenTelemetry", "OpenInference", "Jupyter", "Docker"],
+    longDescription: "Phoenix is an open-source AI observability and evaluation platform developed by Arize AI. Built on OpenTelemetry and the OpenInference semantic standard, Phoenix enables deep tracing of LLM chains, automated evaluation of RAG retrieval relevance, hallucination detection, and red-team benchmark tracking.",
+    typicalUseCase: "Visualizing and evaluating RAG pipeline retrieval and agent tool call sequences in a local UI to diagnose prompt injection exploits, context drift, and hallucinations.",
+    keyFeatures: [
+      "OpenInference-based tracing for LangChain, LlamaIndex, DSPy, and custom agent loops",
+      "Pre-built evaluators for RAG triad (relevance, groundedness, hallucination)",
+      "Embedding visualization and drift analysis for vector retrieval pipelines",
+      "Zero-dependency local server launchable directly inside Jupyter notebooks or containers"
+    ],
+    installationOrQuickstart: "pip install arize-phoenix\nimport phoenix as px\npx.launch_app()"
+  },
+
+  "Fiddler AI": {
+    name: "Fiddler AI",
+    description: "Pre-deployment LLM vulnerability scanner (Auditor) and real-time inference guardrails.",
+    url: "https://www.fiddler.ai/fiddler-auditor",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Both",
+    authorOrMaintainer: "Fiddler AI Inc.",
+    license: "Commercial Platform / SaaS",
+    ecosystem: ["Python", "REST API", "Kubernetes", "Enterprise Cloud"],
+    longDescription: "Fiddler AI is an enterprise AI governance and observability platform featuring Fiddler Auditor (pre-deployment red teaming and vulnerability scanner for LLMs) and Fiddler Guardrails (runtime protection against hallucinations, prompt injections, sensitive data leakage, and toxic outputs).",
+    typicalUseCase: "Scanning generative AI pipelines prior to production release to benchmark safety, and applying runtime guardrails to monitor data drift and prompt attacks.",
+    keyFeatures: [
+      "Pre-deployment adversarial red-teaming scanner testing for prompt injection and jailbreaks",
+      "Real-time runtime guardrails evaluating hallucination, PII leakage, and safety metrics",
+      "Continuous ML and LLM performance and drift monitoring",
+      "Audit-ready compliance reporting aligned with NIST AI RMF and EU AI Act"
+    ],
+    installationOrQuickstart: "pip install fiddler-client\nimport fiddler as fdl\n# Initialize Fiddler client and register LLM project"
+  },
+
+  "MarkLLM": {
+    name: "MarkLLM",
+    description: "Toolkit for watermarking Large Language Models and watermark detection testing.",
+    url: "https://github.com/victorup/MarkLLM",
+    cost: "Free",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "MarkLLM Team / Victor Up",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Transformers", "Gradio"],
+    longDescription: "MarkLLM is an open-source, standardized Python toolkit for watermarking Large Language Models. It implements 9 state-of-the-art text watermarking algorithms (including KGW, SWEET, UPV, Unigram, SIR, and SynthID text implementations) and provides automated evaluation tools to assess watermark detectability, text quality degradation, and robustness against watermark removal attacks (paraphrasing, copy-paste, translation).",
+    typicalUseCase: "Evaluating text watermarking algorithms to embed verifiable provenance into model generations while testing resilience against adversarial watermark stripping.",
+    keyFeatures: [
+      "9 state-of-the-art LLM watermarking algorithms implemented under a unified interface",
+      "Watermark detection pipeline supporting statistical p-value and z-score verification",
+      "Robustness evaluation against 5 attack types: paraphrasing, token replacement, translation",
+      "Interactive visual Gradio web interface for inspecting watermark distributions"
+    ],
+    installationOrQuickstart: "git clone https://github.com/victorup/MarkLLM.git\ncd MarkLLM\npip install -r requirements.txt\npython -m markllm.visualize"
+  },
+
+  "Google DeepMind SynthID": {
+    name: "Google DeepMind SynthID",
+    description: "Imperceptible digital watermarking and provenance identification for AI media and text.",
+    url: "https://deepmind.google/technologies/synthid/",
+    cost: "Free",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Google DeepMind",
+    license: "Open Source / Apache-2.0 (Text) & Cloud API",
+    ecosystem: ["Python", "PyTorch", "Hugging Face Transformers", "Google Cloud"],
+    longDescription: "SynthID is a digital watermarking and identification technology developed by Google DeepMind. It embeds imperceptible digital watermarks directly into AI-generated images, audio, video, and text without degrading perceptual quality or fluency, allowing automated verification of AI provenance even after compression, editing, or paraphrasing.",
+    typicalUseCase: "Embedding cryptographically detectable provenance signals into generated media and text to prevent deepfake distribution, misinformation, and copyright infringement.",
+    keyFeatures: [
+      "Imperceptible watermarking across multiple modalities: text, images, audio, and video",
+      "Robust against compression, cropping, noise injection, and paraphrasing",
+      "Integrated directly into Hugging Face Transformers for text watermarking",
+      "Statistical detector verifying watermarking presence with high confidence"
+    ],
+    installationOrQuickstart: "pip install transformers torch\n# Use synthid watermarking logits processor during model.generate() in Transformers"
+  },
+
+  "Robust Intelligence": {
+    name: "Robust Intelligence",
+    description: "Automated AI red teaming, continuous risk validation, and runtime AI firewall.",
+    url: "https://www.robustintelligence.com/",
+    cost: "Paid",
+    type: "Third-party",
+    category: "Both",
+    authorOrMaintainer: "Cisco / Robust Intelligence",
+    license: "Commercial Platform / SaaS",
+    ecosystem: ["Python SDK", "REST API", "Docker", "Kubernetes", "Cisco Security"],
+    longDescription: "Robust Intelligence (acquired by Cisco) is an automated AI security and risk validation platform that continuously tests models against algorithmic failure modes, security vulnerabilities, and adversarial attacks across the entire AI lifecycle. It provides automated pre-deployment red teaming, continuous data and model validation, and a real-time AI Firewall protecting live endpoints.",
+    typicalUseCase: "Validating AI systems against OWASP and NIST AI RMF benchmarks before release and deploying an inline AI firewall to intercept adversarial inputs.",
+    keyFeatures: [
+      "Automated stress testing across hundreds of security and robustness failure modes",
+      "Real-time AI Firewall blocking prompt injections, data poisoning, and evasion payloads",
+      "Automated compliance and governance reporting (NIST AI RMF, ISO 42001, OWASP)",
+      "Seamless integration with Cisco enterprise security and MLOps platforms"
+    ],
+    installationOrQuickstart: "pip install rime-sdk\nfrom rime_sdk import Client\nclient = Client(host='https://rime.enterprise.internal', api_key='...')"
   }
 };
 
@@ -2813,3 +3443,4 @@ export function getEnrichedTool(tool: SecurityTool): SecurityTool {
     installationOrQuickstart: tool.type === 'Local' ? `# Install and run ${tool.name}\nSee official documentation at: ${tool.url}` : `# Access ${tool.name}\nExplore setup and API documentation at: ${tool.url}`
   };
 }
+
