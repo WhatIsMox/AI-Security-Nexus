@@ -231,7 +231,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
             <div 
               key={test.id}
               onClick={() => onSelectTest(test)}
-              className="group bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-200 relative overflow-hidden"
+              className="content-auto group bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-200 relative overflow-hidden"
             >
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 relative z-10">
                 

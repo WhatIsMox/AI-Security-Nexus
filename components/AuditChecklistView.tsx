@@ -424,7 +424,7 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
             return (
               <div 
                 key={test.id}
-                className="bg-slate-900/70 border border-slate-800 hover:border-slate-700/80 rounded-xl p-4 transition-all"
+                className="content-auto bg-slate-900/70 border border-slate-800 hover:border-slate-700/80 rounded-xl p-4 transition-all"
               >
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   {/* Test Info */}

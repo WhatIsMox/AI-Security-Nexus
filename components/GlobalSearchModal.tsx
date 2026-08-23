@@ -27,11 +27,255 @@ export interface SearchResultItem {
   category: 'test' | 'llm' | 'ml' | 'agentic' | 'saif' | 'mcp' | 'dsgai' | 'dspm' | 'tool' | 'incident';
   categoryLabel: string;
   badgeColor: string;
+  searchText: string;
   targetId?: string;
   testItem?: TestItem;
   tool?: SecurityTool & { mappedThreats?: string[] };
   incident?: RealWorldIncident;
   url?: string;
+}
+
+// Pre-build search index once at module level for instant search performance
+let cachedSearchIndex: SearchResultItem[] | null = null;
+
+function getSearchIndex(): SearchResultItem[] {
+  if (cachedSearchIndex) return cachedSearchIndex;
+
+  const items: SearchResultItem[] = [];
+
+  // 1. Security Tests
+  for (const test of TEST_DATA) {
+    const title = `${test.id}: ${test.title}`;
+    const subtitle = test.summary;
+    const categoryLabel = 'Security Test';
+    items.push({
+      id: `test-${test.id}`,
+      title,
+      subtitle,
+      category: 'test',
+      categoryLabel,
+      badgeColor: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400',
+      searchText: `${title} ${subtitle} ${categoryLabel} ${test.pillar} ${test.riskLevel} ${(test.objectives || []).join(' ')}`.toLowerCase(),
+      testItem: test
+    });
+  }
+
+  // 2. OWASP LLM Top 10
+  for (const entry of OWASP_TOP_10_DATA) {
+    const title = `${entry.id}: ${entry.title}`;
+    const subtitle = entry.description;
+    const categoryLabel = 'OWASP LLM 2026';
+    items.push({
+      id: `llm-${entry.id}`,
+      title,
+      subtitle,
+      category: 'llm',
+      categoryLabel,
+      badgeColor: 'border-pink-500/30 bg-pink-500/10 text-pink-400',
+      searchText: `${title} ${subtitle} ${categoryLabel}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 3. OWASP ML Top 10
+  for (const entry of OWASP_ML_TOP_10_DATA) {
+    const title = `${entry.id}: ${entry.title}`;
+    const subtitle = entry.description;
+    const categoryLabel = 'OWASP ML Top 10';
+    items.push({
+      id: `ml-${entry.id}`,
+      title,
+      subtitle,
+      category: 'ml',
+      categoryLabel,
+      badgeColor: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+      searchText: `${title} ${subtitle} ${categoryLabel}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 4. OWASP Agentic Applications (ASI)
+  for (const entry of OWASP_AGENTIC_APPLICATIONS_DATA) {
+    const title = `${entry.id}: ${entry.title}`;
+    const subtitle = entry.description;
+    const categoryLabel = 'Agentic App (ASI)';
+    items.push({
+      id: `asi-${entry.id}`,
+      title,
+      subtitle,
+      category: 'agentic',
+      categoryLabel,
+      badgeColor: 'border-orange-500/30 bg-orange-500/10 text-orange-400',
+      searchText: `${title} ${subtitle} ${categoryLabel}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 5. OWASP Agentic Skills (AST)
+  for (const entry of OWASP_AGENTIC_THREATS_DATA) {
+    const title = `${entry.id}: ${entry.title}`;
+    const subtitle = entry.description;
+    const categoryLabel = 'Agentic Skill (AST)';
+    items.push({
+      id: `ast-${entry.id}`,
+      title,
+      subtitle,
+      category: 'agentic',
+      categoryLabel,
+      badgeColor: 'border-amber-500/30 bg-amber-500/10 text-amber-400',
+      searchText: `${title} ${subtitle} ${categoryLabel}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 6. Google SAIF
+  for (const entry of OWASP_SAIF_THREATS_DATA) {
+    const title = `${entry.id}: ${entry.title}`;
+    const subtitle = entry.description;
+    const categoryLabel = 'Google SAIF Risk';
+    items.push({
+      id: `saif-${entry.id}`,
+      title,
+      subtitle,
+      category: 'saif',
+      categoryLabel,
+      badgeColor: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
+      searchText: `${title} ${subtitle} ${categoryLabel}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 7. OWASP MCP Top 10
+  for (const entry of OWASP_MCP_TOP_10_DATA) {
+    const title = `${entry.id}: ${entry.title}`;
+    const subtitle = entry.description;
+    const categoryLabel = 'OWASP MCP Top 10';
+    items.push({
+      id: `mcp-${entry.id}`,
+      title,
+      subtitle,
+      category: 'mcp',
+      categoryLabel,
+      badgeColor: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400',
+      searchText: `${title} ${subtitle} ${categoryLabel}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 8. GenAI Data Security Risks (DSGAI)
+  for (const entry of GENAI_DATA_SECURITY_RISKS) {
+    const title = `${entry.id}: ${entry.title}`;
+    const subtitle = entry.summary;
+    const categoryLabel = 'GenAI Data Security';
+    items.push({
+      id: `dsgai-${entry.id}`,
+      title,
+      subtitle,
+      category: 'dsgai',
+      categoryLabel,
+      badgeColor: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
+      searchText: `${title} ${subtitle} ${categoryLabel}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 9. AI-DSPM Capabilities
+  for (const entry of GENAI_DSPM_CAPABILITIES) {
+    const title = `${entry.id}: ${entry.title}`;
+    const subtitle = entry.objective;
+    const categoryLabel = 'AI-DSPM Capability';
+    items.push({
+      id: `dspm-${entry.id}`,
+      title,
+      subtitle,
+      category: 'dspm',
+      categoryLabel,
+      badgeColor: 'border-teal-500/30 bg-teal-500/10 text-teal-300',
+      searchText: `${title} ${subtitle} ${categoryLabel}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 10. Tools Catalog
+  const toolItemsMap = new Map<string, { tool: SecurityTool & { mappedThreats: string[] } }>();
+  for (const [threatId, tools] of Object.entries(TOOLS_BY_THREAT_ID)) {
+    for (const rawTool of tools) {
+      const key = rawTool.name.toLowerCase();
+      if (toolItemsMap.has(key)) {
+        const entry = toolItemsMap.get(key)!;
+        if (!entry.tool.mappedThreats.includes(threatId)) {
+          entry.tool.mappedThreats.push(threatId);
+        }
+      } else {
+        const enriched = getEnrichedTool(rawTool);
+        toolItemsMap.set(key, {
+          tool: {
+            ...enriched,
+            mappedThreats: [threatId]
+          }
+        });
+      }
+    }
+  }
+
+  for (const { tool } of toolItemsMap.values()) {
+    const title = tool.name;
+    const subtitle = `${tool.description}${tool.authorOrMaintainer ? ` • ${tool.authorOrMaintainer}` : ''} • Mapped to ${tool.mappedThreats.slice(0, 3).join(', ')}`;
+    const categoryLabel = `Tool (${tool.type} • ${tool.cost})`;
+    items.push({
+      id: `tool-${tool.name}`,
+      title,
+      subtitle,
+      category: 'tool',
+      categoryLabel,
+      badgeColor: 'border-purple-500/30 bg-purple-500/10 text-purple-300',
+      searchText: `${title} ${subtitle} ${categoryLabel} ${tool.mappedThreats.join(' ')} ${tool.license || ''}`.toLowerCase(),
+      tool: tool,
+      url: tool.url
+    });
+  }
+
+  // 11. Incidents Catalog
+  const incidentItemsMap = new Map<string, { incident: RealWorldIncident }>();
+  for (const [threatId, incidents] of Object.entries(INCIDENTS_BY_THREAT_ID)) {
+    for (const inc of incidents) {
+      const key = inc.title.toLowerCase().trim();
+      if (incidentItemsMap.has(key)) {
+        const entry = incidentItemsMap.get(key)!;
+        if (entry.incident.mappedThreats && !entry.incident.mappedThreats.includes(threatId)) {
+          entry.incident.mappedThreats.push(threatId);
+        }
+      } else {
+        const enriched = getEnrichedIncident(inc, threatId);
+        incidentItemsMap.set(key, {
+          incident: {
+            ...enriched,
+            mappedThreats: [threatId]
+          }
+        });
+      }
+    }
+  }
+
+  for (const { incident } of incidentItemsMap.values()) {
+    const title = incident.title;
+    const subtitle = `${incident.targetOrVictim ? `${incident.targetOrVictim} • ` : ''}${incident.severity ? `[${incident.severity}] ` : ''}Mapped to ${(incident.mappedThreats || []).slice(0, 3).join(', ')}`;
+    const categoryLabel = 'Incident / Case Study';
+    items.push({
+      id: `inc-${incident.title}`,
+      title,
+      subtitle,
+      category: 'incident',
+      categoryLabel,
+      badgeColor: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
+      searchText: `${title} ${subtitle} ${categoryLabel} ${(incident.mappedThreats || []).join(' ')} ${incident.cveOrAdvisoryId || ''}`.toLowerCase(),
+      incident: incident,
+      url: incident.url
+    });
+  }
+
+  cachedSearchIndex = items;
+  return items;
 }
 
 interface GlobalSearchModalProps {
@@ -68,199 +312,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     }
   }, [isOpen]);
 
-  // Build searchable index
-  const allSearchItems = useMemo<SearchResultItem[]>(() => {
-    const items: SearchResultItem[] = [];
-
-    // 1. Security Tests
-    for (const test of TEST_DATA) {
-      items.push({
-        id: `test-${test.id}`,
-        title: `${test.id}: ${test.title}`,
-        subtitle: test.summary,
-        category: 'test',
-        categoryLabel: 'Security Test',
-        badgeColor: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400',
-        testItem: test
-      });
-    }
-
-    // 2. OWASP LLM Top 10
-    for (const entry of OWASP_TOP_10_DATA) {
-      items.push({
-        id: `llm-${entry.id}`,
-        title: `${entry.id}: ${entry.title}`,
-        subtitle: entry.description,
-        category: 'llm',
-        categoryLabel: 'OWASP LLM 2026',
-        badgeColor: 'border-pink-500/30 bg-pink-500/10 text-pink-400',
-        targetId: entry.id
-      });
-    }
-
-    // 3. OWASP ML Top 10
-    for (const entry of OWASP_ML_TOP_10_DATA) {
-      items.push({
-        id: `ml-${entry.id}`,
-        title: `${entry.id}: ${entry.title}`,
-        subtitle: entry.description,
-        category: 'ml',
-        categoryLabel: 'OWASP ML Top 10',
-        badgeColor: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
-        targetId: entry.id
-      });
-    }
-
-    // 4. OWASP Agentic Applications (ASI)
-    for (const entry of OWASP_AGENTIC_APPLICATIONS_DATA) {
-      items.push({
-        id: `asi-${entry.id}`,
-        title: `${entry.id}: ${entry.title}`,
-        subtitle: entry.description,
-        category: 'agentic',
-        categoryLabel: 'Agentic App (ASI)',
-        badgeColor: 'border-orange-500/30 bg-orange-500/10 text-orange-400',
-        targetId: entry.id
-      });
-    }
-
-    // 5. OWASP Agentic Skills (AST)
-    for (const entry of OWASP_AGENTIC_THREATS_DATA) {
-      items.push({
-        id: `ast-${entry.id}`,
-        title: `${entry.id}: ${entry.title}`,
-        subtitle: entry.description,
-        category: 'agentic',
-        categoryLabel: 'Agentic Skill (AST)',
-        badgeColor: 'border-amber-500/30 bg-amber-500/10 text-amber-400',
-        targetId: entry.id
-      });
-    }
-
-    // 6. Google SAIF
-    for (const entry of OWASP_SAIF_THREATS_DATA) {
-      items.push({
-        id: `saif-${entry.id}`,
-        title: `${entry.id}: ${entry.title}`,
-        subtitle: entry.description,
-        category: 'saif',
-        categoryLabel: 'Google SAIF Risk',
-        badgeColor: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
-        targetId: entry.id
-      });
-    }
-
-    // 7. OWASP MCP Top 10
-    for (const entry of OWASP_MCP_TOP_10_DATA) {
-      items.push({
-        id: `mcp-${entry.id}`,
-        title: `${entry.id}: ${entry.title}`,
-        subtitle: entry.description,
-        category: 'mcp',
-        categoryLabel: 'OWASP MCP Top 10',
-        badgeColor: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400',
-        targetId: entry.id
-      });
-    }
-
-    // 8. GenAI Data Security Risks (DSGAI)
-    for (const entry of GENAI_DATA_SECURITY_RISKS) {
-      items.push({
-        id: `dsgai-${entry.id}`,
-        title: `${entry.id}: ${entry.title}`,
-        subtitle: entry.summary,
-        category: 'dsgai',
-        categoryLabel: 'GenAI Data Security',
-        badgeColor: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
-        targetId: entry.id
-      });
-    }
-
-    // 9. AI-DSPM Capabilities
-    for (const entry of GENAI_DSPM_CAPABILITIES) {
-      items.push({
-        id: `dspm-${entry.id}`,
-        title: `${entry.id}: ${entry.title}`,
-        subtitle: entry.objective,
-        category: 'dspm',
-        categoryLabel: 'AI-DSPM Capability',
-        badgeColor: 'border-teal-500/30 bg-teal-500/10 text-teal-300',
-        targetId: entry.id
-      });
-    }
-
-    // 10. Tools Catalog
-    const toolItemsMap = new Map<string, { tool: SecurityTool & { mappedThreats: string[] } }>();
-    for (const [threatId, tools] of Object.entries(TOOLS_BY_THREAT_ID)) {
-      for (const rawTool of tools) {
-        const key = rawTool.name.toLowerCase();
-        if (toolItemsMap.has(key)) {
-          const entry = toolItemsMap.get(key)!;
-          if (!entry.tool.mappedThreats.includes(threatId)) {
-            entry.tool.mappedThreats.push(threatId);
-          }
-        } else {
-          const enriched = getEnrichedTool(rawTool);
-          toolItemsMap.set(key, {
-            tool: {
-              ...enriched,
-              mappedThreats: [threatId]
-            }
-          });
-        }
-      }
-    }
-
-    for (const { tool } of toolItemsMap.values()) {
-      items.push({
-        id: `tool-${tool.name}`,
-        title: tool.name,
-        subtitle: `${tool.description}${tool.authorOrMaintainer ? ` • ${tool.authorOrMaintainer}` : ''} • Mapped to ${tool.mappedThreats.slice(0, 3).join(', ')}`,
-        category: 'tool',
-        categoryLabel: `Tool (${tool.type} • ${tool.cost})`,
-        badgeColor: 'border-purple-500/30 bg-purple-500/10 text-purple-300',
-        tool: tool,
-        url: tool.url
-      });
-    }
-
-    // 11. Incidents Catalog
-    const incidentItemsMap = new Map<string, { incident: RealWorldIncident }>();
-    for (const [threatId, incidents] of Object.entries(INCIDENTS_BY_THREAT_ID)) {
-      for (const inc of incidents) {
-        const key = inc.title.toLowerCase().trim();
-        if (incidentItemsMap.has(key)) {
-          const entry = incidentItemsMap.get(key)!;
-          if (entry.incident.mappedThreats && !entry.incident.mappedThreats.includes(threatId)) {
-            entry.incident.mappedThreats.push(threatId);
-          }
-        } else {
-          const enriched = getEnrichedIncident(inc, threatId);
-          incidentItemsMap.set(key, {
-            incident: {
-              ...enriched,
-              mappedThreats: [threatId]
-            }
-          });
-        }
-      }
-    }
-
-    for (const { incident } of incidentItemsMap.values()) {
-      items.push({
-        id: `inc-${incident.title}`,
-        title: incident.title,
-        subtitle: `${incident.targetOrVictim ? `${incident.targetOrVictim} • ` : ''}${incident.severity ? `[${incident.severity}] ` : ''}Mapped to ${(incident.mappedThreats || []).slice(0, 3).join(', ')}`,
-        category: 'incident',
-        categoryLabel: 'Incident / Case Study',
-        badgeColor: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
-        incident: incident,
-        url: incident.url
-      });
-    }
-
-    return items;
-  }, []);
+  const allSearchItems = useMemo(() => getSearchIndex(), []);
 
   // Filtered results
   const filteredResults = useMemo(() => {
@@ -281,13 +333,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       return list.slice(0, 15);
     }
 
-    return list.filter(item => {
-      return (
-        item.title.toLowerCase().includes(cleanQuery) ||
-        item.subtitle.toLowerCase().includes(cleanQuery) ||
-        item.categoryLabel.toLowerCase().includes(cleanQuery)
-      );
-    }).slice(0, 30);
+    return list.filter(item => item.searchText.includes(cleanQuery)).slice(0, 30);
   }, [allSearchItems, query, activeTab]);
 
   // Handle keyboard events

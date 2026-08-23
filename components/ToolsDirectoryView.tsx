@@ -186,7 +186,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
             <div 
               key={tool.name}
               onClick={() => setSelectedTool(tool)}
-              className="bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 rounded-xl p-4 transition-all flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer shadow-sm hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+              className="content-auto bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 rounded-xl p-4 transition-all flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer shadow-sm hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">

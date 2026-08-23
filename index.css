@@ -162,6 +162,19 @@
     scrollbar-width: none;
 }
 
+/* Content visibility & layout containment optimization for long lists */
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 180px;
+}
+
+/* GPU hardware acceleration for critical animated layers */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Homepage animation system                                          */
 /* ------------------------------------------------------------------ */

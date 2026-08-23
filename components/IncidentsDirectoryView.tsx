@@ -136,9 +136,9 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
         ) : (
           filteredIncidents.map((incident, idx) => (
             <div 
-              key={idx}
+              key={`${incident.title}-${idx}`}
               onClick={() => setSelectedIncident(incident)}
-              className="bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer hover:shadow-lg hover:shadow-amber-500/5"
+              className="content-auto bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer hover:shadow-lg hover:shadow-amber-500/5"
             >
               <div>
                 {/* Meta Badges */}
