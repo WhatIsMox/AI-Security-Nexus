@@ -389,6 +389,8 @@ const App: React.FC = () => {
               onSelectThreatModel={handleSelectThreatModel}
               onSelectTest={handleSelectTest}
               onNavigateToOwasp={handleNavigateToOwasp}
+              onSelectIncidents={handleSelectIncidents}
+              onSelectTools={handleSelectTools}
             />
           )}
 

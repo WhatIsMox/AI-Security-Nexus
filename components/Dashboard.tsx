@@ -31,6 +31,8 @@ interface DashboardProps {
   onSelectThreatModel: () => void;
   onSelectTest: (test: TestItem) => void;
   onNavigateToOwasp: (id: string) => void;
+  onSelectIncidents?: () => void;
+  onSelectTools?: () => void;
 }
 
 /* ------------------------------------------------------------------ */
@@ -318,7 +320,14 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   },
 ];
 
-const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatModel, onSelectTest, onNavigateToOwasp }) => {
+const Dashboard: React.FC<DashboardProps> = ({ 
+  onSelectPillar, 
+  onSelectThreatModel, 
+  onSelectTest, 
+  onNavigateToOwasp,
+  onSelectIncidents,
+  onSelectTools
+}) => {
   useRevealObserver();
 
   /* ---------------- live aggregates ---------------- */
@@ -887,12 +896,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
           TOOL MARQUEE
       ================================================================= */}
       <section className="mb-16 overflow-hidden">
-        <SectionHeader
-          kicker="Security tooling"
-          title={`${stats.uniqueTools.length} curated offensive & defensive security tools`}
-          blurb={`${stats.toolCategories.Offensive} offensive scanners · ${stats.toolCategories.Defensive} defensive guardrails · ${stats.toolCategories.Both} dual-purpose platforms mapped directly to specific threats.`}
-        />
-        <div className="reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
+          <SectionHeader
+            kicker="Security tooling"
+            title={`${stats.uniqueTools.length} curated offensive & defensive security tools`}
+            blurb={`${stats.toolCategories.Offensive} offensive scanners · ${stats.toolCategories.Defensive} defensive guardrails · ${stats.toolCategories.Both} dual-purpose platforms mapped directly to specific threats.`}
+          />
+          {onSelectTools && (
+            <button
+              type="button"
+              onClick={onSelectTools}
+              className="shrink-0 mb-6 text-xs font-semibold text-purple-400 hover:text-purple-300 inline-flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+            >
+              Browse all {stats.uniqueTools.length} tools <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+        <div 
+          onClick={onSelectTools}
+          className={`reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] ${onSelectTools ? 'cursor-pointer' : ''}`}
+        >
           <div className="flex overflow-hidden">
             <div className="flex shrink-0 animate-marquee hover:[animation-play-state:paused]">
               {[...stats.uniqueTools, ...stats.uniqueTools].map((tool, i) => (
@@ -930,15 +953,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectPillar, onSelectThreatMod
               <p key={incidentIndex} className="flex-1 text-slate-200 font-medium leading-relaxed animate-fade-up text-base md:text-lg">
                 {incident.title}
               </p>
-              <a
-                href={incident.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-bold text-slate-200 hover:border-orange-400/60 hover:text-white transition-all"
-              >
-                Read Case Study
-                <ExternalLink className="w-4 h-4" />
-              </a>
+              {onSelectIncidents ? (
+                <button
+                  type="button"
+                  onClick={onSelectIncidents}
+                  className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-orange-500/40 bg-orange-500/10 px-5 py-2.5 text-sm font-bold text-orange-300 hover:bg-orange-500/20 hover:border-orange-400 hover:text-white transition-all cursor-pointer shadow-sm hover:shadow-[0_0_15px_rgba(249,115,22,0.25)]"
+                >
+                  Read Case Study
+                  <ArrowRight className="w-4 h-4 text-orange-400" />
+                </button>
+              ) : (
+                <a
+                  href={incident.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-bold text-slate-200 hover:border-orange-400/60 hover:text-white transition-all"
+                >
+                  Read Case Study
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              )}
             </div>
             <div className="relative mt-5 flex items-center gap-1.5">
               {stats.incidents.slice(0, 10).map((_, i) => (

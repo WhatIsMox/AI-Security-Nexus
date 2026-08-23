@@ -121,4 +121,10 @@ test('Advanced Features - Consolidated Tools Matrix & Incidents Explorer Views',
   assert.ok(incidentsViewContent.includes('INCIDENTS_BY_THREAT_ID'), 'IncidentsDirectoryView must import INCIDENTS_BY_THREAT_ID');
   assert.ok(incidentsViewContent.includes('frameworkFilter'), 'IncidentsDirectoryView must support framework filter');
   assert.ok(incidentsViewContent.includes('mappedThreats'), 'IncidentsDirectoryView must render mapped threat tags');
+
+  // Dashboard homepage navigation verification
+  const dashboardContent = readFile('components/Dashboard.tsx');
+  assert.ok(dashboardContent.includes('onSelectIncidents'), 'Dashboard must support onSelectIncidents callback');
+  assert.ok(dashboardContent.includes('onSelectTools'), 'Dashboard must support onSelectTools callback');
+  assert.ok(dashboardContent.includes('onClick={onSelectIncidents}'), 'Dashboard Read Case Study button must trigger onSelectIncidents');
 });
