@@ -180,7 +180,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                       <div className="relative group mt-2">
                         <div className="absolute top-0 right-0 px-2 py-0.5 text-[9px] sm:text-[10px] text-slate-500 font-mono">PAYLOAD / CODE</div>
                         <pre className="bg-black/50 text-green-400 p-3 pt-5 sm:p-4 sm:pt-6 rounded-lg font-mono text-xs sm:text-sm whitespace-pre-wrap break-words border border-slate-800 overflow-x-auto">
-                          {payload.code}
+                          <code>{payload.code}</code>
                         </pre>
                       </div>
                     )}

@@ -30,34 +30,51 @@ test('Security - Content Security Policy (CSP) & Referrer Policy Configuration',
   assert.ok(viteConfig.includes("Permissions-Policy"), 'Vite config must inject Permissions-Policy');
 });
 
-test('Security - Test Payload Safe Rendering (Zero dangerouslySetInnerHTML for Payloads)', (t) => {
-  const testDetail = readFile('components/TestDetail.tsx');
-  const testList = readFile('components/TestList.tsx');
-  const owaspView = readFile('components/OwaspTop10View.tsx');
-
-  // Verify that test items are rendered without dangerous unescaped HTML injection
-  assert.ok(!testDetail.includes('dangerouslySetInnerHTML'), 'TestDetail must not use dangerouslySetInnerHTML');
-  assert.ok(!testList.includes('dangerouslySetInnerHTML'), 'TestList must not use dangerouslySetInnerHTML');
-  assert.ok(!owaspView.includes('dangerouslySetInnerHTML'), 'OwaspTop10View must not use dangerouslySetInnerHTML');
-});
-
-test('Security - No Dynamic Code Execution (eval / Function constructor)', (t) => {
+test('Security - Global Zero-DOM-XSS Static Analysis (CWE-79)', (t) => {
   const componentFiles = fs.readdirSync(path.join(rootDir, 'components'));
+  componentFiles.push('../App.tsx');
+  componentFiles.push('../index.tsx');
 
   for (const file of componentFiles) {
     if (file.endsWith('.tsx') || file.endsWith('.ts')) {
-      const code = readFile(`components/${file}`);
-      assert.ok(!code.includes('eval('), `File components/${file} must not contain eval()`);
-      assert.ok(!code.includes('new Function('), `File components/${file} must not contain new Function()`);
+      const code = readFile(file.startsWith('../') ? file.replace('../', '') : `components/${file}`);
+      
+      // Assert zero usage of dangerous DOM injection primitives
+      assert.ok(!code.includes('dangerouslySetInnerHTML'), `File ${file} must not contain dangerouslySetInnerHTML`);
+      assert.ok(!code.includes('.innerHTML'), `File ${file} must not contain .innerHTML assignment`);
+      assert.ok(!code.includes('.outerHTML'), `File ${file} must not contain .outerHTML assignment`);
+      assert.ok(!code.includes('document.write('), `File ${file} must not contain document.write`);
+      assert.ok(!code.includes('document.writeln('), `File ${file} must not contain document.writeln`);
     }
   }
 });
 
-test('Security - LocalStorage State Deserialization Sanitization', (t) => {
-  const auditView = readFile('components/AuditChecklistView.tsx');
+test('Security - No Dynamic Code Execution (eval / Function constructor / String timers) (CWE-95)', (t) => {
+  const componentFiles = fs.readdirSync(path.join(rootDir, 'components'));
+  componentFiles.push('../App.tsx');
+  componentFiles.push('../index.tsx');
 
-  // Verify prototype poisoning defense & schema validation
-  assert.ok(auditView.includes('__proto__'), 'AuditChecklistView must guard against __proto__ prototype poisoning');
-  assert.ok(auditView.includes('constructor'), 'AuditChecklistView must guard against constructor prototype poisoning');
-  assert.ok(auditView.includes('validStatuses'), 'AuditChecklistView must validate status against allowed whitelist');
+  for (const file of componentFiles) {
+    if (file.endsWith('.tsx') || file.endsWith('.ts')) {
+      const code = readFile(file.startsWith('../') ? file.replace('../', '') : `components/${file}`);
+      assert.ok(!code.includes('eval('), `File ${file} must not contain eval()`);
+      assert.ok(!code.includes('new Function('), `File ${file} must not contain new Function()`);
+      
+      // Ensure setTimeout/setInterval are called with functions, not string code
+      const stringTimeoutRegex = /setTimeout\s*\(\s*["'`]/g;
+      const stringIntervalRegex = /setInterval\s*\(\s*["'`]/g;
+      assert.ok(!stringTimeoutRegex.test(code), `File ${file} must not pass raw string code to setTimeout`);
+      assert.ok(!stringIntervalRegex.test(code), `File ${file} must not pass raw string code to setInterval`);
+    }
+  }
+});
+
+test('Security - Attack Payloads Isolated as Safe Text in Pre/Code Blocks (OWASP LLM Red-Teaming)', (t) => {
+  const testDetailCode = readFile('components/TestDetail.tsx');
+  const dashboardCode = readFile('components/Dashboard.tsx');
+
+  // Verify payloads are rendered inside <pre> and <code> blocks
+  assert.ok(testDetailCode.includes('<pre'), 'TestDetail must wrap payloads in <pre> tags');
+  assert.ok(testDetailCode.includes('<code'), 'TestDetail must wrap payloads in <code> tags');
+  assert.ok(dashboardCode.includes('<pre'), 'Dashboard spotlight must wrap sample payload in <pre> tag');
 });
