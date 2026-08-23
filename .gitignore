@@ -1,26 +1,47 @@
-# Logs
-logs
+# Logs and temporary files
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+tmp/
+temp/
+.cache/
+.temp/
 
-node_modules
-dist
-dist-ssr
+# Dependencies
+node_modules/
+
+# Production builds
+dist/
+dist-ssr/
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
 *.local
-vite.config.ts.timestamp-*.mjs
+
+# Vite / bundler temporary files
+vite.config.ts.timestamp-*
 *.timestamp-*.mjs
 
-# Editor directories and files
+# Editor and OS files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
+.DS_Store?
+._*
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*~
+
+# Coverage and test artifacts
+coverage/
+.nyc_output/

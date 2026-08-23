@@ -78,7 +78,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ]
   },
   {
-    id: "MCP03:2025",
+    id: "MCP3:2025",
     title: "Tool Poisoning",
     description: "Attackers compromise tools, plugins, schemas, or their outputs to inject malicious or misleading context, steering model behavior through trusted interfaces.",
     commonRisks: [
@@ -227,7 +227,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     ]
   },
   {
-    id: "MCP07:2025",
+    id: "MCP7:2025",
     title: "Insufficient Authentication & Authorization",
     description: "MCP servers, tools, or agents that do not properly verify identities or enforce access controls expose high-impact attack paths across the ecosystem.",
     commonRisks: [

@@ -85,6 +85,9 @@ const App: React.FC = () => {
     } else if (id.startsWith("MCP")) {
       setActivePillar('MCPTOP10');
       setCurrentView('owasp-mcp-top10');
+    } else if (id.startsWith("DSGAI") || id.startsWith("ai-dspm")) {
+      setActivePillar('GENAIDATASECURITY');
+      setCurrentView('genai-data-security');
     } else {
       setActivePillar('TOP10');
       setCurrentView('owasp-top10');
@@ -255,7 +258,7 @@ const App: React.FC = () => {
           )}
 
           {currentView === 'genai-data-security' && (
-            <GenAiDataSecurityView />
+            <GenAiDataSecurityView initialExpandedId={owaspTargetId} />
           )}
 
           {currentView === 'tests' && (

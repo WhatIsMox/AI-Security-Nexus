@@ -487,14 +487,31 @@ const RiskCard: React.FC<{
   );
 };
 
-const GenAiDataSecurityView: React.FC = () => {
+interface GenAiDataSecurityViewProps {
+  initialExpandedId?: string | null;
+}
+
+const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialExpandedId }) => {
   const [activeSectionId, setActiveSectionId] = useState('genai-data-security-context');
   const [search, setSearch] = useState('');
   const [themeFilter, setThemeFilter] = useState<ThemeFilter>('All');
   const [tierFilter, setTierFilter] = useState<GenAiDataSecurityTier | 'All'>('All');
-  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({
-    DSGAI01: true,
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>(() => {
+    if (initialExpandedId) {
+      return { [initialExpandedId]: true };
+    }
+    return { DSGAI01: true };
   });
+
+  useEffect(() => {
+    if (initialExpandedId) {
+      setExpandedIds((prev) => ({ ...prev, [initialExpandedId]: true }));
+      const el = document.getElementById(initialExpandedId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [initialExpandedId]);
 
   const themes = useMemo(
     () => ['All', ...Array.from(new Set(GENAI_DATA_SECURITY_RISKS.map((risk) => risk.theme)))] as ThemeFilter[],

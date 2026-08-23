@@ -730,7 +730,7 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     mitigatedAt: ["4"]
   },
   { 
-    id: "MCP03:2025", 
+    id: "MCP3:2025", 
     name: "Tool Poisoning", 
     category: "Security", 
     riskLevel: "High", 
@@ -794,7 +794,7 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     mitigatedAt: ["7", "17"]
   },
   { 
-    id: "MCP07:2025", 
+    id: "MCP7:2025", 
     name: "Insufficient Authentication & Authorization", 
     category: "Security", 
     riskLevel: "High", 

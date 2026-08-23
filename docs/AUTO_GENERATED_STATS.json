@@ -1,0 +1,159 @@
+{
+  "timestamp": "2026-08-23T18:25:08.132Z",
+  "frameworks": {
+    "owaspLlmTop10_2026": {
+      "count": 10,
+      "ids": [
+        "LLM01:2026",
+        "LLM02:2026",
+        "LLM03:2026",
+        "LLM04:2026",
+        "LLM05:2026",
+        "LLM06:2026",
+        "LLM07:2026",
+        "LLM08:2026",
+        "LLM09:2026",
+        "LLM10:2026"
+      ]
+    },
+    "owaspMlTop10": {
+      "count": 10,
+      "ids": [
+        "ML01:2023",
+        "ML02:2023",
+        "ML03:2023",
+        "ML04:2023",
+        "ML05:2023",
+        "ML06:2023",
+        "ML07:2023",
+        "ML08:2023",
+        "ML09:2023",
+        "ML10:2023"
+      ]
+    },
+    "owaspAgenticSkillsTop10": {
+      "count": 10,
+      "ids": [
+        "AST01",
+        "AST02",
+        "AST03",
+        "AST04",
+        "AST05",
+        "AST08",
+        "AST10",
+        "AST07",
+        "AST06",
+        "AST09"
+      ]
+    },
+    "owaspAgenticAppsTop10": {
+      "count": 10,
+      "ids": [
+        "ASI01",
+        "ASI02",
+        "ASI06",
+        "ASI10",
+        "ASI03",
+        "ASI05",
+        "ASI07",
+        "ASI04",
+        "ASI08",
+        "ASI09"
+      ]
+    },
+    "owaspMcpTop10": {
+      "count": 10,
+      "ids": [
+        "MCP1:2025",
+        "MCP2:2025",
+        "MCP3:2025",
+        "MCP4:2025",
+        "MCP5:2025",
+        "MCP6:2025",
+        "MCP7:2025",
+        "MCP8:2025",
+        "MCP9:2025",
+        "MCP10:2025"
+      ]
+    },
+    "googleSaifThreats": {
+      "count": 15,
+      "ids": [
+        "SAIF-R01",
+        "SAIF-R02",
+        "SAIF-R03",
+        "SAIF-R04",
+        "SAIF-R05",
+        "SAIF-R06",
+        "SAIF-R07",
+        "SAIF-R08",
+        "SAIF-R09",
+        "SAIF-R10",
+        "SAIF-R11",
+        "SAIF-R12",
+        "SAIF-R13",
+        "SAIF-R14",
+        "SAIF-R15"
+      ]
+    },
+    "owaspGenAiDataSecurity": {
+      "count": 21,
+      "ids": [
+        "DSGAI01",
+        "DSGAI02",
+        "DSGAI03",
+        "DSGAI04",
+        "DSGAI05",
+        "DSGAI06",
+        "DSGAI07",
+        "DSGAI08",
+        "DSGAI09",
+        "DSGAI10",
+        "DSGAI11",
+        "DSGAI12",
+        "DSGAI13",
+        "DSGAI14",
+        "DSGAI15",
+        "DSGAI16",
+        "DSGAI17",
+        "DSGAI18",
+        "DSGAI19",
+        "DSGAI20",
+        "DSGAI21"
+      ]
+    },
+    "aiDspmCapabilities": {
+      "count": 13,
+      "ids": [
+        "ai-dspm-01",
+        "ai-dspm-02",
+        "ai-dspm-03",
+        "ai-dspm-04",
+        "ai-dspm-05",
+        "ai-dspm-06",
+        "ai-dspm-07",
+        "ai-dspm-08",
+        "ai-dspm-09",
+        "ai-dspm-10",
+        "ai-dspm-11",
+        "ai-dspm-12",
+        "ai-dspm-13"
+      ]
+    }
+  },
+  "tests": {
+    "total": 42,
+    "standardTestsCount": 32,
+    "agenticTestsCount": 10,
+    "byPillar": {
+      "application": 17,
+      "model": 7,
+      "infrastructure": 13,
+      "data": 5
+    }
+  },
+  "catalogs": {
+    "toolsCount": 188,
+    "incidentsCount": 55
+  }
+}

@@ -1159,6 +1159,9 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Goal Alignment",
     pillar: Pillar.MODEL,
     riskLevel: 'High',
+    owaspTop10Ref: "LLM01:2026",
+    owaspAgenticRef: "ASI01",
+    owaspSaifRef: "SAIF-R10",
     summary: "This test evaluates vulnerabilities associated with AI model goal misalignment, where AI systems act in ways inconsistent with intended ethical, operational, and organizational objectives.",
     objectives: [
       "Identify vulnerabilities in model behavior alignment.",
@@ -1335,7 +1338,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM03:2026",
     owaspAgenticRef: "ASI02",
     owaspSaifRef: "SAIF-R09",
-    owaspMcpTop10Ref: "MCP07:2025",
+    owaspMcpTop10Ref: "MCP7:2025",
     summary: "Plugin Boundary Violations occur when AI systems fail to maintain strict boundaries, allowing plugins to perform unintended operations.",
     objectives: [
       "Identify security boundaries between plugins.",
@@ -1648,6 +1651,8 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Dataset Diversity & Coverage",
     pillar: Pillar.DATA,
     riskLevel: 'Medium',
+    owaspTop10Ref: "LLM05:2026",
+    owaspSaifRef: "SAIF-R02",
     summary: "Dataset Diversity & Coverage testing ensures that AI training and evaluation datasets comprehensively represent diverse scenarios, populations, and contexts.",
     objectives: [
       "Verify datasets represent diverse demographic groups.",
