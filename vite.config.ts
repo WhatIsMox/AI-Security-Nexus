@@ -55,9 +55,19 @@ export default defineConfig(({ command }) => {
       chunkSizeWarningLimit: 1200,
       rollupOptions: {
         output: {
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom'],
-            'vendor-icons': ['lucide-react'],
+          manualChunks(id) {
+            if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('node_modules/lucide-react')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('incident_details_catalog') || id.includes('tool_details_catalog')) {
+              return 'security-intelligence-db';
+            }
+            if (id.includes('data_saif') || id.includes('data_genai_data_security') || id.includes('data_secure_mcp_guide') || id.includes('data_ml') || id.includes('data_mcp')) {
+              return 'frameworks-data';
+            }
           },
         },
       },

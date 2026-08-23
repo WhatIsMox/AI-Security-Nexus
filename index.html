@@ -11,9 +11,28 @@
     <meta property="og:title" content="AI Security Nexus" />
     <meta property="og:description" content="Global AI Security Framework Navigator & Red-Team Test Suite" />
     <meta property="og:image" content="./icon.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <!-- Privacy-friendly analytics by Plausible -->
-    <script async src="https://stats.byreference.net/js/pa-Kl7vOWMheqklqGJOfSUA_.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Privacy-friendly analytics by Plausible (Non-blocking deferred initialization) -->
+    <script>
+      (function() {
+        function loadAnalytics() {
+          if (document.querySelector('script[data-analytics="plausible"]')) return;
+          var s = document.createElement('script');
+          s.async = true;
+          s.defer = true;
+          s.setAttribute('data-analytics', 'plausible');
+          s.src = 'https://stats.byreference.net/js/pa-Kl7vOWMheqklqGJOfSUA_.js';
+          document.head.appendChild(s);
+        }
+        if (document.readyState === 'complete') {
+          setTimeout(loadAnalytics, 100);
+        } else {
+          window.addEventListener('load', function() { setTimeout(loadAnalytics, 100); }, { once: true });
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
