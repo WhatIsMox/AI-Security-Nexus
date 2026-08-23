@@ -167,6 +167,7 @@ test('Cross-Framework - Incidents Catalog Threat IDs Resolution', (t) => {
   const astContent = readFile('data_agentic.ts');
   const saifContent = readFile('data_saif.ts');
   const mcpContent = readFile('data_mcp.ts');
+  const dsgaiContent = readFile('data_genai_data_security.ts');
 
   const allValidThreatIds = new Set([
     ...[...llmContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
@@ -174,12 +175,27 @@ test('Cross-Framework - Incidents Catalog Threat IDs Resolution', (t) => {
     ...[...asiContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
     ...[...astContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
     ...[...saifContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
-    ...[...mcpContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1])
+    ...[...mcpContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...dsgaiContent.matchAll(/id:\s*["'](DSGAI\d{2})["']/g)].map(m => m[1])
   ]);
 
-  const incidentKeys = [...incidentsContent.matchAll(/['"]([A-Za-z0-9_:\-]+)['"]\s*:\s*\[/g)].map(m => m[1]);
-  for (const key of incidentKeys) {
-    assert.ok(allValidThreatIds.has(key), `Incidents catalog maps to unknown threat ID: "${key}"`);
+  const incidentKeys = [...incidentsContent.matchAll(/['"]([A-Za-z0-9_:\-]+)['"]\s*:\s*([A-Za-z0-9_]+)/g)].map(m => ({ id: m[1], varName: m[2] }));
+  for (const { id } of incidentKeys) {
+    assert.ok(allValidThreatIds.has(id), `Incidents catalog maps to unknown threat ID: "${id}"`);
+  }
+
+  // Verify all Top 10 framework threats are covered in the incident catalog
+  const top10ThreatIds = [
+    ...[...llmContent.matchAll(/id:\s*["'](LLM\d{2}:\d{4})["']/g)].map(m => m[1]),
+    ...[...mlContent.matchAll(/id:\s*["'](ML\d{2}:\d{4})["']/g)].map(m => m[1]),
+    ...[...asiContent.matchAll(/id:\s*["'](ASI\d{2})["']/g)].map(m => m[1]),
+    ...[...astContent.matchAll(/id:\s*["'](AST\d{2})["']/g)].map(m => m[1]),
+    ...[...mcpContent.matchAll(/id:\s*["'](MCP\d+:\d{4})["']/g)].map(m => m[1])
+  ];
+
+  const mappedIds = new Set(incidentKeys.map(k => k.id));
+  for (const threatId of top10ThreatIds) {
+    assert.ok(mappedIds.has(threatId), `Top 10 threat "${threatId}" must be mapped in incidents_catalog.ts`);
   }
 });
 

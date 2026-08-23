@@ -19,7 +19,7 @@ This document provides AI agents and engineers with an up-to-date topographical 
 | **AI-DSPM Posture Capabilities** | `ai-dspm-01` - `ai-dspm-13` | **13** | [`data_genai_data_security.ts`](../data_genai_data_security.ts) |
 | **Security Test Cases (Total)** | `AITG-*`, `AGT-*` | **42** | [`data_tests.ts`](../data_tests.ts) & [`data_agentic.ts`](../data_agentic.ts) |
 | **Tooling Registry Entries** | Security Tools | **188** | [`tools_catalog.ts`](../tools_catalog.ts) |
-| **Real-World Incident Citations** | CVEs / Papers / Outages | **55** | [`incidents_catalog.ts`](../incidents_catalog.ts) |
+| **Real-World Incident Citations** | CVEs / Papers / Outages | **156** | [`incidents_catalog.ts`](../incidents_catalog.ts) |
 
 ### Test Case Pillar Distribution
 - **AI Application Pillar (`Pillar.APP`)**: 17 tests

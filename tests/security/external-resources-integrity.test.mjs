@@ -30,7 +30,7 @@ test('Security - Incidents Catalog URL Validation', (t) => {
   const content = readFile('incidents_catalog.ts');
   const urls = [...content.matchAll(/url:\s*["']([^"']+)["']/g)].map(m => m[1]);
 
-  assert.ok(urls.length >= 40, `Expected at least 40 incident URLs, found ${urls.length}`);
+  assert.ok(urls.length >= 150, `Expected at least 150 incident URLs, found ${urls.length}`);
 
   for (const u of urls) {
     assert.ok(u.startsWith('https://') || u.startsWith('http://'), `Incident citation URL must start with http/https: ${u}`);
