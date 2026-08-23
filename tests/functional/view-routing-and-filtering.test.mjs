@@ -15,7 +15,7 @@ function readFile(relativePath) {
 test('Functional - App Router View Transitions', (t) => {
   const appContent = readFile('App.tsx');
 
-  // Verify all 11 views are supported in currentView state type
+  // Verify all views are supported in currentView state type
   const expectedViews = [
     'dashboard',
     'tests',
@@ -27,7 +27,10 @@ test('Functional - App Router View Transitions', (t) => {
     'owasp-saif-top10',
     'owasp-mcp-top10',
     'secure-mcp-guide',
-    'genai-data-security'
+    'genai-data-security',
+    'audit-checklist',
+    'tools',
+    'incidents'
   ];
 
   for (const view of expectedViews) {

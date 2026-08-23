@@ -1,7 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { TestItem } from '../types';
-import { ArrowLeft, Target, Code, ShieldCheck, ExternalLink, BookOpen, Wrench, Shield, Brain, Terminal, Eye, Link as LinkIcon, Cpu, Bot, AlertCircle, Gavel, Network } from 'lucide-react';
+import { 
+  ArrowLeft, Target, Code, ShieldCheck, ExternalLink, BookOpen, 
+  Wrench, Shield, Brain, Terminal, Eye, Link as LinkIcon, Cpu, 
+  Bot, AlertCircle, Gavel, Network, Copy, Check 
+} from 'lucide-react';
 
 interface TestDetailProps {
   test: TestItem;
@@ -10,7 +14,17 @@ interface TestDetailProps {
 }
 
 const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp }) => {
+  const [copiedPayloadIndex, setCopiedPayloadIndex] = useState<number | null>(null);
   const isAgentic = test.id.startsWith('AGT') || !!test.owaspAgenticRef;
+
+  const handleCopyPayload = (code: string, index: number) => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopiedPayloadIndex(index);
+      setTimeout(() => {
+        setCopiedPayloadIndex(null);
+      }, 2000);
+    });
+  };
 
   return (
     <div className="container-fluid p-3 sm:p-5 md:p-8 max-w-5xl mx-auto animate-in slide-in-from-right-4 duration-300">
@@ -136,6 +150,30 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                 <div key={i} className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
                   <div className="px-4 py-2 bg-slate-900 border-b border-slate-800 flex justify-between items-center">
                     <span className="font-semibold text-slate-200">{payload.name}</span>
+                    {payload.code && (
+                      <button
+                        onClick={() => handleCopyPayload(payload.code!, i)}
+                        type="button"
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-all ${
+                          copiedPayloadIndex === i
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                            : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700'
+                        }`}
+                        title="Copy attack payload"
+                      >
+                        {copiedPayloadIndex === i ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Payload</span>
+                          </>
+                        )}
+                      </button>
+                    )}
                   </div>
                   <div className="p-4">
                     <p className="text-slate-400 text-sm mb-3 whitespace-pre-line">{payload.description}</p>

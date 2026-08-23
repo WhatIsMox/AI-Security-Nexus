@@ -22,8 +22,11 @@ The UI is a state-driven single page application. Navigation is controlled via `
 | `'owasp-mcp-top10'` | `'MCPTOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/OwaspTop10View.tsx) | OWASP MCP Top 10 (v0.1) |
 | `'secure-mcp-guide'` | `'SECUREMCPGUIDE'` | [`SecureMcpGuideView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/SecureMcpGuideView.tsx) | Secure MCP Server Hardening Guide v1.0 |
 | `'genai-data-security'`| `'GENAIDATASECURITY'`| [`GenAiDataSecurityView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/GenAiDataSecurityView.tsx) | DSGAI01-DSGAI21 & AI-DSPM capabilities |
-| `'tests'` | `Pillar \| 'ALL'` | [`TestList.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/TestList.tsx) | Filterable security test catalog (42+ tests) |
-| `'detail'` | `Pillar` | [`TestDetail.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/TestDetail.tsx) | Test drill-down with payloads and remediations |
+| `'audit-checklist'` | Any | [`AuditChecklistView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/AuditChecklistView.tsx) | Interactive audit tracking, scoring & JSON/MD report export |
+| `'tools'` | Any | [`ToolsDirectoryView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/ToolsDirectoryView.tsx) | Consolidated security tools directory & posture filtering |
+| `'incidents'` | Any | [`IncidentsDirectoryView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/IncidentsDirectoryView.tsx) | Real-world AI security incidents & CVE explorer |
+| `'tests'` | `Pillar \| 'ALL'` | [`TestList.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/TestList.tsx) | Filterable security test catalog (42+ tests) with keyword search |
+| `'detail'` | `Pillar` | [`TestDetail.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/TestDetail.tsx) | Test drill-down with payloads, copy button, and remediations |
 
 ---
 

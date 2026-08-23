@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { TestItem } from '../types';
-import { ArrowRight, Brain, Filter, ListFilter, Cpu, Bot, Book, Gavel, Network } from 'lucide-react';
+import { ArrowRight, Brain, Filter, ListFilter, Cpu, Bot, Book, Gavel, Network, Search, X } from 'lucide-react';
 
 interface TestListProps {
   tests: TestItem[];
@@ -13,6 +13,7 @@ interface TestListProps {
 const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOwasp, category }) => {
   const [sortMethod, setSortMethod] = useState<'id' | 'severity'>('id');
   const [filterType, setFilterType] = useState<'all' | 'top10' | 'mltop10' | 'agenttop10' | 'saiftop10' | 'mcptop10' | 'aitg'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const getRiskColor = (level: string) => {
     switch(level) {
@@ -32,33 +33,62 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
     }
   };
 
-  // 1. Filter the tests based on the selected filterType
-  const filteredTests = tests.filter(test => {
-    if (filterType === 'top10') return !!test.owaspTop10Ref;
-    if (filterType === 'mltop10') return !!test.owaspMlTop10Ref;
-    if (filterType === 'agenttop10') return !!test.owaspAgenticRef;
-    if (filterType === 'saiftop10') return !!test.owaspSaifRef;
-    if (filterType === 'mcptop10') return !!test.owaspMcpTop10Ref;
-    if (filterType === 'aitg') return test.id.startsWith('AITG');
-    return true;
-  });
+  // 1. Filter the tests based on the selected filterType & free-text searchQuery
+  const filteredTests = useMemo(() => {
+    const cleanQuery = searchQuery.trim().toLowerCase();
+
+    return tests.filter(test => {
+      // Source filter
+      if (filterType === 'top10' && !test.owaspTop10Ref) return false;
+      if (filterType === 'mltop10' && !test.owaspMlTop10Ref) return false;
+      if (filterType === 'agenttop10' && !test.owaspAgenticRef) return false;
+      if (filterType === 'saiftop10' && !test.owaspSaifRef) return false;
+      if (filterType === 'mcptop10' && !test.owaspMcpTop10Ref) return false;
+      if (filterType === 'aitg' && !test.id.startsWith('AITG')) return false;
+
+      // Free-text keyword search
+      if (cleanQuery) {
+        const textToSearch = [
+          test.id,
+          test.title,
+          test.summary,
+          test.pillar,
+          test.riskLevel,
+          test.owaspTop10Ref || '',
+          test.owaspMlTop10Ref || '',
+          test.owaspAgenticRef || '',
+          test.owaspSaifRef || '',
+          test.owaspMcpTop10Ref || '',
+          ...(test.objectives || []),
+          ...(test.payloads || []).map(p => `${p.name} ${p.description} ${p.code || ''}`),
+          ...(test.mitigationStrategies || []).map(m => m.content)
+        ].join(' ').toLowerCase();
+
+        if (!textToSearch.includes(cleanQuery)) return false;
+      }
+
+      return true;
+    });
+  }, [tests, filterType, searchQuery]);
 
   // 2. Sort the filtered list
-  const sortedTests = [...filteredTests].sort((a, b) => {
-    if (sortMethod === 'severity') {
-      return getRiskValue(b.riskLevel) - getRiskValue(a.riskLevel);
-    }
-    
-    // Default Sort: AITG tests first, then AGT tests
-    const isAITG_a = a.id.startsWith('AITG');
-    const isAITG_b = b.id.startsWith('AITG');
+  const sortedTests = useMemo(() => {
+    return [...filteredTests].sort((a, b) => {
+      if (sortMethod === 'severity') {
+        return getRiskValue(b.riskLevel) - getRiskValue(a.riskLevel);
+      }
+      
+      // Default Sort: AITG tests first, then AGT tests
+      const isAITG_a = a.id.startsWith('AITG');
+      const isAITG_b = b.id.startsWith('AITG');
 
-    if (isAITG_a && !isAITG_b) return -1;
-    if (!isAITG_a && isAITG_b) return 1;
+      if (isAITG_a && !isAITG_b) return -1;
+      if (!isAITG_a && isAITG_b) return 1;
 
-    // Secondary sort by ID alpha
-    return a.id.localeCompare(b.id);
-  });
+      // Secondary sort by ID alpha
+      return a.id.localeCompare(b.id);
+    });
+  }, [filteredTests, sortMethod]);
 
   return (
     <div className="container-fluid p-3 sm:p-4 md:p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
@@ -75,6 +105,30 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
           <div className="bg-slate-900 px-3 py-2 rounded-full border border-slate-800 text-xs md:text-sm text-slate-400 font-mono whitespace-nowrap self-start md:self-auto">
             {sortedTests.length} TEST CASES
           </div>
+        </div>
+
+        {/* Search Input Bar */}
+        <div className="mb-4 relative">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+            <Search className="w-4 h-4" />
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search test cases by keyword, objective, attack payload, CVE, or ID (e.g., 'jailbreak', 'pickle', 'AITG-APP-01')..."
+            className="w-full pl-10 pr-10 py-2.5 bg-slate-900/80 border border-slate-800 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 rounded-xl text-sm text-slate-100 placeholder:text-slate-500 transition-all outline-none"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+              type="button"
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Controls Toolbar */}

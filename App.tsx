@@ -1,6 +1,6 @@
 
-import React, { useEffect, useState, useMemo } from 'react';
-import Sidebar from './components/Sidebar';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import Sidebar, { AppView, ActivePillarKey } from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import TestList from './components/TestList';
 import TestDetail from './components/TestDetail';
@@ -9,17 +9,159 @@ import OwaspTop10View from './components/OwaspTop10View';
 import AgenticTop10View from './components/AgenticTop10View';
 import SecureMcpGuideView from './components/SecureMcpGuideView';
 import GenAiDataSecurityView from './components/GenAiDataSecurityView';
+import AuditChecklistView from './components/AuditChecklistView';
+import ToolsDirectoryView from './components/ToolsDirectoryView';
+import IncidentsDirectoryView from './components/IncidentsDirectoryView';
+import GlobalSearchModal from './components/GlobalSearchModal';
 import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_SAIF_THREATS_DATA, OWASP_MCP_TOP_10_DATA } from './data';
 import { Pillar, TestItem } from './types';
-import { Menu, Book } from 'lucide-react';
+import { Menu, Book, Search } from 'lucide-react';
+
+const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKey; id: string | null } => {
+  const clean = hash.replace(/^#\/?/, '').trim();
+  if (!clean || clean === 'dashboard') {
+    return { view: 'dashboard', pillar: 'ALL', id: null };
+  }
+  if (clean === 'threat-model') {
+    return { view: 'threat-model', pillar: 'ALL', id: null };
+  }
+  if (clean === 'audit-checklist') {
+    return { view: 'audit-checklist', pillar: 'ALL', id: null };
+  }
+  if (clean === 'tools') {
+    return { view: 'tools', pillar: 'ALL', id: null };
+  }
+  if (clean === 'incidents') {
+    return { view: 'incidents', pillar: 'ALL', id: null };
+  }
+  if (clean === 'secure-mcp-guide') {
+    return { view: 'secure-mcp-guide', pillar: 'SECUREMCPGUIDE', id: null };
+  }
+  if (clean.startsWith('genai-data-security')) {
+    const parts = clean.split('/');
+    return { view: 'genai-data-security', pillar: 'GENAIDATASECURITY', id: parts[1] || null };
+  }
+  if (clean.startsWith('owasp-top10')) {
+    const parts = clean.split('/');
+    return { view: 'owasp-top10', pillar: 'TOP10', id: parts[1] || null };
+  }
+  if (clean.startsWith('owasp-ml-top10')) {
+    const parts = clean.split('/');
+    return { view: 'owasp-ml-top10', pillar: 'MLTOP10', id: parts[1] || null };
+  }
+  if (clean.startsWith('owasp-agent-top10')) {
+    const parts = clean.split('/');
+    return { view: 'owasp-agent-top10', pillar: 'AGENTTOP10', id: parts[1] || null };
+  }
+  if (clean.startsWith('owasp-saif-top10')) {
+    const parts = clean.split('/');
+    return { view: 'owasp-saif-top10', pillar: 'SAIFTOP10', id: parts[1] || null };
+  }
+  if (clean.startsWith('owasp-mcp-top10')) {
+    const parts = clean.split('/');
+    return { view: 'owasp-mcp-top10', pillar: 'MCPTOP10', id: parts[1] || null };
+  }
+  if (clean.startsWith('detail/')) {
+    const testId = clean.replace('detail/', '').trim();
+    return { view: 'detail', pillar: 'ALL', id: testId };
+  }
+  if (clean.startsWith('tests')) {
+    const parts = clean.split('/');
+    const pillarSegment = parts[1]?.toLowerCase();
+    let pillar: ActivePillarKey = 'ALL';
+    if (pillarSegment === 'app') pillar = Pillar.APP;
+    else if (pillarSegment === 'model') pillar = Pillar.MODEL;
+    else if (pillarSegment === 'infra') pillar = Pillar.INFRA;
+    else if (pillarSegment === 'data') pillar = Pillar.DATA;
+    return { view: 'tests', pillar, id: null };
+  }
+  return { view: 'dashboard', pillar: 'ALL', id: null };
+};
+
+const stateToHash = (view: AppView, pillar: ActivePillarKey, testId?: string | null, threatId?: string | null): string => {
+  if (view === 'dashboard') return '#/dashboard';
+  if (view === 'threat-model') return '#/threat-model';
+  if (view === 'audit-checklist') return '#/audit-checklist';
+  if (view === 'tools') return '#/tools';
+  if (view === 'incidents') return '#/incidents';
+  if (view === 'secure-mcp-guide') return '#/secure-mcp-guide';
+  if (view === 'genai-data-security') return threatId ? `#/genai-data-security/${threatId}` : '#/genai-data-security';
+  if (view === 'owasp-top10') return threatId ? `#/owasp-top10/${threatId}` : '#/owasp-top10';
+  if (view === 'owasp-ml-top10') return threatId ? `#/owasp-ml-top10/${threatId}` : '#/owasp-ml-top10';
+  if (view === 'owasp-agent-top10') return threatId ? `#/owasp-agent-top10/${threatId}` : '#/owasp-agent-top10';
+  if (view === 'owasp-saif-top10') return threatId ? `#/owasp-saif-top10/${threatId}` : '#/owasp-saif-top10';
+  if (view === 'owasp-mcp-top10') return threatId ? `#/owasp-mcp-top10/${threatId}` : '#/owasp-mcp-top10';
+  if (view === 'detail' && testId) return `#/detail/${testId}`;
+  if (view === 'tests') {
+    if (pillar === Pillar.APP) return '#/tests/app';
+    if (pillar === Pillar.MODEL) return '#/tests/model';
+    if (pillar === Pillar.INFRA) return '#/tests/infra';
+    if (pillar === Pillar.DATA) return '#/tests/data';
+    return '#/tests';
+  }
+  return '#/dashboard';
+};
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'tests' | 'detail' | 'threat-model' | 'owasp-top10' | 'owasp-ml-top10' | 'owasp-agent-top10' | 'owasp-saif-top10' | 'owasp-mcp-top10' | 'secure-mcp-guide' | 'genai-data-security'>('dashboard');
-  const [activePillar, setActivePillar] = useState<Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY'>('ALL');
-  const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
+  const initialHashState = useMemo(() => parseHashToState(window.location.hash), []);
+  const [currentView, setCurrentView] = useState<AppView>(initialHashState.view);
+  const [activePillar, setActivePillar] = useState<ActivePillarKey>(initialHashState.pillar);
+  const [selectedTest, setSelectedTest] = useState<TestItem | null>(() => {
+    if (initialHashState.view === 'detail' && initialHashState.id) {
+      return TEST_DATA.find(t => t.id === initialHashState.id) || null;
+    }
+    return null;
+  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [owaspTargetId, setOwaspTargetId] = useState<string | null>(null);
+  const [owaspTargetId, setOwaspTargetId] = useState<string | null>(initialHashState.id);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  // Sync state to URL hash
+  const syncHash = useCallback((view: AppView, pillar: ActivePillarKey, testId?: string | null, threatId?: string | null) => {
+    const targetHash = stateToHash(view, pillar, testId, threatId);
+    if (window.location.hash !== targetHash) {
+      window.history.pushState(null, '', targetHash);
+    }
+  }, []);
+
+  // Listen to browser Back/Forward (hashchange/popstate)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const parsed = parseHashToState(window.location.hash);
+      setCurrentView(parsed.view);
+      setActivePillar(parsed.pillar);
+      setOwaspTargetId(parsed.id);
+      if (parsed.view === 'detail' && parsed.id) {
+        const found = TEST_DATA.find(t => t.id === parsed.id);
+        setSelectedTest(found || null);
+      } else if (parsed.view !== 'detail') {
+        setSelectedTest(null);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
+  }, []);
+
+  // Global keyboard shortcut for search (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Sidebar escape key handling
   useEffect(() => {
     if (!isSidebarOpen) return;
 
@@ -42,95 +184,122 @@ const App: React.FC = () => {
     return TEST_DATA.filter(t => t.pillar === activePillar);
   }, [activePillar]);
 
-  const handleSelectPillar = (pillar: Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY') => {
+  const handleSelectPillar = (pillar: ActivePillarKey) => {
     setActivePillar(pillar);
+    let view: AppView = 'tests';
     if (pillar === 'TOP10') {
-        setOwaspTargetId(null); 
-        setCurrentView('owasp-top10');
+      setOwaspTargetId(null); 
+      view = 'owasp-top10';
     } else if (pillar === 'MLTOP10') {
-        setOwaspTargetId(null);
-        setCurrentView('owasp-ml-top10');
+      setOwaspTargetId(null);
+      view = 'owasp-ml-top10';
     } else if (pillar === 'AGENTTOP10') {
-        setOwaspTargetId(null);
-        setCurrentView('owasp-agent-top10');
+      setOwaspTargetId(null);
+      view = 'owasp-agent-top10';
     } else if (pillar === 'SAIFTOP10') {
-        setOwaspTargetId(null);
-        setCurrentView('owasp-saif-top10');
+      setOwaspTargetId(null);
+      view = 'owasp-saif-top10';
     } else if (pillar === 'MCPTOP10') {
-        setOwaspTargetId(null);
-        setCurrentView('owasp-mcp-top10');
+      setOwaspTargetId(null);
+      view = 'owasp-mcp-top10';
     } else if (pillar === 'SECUREMCPGUIDE') {
-        setOwaspTargetId(null);
-        setCurrentView('secure-mcp-guide');
+      setOwaspTargetId(null);
+      view = 'secure-mcp-guide';
     } else if (pillar === 'GENAIDATASECURITY') {
-        setOwaspTargetId(null);
-        setCurrentView('genai-data-security');
-    } else {
-        setCurrentView('tests');
+      setOwaspTargetId(null);
+      view = 'genai-data-security';
     }
+    setCurrentView(view);
+    syncHash(view, pillar, null, null);
     window.scrollTo(0, 0);
   };
 
   const handleNavigateToOwasp = (id: string) => {
     setOwaspTargetId(id);
+    let view: AppView = 'owasp-top10';
+    let pillar: ActivePillarKey = 'TOP10';
+
     if (id.startsWith("ML")) {
-      setActivePillar('MLTOP10');
-      setCurrentView('owasp-ml-top10');
+      pillar = 'MLTOP10';
+      view = 'owasp-ml-top10';
     } else if (id.startsWith("ASI") || id.startsWith("AST")) {
-      setActivePillar('AGENTTOP10');
-      setCurrentView('owasp-agent-top10');
+      pillar = 'AGENTTOP10';
+      view = 'owasp-agent-top10';
     } else if (id.startsWith("SAIF")) {
-      setActivePillar('SAIFTOP10');
-      setCurrentView('owasp-saif-top10');
+      pillar = 'SAIFTOP10';
+      view = 'owasp-saif-top10';
     } else if (id.startsWith("MCP")) {
-      setActivePillar('MCPTOP10');
-      setCurrentView('owasp-mcp-top10');
+      pillar = 'MCPTOP10';
+      view = 'owasp-mcp-top10';
     } else if (id.startsWith("DSGAI") || id.startsWith("ai-dspm")) {
-      setActivePillar('GENAIDATASECURITY');
-      setCurrentView('genai-data-security');
-    } else {
-      setActivePillar('TOP10');
-      setCurrentView('owasp-top10');
+      pillar = 'GENAIDATASECURITY';
+      view = 'genai-data-security';
     }
+
+    setActivePillar(pillar);
+    setCurrentView(view);
+    syncHash(view, pillar, null, id);
     window.scrollTo(0, 0);
   };
 
   const handleSelectDashboard = () => {
     setActivePillar('ALL');
     setCurrentView('dashboard');
+    syncHash('dashboard', 'ALL');
     window.scrollTo(0, 0);
   };
 
   const handleSelectThreatModel = () => {
     setCurrentView('threat-model');
+    syncHash('threat-model', activePillar);
+    window.scrollTo(0, 0);
+  };
+
+  const handleSelectAuditChecklist = () => {
+    setCurrentView('audit-checklist');
+    syncHash('audit-checklist', activePillar);
+    window.scrollTo(0, 0);
+  };
+
+  const handleSelectTools = () => {
+    setCurrentView('tools');
+    syncHash('tools', activePillar);
+    window.scrollTo(0, 0);
+  };
+
+  const handleSelectIncidents = () => {
+    setCurrentView('incidents');
+    syncHash('incidents', activePillar);
     window.scrollTo(0, 0);
   };
 
   const handleSelectTest = (test: TestItem) => {
     setSelectedTest(test);
     setCurrentView('detail');
+    syncHash('detail', activePillar, test.id);
     window.scrollTo(0, 0);
   };
 
   const handleBackToTests = () => {
     setSelectedTest(null);
+    let view: AppView = 'tests';
     if (activePillar === 'TOP10') {
-      setCurrentView('owasp-top10');
+      view = 'owasp-top10';
     } else if (activePillar === 'MLTOP10') {
-      setCurrentView('owasp-ml-top10');
+      view = 'owasp-ml-top10';
     } else if (activePillar === 'AGENTTOP10') {
-      setCurrentView('owasp-agent-top10');
+      view = 'owasp-agent-top10';
     } else if (activePillar === 'SAIFTOP10') {
-      setCurrentView('owasp-saif-top10');
+      view = 'owasp-saif-top10';
     } else if (activePillar === 'MCPTOP10') {
-      setCurrentView('owasp-mcp-top10');
+      view = 'owasp-mcp-top10';
     } else if (activePillar === 'SECUREMCPGUIDE') {
-      setCurrentView('secure-mcp-guide');
+      view = 'secure-mcp-guide';
     } else if (activePillar === 'GENAIDATASECURITY') {
-      setCurrentView('genai-data-security');
-    } else {
-      setCurrentView('tests');
+      view = 'genai-data-security';
     }
+    setCurrentView(view);
+    syncHash(view, activePillar);
   };
 
   const handleNavigateToTestFromThreatModel = (testId: string) => {
@@ -139,6 +308,7 @@ const App: React.FC = () => {
       setActivePillar(test.pillar);
       setSelectedTest(test);
       setCurrentView('detail'); 
+      syncHash('detail', test.pillar, test.id);
       window.scrollTo(0, 0);
     }
   };
@@ -152,34 +322,54 @@ const App: React.FC = () => {
           <div className="p-1.5 bg-cyan-950 rounded border border-cyan-500/30">
             <Book className="w-5 h-5 text-cyan-400" />
           </div>
-          <span className="font-bold text-slate-100 uppercase text-xs">AI Security</span>
+          <span className="font-bold text-slate-100 uppercase text-xs">AI Security Nexus</span>
         </div>
-        <button 
-          onClick={() => setIsSidebarOpen(true)}
-          className="mobile-menu-button p-2 text-slate-400 hover:text-white"
-          type="button"
-          aria-label="Open navigation menu"
-          aria-controls="primary-navigation"
-          aria-expanded={isSidebarOpen}
-        >
-          <Menu className="w-6 h-6" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="p-2 text-slate-400 hover:text-white"
+            type="button"
+            aria-label="Search"
+          >
+            <Search className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="mobile-menu-button p-2 text-slate-400 hover:text-white"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-controls="primary-navigation"
+            aria-expanded={isSidebarOpen}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </div>
       </header>
 
       <Sidebar 
         activePillar={activePillar} 
+        currentView={currentView}
         onSelectPillar={handleSelectPillar} 
         onSelectDashboard={handleSelectDashboard}
         onSelectThreatModel={handleSelectThreatModel}
-        currentView={
-          currentView === 'detail' 
-            ? 'tests' 
-            : (currentView === 'owasp-top10' || currentView === 'owasp-ml-top10' || currentView === 'owasp-agent-top10' || currentView === 'owasp-saif-top10' || currentView === 'owasp-mcp-top10')
-              ? 'tests' 
-              : currentView
-        }
+        onSelectAuditChecklist={handleSelectAuditChecklist}
+        onSelectTools={handleSelectTools}
+        onSelectIncidents={handleSelectIncidents}
+        onOpenSearch={() => setIsSearchOpen(true)}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Global Omnisearch Modal */}
+      <GlobalSearchModal 
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelectTest={handleSelectTest}
+        onNavigateToOwasp={handleNavigateToOwasp}
+        onNavigateToView={(view) => {
+          if (view === 'tools') handleSelectTools();
+          if (view === 'incidents') handleSelectIncidents();
+        }}
       />
       
       <main className={`app-main
@@ -205,6 +395,25 @@ const App: React.FC = () => {
           {currentView === 'threat-model' && (
             <ThreatModelling 
               onNavigateToTest={handleNavigateToTestFromThreatModel} 
+              onNavigateToOwasp={handleNavigateToOwasp}
+            />
+          )}
+
+          {currentView === 'audit-checklist' && (
+            <AuditChecklistView 
+              onSelectTest={handleSelectTest}
+              onNavigateToOwasp={handleNavigateToOwasp}
+            />
+          )}
+
+          {currentView === 'tools' && (
+            <ToolsDirectoryView 
+              onNavigateToOwasp={handleNavigateToOwasp}
+            />
+          )}
+
+          {currentView === 'incidents' && (
+            <IncidentsDirectoryView 
               onNavigateToOwasp={handleNavigateToOwasp}
             />
           )}
@@ -284,3 +493,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+

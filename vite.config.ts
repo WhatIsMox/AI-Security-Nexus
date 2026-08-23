@@ -41,10 +41,26 @@ export default defineConfig(({ command }) => {
     server: {
       host: '127.0.0.1',
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
+        },
+      },
+    },
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
       emptyOutDir: true,
+      chunkSizeWarningLimit: 1200,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-icons': ['lucide-react'],
+          },
+        },
+      },
     },
   }
 })
