@@ -319,8 +319,8 @@ const App: React.FC = () => {
       {/* Mobile Header */}
       <header className="mobile-header md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-950 border-b border-slate-800 z-30 flex items-center justify-between px-4">
         <div className="flex items-center gap-2.5 cursor-pointer" onClick={handleSelectDashboard}>
-          <div className="p-1 bg-slate-900 rounded-lg border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
-            <img src="./favicon.svg" alt="AI Security Nexus" className="w-5 h-5 object-contain" />
+          <div className="w-8 h-8 rounded-lg overflow-hidden border border-cyan-500/30 bg-slate-900 flex items-center justify-center shadow-[0_0_10px_rgba(6,182,212,0.2)] shrink-0">
+            <img src="./favicon.svg" alt="AI Security Nexus" className="w-full h-full object-cover" />
           </div>
           <span className="font-bold text-slate-100 uppercase text-xs tracking-wider">AI Security Nexus</span>
         </div>
