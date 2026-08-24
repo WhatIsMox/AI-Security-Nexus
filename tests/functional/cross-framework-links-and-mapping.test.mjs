@@ -326,12 +326,15 @@ test('UI Layout - OwaspTop10View Balanced Card Grid and Full-Width Sections', (t
   assert.ok(owaspViewContent.includes('grid grid-cols-1 md:grid-cols-2 gap-3.5'), 'Recommended tools must use responsive 2-column grid');
   assert.ok(owaspViewContent.includes('Reference Links'), 'Card must render Reference Links');
 
-  // Verify Viewport Scroll Alignment on Expansion (never start at end of card)
+  // Verify CSS Grid Smooth Accordion (eliminates 20000px max-height lag and layout jumps)
+  assert.ok(owaspViewContent.includes('accordion-grid') && owaspViewContent.includes('accordion-overflow'), 'OwaspTop10View must use CSS Grid smooth accordion');
+
+  // Verify Viewport Scroll Alignment on Expansion (never start at end of card or jump casually)
   assert.ok(owaspViewContent.includes('scroll-mt-20 sm:scroll-mt-24'), 'OwaspTop10View cards must specify scroll-mt clearance for header');
-  assert.ok(owaspViewContent.includes('element.scrollIntoView({ behavior: \'smooth\', block: \'start\' })'), 'toggleExpand must smoothly align top of card into view');
+  assert.ok(owaspViewContent.includes('scrollToCard') && owaspViewContent.includes('requestAnimationFrame'), 'OwaspTop10View must synchronize scroll with requestAnimationFrame');
 
   assert.ok(dsgaiViewContent.includes('scroll-mt-20 sm:scroll-mt-24'), 'GenAiDataSecurityView cards must specify scroll-mt clearance');
-  assert.ok(dsgaiViewContent.includes('el.scrollIntoView({ behavior: \'smooth\', block: \'start\' })'), 'toggleRisk must smoothly align top of risk into view');
+  assert.ok(dsgaiViewContent.includes('scrollToRisk') && dsgaiViewContent.includes('requestAnimationFrame'), 'GenAiDataSecurityView must synchronize scroll with requestAnimationFrame');
 });
 
 test('Testing Pillars - Suggested Tools are Interactive and Open ToolDetailModal', (t) => {

@@ -33,15 +33,26 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   const [selectedIncident, setSelectedIncident] = useState<RealWorldIncident | null>(null);
   const [selectedThreatId, setSelectedThreatId] = useState<string | null>(null);
 
+  const scrollToCard = (id: string) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const headerOffset = window.innerWidth < 768 ? 72 : 88;
+          const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
+          window.scrollTo({
+            top: Math.max(0, elementTop - headerOffset),
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  };
+
   useEffect(() => {
     if (initialExpandedId) {
       setExpandedId(initialExpandedId);
-      setTimeout(() => {
-        const element = document.getElementById(initialExpandedId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+      scrollToCard(initialExpandedId);
     }
   }, [initialExpandedId]);
 
@@ -50,20 +61,13 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
     setExpandedId(isOpening ? id : null);
 
     if (isOpening) {
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 50);
+      scrollToCard(id);
     }
   };
 
   const openRelatedEntry = (id: string) => {
     setExpandedId(id);
-    window.setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
+    scrollToCard(id);
   };
 
   const getToolFilter = (id: string) => toolFilters[id] || { category: 'all', pricing: 'all' };
@@ -289,11 +293,11 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
               <ChevronDown className={`mt-2 sm:mt-0 w-5 h-5 sm:w-6 sm:h-6 shrink-0 text-slate-500 transition-transform duration-300 ${expandedId === entry.id ? `rotate-180 ${currentTheme.iconActive}` : 'group-hover:text-slate-300'}`} />
             </div>
 
-            <div className={`
-              overflow-hidden transition-[max-height] duration-500 ease-in-out
-              ${expandedId === entry.id ? 'max-h-[20000px] opacity-100' : 'max-h-0 opacity-0'}
-            `}>
-              <div className="p-3 sm:p-6 pt-0 border-t border-slate-800/50">
+            <div 
+              className={`accordion-grid ${expandedId === entry.id ? 'is-expanded' : ''}`}
+            >
+              <div className="accordion-overflow">
+                <div className="p-3 sm:p-6 pt-0 border-t border-slate-800/50">
                 {entry.whyUnique && (
                   <div className="mt-6 mb-6 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
                     <h4 className="text-xs font-bold text-orange-300 uppercase tracking-wider mb-1.5">Why this risk is distinct</h4>
@@ -734,6 +738,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
               </div>
             </div>
           </div>
+        </div>
         ))}
       </div>
 

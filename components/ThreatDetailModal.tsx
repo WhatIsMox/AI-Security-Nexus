@@ -11,7 +11,7 @@ import { OWASP_AGENTIC_APPLICATIONS_DATA } from '../data_agentic_applications';
 import { OWASP_AGENTIC_THREATS_DATA } from '../data_agentic';
 import { OWASP_SAIF_THREATS_DATA } from '../data_saif';
 import { OWASP_MCP_TOP_10_DATA } from '../data_mcp';
-import { GENAI_DATA_SECURITY_RISKS } from '../data_genai_data_security';
+import { GENAI_DATA_SECURITY_RISKS, GENAI_DSPM_CAPABILITIES } from '../data_genai_data_security';
 import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
 import { getEnrichedIncident } from '../incident_details_catalog';
@@ -133,6 +133,31 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
       preventionStrategies: prevention,
       attackScenarios: attacks,
       references: (dsgai.references || []).map(r => ({ title: r.title, url: r.url })),
+    };
+  }
+
+  // 8. AI-DSPM Capabilities (supports ai-dspm-01 ... ai-dspm-13)
+  const dspm = GENAI_DSPM_CAPABILITIES.find(e => 
+    e.id.toLowerCase() === threatId.trim().toLowerCase() ||
+    threatId.trim().toLowerCase() === `ai-dspm-${e.id.toLowerCase()}`
+  );
+  if (dspm) {
+    return {
+      id: dspm.id,
+      title: dspm.title,
+      description: dspm.objective,
+      frameworkName: 'AI Data Security Posture Management (AI-DSPM)',
+      frameworkPill: `AI-DSPM (${dspm.category})`,
+      badgeClass: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+      commonRisks: [dspm.objective],
+      preventionStrategies: dspm.actions,
+      attackScenarios: [],
+      references: [
+        {
+          title: 'OWASP GenAI Data Security - AI-DSPM Framework',
+          url: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/'
+        }
+      ],
     };
   }
 
@@ -442,7 +467,7 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
                   {incidentLinks.map((incident, idx) => (
                     <div
                       key={idx}
-                      onClick={() => onSelectIncident ? onSelectIncident(getEnrichedIncident(incident, threat.id)) : window.open(incident.url, '_blank')}
+                      onClick={() => onSelectIncident ? onSelectIncident(getEnrichedIncident(incident, threat.id)) : window.open(incident.url, '_blank', 'noopener,noreferrer')}
                       className="flex items-center justify-between gap-3 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 hover:border-amber-500/40 transition-all group cursor-pointer hover:bg-slate-900/80"
                     >
                       <div className="flex items-start gap-2 min-w-0">
@@ -469,7 +494,7 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
                   {mergedTools.map((tool) => (
                     <div
                       key={tool.name}
-                      onClick={() => onSelectTool ? onSelectTool(tool) : window.open(tool.url, '_blank')}
+                      onClick={() => onSelectTool ? onSelectTool(tool) : window.open(tool.url, '_blank', 'noopener,noreferrer')}
                       className="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-cyan-500/40 hover:bg-slate-900/80 transition-all group cursor-pointer flex flex-col justify-between"
                     >
                       <div>

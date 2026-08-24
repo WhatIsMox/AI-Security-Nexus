@@ -14,7 +14,7 @@ interface IncidentsDirectoryViewProps {
 
 export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ onNavigateToOwasp }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [frameworkFilter, setFrameworkFilter] = useState<'All' | 'LLM' | 'ML' | 'ASI' | 'AST' | 'SAIF' | 'MCP'>('All');
+  const [frameworkFilter, setFrameworkFilter] = useState<'All' | 'LLM' | 'ML' | 'ASI' | 'AST' | 'SAIF' | 'MCP' | 'DSGAI'>('All');
   const [selectedIncident, setSelectedIncident] = useState<RealWorldIncident | null>(null);
 
   // Consolidate unique incidents with all mapped threats and enriched verified metadata
@@ -53,7 +53,7 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
       }
 
       if (query) {
-        const text = `${incident.title} ${incident.url} ${(incident.mappedThreats || []).join(' ')} ${incident.targetOrVictim || ''} ${incident.cveOrAdvisoryId || ''} ${incident.attackVector || ''} ${incident.impact || ''}`.toLowerCase();
+        const text = `${incident.title} ${incident.url} ${(incident.mappedThreats || []).join(' ')} ${incident.targetOrVictim || ''} ${incident.cveOrAdvisoryId || ''} ${incident.attackVector || ''} ${incident.impact || ''} ${incident.repercussions || ''} ${incident.remediation || ''} ${incident.lessonsLearned || ''}`.toLowerCase();
         if (!text.includes(query)) return false;
       }
 
@@ -113,7 +113,7 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
         {/* Framework Filter Pills */}
         <div className="flex flex-wrap items-center gap-1.5 pt-2 text-xs">
           <span className="text-slate-500 uppercase font-mono text-[11px] mr-2">Framework:</span>
-          {(['All', 'LLM', 'ML', 'ASI', 'AST', 'SAIF', 'MCP'] as const).map(fw => (
+          {(['All', 'LLM', 'ML', 'ASI', 'AST', 'SAIF', 'MCP', 'DSGAI'] as const).map(fw => (
             <button
               key={fw}
               onClick={() => setFrameworkFilter(fw)}

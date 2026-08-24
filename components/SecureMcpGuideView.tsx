@@ -192,13 +192,44 @@ const GuideSection: React.FC<{
   );
 };
 
+const SECURE_MCP_CHECKLIST_STORAGE_KEY = 'ai_security_nexus_secure_mcp_checklist_v1';
+
 const SecureMcpGuideView: React.FC = () => {
   const meta = SECURE_MCP_GUIDE_META;
   const checklistItems = useMemo(
     () => SECURE_MCP_MINIMUM_BAR.flatMap((group) => group.items),
     []
   );
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem(SECURE_MCP_CHECKLIST_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          const sanitized: Record<string, boolean> = {};
+          for (const [key, val] of Object.entries(parsed)) {
+            if (key !== '__proto__' && key !== 'constructor' && key !== 'prototype' && typeof val === 'boolean') {
+              sanitized[key] = val;
+            }
+          }
+          return sanitized;
+        }
+      }
+    } catch {
+      // Fallback on parse failure
+    }
+    return {};
+  });
+
+  // Persist checklist to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(SECURE_MCP_CHECKLIST_STORAGE_KEY, JSON.stringify(checkedItems));
+    } catch {
+      // Storage quota or restriction fallback
+    }
+  }, [checkedItems]);
+
   const [search, setSearch] = useState('');
   const [activeSectionId, setActiveSectionId] = useState(VISIBLE_SECURE_MCP_SECTIONS[0]?.id || '');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -476,7 +507,14 @@ const SecureMcpGuideView: React.FC = () => {
               </div>
               <button
                 type="button"
-                onClick={() => setCheckedItems({})}
+                onClick={() => {
+                  setCheckedItems({});
+                  try {
+                    localStorage.removeItem(SECURE_MCP_CHECKLIST_STORAGE_KEY);
+                  } catch {
+                    // Fallback
+                  }
+                }}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-emerald-500/30 hover:text-emerald-200 sm:w-auto"
               >
                 <SlidersHorizontal className="h-4 w-4" />

@@ -3886,7 +3886,17 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
 /**
  * Retrieves the enriched metadata for a given tool name, with fallbacks and smart alias resolution.
  */
-export function getEnrichedTool(tool: SecurityTool): SecurityTool {
+export function getEnrichedTool(toolInput: Partial<SecurityTool> & { name: string; url: string; description?: string }): SecurityTool {
+  const tool: SecurityTool = {
+    name: toolInput.name,
+    description: toolInput.description || '',
+    url: toolInput.url,
+    cost: toolInput.cost || 'Free',
+    type: toolInput.type || 'Local',
+    category: toolInput.category || 'Offensive',
+    ...toolInput,
+  };
+
   const rawKey = tool.name.trim();
   const normalizedKey = rawKey.toLowerCase();
   
@@ -3966,7 +3976,7 @@ export function getEnrichedTool(tool: SecurityTool): SecurityTool {
   return {
     ...tool,
     authorOrMaintainer: tool.type === 'Local' ? 'Open Source Community' : 'Enterprise Provider',
-    license: tool.cost.toLowerCase().includes('free') ? 'Open Source (Permissive)' : 'Commercial License',
+    license: (tool.cost || 'Free').toLowerCase().includes('free') ? 'Open Source (Permissive)' : 'Commercial License',
     ecosystem: tool.type === 'Local' ? ['Python', 'Docker', 'CLI'] : ['Cloud Platform', 'REST API'],
     longDescription: tool.description + ' This tool is referenced throughout the AI Security Nexus catalog to evaluate, test, or mitigate vulnerabilities across AI systems.',
     typicalUseCase: `Security practitioners deploy ${tool.name} during testing or production operations to strengthen security posture and mitigate AI vulnerabilities.`,

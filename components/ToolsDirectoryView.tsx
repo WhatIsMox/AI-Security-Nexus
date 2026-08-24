@@ -69,7 +69,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
       }
 
       if (query) {
-        const text = `${tool.name} ${tool.description} ${tool.authorOrMaintainer || ''} ${tool.license || ''} ${tool.type} ${tool.cost} ${tool.mappedThreats.join(' ')}`.toLowerCase();
+        const text = `${tool.name} ${tool.description} ${tool.authorOrMaintainer || ''} ${tool.license || ''} ${tool.type} ${tool.cost} ${tool.mappedThreats.join(' ')} ${(tool.ecosystem || []).join(' ')} ${tool.typicalUseCase || ''} ${(tool.keyFeatures || []).join(' ')}`.toLowerCase();
         if (!text.includes(query)) return false;
       }
 

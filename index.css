@@ -276,8 +276,27 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  Page View & Modal Transition System                               */
+/*  Page View, Modal & Accordion Transition System                    */
 /* ------------------------------------------------------------------ */
+
+/* Modern Grid-Based Smooth Accordion */
+.accordion-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+  opacity: 0;
+}
+
+.accordion-grid.is-expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.accordion-overflow {
+  overflow: hidden;
+  min-height: 0;
+}
+
 
 /* Global Page View Transitions */
 @keyframes page-enter {

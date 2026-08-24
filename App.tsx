@@ -125,7 +125,9 @@ const App: React.FC = () => {
     return null;
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [owaspTargetId, setOwaspTargetId] = useState<string | null>(initialHashState.id);
+  const [owaspTargetId, setOwaspTargetId] = useState<string | null>(() => {
+    return initialHashState.view !== 'detail' ? initialHashState.id : null;
+  });
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeModalTool, setActiveModalTool] = useState<(SecurityTool & { mappedThreats?: string[] }) | null>(null);
   const [activeModalIncident, setActiveModalIncident] = useState<RealWorldIncident | null>(null);
@@ -144,7 +146,7 @@ const App: React.FC = () => {
       const parsed = parseHashToState(window.location.hash);
       setCurrentView(parsed.view);
       setActivePillar(parsed.pillar);
-      setOwaspTargetId(parsed.id);
+      setOwaspTargetId(parsed.view !== 'detail' ? parsed.id : null);
       if (parsed.view === 'detail' && parsed.id) {
         const found = TEST_DATA.find(t => t.id === parsed.id);
         setSelectedTest(found || null);

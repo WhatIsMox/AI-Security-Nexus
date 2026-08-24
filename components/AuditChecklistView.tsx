@@ -36,14 +36,24 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
   const [selectedStatus, setSelectedStatus] = useState<AuditStatus | 'ALL'>('ALL');
   const [sortMethod, setSortMethod] = useState<'severity' | 'id'>('severity');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isCopied, setIsCopied] = useState(false);
 
   const getRiskWeight = (level: string) => {
     switch (level) {
       case 'Critical': return 4;
       case 'High': return 3;
       case 'Medium': return 2;
-      default: return 1;
+      case 'Low': return 1;
+      default: return 0;
+    }
+  };
+
+  const getRiskBadgeClass = (riskLevel: string) => {
+    switch (riskLevel) {
+      case 'Critical': return 'text-red-400 bg-red-400/10 border-red-400/20';
+      case 'High': return 'text-orange-400 bg-orange-400/10 border-orange-400/20';
+      case 'Medium': return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
+      case 'Low': return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
+      default: return 'text-slate-400 bg-slate-800/40 border-slate-700';
     }
   };
 
@@ -452,11 +462,7 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
                       <span className="text-xs text-slate-400 font-mono">
                         {test.pillar}
                       </span>
-                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
-                        test.riskLevel === 'Critical' ? 'text-red-400 bg-red-400/10 border-red-400/20' :
-                        test.riskLevel === 'High' ? 'text-orange-400 bg-orange-400/10 border-orange-400/20' :
-                        'text-yellow-400 bg-yellow-400/10 border-yellow-400/20'
-                      }`}>
+                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${getRiskBadgeClass(test.riskLevel)}`}>
                         {test.riskLevel}
                       </span>
                     </div>
@@ -471,6 +477,60 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
                     <p className="text-xs text-slate-400 line-clamp-1 mt-0.5">
                       {test.summary}
                     </p>
+
+                    {/* Framework Cross-Reference Tags */}
+                    <div className="flex items-center gap-1.5 flex-wrap mt-2">
+                      {test.owaspTop10Ref && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateToOwasp(test.owaspTop10Ref!)}
+                          className="text-[10px] font-mono text-pink-400 bg-pink-950/40 hover:bg-pink-900/60 px-1.5 py-0.5 rounded border border-pink-800/40 transition-colors"
+                          title={`View OWASP LLM Threat ${test.owaspTop10Ref}`}
+                        >
+                          {test.owaspTop10Ref}
+                        </button>
+                      )}
+                      {test.owaspMlTop10Ref && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateToOwasp(test.owaspMlTop10Ref!)}
+                          className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 hover:bg-emerald-900/60 px-1.5 py-0.5 rounded border border-emerald-800/40 transition-colors"
+                          title={`View OWASP ML Threat ${test.owaspMlTop10Ref}`}
+                        >
+                          {test.owaspMlTop10Ref}
+                        </button>
+                      )}
+                      {test.owaspAgenticRef && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateToOwasp(test.owaspAgenticRef!)}
+                          className="text-[10px] font-mono text-orange-400 bg-orange-950/40 hover:bg-orange-900/60 px-1.5 py-0.5 rounded border border-orange-800/40 transition-colors"
+                          title={`View OWASP Agentic Threat ${test.owaspAgenticRef}`}
+                        >
+                          {test.owaspAgenticRef}
+                        </button>
+                      )}
+                      {test.owaspSaifRef && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateToOwasp(test.owaspSaifRef!)}
+                          className="text-[10px] font-mono text-blue-400 bg-blue-950/40 hover:bg-blue-900/60 px-1.5 py-0.5 rounded border border-blue-800/40 transition-colors"
+                          title={`View Google SAIF Threat ${test.owaspSaifRef}`}
+                        >
+                          {test.owaspSaifRef}
+                        </button>
+                      )}
+                      {test.owaspMcpTop10Ref && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateToOwasp(test.owaspMcpTop10Ref!)}
+                          className="text-[10px] font-mono text-purple-400 bg-purple-950/40 hover:bg-purple-900/60 px-1.5 py-0.5 rounded border border-purple-800/40 transition-colors"
+                          title={`View OWASP MCP Threat ${test.owaspMcpTop10Ref}`}
+                        >
+                          {test.owaspMcpTop10Ref}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Status Toggle Buttons */}

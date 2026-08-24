@@ -314,6 +314,20 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
   const allSearchItems = useMemo(() => getSearchIndex(), []);
 
+  const categoryCounts = useMemo(() => {
+    let tests = 0;
+    let threats = 0;
+    let tools = 0;
+    let incidents = 0;
+    for (const item of allSearchItems) {
+      if (item.category === 'test') tests++;
+      else if (item.category === 'tool') tools++;
+      else if (item.category === 'incident') incidents++;
+      else threats++;
+    }
+    return { tests, threats, tools, incidents };
+  }, [allSearchItems]);
+
   // Filtered results
   const filteredResults = useMemo(() => {
     const cleanQuery = query.trim().toLowerCase();
@@ -335,6 +349,11 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
     return list.filter(item => item.searchText.includes(cleanQuery)).slice(0, 30);
   }, [allSearchItems, query, activeTab]);
+
+  const handleTabChange = (tab: 'all' | 'tests' | 'threats' | 'tools' | 'incidents') => {
+    setActiveTab(tab);
+    setSelectedIndex(0);
+  };
 
   // Handle keyboard events
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -402,6 +421,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         className="w-full max-w-3xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-4.5rem)] sm:max-h-[85vh] animate-modal-card"
         onClick={e => e.stopPropagation()}
       >
+        <h2 id="global-search-title" className="sr-only">Global Search</h2>
+
         {/* Search Header */}
         <div className="p-3.5 sm:p-4 border-b border-slate-800 bg-slate-950/90 flex items-center gap-2.5 sm:gap-3">
           <Search className="w-5 h-5 text-cyan-400 shrink-0" />
@@ -434,34 +455,34 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         {/* Filter Tabs */}
         <div className="flex items-center gap-1 px-3 sm:px-4 py-2 border-b border-slate-800 bg-slate-950/40 text-xs overflow-x-auto scrollbar-none">
           <button
-            onClick={() => setActiveTab('all')}
+            onClick={() => handleTabChange('all')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'all' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
-            All Results
+            All Results ({allSearchItems.length})
           </button>
           <button
-            onClick={() => setActiveTab('tests')}
+            onClick={() => handleTabChange('tests')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'tests' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
-            Tests ({TEST_DATA.length})
+            Tests ({categoryCounts.tests})
           </button>
           <button
-            onClick={() => setActiveTab('threats')}
+            onClick={() => handleTabChange('threats')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'threats' ? 'bg-pink-500/20 text-pink-300 border border-pink-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
-            Threats (89)
+            Threats ({categoryCounts.threats})
           </button>
           <button
-            onClick={() => setActiveTab('tools')}
+            onClick={() => handleTabChange('tools')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'tools' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
-            Tools
+            Tools ({categoryCounts.tools})
           </button>
           <button
-            onClick={() => setActiveTab('incidents')}
+            onClick={() => handleTabChange('incidents')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'incidents' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
-            Incidents
+            Incidents ({categoryCounts.incidents})
           </button>
         </div>
 

@@ -257,14 +257,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {test.suggestedTools.map((rawTool, i) => {
-                  const tool = getEnrichedTool({
-                    name: rawTool.name,
-                    description: rawTool.description,
-                    url: rawTool.url,
-                    cost: 'Free',
-                    type: 'Local',
-                    category: 'Offensive'
-                  });
+                  const tool = getEnrichedTool(rawTool);
                   return (
                     <div 
                       key={i} 

@@ -1011,10 +1011,15 @@ const Dashboard: React.FC<DashboardProps> = ({
           <div className="reveal relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 md:p-8">
             <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
             <div className="relative flex flex-col md:flex-row md:items-center gap-5">
-              <div className="shrink-0 inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-1.5 self-start md:self-center">
+              <button
+                type="button"
+                onClick={() => onNavigateToOwasp(incident.threatId)}
+                className="shrink-0 inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 hover:border-orange-400/60 px-4 py-1.5 self-start md:self-center transition-all cursor-pointer"
+                title={`Jump to threat ${incident.threatId}`}
+              >
                 <Globe className="w-4 h-4 text-orange-400" />
                 <span className="font-mono text-[11px] font-bold tracking-wider text-orange-300 uppercase">Mapped to {incident.threatId}</span>
-              </div>
+              </button>
               <p key={incidentIndex} className="flex-1 text-slate-200 font-medium leading-relaxed animate-fade-up text-base md:text-lg">
                 {incident.title}
               </p>

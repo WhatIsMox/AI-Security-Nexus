@@ -503,13 +503,26 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
     return { DSGAI01: true };
   });
 
+  const scrollToRisk = (id: string) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          const headerOffset = window.innerWidth < 768 ? 72 : 88;
+          const elementTop = el.getBoundingClientRect().top + window.pageYOffset;
+          window.scrollTo({
+            top: Math.max(0, elementTop - headerOffset),
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  };
+
   useEffect(() => {
     if (initialExpandedId) {
       setExpandedIds((prev) => ({ ...prev, [initialExpandedId]: true }));
-      const el = document.getElementById(initialExpandedId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      scrollToRisk(initialExpandedId);
     }
   }, [initialExpandedId]);
 
@@ -572,9 +585,9 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
       animationFrame = window.requestAnimationFrame(updateActiveSection);
     };
 
-    updateActiveSection();
     window.addEventListener('scroll', requestUpdate, { passive: true });
-    window.addEventListener('resize', requestUpdate);
+    window.addEventListener('resize', requestUpdate, { passive: true });
+    updateActiveSection();
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
@@ -590,12 +603,7 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
       [id]: isOpening,
     }));
     if (isOpening) {
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 50);
+      scrollToRisk(id);
     }
   };
 
