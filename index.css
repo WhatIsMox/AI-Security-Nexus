@@ -275,6 +275,62 @@
   to   { width: 100%; }
 }
 
+/* ------------------------------------------------------------------ */
+/*  Page View & Modal Transition System                               */
+/* ------------------------------------------------------------------ */
+
+/* Global Page View Transitions */
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.996);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-page-enter,
+.page-view-transition {
+  animation: page-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Modal Window Entrance Animations */
+@keyframes modal-backdrop-enter {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+@keyframes modal-card-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-backdrop {
+  animation: modal-backdrop-enter 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-modal-card {
+  animation: modal-card-enter 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
 /* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
@@ -284,7 +340,15 @@
   .animate-aurora-c,
   .animate-marquee,
   .animate-marquee-reverse,
-  .animate-fade-up {
+  .animate-fade-up,
+  .animate-page-enter,
+  .page-view-transition,
+  .animate-modal-backdrop,
+  .animate-modal-card {
     animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
+

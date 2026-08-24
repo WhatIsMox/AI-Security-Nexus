@@ -414,111 +414,116 @@ const App: React.FC = () => {
 
         <div className="app-content relative z-10 py-8">
           <Suspense fallback={<ViewLoadingFallback />}>
-            {currentView === 'dashboard' && (
-              <Dashboard 
-                onSelectPillar={handleSelectPillar} 
-                onSelectThreatModel={handleSelectThreatModel}
-                onSelectTest={handleSelectTest}
-                onNavigateToOwasp={handleNavigateToOwasp}
-                onSelectIncidents={handleSelectIncidents}
-                onSelectTools={handleSelectTools}
-              />
-            )}
+            <div 
+              key={`${currentView}-${activePillar}-${owaspTargetId || ''}-${selectedTest?.id || ''}`}
+              className="page-view-transition animate-page-enter"
+            >
+              {currentView === 'dashboard' && (
+                <Dashboard 
+                  onSelectPillar={handleSelectPillar} 
+                  onSelectThreatModel={handleSelectThreatModel}
+                  onSelectTest={handleSelectTest}
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                  onSelectIncidents={handleSelectIncidents}
+                  onSelectTools={handleSelectTools}
+                />
+              )}
 
-            {currentView === 'threat-model' && (
-              <ThreatModelling 
-                onNavigateToTest={handleNavigateToTestFromThreatModel} 
-                onNavigateToOwasp={handleNavigateToOwasp}
-              />
-            )}
+              {currentView === 'threat-model' && (
+                <ThreatModelling 
+                  onNavigateToTest={handleNavigateToTestFromThreatModel} 
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
+              )}
 
-            {currentView === 'audit-checklist' && (
-              <AuditChecklistView 
-                onSelectTest={handleSelectTest}
-                onNavigateToOwasp={handleNavigateToOwasp}
-              />
-            )}
+              {currentView === 'audit-checklist' && (
+                <AuditChecklistView 
+                  onSelectTest={handleSelectTest}
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
+              )}
 
-            {currentView === 'tools' && (
-              <ToolsDirectoryView 
-                onNavigateToOwasp={handleNavigateToOwasp}
-              />
-            )}
+              {currentView === 'tools' && (
+                <ToolsDirectoryView 
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
+              )}
 
-            {currentView === 'incidents' && (
-              <IncidentsDirectoryView 
-                onNavigateToOwasp={handleNavigateToOwasp}
-              />
-            )}
+              {currentView === 'incidents' && (
+                <IncidentsDirectoryView 
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
+              )}
 
-            {currentView === 'owasp-top10' && (
-              <OwaspTop10View 
-                initialExpandedId={owaspTargetId} 
-                data={OWASP_TOP_10_DATA}
-                title="OWASP Top 10 for LLM Applications (2026 Edition)"
-                description="The definitive industry benchmark for Large Language Model security—covering prompt injection, data poisoning, vector store vulnerabilities, over-permissioned tools, and output handling."
-                colorTheme="pink"
-              />
-            )}
+              {currentView === 'owasp-top10' && (
+                <OwaspTop10View 
+                  initialExpandedId={owaspTargetId} 
+                  data={OWASP_TOP_10_DATA}
+                  title="OWASP Top 10 for LLM Applications (2026 Edition)"
+                  description="The definitive industry benchmark for Large Language Model security—covering prompt injection, data poisoning, vector store vulnerabilities, over-permissioned tools, and output handling."
+                  colorTheme="pink"
+                />
+              )}
 
-            {currentView === 'owasp-ml-top10' && (
-              <OwaspTop10View 
-                initialExpandedId={owaspTargetId} 
-                data={OWASP_ML_TOP_10_DATA}
-                title="OWASP Machine Learning Security Top 10"
-                description="Essential vulnerability catalog for predictive models and deep learning pipelines, covering adversarial evasion, dataset poisoning, model inversion, and supply-chain threats."
-                colorTheme="emerald"
-              />
-            )}
+              {currentView === 'owasp-ml-top10' && (
+                <OwaspTop10View 
+                  initialExpandedId={owaspTargetId} 
+                  data={OWASP_ML_TOP_10_DATA}
+                  title="OWASP Machine Learning Security Top 10"
+                  description="Essential vulnerability catalog for predictive models and deep learning pipelines, covering adversarial evasion, dataset poisoning, model inversion, and supply-chain threats."
+                  colorTheme="emerald"
+                />
+              )}
 
-            {currentView === 'owasp-agent-top10' && (
-              <AgenticTop10View initialExpandedId={owaspTargetId} />
-            )}
+              {currentView === 'owasp-agent-top10' && (
+                <AgenticTop10View initialExpandedId={owaspTargetId} />
+              )}
 
-            {currentView === 'owasp-saif-top10' && (
-              <OwaspTop10View 
-                initialExpandedId={owaspTargetId} 
-                data={OWASP_SAIF_THREATS_DATA}
-                title="Google Secure AI Framework (SAIF) Threats"
-                description="End-to-end AI security lifecycle model mapping 15 distinct threat vectors across dataset curation, model training, deployment infrastructure, and live operations."
-                colorTheme="blue"
-              />
-            )}
+              {currentView === 'owasp-saif-top10' && (
+                <OwaspTop10View 
+                  initialExpandedId={owaspTargetId} 
+                  data={OWASP_SAIF_THREATS_DATA}
+                  title="Google Secure AI Framework (SAIF) Threats"
+                  description="End-to-end AI security lifecycle model mapping 15 distinct threat vectors across dataset curation, model training, deployment infrastructure, and live operations."
+                  colorTheme="blue"
+                />
+              )}
 
-            {currentView === 'owasp-mcp-top10' && (
-              <OwaspTop10View 
-                initialExpandedId={owaspTargetId} 
-                data={OWASP_MCP_TOP_10_DATA}
-                title="OWASP Model Context Protocol (MCP) Top 10"
-                description="Dedicated security standards for Model Context Protocol architectures—focusing on tool integrity, rogue server containment, confused-deputy authorization, and context isolation."
-                colorTheme="cyan"
-              />
-            )}
+              {currentView === 'owasp-mcp-top10' && (
+                <OwaspTop10View 
+                  initialExpandedId={owaspTargetId} 
+                  data={OWASP_MCP_TOP_10_DATA}
+                  title="OWASP Model Context Protocol (MCP) Top 10"
+                  description="Dedicated security standards for Model Context Protocol architectures—focusing on tool integrity, rogue server containment, confused-deputy authorization, and context isolation."
+                  colorTheme="cyan"
+                />
+              )}
 
-            {currentView === 'secure-mcp-guide' && (
-              <SecureMcpGuideView />
-            )}
+              {currentView === 'secure-mcp-guide' && (
+                <SecureMcpGuideView />
+              )}
 
-            {currentView === 'genai-data-security' && (
-              <GenAiDataSecurityView initialExpandedId={owaspTargetId} />
-            )}
+              {currentView === 'genai-data-security' && (
+                <GenAiDataSecurityView initialExpandedId={owaspTargetId} />
+              )}
 
-            {currentView === 'tests' && (
-              <TestList 
-                tests={filteredTests} 
-                onSelectTest={handleSelectTest}
-                onNavigateToOwasp={handleNavigateToOwasp}
-                category={activePillar === 'ALL' ? 'All Security Tests' : activePillar}
-              />
-            )}
+              {currentView === 'tests' && (
+                <TestList 
+                  tests={filteredTests} 
+                  onSelectTest={handleSelectTest}
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                  category={activePillar === 'ALL' ? 'All Security Tests' : activePillar}
+                />
+              )}
 
-            {currentView === 'detail' && selectedTest && (
-              <TestDetail 
-                test={selectedTest} 
-                onBack={handleBackToTests} 
-                onNavigateToOwasp={handleNavigateToOwasp}
-              />
-            )}
+              {currentView === 'detail' && selectedTest && (
+                <TestDetail 
+                  test={selectedTest} 
+                  onBack={handleBackToTests} 
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
+              )}
+            </div>
           </Suspense>
         </div>
       </main>

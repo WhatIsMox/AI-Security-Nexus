@@ -79,7 +79,7 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
       </section>
 
       {framework === 'applications' ? (
-        <div id="agentic-applications-panel" role="tabpanel" aria-labelledby="agentic-applications-tab">
+        <div key="agentic-applications-panel" id="agentic-applications-panel" role="tabpanel" aria-labelledby="agentic-applications-tab" className="page-view-transition animate-page-enter">
           <OwaspTop10View
             key="agentic-applications"
             initialExpandedId={initialExpandedId?.startsWith('ASI') ? initialExpandedId : null}
@@ -91,7 +91,7 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
           />
         </div>
       ) : (
-        <div id="agentic-skills-panel" role="tabpanel" aria-labelledby="agentic-skills-tab">
+        <div key="agentic-skills-panel" id="agentic-skills-panel" role="tabpanel" aria-labelledby="agentic-skills-tab" className="page-view-transition animate-page-enter">
           <OwaspTop10View
             key="agentic-skills"
             initialExpandedId={initialExpandedId?.startsWith('AST') ? initialExpandedId : null}
