@@ -293,11 +293,8 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
               <ChevronDown className={`mt-2 sm:mt-0 w-5 h-5 sm:w-6 sm:h-6 shrink-0 text-slate-500 transition-transform duration-300 ${expandedId === entry.id ? `rotate-180 ${currentTheme.iconActive}` : 'group-hover:text-slate-300'}`} />
             </div>
 
-            <div 
-              className={`accordion-grid ${expandedId === entry.id ? 'is-expanded' : ''}`}
-            >
-              <div className="accordion-overflow">
-                <div className="p-3 sm:p-6 pt-0 border-t border-slate-800/50">
+            {expandedId === entry.id && (
+              <div className="p-3 sm:p-6 pt-0 border-t border-slate-800/50 animate-in fade-in duration-200">
                 {entry.whyUnique && (
                   <div className="mt-6 mb-6 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
                     <h4 className="text-xs font-bold text-orange-300 uppercase tracking-wider mb-1.5">Why this risk is distinct</h4>
@@ -736,9 +733,8 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                   </div>
                 )}
               </div>
-            </div>
+            )}
           </div>
-        </div>
         ))}
       </div>
 

@@ -351,8 +351,8 @@ const RiskCard: React.FC<{
         <ChevronDown className={`mt-2 h-6 w-6 shrink-0 text-slate-500 transition-transform ${isExpanded ? 'rotate-180 text-cyan-300' : ''}`} />
       </button>
 
-      <div className={isExpanded ? 'block' : 'hidden'}>
-        <div className="border-t border-slate-800/70 p-4 md:p-5">
+      {isExpanded && (
+        <div className="border-t border-slate-800/70 p-4 md:p-5 animate-in fade-in duration-200">
           <div className="space-y-5">
             <div>
               <h4 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-300">
@@ -482,7 +482,7 @@ const RiskCard: React.FC<{
             </div>
           )}
         </div>
-      </div>
+      )}
     </article>
   );
 };

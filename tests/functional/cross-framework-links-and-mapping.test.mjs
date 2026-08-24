@@ -326,8 +326,8 @@ test('UI Layout - OwaspTop10View Balanced Card Grid and Full-Width Sections', (t
   assert.ok(owaspViewContent.includes('grid grid-cols-1 md:grid-cols-2 gap-3.5'), 'Recommended tools must use responsive 2-column grid');
   assert.ok(owaspViewContent.includes('Reference Links'), 'Card must render Reference Links');
 
-  // Verify CSS Grid Smooth Accordion (eliminates 20000px max-height lag and layout jumps)
-  assert.ok(owaspViewContent.includes('accordion-grid') && owaspViewContent.includes('accordion-overflow'), 'OwaspTop10View must use CSS Grid smooth accordion');
+  // Verify Stable Instant Layout & Smooth GPU-Accelerated Mount (prevents dual-animation layout shift)
+  assert.ok(owaspViewContent.includes('animate-in fade-in duration-200'), 'OwaspTop10View must use GPU-accelerated fade-in on mount');
 
   // Verify Viewport Scroll Alignment on Expansion (never start at end of card or jump casually)
   assert.ok(owaspViewContent.includes('scroll-mt-20 sm:scroll-mt-24'), 'OwaspTop10View cards must specify scroll-mt clearance for header');
