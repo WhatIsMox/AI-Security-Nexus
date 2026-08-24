@@ -310,6 +310,7 @@ test('UI Component - ThreatDetailModal and Non-Jumping Related Risk Inspection',
 
 test('UI Layout - OwaspTop10View Balanced Card Grid and Full-Width Sections', (t) => {
   const owaspViewContent = readFile('components/OwaspTop10View.tsx');
+  const dsgaiViewContent = readFile('components/GenAiDataSecurityView.tsx');
 
   // Verify Row 1: Core Vulnerabilities vs Prevention Strategies
   assert.ok(owaspViewContent.includes('Common Vulnerabilities & Risks') || owaspViewContent.includes('Risk Mechanics & Impact'), 'Row 1 must render Common Vulnerabilities');
@@ -324,6 +325,13 @@ test('UI Layout - OwaspTop10View Balanced Card Grid and Full-Width Sections', (t
   assert.ok(owaspViewContent.includes('Recommended Security Tools'), 'Card must render Recommended Security Tools');
   assert.ok(owaspViewContent.includes('grid grid-cols-1 md:grid-cols-2 gap-3.5'), 'Recommended tools must use responsive 2-column grid');
   assert.ok(owaspViewContent.includes('Reference Links'), 'Card must render Reference Links');
+
+  // Verify Viewport Scroll Alignment on Expansion (never start at end of card)
+  assert.ok(owaspViewContent.includes('scroll-mt-20 sm:scroll-mt-24'), 'OwaspTop10View cards must specify scroll-mt clearance for header');
+  assert.ok(owaspViewContent.includes('element.scrollIntoView({ behavior: \'smooth\', block: \'start\' })'), 'toggleExpand must smoothly align top of card into view');
+
+  assert.ok(dsgaiViewContent.includes('scroll-mt-20 sm:scroll-mt-24'), 'GenAiDataSecurityView cards must specify scroll-mt clearance');
+  assert.ok(dsgaiViewContent.includes('el.scrollIntoView({ behavior: \'smooth\', block: \'start\' })'), 'toggleRisk must smoothly align top of risk into view');
 });
 
 test('Testing Pillars - Suggested Tools are Interactive and Open ToolDetailModal', (t) => {

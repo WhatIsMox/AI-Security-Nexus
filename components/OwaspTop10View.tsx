@@ -46,14 +46,24 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   }, [initialExpandedId]);
 
   const toggleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
+    const isOpening = expandedId !== id;
+    setExpandedId(isOpening ? id : null);
+
+    if (isOpening) {
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
   };
 
   const openRelatedEntry = (id: string) => {
     setExpandedId(id);
     window.setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    }, 50);
   };
 
   const getToolFilter = (id: string) => toolFilters[id] || { category: 'all', pricing: 'all' };
@@ -247,7 +257,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
           <div 
             key={entry.id}
             id={entry.id}
-            className={`border rounded-xl transition-all duration-300 overflow-hidden ${
+            className={`scroll-mt-20 sm:scroll-mt-24 border rounded-xl transition-all duration-300 overflow-hidden ${
               expandedId === entry.id 
                 ? `bg-slate-900 ${currentTheme.activeBorder} ${currentTheme.activeShadow}` 
                 : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'

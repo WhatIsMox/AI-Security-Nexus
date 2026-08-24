@@ -322,7 +322,7 @@ const RiskCard: React.FC<{
   return (
     <article
       id={risk.id}
-      className={`scroll-mt-8 overflow-hidden rounded-xl border bg-slate-900/70 transition-colors ${
+      className={`scroll-mt-20 sm:scroll-mt-24 overflow-hidden rounded-xl border bg-slate-900/70 transition-colors ${
         isExpanded ? style.border : 'border-slate-800 hover:border-slate-700'
       }`}
     >
@@ -584,10 +584,19 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
   }, [tocItems, filteredRisks]);
 
   const toggleRisk = (id: string) => {
+    const isOpening = !expandedIds[id];
     setExpandedIds((current) => ({
       ...current,
-      [id]: !current[id],
+      [id]: isOpening,
     }));
+    if (isOpening) {
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
   };
 
   const clearFilters = () => {
