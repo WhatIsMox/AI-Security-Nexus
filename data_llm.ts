@@ -340,7 +340,7 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     suggestedTools: [
       { name: "DOMPurify", description: "Sanitize LLM-generated HTML before rendering.", url: "https://github.com/cure53/dompurify", cost: "Free", type: "Local" },
       { name: "Semgrep", description: "Static analysis for unsafe output handling and execution sinks.", url: "https://github.com/semgrep/semgrep", cost: "Free OSS / $40/dev/mo", type: "Local" },
-      { name: "Burp Suite", description: "Web security testing for XSS, injection, and unsafe rendering paths.", url: "https://portswigger.net/burp", cost: "Free tier / $449/yr (Pro)", type: "Third-party" }
+      { name: "Burp Suite", description: "Web security testing for XSS, injection, and unsafe rendering paths.", url: "https://portswigger.net/web-security", cost: "Free tier / $449/yr (Pro)", type: "Third-party" }
     ]
   }
 ];

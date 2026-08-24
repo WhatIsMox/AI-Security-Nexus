@@ -43,53 +43,75 @@ test('Functional - External Link Component Rendering & Safety Attributes', (t) =
   }
 });
 
-test('Functional - Incident & Tool Link Integrity and Resolution in UI Catalogs', (t) => {
-  const incidentsCode = readFile('incidents_catalog.ts');
-  const toolsCode = readFile('tools_catalog.ts');
+test('Functional - Global Link Integrity, Format & Safety across all Data Catalogs', (t) => {
+  const dataFiles = [
+    'data_tests.ts',
+    'data_agentic.ts',
+    'data_llm.ts',
+    'data_ml.ts',
+    'data_saif.ts',
+    'data_mcp.ts',
+    'data_secure_mcp_guide.ts',
+    'data_genai_data_security.ts',
+    'tools_catalog.ts',
+    'tool_details_catalog.ts',
+    'incidents_catalog.ts',
+    'incident_details_catalog.ts'
+  ];
 
-  // Extract all URLs from incidents_catalog.ts
-  const incidentUrls = [...incidentsCode.matchAll(/url:\s*["']([^"']+)["']/g)].map(m => m[1]);
-  // Extract all URLs from tools_catalog.ts
-  const toolUrls = [...toolsCode.matchAll(/url:\s*["']([^"']+)["']/g)].map(m => m[1]);
-
-  assert.ok(incidentUrls.length >= 150, `Expected >= 150 incident citations, found ${incidentUrls.length}`);
-  assert.ok(toolUrls.length >= 100, `Expected >= 100 tool URLs, found ${toolUrls.length}`);
-
-  const allUrls = [...incidentUrls, ...toolUrls];
   const invalidPatterns = ['localhost', '127.0.0.1', 'example.com', 'placeholder', 'TODO', 'undefined', 'null'];
+  let totalCheckedUrls = 0;
 
-  for (const url of allUrls) {
-    // 1. Must parse as valid URL
-    let parsed;
-    assert.doesNotThrow(() => {
-      parsed = new URL(url);
-    }, `Invalid URL format: "${url}"`);
+  for (const relPath of dataFiles) {
+    const content = readFile(relPath);
+    const urlMatches = [...content.matchAll(/url:\s*["']([^"']+)["']/g)].map(m => m[1]);
 
-    // 2. Must be https or http
-    assert.ok(
-      parsed.protocol === 'https:' || parsed.protocol === 'http:',
-      `URL "${url}" must use https: or http: protocol`
-    );
+    for (const url of urlMatches) {
+      totalCheckedUrls++;
 
-    // 3. Must not contain placeholder keywords
-    for (const pattern of invalidPatterns) {
+      // 1. Must parse as valid URL
+      let parsed;
+      assert.doesNotThrow(() => {
+        parsed = new URL(url);
+      }, `File ${relPath} has unparseable URL: "${url}"`);
+
+      // 2. Must use https: protocol
       assert.ok(
-        !url.toLowerCase().includes(pattern),
-        `URL "${url}" contains forbidden placeholder or test keyword: "${pattern}"`
+        parsed.protocol === 'https:' || parsed.protocol === 'http:',
+        `File ${relPath} URL "${url}" must use https: or http: protocol`
+      );
+
+      // 3. Must not be placeholder '#' or dummy value
+      assert.ok(url.trim() !== '#' && !url.endsWith('/#'), `File ${relPath} URL "${url}" is a dummy placeholder hash`);
+      for (const pattern of invalidPatterns) {
+        assert.ok(
+          !url.toLowerCase().includes(pattern),
+          `File ${relPath} URL "${url}" contains forbidden placeholder or test pattern: "${pattern}"`
+        );
+      }
+
+      // 4. Must not have fake arXiv pattern like 2312.00000
+      assert.ok(
+        !/arxiv\.org\/abs\/\d{4}\.00000/.test(url),
+        `File ${relPath} has fake placeholder arXiv identifier: "${url}"`
+      );
+
+      // 5. Hostname must contain valid TLD
+      assert.ok(
+        parsed.hostname.includes('.'),
+        `File ${relPath} URL "${url}" has invalid hostname without domain extension: "${parsed.hostname}"`
+      );
+
+      // 6. No malformed trailing punctuation
+      assert.ok(
+        !url.endsWith('"') && !url.endsWith("'") && !url.endsWith(",") && !url.endsWith(";"),
+        `File ${relPath} URL "${url}" has accidental trailing punctuation`
       );
     }
-
-    // 4. Hostname must contain valid TLD
-    assert.ok(
-      parsed.hostname.includes('.'),
-      `URL "${url}" has invalid hostname without domain extension: "${parsed.hostname}"`
-    );
-
-    // 5. No malformed trailing punctuation
-    assert.ok(!url.endsWith('"') && !url.endsWith("'") && !url.endsWith(",") && !url.endsWith(";"),
-      `URL "${url}" has accidental trailing punctuation`
-    );
   }
+
+  assert.ok(totalCheckedUrls >= 800, `Expected at least 800 URL citations across catalog, found ${totalCheckedUrls}`);
+  t.diagnostic(`Verified ${totalCheckedUrls} URLs across all 12 data catalogs with zero invalid/placeholder links`);
 });
 
 test('Functional - Threat Incident Mapping Minimum Density', (t) => {

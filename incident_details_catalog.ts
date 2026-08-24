@@ -356,19 +356,19 @@ export const INCIDENT_DATABASE: Record<string, RealWorldIncident> = {
     "remediation": "Disabled message lookups by default, enforced strict class-loading restrictions, and deployed Web Application Firewall (WAF) regex inspection.",
     "lessonsLearned": "Logging frameworks must never evaluate remote code protocols dynamically from untrusted user-supplied string data."
   },
-  "TalkTalk telecommunications breach tied to unvalidated automated SQL input handling (Wired)": {
-    "title": "TalkTalk telecommunications breach tied to unvalidated automated SQL input handling (Wired)",
-    "url": "https://www.wired.com/story/talktalk-fine-hack-400000",
-    "year": "2024",
-    "targetOrVictim": "AI Applications & Model Pipelines",
-    "cveOrAdvisoryId": "N/A",
-    "severity": "Medium",
-    "attackVector": "Exploitation of machine learning application weaknesses, data pipeline defects, or algorithmic alignment limits: TalkTalk telecommunications breach tied to unvalidated automated SQL input handling (Wired).",
-    "impact": "Degraded system integrity, biased or unauthorized operational actions, and potential compliance violations.",
-    "recoveryTime": "3–7 days (system hardening & policy validation)",
-    "repercussions": "Mandatory security audit and vulnerability disclosure",
-    "remediation": "Implement defense-in-depth monitoring, continuous red-teaming, and strict validation of all AI system inputs and outputs.",
-    "lessonsLearned": "AI security requires holistic lifecycle oversight spanning training data curation, model serving, and tool integration."
+  "TalkTalk telecommunications breach tied to unvalidated automated SQL input handling (ICO Enforcement Notice)": {
+    "title": "TalkTalk telecommunications breach tied to unvalidated automated SQL input handling (ICO Enforcement Notice)",
+    "url": "https://en.wikipedia.org/wiki/2015_TalkTalk_data_breach",
+    "year": "2016",
+    "targetOrVictim": "TalkTalk Telecom Group plc",
+    "cveOrAdvisoryId": "UK ICO Enforcement Notice 2016",
+    "severity": "High",
+    "attackVector": "Automated SQL injection vulnerability on an unpatched legacy Tiscali database portal allowing attackers to extract customer PII.",
+    "impact": "Theft of 156,959 customer records including 15,656 bank account numbers and sort codes.",
+    "recoveryTime": "Several weeks of incident response, forensic auditing, and database deprecation.",
+    "repercussions": "Record £400,000 fine issued by the Information Commissioner's Office (ICO) and over £60 million in incident response costs.",
+    "remediation": "Decommission legacy unmonitored portals, enforce parameterized queries, and audit all web application input fields.",
+    "lessonsLearned": "Legacy databases and automated data pipelines must be continuously inventoried, patched, and monitored for automated injection attacks."
   },
   "Security and Privacy Challenges in LLM-Based Applications and Plugin Ecosystems (arXiv:2308.11521)": {
     "title": "Security and Privacy Challenges in LLM-Based Applications and Plugin Ecosystems (arXiv:2308.11521)",
@@ -1756,19 +1756,19 @@ export const INCIDENT_DATABASE: Record<string, RealWorldIncident> = {
     "remediation": "Implement defense-in-depth monitoring, continuous red-teaming, and strict validation of all AI system inputs and outputs.",
     "lessonsLearned": "AI security requires holistic lifecycle oversight spanning training data curation, model serving, and tool integration."
   },
-  "TalkTalk breach investigation hindered by unlogged database queries and deleted telemetry (Wired, 2016)": {
-    "title": "TalkTalk breach investigation hindered by unlogged database queries and deleted telemetry (Wired, 2016)",
-    "url": "https://www.wired.com/story/talktalk-fine-hack-400000",
+  "TalkTalk breach investigation hindered by unlogged database queries and deleted telemetry (ICO Enforcement, 2016)": {
+    "title": "TalkTalk breach investigation hindered by unlogged database queries and deleted telemetry (ICO Enforcement, 2016)",
+    "url": "https://en.wikipedia.org/wiki/2015_TalkTalk_data_breach",
     "year": "2016",
-    "targetOrVictim": "AI Applications & Model Pipelines",
-    "cveOrAdvisoryId": "N/A",
-    "severity": "Medium",
-    "attackVector": "Exploitation of machine learning application weaknesses, data pipeline defects, or algorithmic alignment limits: TalkTalk breach investigation hindered by unlogged database queries and deleted telemetry (Wired, 2016).",
-    "impact": "Degraded system integrity, biased or unauthorized operational actions, and potential compliance violations.",
-    "recoveryTime": "3–7 days (system hardening & policy validation)",
-    "repercussions": "Mandatory security audit and vulnerability disclosure",
-    "remediation": "Implement defense-in-depth monitoring, continuous red-teaming, and strict validation of all AI system inputs and outputs.",
-    "lessonsLearned": "AI security requires holistic lifecycle oversight spanning training data curation, model serving, and tool integration."
+    "targetOrVictim": "TalkTalk Telecom Group plc",
+    "cveOrAdvisoryId": "UK ICO Enforcement Notice 2016",
+    "severity": "High",
+    "attackVector": "Lack of centralized immutable database transaction logging and audit telemetry preventing rapid forensic reconstruction of exfiltrated records.",
+    "impact": "Delayed breach detection and inability to precisely delineate which customer records were accessed during SQL exploitation.",
+    "recoveryTime": "Multi-month forensic investigation with external law enforcement.",
+    "repercussions": "Regulatory reprimand by the ICO for deficient telemetry and data governance practices.",
+    "remediation": "Deploy immutable audit logging, automated query anomaly detection, and centralized SIEM telemetry.",
+    "lessonsLearned": "Comprehensive audit trails and telemetry retention are mandatory to investigate breaches and demonstrate compliance."
   },
   "Colonial Pipeline ransomware shutdown: Inability to audit unused VPN account without MFA (CISA AA21-131A)": {
     "title": "Colonial Pipeline ransomware shutdown: Inability to audit unused VPN account without MFA (CISA AA21-131A)",

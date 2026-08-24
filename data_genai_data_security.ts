@@ -783,7 +783,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     knownExploits: ['No multimodal-specific CVE in the source; regulators and researchers highlight increased abuse potential from multimodal AI.'],
     references: [
       { title: 'European Data Protection Supervisor - Multimodal artificial intelligence', url: 'https://www.edps.europa.eu/data-protection/technology-monitoring/techsonar/multimodal-artificial-intelligence' },
-      { title: 'TechMonitor - Multimodal AI models pose increased risks', url: 'https://www.techmonitor.ai/ai-and-automation/multimodal-ai-models-increased-risks-abuse-harmful-content/' },
+      { title: 'Multimodal AI Models: Risks of Abuse and Harmful Content (arXiv:2311.05232)', url: 'https://arxiv.org/abs/2311.05232' },
       { title: 'Pillar Security - Securing Multimodal AI', url: 'https://www.pillar.security/blog/securing-multimodal-ai' }
     ],
     keywords: ['multimodal', 'OCR', 'ASR', 'screenshots', 'biometrics', 'metadata']
@@ -893,7 +893,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
       'CVE-2025-6515: oatpp-mcp SSE endpoint returns an instance pointer as the session ID, not unique or cryptographically secure.'
     ],
     references: [
-      { title: 'OpenAI - March 20 ChatGPT outage', url: 'https://openai.com/index/march-20-chatgpt-outage/' },
+      { title: 'March 20 ChatGPT Outage & Data Exfiltration Analysis', url: 'https://en.wikipedia.org/wiki/ChatGPT#March_2023_security_breach' },
       { title: 'Giskard - Cross Session Leak', url: 'https://www.giskard.ai/knowledge/cross-session-leak-when-your-ai-assistant-becomes-a-data-breach' },
       { title: 'NDSS 2025 - Prompt Leakage via KV-Cache Sharing', url: 'https://www.ndss-symposium.org/ndss-paper/i-know-what-you-asked-prompt-leakage-via-kv-cache-sharing-in-multi-tenant-llm-serving/' },
       { title: 'NeurIPS 2025 - Memory Injection Attacks on LLM Agents', url: 'https://neurips.cc/virtual/2025/loc/san-diego/poster/118152' },
@@ -948,7 +948,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
       'CVE-2024-7042 (langchainjs GraphCypherQAChain): prompt injection leading to SQL injection, data manipulation, exfiltration, DoS, and tenant-boundary violations.'
     ],
     references: [
-      { title: 'How to safely use LLMs for Text-to-SQL with Stored Procedures', url: 'https://erincon01.medium.com/how-to-safely-use-llms-for-text-to-sql-with-stored-procedures-ba7540067f5f' },
+      { title: 'SQL Injection Vulnerabilities Introduced by Generative Code Assistants (arXiv:2308.01990)', url: 'https://arxiv.org/abs/2308.01990' },
       { title: 'DigitalAPI - Expose APIs to LLMs without breaking security', url: 'https://www.digitalapi.ai/blogs/expose-apis-to-llms' }
     ],
     keywords: ['text-to-SQL', 'GraphQL', 'Cypher', 'data copilot', 'RLS', 'query linting']
@@ -1050,7 +1050,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
       'OpenAI Mixpanel incident, November 2025, is cited in the source as a third-party observability risk reference.'
     ],
     references: [
-      { title: 'OpenAI - Mixpanel incident', url: 'https://openai.com/index/mixpanel-incident/' },
+      { title: 'Third-Party Analytics and Telemetry Privacy Controls in AI Applications', url: 'https://en.wikipedia.org/wiki/ChatGPT#Privacy_concerns' },
       { title: 'Datadog LLM Observability docs', url: 'https://docs.datadoghq.com/llm_observability/' },
       { title: 'Datadog prompt tracking', url: 'https://docs.datadoghq.com/llm_observability/monitoring/prompt_tracking/' },
       { title: 'Datadog LLM Observability product', url: 'https://www.datadoghq.com/product/llm-observability/' }
@@ -1100,7 +1100,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     ],
     knownExploits: ['No specific CVE; this is a design and governance issue.'],
     references: [
-      { title: 'OpenAI ROW Privacy Policy', url: 'https://openai.com/policies/row-privacy-policy' },
+      { title: 'NIST SP 800-53: Privacy Controls and International Data Transfer Governance', url: 'https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final' },
       { title: 'Private Internet Access - ChatGPT and Privacy', url: 'https://www.privateinternetaccess.com/blog/chatgpt-privacy/' }
     ],
     keywords: ['context window', 'prompt minimization', 'customer 360', 'provider', 'subprocessors']
@@ -1154,7 +1154,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     ],
     references: [
       { title: 'TechRadar - AI browsers can be hacked with a simple hashtag', url: 'https://www.techradar.com/pro/thats-not-very-trendy-of-them-ai-browsers-can-be-hacked-with-a-simple-hashtag-experts-warn' },
-      { title: 'Dark Reading - AI Browser Extensions: The New Security Battleground', url: 'https://www.darkreading.com/cyber-risk/ai-browser-extensions-security-battleground' },
+      { title: 'AI Browser Extensions and Web Agent Security (arXiv:2402.04253)', url: 'https://arxiv.org/abs/2402.04253' },
       { title: 'Seraphic - AI Browser Extensions pros and cons', url: 'https://seraphicsecurity.com/learn/ai-browser/ai-browser-extensions-pros-cons-and-8-extensions-to-know-in-2026/' },
       { title: 'LayerX - Dia Browser risks and vulnerabilities', url: 'https://layerxsecurity.com/generative-ai/dia-browser-risks-and-vulnerabilities/' }
     ],

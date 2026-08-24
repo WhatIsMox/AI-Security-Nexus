@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { FrameworkOverview, OwaspTop10Entry, SecurityTool, RealWorldIncident } from '../types';
-import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock, BookOpen, Layers3, GitBranch, Info, ListChecks, Flame } from 'lucide-react';
+import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock, BookOpen, Layers3, GitBranch, Info, ListChecks, Flame, ArrowUpRight } from 'lucide-react';
 import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
 import { getEnrichedIncident } from '../incident_details_catalog';
 import { ToolDetailModal } from './ToolDetailModal';
 import { IncidentDetailModal } from './IncidentDetailModal';
+import { ThreatDetailModal } from './ThreatDetailModal';
 
 interface OwaspTop10ViewProps {
   initialExpandedId?: string | null;
@@ -30,6 +31,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   const [openOverviewSection, setOpenOverviewSection] = useState<'overview' | 'terminology' | 'triage' | null>(null);
   const [selectedTool, setSelectedTool] = useState<SecurityTool | null>(null);
   const [selectedIncident, setSelectedIncident] = useState<RealWorldIncident | null>(null);
+  const [selectedThreatId, setSelectedThreatId] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialExpandedId) {
@@ -454,130 +456,152 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
                     {entry.relatedRisks && entry.relatedRisks.length > 0 && (
                       <div className="pt-6 border-t border-slate-800">
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3"><GitBranch className="w-4 h-4 text-orange-400" />Related risks</h4>
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
+                          <GitBranch className="w-4 h-4 text-orange-400" />
+                          Related risks ({entry.relatedRisks.length})
+                        </h4>
                         <div className="space-y-2">
                           {entry.relatedRisks.map((risk) => (
-                            <button key={risk.id} onClick={() => openRelatedEntry(risk.id)} className="w-full text-left rounded-lg border border-slate-800 bg-slate-950/60 hover:border-orange-500/30 p-3 transition-colors">
-                              <span className="font-mono text-xs text-orange-300 mr-2">{risk.id}</span><span className="text-xs font-bold text-slate-200">{risk.title}</span>
-                              <p className="text-xs text-slate-500 leading-relaxed mt-1">{risk.relationship}</p>
+                            <button 
+                              key={risk.id}
+                              type="button"
+                              onClick={() => setSelectedThreatId(risk.id)}
+                              className="w-full text-left rounded-lg border border-slate-800 bg-slate-950/60 hover:border-orange-500/40 p-3 transition-all hover:bg-slate-900/80 group cursor-pointer"
+                            >
+                              <div className="flex items-center justify-between gap-2">
+                                <div>
+                                  <span className="font-mono text-xs text-orange-300 group-hover:text-orange-200 mr-2 font-bold">{risk.id}</span>
+                                  <span className="text-xs font-bold text-slate-200 group-hover:text-white">{risk.title}</span>
+                                </div>
+                                <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-orange-400 transition-colors shrink-0" />
+                              </div>
+                              <p className="text-xs text-slate-400 leading-relaxed mt-1">{risk.relationship}</p>
                             </button>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Best Tools Section - Now above Reference Links */}
-                    {(() => {
-                      const mappedTools = TOOLS_BY_THREAT_ID[entry.id] || [];
-                      const mergedTools = mergeTools(mappedTools, entry.suggestedTools || []);
-                      if (mergedTools.length === 0) return null;
-                      const filter = getToolFilter(entry.id);
-                      const isCostFree = (cost: string) => cost.toLowerCase().includes('free');
-                      const isCostPaid = (cost: string) => !cost.toLowerCase().startsWith('free') || cost.includes('/') || cost.includes('$') || cost.includes('€') || cost.includes('~');
-                      const freeCount = mergedTools.filter(t => isCostFree(t.cost)).length;
-                      const paidCount = mergedTools.filter(t => isCostPaid(t.cost)).length;
-                      const filteredTools = mergedTools.filter(tool => {
-                        const categoryValue = tool.category || 'Defensive';
-                        const categoryOk = filter.category === 'all'
-                          ? true
-                          : filter.category === 'defensive'
-                            ? categoryValue === 'Defensive' || categoryValue === 'Both'
-                            : categoryValue === 'Offensive' || categoryValue === 'Both';
-                        const pricingOk = filter.pricing === 'all'
-                          ? true
-                          : filter.pricing === 'free'
-                            ? isCostFree(tool.cost)
-                            : isCostPaid(tool.cost);
-                        return categoryOk && pricingOk;
-                      });
-                      return (
-                      <div className="pt-6 border-t border-slate-800">
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4">
+                  </div>
+                </div>
+
+                {/* Full-Width Best Tools Section (Spans 100% of card width across both columns) */}
+                {(() => {
+                  const mappedTools = TOOLS_BY_THREAT_ID[entry.id] || [];
+                  const mergedTools = mergeTools(mappedTools, entry.suggestedTools || []);
+                  if (mergedTools.length === 0) return null;
+                  const filter = getToolFilter(entry.id);
+                  const isCostFree = (cost: string) => cost.toLowerCase().includes('free');
+                  const isCostPaid = (cost: string) => !cost.toLowerCase().startsWith('free') || cost.includes('/') || cost.includes('$') || cost.includes('€') || cost.includes('~');
+                  const freeCount = mergedTools.filter(t => isCostFree(t.cost)).length;
+                  const paidCount = mergedTools.filter(t => isCostPaid(t.cost)).length;
+                  const filteredTools = mergedTools.filter(tool => {
+                    const categoryValue = tool.category || 'Defensive';
+                    const categoryOk = filter.category === 'all'
+                      ? true
+                      : filter.category === 'defensive'
+                        ? categoryValue === 'Defensive' || categoryValue === 'Both'
+                        : categoryValue === 'Offensive' || categoryValue === 'Both';
+                    const pricingOk = filter.pricing === 'all'
+                      ? true
+                      : filter.pricing === 'free'
+                        ? isCostFree(tool.cost)
+                        : isCostPaid(tool.cost);
+                    return categoryOk && pricingOk;
+                  });
+                  return (
+                    <div className="pt-6 mt-6 border-t border-slate-800">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-cyan-400 uppercase tracking-wider">
                           <Wrench className="w-4 h-4" />
-                          Recommended Security Tools
+                          Recommended Security Tools ({mergedTools.length})
                         </h4>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <button
-                            onClick={() => setToolFilter(entry.id, { category: 'all' })}
-                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
-                              filter.category === 'all'
-                                ? 'bg-slate-800 text-white border-slate-700'
-                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
-                            }`}
-                          >
-                            All ({mergedTools.length})
-                          </button>
-                          <button
-                            onClick={() => setToolFilter(entry.id, { category: 'defensive' })}
-                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
-                              filter.category === 'defensive'
-                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-emerald-300 hover:border-emerald-500/30'
-                            }`}
-                          >
-                            Defensive
-                          </button>
-                          <button
-                            onClick={() => setToolFilter(entry.id, { category: 'offensive' })}
-                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
-                              filter.category === 'offensive'
-                                ? 'bg-rose-500/15 text-rose-300 border-rose-500/30'
-                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-rose-300 hover:border-rose-500/30'
-                            }`}
-                          >
-                            Offensive
-                          </button>
-                        </div>
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          <button
-                            onClick={() => setToolFilter(entry.id, { pricing: 'all' })}
-                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
-                              filter.pricing === 'all'
-                                ? 'bg-slate-800 text-white border-slate-700'
-                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
-                            }`}
-                          >
-                            All Pricing ({mergedTools.length})
-                          </button>
-                          <button
-                            onClick={() => setToolFilter(entry.id, { pricing: 'free' })}
-                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
-                              filter.pricing === 'free'
-                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-emerald-300 hover:border-emerald-500/30'
-                            }`}
-                          >
-                            Free ({freeCount})
-                          </button>
-                          <button
-                            onClick={() => setToolFilter(entry.id, { pricing: 'paid' })}
-                            className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors ${
-                              filter.pricing === 'paid'
-                                ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-amber-300 hover:border-amber-500/30'
-                            }`}
-                          >
-                            Paid ({paidCount})
-                          </button>
-                        </div>
-                        <div
-                          className="grid gap-3 pr-1 max-h-[520px] overflow-y-auto"
-                          style={{ scrollbarGutter: 'stable' }}
-                        >
-                          {filteredTools.map((tool, idx) => (
-                            <div 
-                              key={idx} 
-                              onClick={() => setSelectedTool(tool)}
-                              className="bg-slate-950 border border-slate-800 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all cursor-pointer hover:bg-slate-900/40 shadow-sm"
+
+                        <div className="flex flex-wrap items-center gap-2">
+                          <div className="inline-flex rounded-lg border border-slate-800 bg-slate-950 p-0.5 text-[10px] font-bold uppercase tracking-wider">
+                            <button
+                              onClick={() => setToolFilter(entry.id, { category: 'all' })}
+                              className={`px-2.5 py-1 rounded-md transition-colors ${
+                                filter.category === 'all'
+                                  ? 'bg-slate-800 text-white'
+                                  : 'text-slate-400 hover:text-white'
+                              }`}
                             >
-                              <div className="flex flex-col sm:flex-row sm:justify-between items-start gap-2 mb-2">
+                              All ({mergedTools.length})
+                            </button>
+                            <button
+                              onClick={() => setToolFilter(entry.id, { category: 'defensive' })}
+                              className={`px-2.5 py-1 rounded-md transition-colors ${
+                                filter.category === 'defensive'
+                                  ? 'bg-emerald-500/20 text-emerald-300'
+                                  : 'text-slate-400 hover:text-emerald-300'
+                              }`}
+                            >
+                              Defensive
+                            </button>
+                            <button
+                              onClick={() => setToolFilter(entry.id, { category: 'offensive' })}
+                              className={`px-2.5 py-1 rounded-md transition-colors ${
+                                filter.category === 'offensive'
+                                  ? 'bg-rose-500/20 text-rose-300'
+                                  : 'text-slate-400 hover:text-rose-300'
+                              }`}
+                            >
+                              Offensive
+                            </button>
+                          </div>
+
+                          <div className="inline-flex rounded-lg border border-slate-800 bg-slate-950 p-0.5 text-[10px] font-bold uppercase tracking-wider">
+                            <button
+                              onClick={() => setToolFilter(entry.id, { pricing: 'all' })}
+                              className={`px-2.5 py-1 rounded-md transition-colors ${
+                                filter.pricing === 'all'
+                                  ? 'bg-slate-800 text-white'
+                                  : 'text-slate-400 hover:text-white'
+                              }`}
+                            >
+                              All Pricing
+                            </button>
+                            <button
+                              onClick={() => setToolFilter(entry.id, { pricing: 'free' })}
+                              className={`px-2.5 py-1 rounded-md transition-colors ${
+                                filter.pricing === 'free'
+                                  ? 'bg-emerald-500/20 text-emerald-300'
+                                  : 'text-slate-400 hover:text-emerald-300'
+                              }`}
+                            >
+                              Free ({freeCount})
+                            </button>
+                            <button
+                              onClick={() => setToolFilter(entry.id, { pricing: 'paid' })}
+                              className={`px-2.5 py-1 rounded-md transition-colors ${
+                                filter.pricing === 'paid'
+                                  ? 'bg-amber-500/20 text-amber-300'
+                                  : 'text-slate-400 hover:text-amber-300'
+                              }`}
+                            >
+                              Paid ({paidCount})
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {filteredTools.map((tool, idx) => (
+                          <div 
+                            key={idx} 
+                            onClick={() => setSelectedTool(tool)}
+                            className="bg-slate-950 border border-slate-800/80 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all cursor-pointer hover:bg-slate-900/40 shadow-sm flex flex-col justify-between"
+                          >
+                            <div>
+                              <div className="flex items-start justify-between gap-2 mb-2">
                                 <div className="flex items-center gap-2">
                                   <span className="text-white font-bold text-sm group-hover/tool:text-cyan-300 transition-colors">
                                     {tool.name}
                                   </span>
                                   <Info className="w-3.5 h-3.5 text-slate-500 group-hover/tool:text-cyan-400 transition-colors" />
                                 </div>
-                                <div className="flex gap-1.5 flex-wrap sm:justify-end">
+                                <div className="flex gap-1.5 flex-wrap justify-end">
                                   <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 ${
                                     tool.type === 'Local' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                                   }`}>
@@ -609,51 +633,60 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                                   </span>
                                 </div>
                               </div>
-                              <p className="text-xs text-slate-400 leading-relaxed">
+                              <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
                                 {tool.description}
                               </p>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
                       </div>
-                      );
-                    })()}
+                    </div>
+                  );
+                })()}
 
-                    {entry.references.length > 0 && (
-                      <div className="pt-6 border-t border-slate-800">
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
-                          <ExternalLink className="w-4 h-4 text-blue-400" />
-                          Reference Links
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {entry.references.map((ref, idx) => (
-                            <a 
-                              key={idx}
-                              href={ref.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-md transition-colors"
-                            >
-                              {ref.title}
-                              <ExternalLink className="w-3 h-3" />
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
+                {/* Full-Width Reference Links */}
+                {entry.references.length > 0 && (
+                  <div className="pt-6 mt-6 border-t border-slate-800">
+                    <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
+                      <ExternalLink className="w-4 h-4 text-blue-400" />
+                      Reference Links
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {entry.references.map((ref, idx) => (
+                        <a 
+                          key={idx}
+                          href={ref.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-md transition-colors"
+                        >
+                          {ref.title}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Threat Detail Modal (Opens when clicking related risks or threat references) */}
+      <ThreatDetailModal
+        threatId={selectedThreatId}
+        onClose={() => setSelectedThreatId(null)}
+        onNavigateToOwasp={openRelatedEntry}
+        onSelectTool={setSelectedTool}
+        onSelectIncident={setSelectedIncident}
+      />
+
       {/* Incident Detail Inspection Modal */}
       <IncidentDetailModal 
         incident={selectedIncident} 
         onClose={() => setSelectedIncident(null)} 
+        onNavigateToOwasp={openRelatedEntry}
       />
     </div>
   );

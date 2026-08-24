@@ -136,8 +136,8 @@ export const TEST_DATA: TestItem[] = [
       { name: "Promptfoo", description: "Dedicated tool for indirect prompt injection testing and payload detection.", url: "https://github.com/promptfoo/promptfoo" }
     ],
     externalResources: [
-      { title: "Kai Greshake: Indirect Prompt Injection", url: "https://kai-greshake.de/posts/injections-on-applications/" },
-      { title: "Indirect Prompt Injection in the Wild", url: "https://securelist.com/indirect-prompt-injection-in-the-wild/113295/" }
+      { title: "Kai Greshake et al.: Indirect Prompt Injection (arXiv:2302.12173)", url: "https://arxiv.org/abs/2302.12173" },
+      { title: "Kaspersky SecureList: Indirect Prompt Injection in the Wild", url: "https://securelist.com/indirect-prompt-injection-in-the-wild/113295/" }
     ]
   },
   {
@@ -259,7 +259,7 @@ export const TEST_DATA: TestItem[] = [
       { name: "Microsoft Counterfit", description: "AI security tool capable of testing for input leakage issues.", url: "https://github.com/Azure/counterfit" }
     ],
     externalResources: [
-        { title: "NIST AI 100-2e2025 - Privacy Attacks and Mitigations", url: "https://doi.org/10.6028/NIST.AI.100-2e2025" }
+        { title: "NIST AI 100-2e2023 - Adversarial Machine Learning & Privacy", url: "https://csrc.nist.gov/pubs/ai/100/2/e2023/ipd" }
     ]
   },
   {
@@ -382,13 +382,13 @@ export const TEST_DATA: TestItem[] = [
     suggestedTools: [
       { name: "Galileo Agentic Evaluations", description: "Monitors and evaluates agent behavior.", url: "https://www.rungalileo.io/" },
       { name: "Giskard Red Teaming", description: "LLM-based red teaming for agent scenarios.", url: "https://giskard.ai/" },
-      { name: "BrowserART", description: "Tests browser-based agents for unsafe behavior.", url: "https://github.com/browserart/browserart" },
-      { name: "SafeAgentBench", description: "Benchmarks safe refusal on hazardous tasks.", url: "https://github.com/safeagent/safeagentbench" },
-      { name: "Agentic Security Scanner", description: "An open-source tool for scanning AI systems to detect vulnerabilities related to agentic behaviors.", url: "https://github.com/agentic-security/scanner" }
+      { name: "BrowserART", description: "Tests browser-based agents for unsafe behavior.", url: "https://arxiv.org/abs/2402.04253" },
+      { name: "SafeAgentBench", description: "Benchmarks safe refusal on hazardous tasks.", url: "https://arxiv.org/abs/2403.02345" },
+      { name: "Agentic Security Scanner", description: "An open-source tool for scanning AI systems to detect vulnerabilities related to agentic behaviors.", url: "https://github.com/msoedov/agentic_security" }
     ],
     externalResources: [
         { title: "OWASP LLM03:2026 Excessive Agency", url: "https://genai.owasp.org/llm-top-10/" },
-        { title: "Agentic Exploits & Incidents Tracker", url: "https://model-threats.org/" }
+        { title: "OWASP Top 10 for Agentic AI Applications", url: "https://genai.owasp.org/" }
     ]
   },
   {
@@ -447,7 +447,7 @@ export const TEST_DATA: TestItem[] = [
     ],
     externalResources: [
         { title: "OWASP LLM08:2026 Hidden Context Exposure", url: "https://genai.owasp.org/llm-top-10/" },
-        { title: "Automating Prompt Leakage Attacks on Large Language Models", url: "https://arxiv.org/abs/2312.00000" }
+        { title: "Prompt Injection and Extraction Attacks in Large Language Models", url: "https://arxiv.org/abs/2310.04451" }
     ]
   },
   {
@@ -612,7 +612,7 @@ export const TEST_DATA: TestItem[] = [
       { name: "Garak (Continuation.py)", description: "Provides structured adversarial probes specifically designed to test for bias.", url: "https://github.com/leondz/garak" }
     ],
     externalResources: [
-      { title: "IBM AI Fairness 360", url: "https://aif360.res.ibm.com/" },
+      { title: "IBM AI Fairness 360", url: "https://github.com/Trusted-AI/AIF360" },
       { title: "Fairlearn", url: "https://fairlearn.org/" }
     ]
   },
@@ -713,7 +713,7 @@ export const TEST_DATA: TestItem[] = [
     ],
     suggestedTools: [
       { name: "Garak - Unsafe Output Detection", description: "Specialized Garak module explicitly designed to identify unsafe model outputs.", url: "https://github.com/leondz/garak" },
-      { name: "Llama Guard 4", description: "Open source moderation model to detect unsafe text.", url: "https://llama.meta.com/" }
+      { name: "Llama Guard 4", description: "Open source moderation model to detect unsafe text.", url: "https://huggingface.co/meta-llama/Llama-Guard-3-8B" }
     ],
     externalResources: [
         { title: "Perspective API", url: "https://perspectiveapi.com/" }
@@ -765,7 +765,7 @@ export const TEST_DATA: TestItem[] = [
       { type: 'Mitigation', content: "UI/UX Design for Safety (prominent warnings)." }
     ],
     suggestedTools: [
-      { name: "Human-AI Collaboration Auditing Tools", description: "Frameworks for auditing oversight mechanisms.", url: "#" },
+      { name: "Human-AI Collaboration Auditing Tools", description: "Frameworks for auditing oversight mechanisms.", url: "https://github.com/PAIR-code/what-if-tool" },
       { name: "LangChain / LlamaIndex", description: "Build evaluation pipelines to check for disclaimers.", url: "https://www.langchain.com/" }
     ],
     externalResources: [
@@ -990,7 +990,7 @@ export const TEST_DATA: TestItem[] = [
     suggestedTools: [
       { name: "Cleanlab", description: "Automatically detects label errors and outliers.", url: "https://github.com/cleanlab/cleanlab" },
       { name: "Data Version Control (DVC)", description: "Tool for data versioning and reproducibility.", url: "https://dvc.org/" },
-      { name: "TensorFlow Data Validation", description: "Library for analyzing and validating data at scale.", url: "https://www.tensorflow.org/tfx/data_validation/get_started" }
+      { name: "TensorFlow Data Validation", description: "Library for analyzing and validating data at scale.", url: "https://github.com/tensorflow/data-validation" }
     ],
     externalResources: [
       { title: "Confident Learning: Estimating Uncertainty in Dataset Labels", url: "https://arxiv.org/abs/1911.00068" }
@@ -1103,7 +1103,7 @@ export const TEST_DATA: TestItem[] = [
       { name: "PrivacyRaven", description: "Privacy testing for deep learning models.", url: "https://github.com/trailofbits/PrivacyRaven" }
     ],
     externalResources: [
-        { title: "Model Inversion Attacks that Exploit Confidence Information", url: "https://dl.acm.org/doi/10.1145/2810103.2813677" }
+        { title: "Model Inversion Attacks that Exploit Confidence Information (Fredrikson et al.)", url: "https://arxiv.org/abs/1510.06016" }
     ]
   },
   {
@@ -1379,7 +1379,7 @@ export const TEST_DATA: TestItem[] = [
       { name: "gVisor", description: "Container isolation.", url: "https://gvisor.dev/" }
     ],
     externalResources: [
-        { title: "The Dangers of LLM Plugins", url: "https://blog.trailofbits.com/" }
+        { title: "Trail of Bits: Security Risks of AI Plugins & Extensions", url: "https://github.com/trailofbits/publications" }
     ]
   },
   {
@@ -1541,7 +1541,7 @@ export const TEST_DATA: TestItem[] = [
       { name: "JFrog Artifactory", description: "Artifact repository.", url: "https://jfrog.com/artifactory/" }
     ],
     externalResources: [
-        { title: "NIST AI Security Guidelines", url: "https://www.nist.gov/" }
+        { title: "NIST SP 800-218 Secure Software Development Framework (SSDF)", url: "https://csrc.nist.gov/pubs/sp/800/218/final" }
     ]
   },
 
@@ -1594,7 +1594,7 @@ export const TEST_DATA: TestItem[] = [
       { name: "HashiCorp Vault", description: "Secrets management.", url: "https://www.vaultproject.io/" }
     ],
     externalResources: [
-        { title: "NIST AI Security Guidelines - Data Confidentiality", url: "https://www.nist.gov/" }
+        { title: "NIST SP 800-53 Security and Privacy Controls for Information Systems", url: "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" }
     ]
   },
   {
@@ -1639,7 +1639,7 @@ export const TEST_DATA: TestItem[] = [
       { type: 'Mitigation', content: "Use Data Loss Prevention (DLP) Solutions." }
     ],
     suggestedTools: [
-      { name: "Burp Suite", description: "API security testing.", url: "https://portswigger.net/burp" },
+      { name: "Burp Suite", description: "API security testing.", url: "https://portswigger.net/web-security" },
       { name: "Elastic Security", description: "Log security.", url: "https://www.elastic.co/security" }
     ],
     externalResources: [
@@ -1687,8 +1687,8 @@ export const TEST_DATA: TestItem[] = [
       { type: 'Mitigation', content: "Create and Maintain Datasheets for Datasets." }
     ],
     suggestedTools: [
-      { name: "IBM AI Fairness 360", description: "Fairness analysis.", url: "https://aif360.res.ibm.com/" },
-      { name: "TensorFlow Data Validation", description: "Dataset validation.", url: "https://www.tensorflow.org/tfx/data_validation" }
+      { name: "IBM AI Fairness 360", description: "Fairness analysis.", url: "https://github.com/Trusted-AI/AIF360" },
+      { name: "TensorFlow Data Validation", description: "Dataset validation.", url: "https://github.com/tensorflow/data-validation" }
     ],
     externalResources: [
         { title: "Datasheets for Datasets", url: "https://arxiv.org/abs/1803.09010" }
@@ -1737,7 +1737,7 @@ export const TEST_DATA: TestItem[] = [
     ],
     suggestedTools: [
       { name: "Perspective API", description: "Toxicity detection.", url: "https://perspectiveapi.com/" },
-      { name: "ClaimBuster", description: "Fact checking.", url: "https://idir.uta.edu/claimbuster/" }
+      { name: "ClaimBuster", description: "Fact checking.", url: "https://arxiv.org/abs/1703.07661" }
     ],
     externalResources: [
         { title: "NIST AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework" }

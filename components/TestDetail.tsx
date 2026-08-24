@@ -1,21 +1,32 @@
 
 import React, { useState } from 'react';
-import { TestItem } from '../types';
+import { TestItem, SecurityTool } from '../types';
+import { getEnrichedTool } from '../tool_details_catalog';
+import ToolDetailModal from './ToolDetailModal';
 import { 
   ArrowLeft, Target, Code, ShieldCheck, ExternalLink, BookOpen, 
   Wrench, Shield, Brain, Terminal, Eye, Link as LinkIcon, Cpu, 
-  Bot, AlertCircle, Gavel, Network, Copy, Check 
+  Bot, AlertCircle, Gavel, Network, Copy, Check, Lock, Globe, Info
 } from 'lucide-react';
 
 interface TestDetailProps {
   test: TestItem;
   onBack: () => void;
   onNavigateToOwasp: (id: string) => void;
+  onSelectTool?: (tool: SecurityTool) => void;
 }
 
-const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp }) => {
+const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp, onSelectTool }) => {
   const [copiedPayloadIndex, setCopiedPayloadIndex] = useState<number | null>(null);
+  const [selectedTool, setSelectedTool] = useState<SecurityTool | null>(null);
   const isAgentic = test.id.startsWith('AGT') || !!test.owaspAgenticRef;
+
+  const handleToolClick = (tool: SecurityTool) => {
+    setSelectedTool(tool);
+    if (onSelectTool) {
+      onSelectTool(tool);
+    }
+  };
 
   const handleCopyPayload = (code: string, index: number) => {
     navigator.clipboard.writeText(code).then(() => {
@@ -246,28 +257,71 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
             <section>
               <div className="flex items-center gap-2 mb-4 text-slate-100">
                 <Terminal className="w-5 h-5 text-pink-400" />
-                <h3 className="text-xl font-bold">Suggested Tools</h3>
+                <h3 className="text-xl font-bold">Suggested Tools ({test.suggestedTools.length})</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {test.suggestedTools.map((tool, i) => (
-                  <a 
-                    key={i} 
-                    href={tool.url}
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="block group bg-slate-950 border border-slate-800 hover:border-pink-500/40 rounded-xl p-4 transition-all hover:bg-slate-900"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="font-bold text-slate-200 group-hover:text-pink-400 transition-colors flex items-center gap-2">
-                        {tool.name}
-                        <ExternalLink className="w-3 h-3 opacity-50 group-hover:opacity-100" />
-                      </span>
+                {test.suggestedTools.map((rawTool, i) => {
+                  const tool = getEnrichedTool({
+                    name: rawTool.name,
+                    description: rawTool.description,
+                    url: rawTool.url,
+                    cost: 'Free',
+                    type: 'Local',
+                    category: 'Offensive'
+                  });
+                  return (
+                    <div 
+                      key={i} 
+                      onClick={() => handleToolClick(tool)}
+                      className="bg-slate-950 border border-slate-800 hover:border-pink-500/50 rounded-xl p-4 transition-all hover:bg-slate-900/60 cursor-pointer group shadow-sm flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm text-slate-200 group-hover:text-pink-300 transition-colors">
+                              {tool.name}
+                            </span>
+                            <Info className="w-3.5 h-3.5 text-slate-500 group-hover:text-pink-400 transition-colors" />
+                          </div>
+                          <div className="flex gap-1.5 flex-wrap justify-end">
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 ${
+                              tool.type === 'Local' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                            }`}>
+                              {tool.type === 'Local' ? <Lock className="w-2 h-2" /> : <Globe className="w-2 h-2" />}
+                              {tool.type}
+                            </span>
+                            {(() => {
+                              const isFreeOnly = tool.cost.trim().toLowerCase() === 'free';
+                              const hasFreeTier = tool.cost.toLowerCase().includes('free');
+                              const costStyle = isFreeOnly
+                                ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                                : hasFreeTier
+                                ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20'
+                                : 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+                              return (
+                                <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border font-mono ${costStyle}`}>
+                                  {tool.cost}
+                                </span>
+                              );
+                            })()}
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                              (tool.category || 'Offensive') === 'Offensive'
+                                ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
+                                : (tool.category || 'Offensive') === 'Both'
+                                  ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30'
+                                  : 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
+                            }`}>
+                              {tool.category || 'Offensive'}
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
+                          {tool.description}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      {tool.description}
-                    </p>
-                  </a>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
@@ -298,6 +352,13 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
 
         </div>
       </div>
+
+      {/* Tool Detail Inspection Modal */}
+      <ToolDetailModal
+        tool={selectedTool}
+        onClose={() => setSelectedTool(null)}
+        onNavigateToOwasp={onNavigateToOwasp}
+      />
     </div>
   );
 };

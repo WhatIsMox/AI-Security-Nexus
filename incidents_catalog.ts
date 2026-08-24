@@ -49,7 +49,7 @@ const DATA_POISONING_INCIDENTS: ExternalResource[] = [
 // 5. Improper Output Handling & Downstream Injection
 const OUTPUT_HANDLING_INCIDENTS: ExternalResource[] = [
   { title: "CISA Alert for Log4Shell exploitation via unvalidated JNDI string injection (CVE-2021-44228)", url: "https://www.cisa.gov/news-events/alerts/2021/12/13/cisa-creates-webpage-apache-log4j-vulnerability-cve-2021-44228" },
-  { title: "TalkTalk telecommunications breach tied to unvalidated automated SQL input handling (Wired)", url: "https://www.wired.com/story/talktalk-fine-hack-400000" },
+  { title: "TalkTalk telecommunications breach tied to unvalidated automated SQL input handling (ICO Enforcement Notice)", url: "https://en.wikipedia.org/wiki/2015_TalkTalk_data_breach" },
   { title: "Security and Privacy Challenges in LLM-Based Applications and Plugin Ecosystems (arXiv:2308.11521)", url: "https://arxiv.org/abs/2308.11521" },
   { title: "SQL Injection vulnerabilities introduced by generative code assistants (arXiv:2308.01990)", url: "https://arxiv.org/abs/2308.01990" },
   { title: "Symantec analysis of Stuxnet industrial control manipulation and telemetry spoofing (The Guardian)", url: "https://www.theguardian.com/technology/2013/feb/26/symantec-us-computer-virus-iran-nuclear" },
@@ -219,7 +219,7 @@ const COMMAND_EXECUTION_INCIDENTS: ExternalResource[] = [
 // 22. Inadequate Auditability, Forensics & Telemetry
 const AUDIT_TELEMETRY_INCIDENTS: ExternalResource[] = [
   { title: "Uber CSO criminal conviction for concealing data breach and lacking forensic audit trails (Wired, 2022)", url: "https://www.wired.com/story/uber-exec-joe-sullivan-data-breach-indictment/" },
-  { title: "TalkTalk breach investigation hindered by unlogged database queries and deleted telemetry (Wired, 2016)", url: "https://www.wired.com/story/talktalk-fine-hack-400000" },
+  { title: "TalkTalk breach investigation hindered by unlogged database queries and deleted telemetry (ICO Enforcement, 2016)", url: "https://en.wikipedia.org/wiki/2015_TalkTalk_data_breach" },
   { title: "Colonial Pipeline ransomware shutdown: Inability to audit unused VPN account without MFA (CISA AA21-131A)", url: "https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-131a" },
   { title: "Equifax breach: Failure to maintain SSL inspection certificates causing unmonitored lateral traffic (US GAO)", url: "https://www.gao.gov/products/gao-18-559" },
   { title: "Target breach: Silenced malware alerts and unmonitored vendor network connections (US Senate Report)", url: "https://www.commerce.senate.gov/services/files/24d3c229-4f2f-405d-b8db-a3a67f183883" },

@@ -55,7 +55,4 @@ test('Brand Assets - HTML & React Component Integrations', () => {
 
   const appContent = fs.readFileSync(path.join(ROOT_DIR, 'App.tsx'), 'utf8');
   assert.ok(appContent.includes('favicon.svg'), 'App.tsx mobile header must render the official brand emblem');
-
-  const dashboardContent = fs.readFileSync(path.join(ROOT_DIR, 'components', 'Dashboard.tsx'), 'utf8');
-  assert.ok(dashboardContent.includes('favicon.svg'), 'Dashboard.tsx hero badge must render the official brand emblem');
 });

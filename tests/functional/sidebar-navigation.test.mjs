@@ -210,3 +210,29 @@ test('Sidebar - implements active state visual indicator for current view', (t) 
     sidebarContent.includes('cn(');
   assert.ok(hasConditionalClass, 'Sidebar must apply conditional CSS classes for active state');
 });
+
+// ─── 8. Dashboard Hero Stat Cards Navigation ────────────────────────────────
+
+test('Dashboard - Hero metric stat cards are interactive buttons redirecting to dedicated views', (t) => {
+  const dashboardContent = readFile('components/Dashboard.tsx');
+
+  // Must render stat cards as interactive buttons
+  assert.ok(dashboardContent.includes('onSelectTools'), 'Dashboard must connect onSelectTools for tools metric card');
+  assert.ok(dashboardContent.includes('onSelectIncidents'), 'Dashboard must connect onSelectIncidents for incidents metric card');
+  assert.ok(dashboardContent.includes('onSelectThreatModel'), 'Dashboard must connect onSelectThreatModel for threats metric card');
+  assert.ok(dashboardContent.includes('frameworks-section'), 'Dashboard must support scrolling to security standards section');
+
+  // Verify all 6 stat cards have active click actions
+  const requiredStatLabels = [
+    'Test cases',
+    'Attack payloads',
+    'Framework threats',
+    'Security standards',
+    'Curated tools',
+    'Real-world exploits'
+  ];
+
+  for (const label of requiredStatLabels) {
+    assert.ok(dashboardContent.includes(`label: '${label}'`), `Dashboard must include stat card with label '${label}'`);
+  }
+});

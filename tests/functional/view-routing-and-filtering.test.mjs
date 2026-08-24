@@ -72,3 +72,11 @@ test('Functional - Filtering and Sorting Logic in Views', (t) => {
   assert.ok(dsgaiViewContent.includes('searchQuery') || dsgaiViewContent.includes('filter'), 'GenAiDataSecurityView must implement searchQuery or filtering');
   assert.ok(top10ViewContent.includes('initialExpandedId') || top10ViewContent.includes('expandedId'), 'OwaspTop10View must support expanding entries');
 });
+
+test('Functional - Dashboard Hero and Footer Signature', (t) => {
+  const dashboardContent = readFile('components/Dashboard.tsx');
+  assert.ok(dashboardContent.includes('Made with'), 'Dashboard footer must render author signature');
+  assert.ok(dashboardContent.includes('Gabriele Mossino'), 'Dashboard footer must credit Gabriele Mossino');
+  assert.ok(dashboardContent.includes('❤️'), 'Dashboard footer must include the heart emoticon');
+});
+

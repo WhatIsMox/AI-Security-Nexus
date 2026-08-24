@@ -448,21 +448,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         <div className="relative z-10 px-4 py-10 sm:px-6 sm:py-14 md:px-14 md:py-20">
-          {/* badge */}
-          <div className="inline-flex items-center gap-3 rounded-full border border-cyan-500/30 bg-slate-900/80 px-4 py-1.5 backdrop-blur-md mb-7 animate-fade-up shadow-[0_0_20px_rgba(6,182,212,0.15)]">
-            <div className="w-5 h-5 rounded-full overflow-hidden shrink-0 border border-cyan-400/40 shadow-[0_0_8px_rgba(34,211,238,0.5)]">
-              <img src="./favicon.svg" alt="AI Security Nexus Emblem" className="w-full h-full object-cover" />
-            </div>
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
-            </span>
-            <span className="font-mono text-[11px] font-semibold tracking-[0.25em] text-cyan-300 uppercase">
-              AI Red-Teaming & Testing Platform
-            </span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.05] mb-6 animate-fade-up [animation-delay:80ms]">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.05] mb-6 animate-fade-up">
             Offensive testing & defense for{' '}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-purple-400 bg-clip-text text-transparent">
@@ -473,9 +459,10 @@ const Dashboard: React.FC<DashboardProps> = ({
           </h1>
 
           <p className="max-w-2xl text-slate-400 text-base md:text-lg leading-relaxed mb-6 animate-fade-up [animation-delay:160ms]">
-            A hands-on, community-driven security guide for engineers, red teams, and auditors.
-            Test real-world prompt injections, agent privilege escalation, training data poisoning, and supply chain flaws
-            with {stats.totalTests} practical test suites, {stats.threatEntries} framework threats, and {stats.totalPayloads.toLocaleString()} attack payloads.
+            The unified interactive intelligence hub for modern AI security.
+            AI Security Nexus bridges the gap between static governance frameworks and real-world red teaming—empowering
+            engineers, penetration testers, and security leaders to simulate adversarial threats, benchmark runtime
+            guardrails, and audit agentic systems before vulnerabilities reach production.
           </p>
 
           {/* typewriter */}
@@ -509,25 +496,86 @@ const Dashboard: React.FC<DashboardProps> = ({
           {/* live stat band */}
           <div className="row g-3 animate-fade-up [animation-delay:400ms]">
             {[
-              { label: 'Test cases', value: stats.totalTests, icon: Bug, tint: 'text-red-400 bg-red-400/10 border-red-400/20' },
-              { label: 'Attack payloads', value: stats.totalPayloads, icon: Zap, tint: 'text-amber-400 bg-amber-400/10 border-amber-400/20' },
-              { label: 'Framework threats', value: stats.threatEntries, icon: AlertTriangle, tint: 'text-orange-400 bg-orange-400/10 border-orange-400/20' },
-              { label: 'Security standards', value: frameworks.length, icon: Radar, tint: 'text-purple-400 bg-purple-400/10 border-purple-400/20' },
-              { label: 'Curated tools', value: stats.uniqueTools.length, icon: Wrench, tint: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20' },
-              { label: 'Real-world exploits', value: stats.incidents.length, icon: Globe, tint: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' },
+              { 
+                label: 'Test cases', 
+                value: stats.totalTests, 
+                icon: Bug, 
+                tint: 'text-red-400 bg-red-400/10 border-red-400/20 group-hover:border-red-400/50',
+                action: () => onSelectPillar('ALL'),
+                tooltip: 'Explore all 42+ curated test cases'
+              },
+              { 
+                label: 'Attack payloads', 
+                value: stats.totalPayloads, 
+                icon: Zap, 
+                tint: 'text-amber-400 bg-amber-400/10 border-amber-400/20 group-hover:border-amber-400/50',
+                action: () => onSelectPillar('ALL'),
+                tooltip: 'Explore active attack vectors & red-team payloads'
+              },
+              { 
+                label: 'Framework threats', 
+                value: stats.threatEntries, 
+                icon: AlertTriangle, 
+                tint: 'text-orange-400 bg-orange-400/10 border-orange-400/20 group-hover:border-orange-400/50',
+                action: onSelectThreatModel,
+                tooltip: 'Explore interactive SVG threat model'
+              },
+              { 
+                label: 'Security standards', 
+                value: frameworks.length, 
+                icon: Radar, 
+                tint: 'text-purple-400 bg-purple-400/10 border-purple-400/20 group-hover:border-purple-400/50',
+                action: () => {
+                  document.getElementById('frameworks-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                },
+                tooltip: 'View all 7 major AI security standards'
+              },
+              { 
+                label: 'Curated tools', 
+                value: stats.uniqueTools.length, 
+                icon: Wrench, 
+                tint: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20 group-hover:border-cyan-400/50',
+                action: () => {
+                  if (onSelectTools) onSelectTools();
+                  else onSelectPillar('ALL');
+                },
+                tooltip: 'Explore security tools matrix & posture filters'
+              },
+              { 
+                label: 'Real-world exploits', 
+                value: stats.incidents.length, 
+                icon: Globe, 
+                tint: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20 group-hover:border-emerald-400/50',
+                action: () => {
+                  if (onSelectIncidents) onSelectIncidents();
+                  else onSelectPillar('ALL');
+                },
+                tooltip: 'Explore verified AI security incidents & CVE disclosures'
+              },
             ].map((s) => (
               <div key={s.label} className="col-6 col-sm-4 col-lg-2 flex">
-                <div className="w-full rounded-2xl border border-slate-800/80 bg-slate-950/50 backdrop-blur px-3 sm:px-4 py-4 transition-colors hover:border-slate-700 group">
-                <div className={`inline-flex p-2 rounded-lg border ${s.tint} mb-3`}>
-                  <s.icon className="w-4 h-4" />
-                </div>
-                <div className="text-2xl font-extrabold text-white tabular-nums leading-none">
-                  <CountUp value={s.value} />
-                </div>
-                <div className="mt-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 group-hover:text-slate-400 transition-colors">
-                  {s.label}
-                </div>
-                </div>
+                <button
+                  type="button"
+                  onClick={s.action}
+                  title={s.tooltip}
+                  aria-label={`${s.label}: ${s.value}. Click to open dedicated view.`}
+                  className="w-full text-left rounded-2xl border border-slate-800/80 bg-slate-950/50 backdrop-blur px-3 sm:px-4 py-4 transition-all duration-200 hover:border-slate-600 hover:bg-slate-900/80 hover:-translate-y-1 hover:shadow-lg group cursor-pointer flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={`inline-flex p-2 rounded-lg border transition-colors ${s.tint}`}>
+                        <s.icon className="w-4 h-4" />
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-300 group-hover:translate-x-0.5 transition-all" />
+                    </div>
+                    <div className="text-2xl font-extrabold text-white tabular-nums leading-none">
+                      <CountUp value={s.value} />
+                    </div>
+                  </div>
+                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500 group-hover:text-slate-300 transition-colors">
+                    {s.label}
+                  </div>
+                </button>
               </div>
             ))}
           </div>
@@ -537,7 +585,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       {/* ================================================================
           FRAMEWORK EXPLORER
       ================================================================= */}
-      <section className="mb-16">
+      <section id="frameworks-section" className="mb-16">
         <SectionHeader
           kicker="Security standards"
           title="All major AI security frameworks in one place"
@@ -1010,14 +1058,16 @@ const Dashboard: React.FC<DashboardProps> = ({
           FOOTER
       ================================================================= */}
       <footer className="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-2 text-slate-400 text-sm">
-          <div className="p-1.5 bg-slate-900 rounded-lg border border-slate-800">
-            <BookOpen className="w-4 h-4 text-cyan-400" />
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-slate-400 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-slate-900 rounded-lg border border-slate-800">
+              <BookOpen className="w-4 h-4 text-cyan-400" />
+            </div>
+            <span>© {new Date().getFullYear()} AI Security Nexus</span>
           </div>
-          <span>© {new Date().getFullYear()} AI Security Nexus</span>
-          <span className="hidden sm:inline text-slate-700">·</span>
-          <span className="hidden sm:inline font-mono text-[11px] text-slate-600">
-            {stats.totalTests} tests · {stats.totalPayloads} payloads · v1.2.0
+          <span className="text-slate-700">·</span>
+          <span className="text-xs text-slate-500 font-medium inline-flex items-center gap-1.5 transition-colors hover:text-slate-300">
+            Made with <span className="text-pink-400 inline-block text-xs" aria-label="love">❤️</span> by <span className="text-slate-300 font-semibold tracking-wide">Gabriele Mossino</span>
           </span>
         </div>
 

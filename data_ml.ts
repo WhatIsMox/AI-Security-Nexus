@@ -26,7 +26,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Feature Injection", description: "A fraudster tweaks input fields to push the score below a blocking threshold." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML01", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "ART (Adversarial Robustness Toolbox)", description: "The industry standard for generating and defending against evasion attacks.", url: "https://github.com/Trusted-AI/adversarial-robustness-toolbox", cost: "Free OSS / ~$25/mo (Cloud)", type: "Local" },
@@ -57,11 +57,11 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Label Pipeline Compromise", description: "An attacker alters labels during ETL, degrading model integrity." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML02", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "Cleanlab", description: "Find and fix dataset errors automatically.", url: "https://github.com/cleanlab/cleanlab", cost: "Free", type: "Local" },
-        { name: "TensorFlow Data Validation", description: "Scaleable data analysis and validation library.", url: "https://www.tensorflow.org/tfx/data_validation", cost: "Free", type: "Local" }
+        { name: "TensorFlow Data Validation", description: "Scaleable data analysis and validation library.", url: "https://github.com/tensorflow/data-validation", cost: "Free", type: "Local" }
       ]
     },
     {
@@ -88,7 +88,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Attribute Reconstruction", description: "Outputs are used to infer protected attributes like age or location." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML03", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "ML Privacy Meter", description: "Tool specifically designed to quantify risks of data reconstruction and inversion.", url: "https://github.com/privacytrustlab/ml_privacy_meter", cost: "Free", type: "Local" }
@@ -118,7 +118,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Timing Side-Channel", description: "Response latency differences reveal whether inputs were seen in training." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML04", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "TensorFlow Privacy", description: "Train models with differential privacy to stop membership inference.", url: "https://github.com/tensorflow/privacy", cost: "Free", type: "Local" },
@@ -149,7 +149,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Weight Exfiltration", description: "Weights are stolen from a misconfigured storage bucket or backup." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML05", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "PrivacyRaven", description: "Test your model against extraction and theft attacks locally.", url: "https://github.com/trailofbits/PrivacyRaven", cost: "Free", type: "Local" }
@@ -179,7 +179,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Compromised Container Image", description: "A serving image is tampered with to exfiltrate prompts and outputs." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML06", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "Trivy", description: "Industry standard for scanning containers and dependencies for CVEs.", url: "https://github.com/aquasecurity/trivy", cost: "Free", type: "Local" },
@@ -210,7 +210,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Malicious Adapter Injection", description: "A LoRA or adapter introduces unsafe behaviors when loaded." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML07", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "BackdoorBench", description: "A comprehensive benchmark for adversarial backdoors in transfer learning.", url: "https://github.com/SCLBD/BackdoorBench", cost: "Free", type: "Local" }
@@ -240,7 +240,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Seasonal Drift Abuse", description: "Adversaries exploit expected drift windows to slip anomalies through." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML08", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "Alibi Detect", description: "Monitoring tools for outlier, adversarial, and distribution drift detection.", url: "https://github.com/SeldonIO/alibi-detect", cost: "Free", type: "Local" }
@@ -270,7 +270,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Log Erasure", description: "Attackers erase or rewrite logs to conceal output changes." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML09", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "HashiCorp Vault", description: "Securely store and manage keys for signing model outputs.", url: "https://www.vaultproject.io/", cost: "Free OSS / ~$25/mo (Cloud)", type: "Local" }
@@ -300,7 +300,7 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
         { title: "Federated Poisoning at Scale", description: "Coordinated clients send crafted updates to corrupt the global model." }
       ],
       references: [
-        { title: "OWASP ML Security Top 10 - ML10", url: "https://mltop10.org/" }
+        { title: "OWASP Machine Learning Security Top 10", url: "https://owasp.org/www-project-machine-learning-security-top-10/" }
       ],
       suggestedTools: [
         { name: "ModelScan", description: "Protect your environment from insecure model file formats (e.g., pickle).", url: "https://github.com/protectai/modelscan", cost: "Free", type: "Local" }

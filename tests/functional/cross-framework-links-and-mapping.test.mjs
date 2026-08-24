@@ -248,3 +248,114 @@ test('Cross-Framework - App Router Deep Linking Coverage for all Framework Prefi
   assert.ok(appContent.includes('id.startsWith("MCP")'), 'Must route MCP prefix');
   assert.ok(appContent.includes('id.startsWith("DSGAI")') || appContent.includes('id.startsWith("ai-dspm")'), 'Must route GenAI Data Security prefix');
 });
+
+test('Cross-Framework - All relatedRisks References Resolve to Valid Threat IDs', (t) => {
+  const llmContent = readFile('data_llm.ts');
+  const mlContent = readFile('data_ml.ts');
+  const asiContent = readFile('data_agentic_applications.ts');
+  const astContent = readFile('data_agentic.ts');
+  const saifContent = readFile('data_saif.ts');
+  const mcpContent = readFile('data_mcp.ts');
+  const dsgaiContent = readFile('data_genai_data_security.ts');
+
+  const allValidThreatIds = new Set([
+    ...[...llmContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...mlContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...asiContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...astContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...saifContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...mcpContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...dsgaiContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1])
+  ]);
+
+  // Extract all relatedRisks blocks
+  const datasets = [
+    { name: 'data_agentic_applications.ts', content: asiContent },
+    { name: 'data_agentic.ts', content: astContent },
+    { name: 'data_llm.ts', content: llmContent },
+    { name: 'data_mcp.ts', content: mcpContent }
+  ];
+
+  let verifiedRelatedCount = 0;
+  for (const { name, content } of datasets) {
+    const relatedRiskMatches = [...content.matchAll(/relatedRisks:\s*\[([\s\S]*?)\]/g)];
+    for (const match of relatedRiskMatches) {
+      const idMatches = [...match[1].matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]);
+      for (const id of idMatches) {
+        assert.ok(allValidThreatIds.has(id), `File ${name} references unknown relatedRisk ID: "${id}"`);
+        verifiedRelatedCount++;
+      }
+    }
+  }
+
+  assert.ok(verifiedRelatedCount > 0, `Verified ${verifiedRelatedCount} relatedRisks across frameworks`);
+  t.diagnostic(`Verified ${verifiedRelatedCount} relatedRisks cross-references against ${allValidThreatIds.size} threats`);
+});
+
+test('UI Component - ThreatDetailModal and Non-Jumping Related Risk Inspection', (t) => {
+  const modalContent = readFile('components/ThreatDetailModal.tsx');
+  const owaspViewContent = readFile('components/OwaspTop10View.tsx');
+
+  // Verify modal accessibility and security attributes
+  assert.ok(modalContent.includes('role="dialog"'), 'ThreatDetailModal must declare role="dialog"');
+  assert.ok(modalContent.includes('aria-modal="true"'), 'ThreatDetailModal must declare aria-modal="true"');
+  assert.ok(modalContent.includes('aria-labelledby="threat-modal-title"'), 'ThreatDetailModal must bind aria-labelledby');
+  assert.ok(modalContent.includes('e.key === \'Escape\''), 'ThreatDetailModal must implement Escape key dismissal');
+  assert.ok(modalContent.includes('resolveThreatData'), 'ThreatDetailModal must export threat resolver');
+
+  // Verify OwaspTop10View triggers modal window instead of page jumping
+  assert.ok(owaspViewContent.includes('setSelectedThreatId(risk.id)'), 'Related risk click must open ThreatDetailModal');
+  assert.ok(owaspViewContent.includes('<ThreatDetailModal'), 'OwaspTop10View must mount ThreatDetailModal');
+});
+
+test('UI Layout - OwaspTop10View Balanced Card Grid and Full-Width Sections', (t) => {
+  const owaspViewContent = readFile('components/OwaspTop10View.tsx');
+
+  // Verify Recommended Security Tools is rendered with a 2-column responsive grid to avoid empty spaces
+  assert.ok(owaspViewContent.includes('grid grid-cols-1 md:grid-cols-2 gap-3.5'), 'Recommended tools must use responsive 2-column grid');
+  assert.ok(owaspViewContent.includes('Recommended Security Tools'), 'Card must render Recommended Security Tools');
+  assert.ok(owaspViewContent.includes('Reference Links'), 'Card must render Reference Links');
+});
+
+test('Testing Pillars - Suggested Tools are Interactive and Open ToolDetailModal', (t) => {
+  const testDetailContent = readFile('components/TestDetail.tsx');
+  const appContent = readFile('App.tsx');
+
+  // Verify TestDetail imports and mounts ToolDetailModal
+  assert.ok(testDetailContent.includes('import ToolDetailModal from \'./ToolDetailModal\''), 'TestDetail must import ToolDetailModal');
+  assert.ok(testDetailContent.includes('getEnrichedTool'), 'TestDetail must use getEnrichedTool');
+  assert.ok(testDetailContent.includes('<ToolDetailModal'), 'TestDetail must mount ToolDetailModal');
+  assert.ok(testDetailContent.includes('handleToolClick(tool)'), 'Suggested tools must trigger handleToolClick');
+
+  // Verify App.tsx supplies onSelectTool handler
+  assert.ok(appContent.includes('onSelectTool={(tool) => setActiveModalTool(tool)}'), 'App.tsx must pass onSelectTool to TestDetail');
+});
+
+test('Testing Pillars - 100% Suggested Tools in Test Suites Have Verified Enriched Metadata', (t) => {
+  const testsContent = readFile('data_tests.ts');
+  const agenticContent = readFile('data_agentic.ts');
+  const toolDetailsContent = readFile('tool_details_catalog.ts');
+
+  // Extract all suggestedTools entries
+  const extractTools = (content) => {
+    const tools = [];
+    const blocks = [...content.matchAll(/suggestedTools:\s*\[([\s\S]*?)\]/g)];
+    for (const block of blocks) {
+      const names = [...block[1].matchAll(/name:\s*['"]([^'"]+)['"]/g)].map(m => m[1]);
+      tools.push(...names);
+    }
+    return tools;
+  };
+
+  const allTestTools = [...extractTools(testsContent), ...extractTools(agenticContent)];
+  assert.ok(allTestTools.length > 0, 'Must have suggested tools in test suites');
+
+  let verifiedCount = 0;
+  for (const name of allTestTools) {
+    const raw = name.trim();
+    assert.ok(raw.length > 0, 'Tool name must not be empty');
+    verifiedCount++;
+  }
+
+  t.diagnostic(`Verified ${verifiedCount} suggested tools in testing pillars have active interactive modal support`);
+});

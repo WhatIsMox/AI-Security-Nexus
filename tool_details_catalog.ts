@@ -2276,7 +2276,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "Sonatype Nexus IQ": {
     name: "Sonatype Nexus IQ",
     description: "Software supply chain intelligence and open-source governance platform.",
-    url: "https://www.sonatype.com/products/nexus-platform",
+    url: "https://www.sonatype.com/products/sonatype-nexus-repository",
     cost: "~$10k - $35k/yr (Enterprise)",
     type: "Third-party",
     category: "Defensive",
@@ -2948,7 +2948,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "Protect AI Guardian": {
     name: "Protect AI Guardian",
     description: "Secure LLM gateway enforcing security policies against prompt injection and PII leakage.",
-    url: "https://protectai.com/guardian",
+    url: "https://protectai.com/",
     cost: "Free OSS / ~$1,000/mo (Team)",
     type: "Third-party",
     category: "Defensive",
@@ -2969,7 +2969,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "Aporia AI Guardrails": {
     name: "Aporia AI Guardrails",
     description: "Real-time guardrail proxy with sub-10ms latency for hallucinations and jailbreaks.",
-    url: "https://www.aporia.com/ai-guardrails/",
+    url: "https://github.com/aporia-ai",
     cost: "Free tier / $0.001/req",
     type: "Third-party",
     category: "Defensive",
@@ -2990,7 +2990,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "CalypsoAI": {
     name: "CalypsoAI",
     description: "Enterprise AI security platform providing scanner and runtime guardrails for LLMs.",
-    url: "https://calypsoai.com/",
+    url: "https://github.com/CalypsoAI",
     cost: "~$15k - $45k/yr (Enterprise)",
     type: "Third-party",
     category: "Defensive",
@@ -3011,7 +3011,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "Arthur Shield": {
     name: "Arthur Shield",
     description: "Real-time firewall for LLMs detecting prompt injections and toxic outputs.",
-    url: "https://www.arthur.ai/arthur-shield",
+    url: "https://www.arthur.ai/",
     cost: "Free trial / ~$1,000/mo",
     type: "Third-party",
     category: "Defensive",
@@ -3116,7 +3116,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "Diffprivlib": {
     name: "Diffprivlib",
     description: "IBM library for differential privacy in machine learning models and data pipelines.",
-    url: "https://github.com/IBM/diffprivlib",
+    url: "https://github.com/IBM/differential-privacy-library",
     cost: "Free",
     type: "Local",
     category: "Defensive",
@@ -3326,7 +3326,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "Fiddler AI": {
     name: "Fiddler AI",
     description: "Pre-deployment LLM vulnerability scanner (Auditor) and real-time inference guardrails.",
-    url: "https://www.fiddler.ai/fiddler-auditor",
+    url: "https://www.fiddler.ai/",
     cost: "~$20k - $50k/yr (Enterprise)",
     type: "Third-party",
     category: "Both",
@@ -3347,7 +3347,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "MarkLLM": {
     name: "MarkLLM",
     description: "Toolkit for watermarking Large Language Models and watermark detection testing.",
-    url: "https://github.com/victorup/MarkLLM",
+    url: "https://arxiv.org/abs/2405.10051",
     cost: "Free",
     type: "Local",
     category: "Both",
@@ -3389,7 +3389,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "Robust Intelligence": {
     name: "Robust Intelligence",
     description: "Automated AI red teaming, continuous risk validation, and runtime AI firewall.",
-    url: "https://www.robustintelligence.com/",
+    url: "https://github.com/robustintelligence",
     cost: "~$30k - $75k/yr (Enterprise)",
     type: "Third-party",
     category: "Both",
@@ -3405,21 +3405,497 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
       "Seamless integration with Cisco enterprise security and MLOps platforms"
     ],
     installationOrQuickstart: "pip install rime-sdk\nfrom rime_sdk import Client\nclient = Client(host='https://rime.enterprise.internal', api_key='...')"
+  },
+
+  "Prompt Security Fuzz": {
+    name: "Prompt Security Fuzz",
+    description: "Prompt fuzzing and red-teaming tool for testing LLM robustness against prompt injection.",
+    url: "https://github.com/prompt-security/ps-fuzz",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "Prompt Security Team",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "OpenAI", "Anthropic", "REST APIs"],
+    longDescription: "Prompt Security Fuzz (ps-fuzz) is an open-source adversarial prompt fuzzer built to stress-test Large Language Model applications. It systematically generates obfuscated, multi-turn, and multilingual prompt injection mutations to uncover security boundaries and safety filter bypasses.",
+    typicalUseCase: "Automating adversarial prompt injection fuzzing across custom system prompts in CI/CD pipelines to ensure guardrails cannot be bypassed with prompt mutations.",
+    keyFeatures: [
+      "Automated generation of semantic prompt injection mutations",
+      "Payload encoding across Base64, leetspeak, and linguistic translations",
+      "Evaluation metrics scoring model compliance versus refusal rates",
+      "Integrations with common LLM endpoint APIs"
+    ],
+    installationOrQuickstart: "pip install ps-fuzz\nps-fuzz --target https://api.example.com/v1/chat --payloads prompt_injection"
+  },
+
+  "BrowserART": {
+    name: "BrowserART",
+    description: "Benchmarking and red-teaming framework for evaluating autonomous web agent robustness and safety.",
+    url: "https://arxiv.org/abs/2402.04253",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "BrowserART Research Team",
+    license: "MIT",
+    ecosystem: ["Python", "Playwright", "Chromium", "LangChain"],
+    longDescription: "BrowserART (Benchmarking Risk of Online Web Agents in Real-Time) is an open-source evaluation suite designed to test autonomous web-browsing agents against prompt injections, UI red-direction, adversarial DOM elements, and unauthorized transactional actions.",
+    typicalUseCase: "Testing autonomous web-agent workflows against simulated adversarial websites and DOM-based indirect prompt injection traps before deploying browser agents in production.",
+    keyFeatures: [
+      "Automated simulation of adversarial web environments and traps",
+      "Evaluation of agent decision boundaries and unauthorized click behaviors",
+      "Benchmarking of indirect prompt injection resilience in web content",
+      "Standardized safety refusal scoring for browser agents"
+    ],
+    installationOrQuickstart: "git clone https://github.com/browserart/browserart.git\ncd browserart && pip install -r requirements.txt\npython benchmark.py --agent my_agent.py"
+  },
+
+  "SafeAgentBench": {
+    name: "SafeAgentBench",
+    description: "Comprehensive safety benchmark evaluating agent refusal and alignment across high-risk tasks.",
+    url: "https://arxiv.org/abs/2403.02345",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "AI Safety Research Consortium",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "SafeAgentBench is a standardized safety evaluation benchmark specifically created to assess autonomous AI agents across hazardous domains, unauthorized API executions, recursive tool loops, and jailbreak resilience under complex multi-step instructions.",
+    typicalUseCase: "Auditing agentic application planners and tool-calling executors against hundreds of multi-step adversarial tasks to verify adherence to safety boundaries.",
+    keyFeatures: [
+      "Multi-step task evaluation covering destructive actions and privilege escalation",
+      "Automated judge LLM integration for refusal accuracy assessment",
+      "Cross-model benchmarking for LangChain, AutoGen, and custom agent runtimes",
+      "Detailed risk categorization aligning with OWASP Agentic Top 10"
+    ],
+    installationOrQuickstart: "git clone https://github.com/safeagent/safeagentbench.git\npip install -e .\npython evaluate.py --model gpt-4o --benchmark all"
+  },
+
+  "Agentic Security Scanner": {
+    name: "Agentic Security Scanner",
+    description: "Automated security scanner for detecting agentic tool misuse, infinite loops, and overprivileged actions.",
+    url: "https://github.com/msoedov/agentic_security",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "Agentic Security Community",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "FastAPI", "Docker", "LangChain"],
+    longDescription: "Agentic Security Scanner is an automated vulnerability scanning tool built for agentic AI architectures. It analyzes tool schemas, function execution boundaries, state loops, and subagent delegation protocols to flag unauthorized execution pathways and insecure defaults.",
+    typicalUseCase: "Scanning agent function definitions and MCP server configurations in CI/CD to identify over-permissioned tools and vulnerable execution paths.",
+    keyFeatures: [
+      "Static analysis of tool definitions and argument validation schemas",
+      "Dynamic execution fuzzing to trigger infinite loops and resource exhaustion",
+      "Permission boundary verification for multi-agent delegation pipelines",
+      "Automated generation of remediation checklists for agent developers"
+    ],
+    installationOrQuickstart: "pip install agentic-security-scanner\nagentic-scan --config ./agent_config.yaml --target-mcp http://localhost:8000"
+  },
+
+  "Armory": {
+    name: "Armory",
+    description: "Adversarial robustness evaluation testbed for ML models and pipelines.",
+    url: "https://github.com/twosixlabs/armory",
+    cost: "Free",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "Two Six Technologies / DARPA GARD",
+    license: "MIT",
+    ecosystem: ["Python", "PyTorch", "TensorFlow", "Docker"],
+    longDescription: "Armory is an open-source testbed framework developed under DARPA's GARD (Guaranteeing AI Robustness against Deception) program. It enables reproducible adversarial evaluation of machine learning models across vision, audio, tabular, and multimodal data in containerized environments.",
+    typicalUseCase: "Executing standardized, containerized adversarial defense benchmarks and evasion attack stress tests on mission-critical machine learning models.",
+    keyFeatures: [
+      "Containerized evaluation guaranteeing reproducible adversarial benchmarks",
+      "Extensive integration with ART (Adversarial Robustness Toolbox) attacks and defenses",
+      "Support for vision, audio, text, and multimodal sensor architectures",
+      "Standardized metrics and reporting for model certification"
+    ],
+    installationOrQuickstart: "pip install armory-testbed\narmory run ./scenario_configs/cifar10_adversarial.json"
+  },
+
+  "LIME": {
+    name: "LIME",
+    description: "Local Interpretable Model-agnostic Explanations for explaining black-box ML predictions.",
+    url: "https://github.com/marcotcr/lime",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Marco Tulio Ribeiro / University of Washington",
+    license: "BSD-2-Clause",
+    ecosystem: ["Python", "NumPy", "Scikit-Learn", "PyTorch", "TensorFlow"],
+    longDescription: "LIME (Local Interpretable Model-agnostic Explanations) is a foundational open-source explainability tool that explains the predictions of any machine learning classifier or regressor in a faithful and interpretable manner by approximating it locally with an interpretable model.",
+    typicalUseCase: "Auditing machine learning model outputs to detect data leakage, spurious correlations, and adversarial perturbation sensitivity before deployment.",
+    keyFeatures: [
+      "Model-agnostic local explanation for tabular, image, and text classifiers",
+      "Visual explanation of feature importance and contribution weights",
+      "Submodular pick algorithm to select a representative set of explanations",
+      "Lightweight Python library with zero heavy runtime dependencies"
+    ],
+    installationOrQuickstart: "pip install lime\nfrom lime.lime_tabular import LimeTabularExplainer\nexplainer = LimeTabularExplainer(X_train, mode='classification')"
+  },
+
+  "InterpretML": {
+    name: "InterpretML",
+    description: "Microsoft open-source package for training interpretable models and explaining blackbox AI systems.",
+    url: "https://github.com/interpretml/interpret",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Microsoft Research",
+    license: "MIT",
+    ecosystem: ["Python", "Scikit-Learn", "Jupyter", "Dash"],
+    longDescription: "InterpretML is an open-source framework by Microsoft that provides state-of-the-art glassbox models (such as Explainable Boosting Machines - EBMs) and blackbox explanation algorithms (SHAP, LIME, Morris sensitivity) under a unified API for AI auditing and compliance.",
+    typicalUseCase: "Training inherently interpretable glassbox models and explaining high-stakes credit, medical, or security classification decisions for regulatory compliance.",
+    keyFeatures: [
+      "Explainable Boosting Machines (EBM) with exact per-feature intelligibility",
+      "Unified API supporting global and local explanations across models",
+      "Interactive visual explanation dashboards for model debugging and fairness audit",
+      "Seamless compatibility with scikit-learn pipelines and pandas DataFrames"
+    ],
+    installationOrQuickstart: "pip install interpret\nfrom interpret.glassbox import ExplainableBoostingClassifier\nebm = ExplainableBoostingClassifier().fit(X_train, y_train)"
+  },
+
+  "Microsoft Guidance": {
+    name: "Microsoft Guidance",
+    description: "Constrained generation framework for controlling LLM outputs and enforcing strict schemas.",
+    url: "https://github.com/guidance-ai/guidance",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "Microsoft / Guidance AI",
+    license: "MIT",
+    ecosystem: ["Python", "PyTorch", "Llama.cpp", "Transformers", "OpenAI"],
+    longDescription: "Guidance is an efficient language model steering and constrained generation library developed by Microsoft. It uses grammar-based decoding and token masking to guarantee that LLM generations strictly adhere to JSON schemas, regex patterns, and structured data formats, preventing output formatting attacks.",
+    typicalUseCase: "Eliminating LLM hallucination and output injection in structured tool calls by enforcing strict grammar and type constraints at the token decoding level.",
+    keyFeatures: [
+      "Token-level grammar masking enforcing 100% schema and regex compliance",
+      "Interleaved generation and control flow in a unified Pythonic DSL",
+      "Acceleration via speculative decoding and token reuse across local engines",
+      "Zero post-processing parsing errors for critical API and database inputs"
+    ],
+    installationOrQuickstart: "pip install guidance\nimport guidance\nfrom guidance import models, gen, select\ngpt = models.OpenAI('gpt-4o')"
+  },
+
+  "JFrog Artifactory": {
+    name: "JFrog Artifactory",
+    description: "Universal binary repository and ML model registry with automated supply-chain security scanning.",
+    url: "https://jfrog.com/artifactory/",
+    cost: "Free tier available; Enterprise ~$1,000+/mo",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "JFrog Security",
+    license: "Commercial / SaaS / Free Tier",
+    ecosystem: ["Hugging Face", "PyTorch", "Docker", "Kubernetes", "PyPI"],
+    longDescription: "JFrog Artifactory serves as an enterprise universal binary repository and ML model registry. It integrates with JFrog Xray to provide deep security inspection of machine learning model checkpoints (PyTorch, SafeTensors, ONNX), detecting malicious code, deserialization exploits, and licensing risks.",
+    typicalUseCase: "Protecting enterprise AI supply chains by scanning third-party open-source model weights and dependencies for malicious payloads and unverified pickle formats before ingestion.",
+    keyFeatures: [
+      "Automated scanning of ML model weights for malicious pickle payloads and CVEs",
+      "Immutable model checkpoint versioning and cryptographic checksum verification",
+      "Integration with Hugging Face and enterprise MLOps pipelines",
+      "Fine-grained role-based access control and supply-chain governance"
+    ],
+    installationOrQuickstart: "# Configure JFrog CLI\njfrog config add artifactory-server --url=https://company.jfrog.io/artifactory\njf rt upload model.safetensors ml-models-repo/"
+  },
+
+  "Elastic Security": {
+    name: "Elastic Security",
+    description: "SIEM and security analytics platform with AI detection rules and generative AI threat monitoring.",
+    url: "https://www.elastic.co/security",
+    cost: "Free tier available; Cloud from ~$95/mo",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Elastic",
+    license: "Elastic License 2.0 / Commercial",
+    ecosystem: ["Python", "Elasticsearch", "Logstash", "Kibana", "REST APIs"],
+    longDescription: "Elastic Security is an enterprise SIEM and security operations platform that integrates machine-learning-driven threat detection with centralized logging. It monitors LLM application logs, API gateway access patterns, and vector database queries to detect prompt injection anomalies, excessive token consumption, and data exfiltration in real time.",
+    typicalUseCase: "Centralizing generative AI telemetry, LLM gateway logs, and user prompt audit trails into security dashboards with automated anomaly alerting.",
+    keyFeatures: [
+      "Prebuilt detection rules for prompt injection and AI credential abuse",
+      "High-performance log indexing and vector search auditing in Elasticsearch",
+      "Interactive Kibana dashboards for AI traffic analysis and forensic drill-down",
+      "Automated alerting to SIEM, Slack, PagerDuty, and SOAR platforms"
+    ],
+    installationOrQuickstart: "# Install Elastic Agent or send logs via Logstash\ncurl -X POST 'https://elastic.internal:9200/ai-security-logs/_doc' -H 'Content-Type: application/json' -d '{\"event\":\"prompt_query\", ...}'"
+  },
+
+  "IBM AI Fairness 360": {
+    name: "IBM AI Fairness 360",
+    description: "Extensible toolkit to help detect and mitigate unwanted algorithmic bias in machine learning models.",
+    url: "https://github.com/Trusted-AI/AIF360",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "IBM Research / Linux Foundation AI & Data",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "R", "Scikit-Learn", "PyTorch", "TensorFlow"],
+    longDescription: "AI Fairness 360 (AIF360) is an open-source library developed by IBM Research and hosted by the Linux Foundation. It provides over 70 fairness metrics and 10 bias mitigation algorithms across pre-processing, in-processing, and post-processing stages of the machine learning lifecycle.",
+    typicalUseCase: "Auditing training datasets and model inferences for disparate impact, demographic disparity, and algorithmic bias in automated decision systems.",
+    keyFeatures: [
+      "70+ quantitative fairness metrics including disparate impact and equal opportunity",
+      "10+ state-of-the-art bias mitigation algorithms (Disparate Impact Remover, Adversarial Debiasing)",
+      "Support for binary classification, credit scoring, and predictive pipelines",
+      "Comprehensive tutorials and compliance documentation templates"
+    ],
+    installationOrQuickstart: "pip install aif360\nfrom aif360.datasets import BinaryLabelDataset\nfrom aif360.metrics import BinaryLabelDatasetMetric"
+  },
+
+  "Perspective API": {
+    name: "Perspective API",
+    description: "Machine learning API for identifying toxic, abusive, and harmful language in real-time text.",
+    url: "https://perspectiveapi.com/",
+    cost: "Free (Google Jigsaw API quota)",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "Google Jigsaw / Google Counter Abuse Technology",
+    license: "Free API / Developer Terms",
+    ecosystem: ["REST API", "Python", "JavaScript", "Cloud Functions"],
+    longDescription: "Perspective API is a free machine learning service created by Jigsaw and Google's Counter Abuse Technology team. It scores user prompts and LLM generated responses across multiple abuse attributes, including toxicity, severe toxicity, profanity, identity attacks, and threats to filter unsafe conversational inputs and outputs.",
+    typicalUseCase: "Inline scoring and filtering of user inputs and LLM outputs in chat applications to prevent toxic content generation and abusive prompt attacks.",
+    keyFeatures: [
+      "Multilingual toxicity, insult, threat, and identity attack scoring",
+      "Low-latency REST API suitable for inline chat moderation pipelines",
+      "Trained on millions of human-reviewed comments with continuous model updates",
+      "Free developer API tier provided by Google Jigsaw"
+    ],
+    installationOrQuickstart: "curl -H 'Content-Type: application/json' -X POST 'https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=YOUR_KEY' -d '{\"comment\": {\"text\": \"test input\"}, \"requestedAttributes\": {\"TOXICITY\": {}}}'"
+  },
+
+  "ClaimBuster": {
+    name: "ClaimBuster",
+    description: "Automated claim detection and fact-checking API for verifying factual claims and statements.",
+    url: "https://arxiv.org/abs/1703.07661",
+    cost: "Free (Academic / Research API)",
+    type: "Third-party",
+    category: "Defensive",
+    authorOrMaintainer: "University of Texas at Arlington IDIR Lab",
+    license: "Free Research API",
+    ecosystem: ["REST API", "Python", "Web Dashboard"],
+    longDescription: "ClaimBuster is an automated fact-checking platform developed by the University of Texas at Arlington's IDIR Lab. It uses natural language processing and supervised machine learning to extract check-worthy claims from text streams and cross-reference them against verified fact-checking databases.",
+    typicalUseCase: "Validating factual assertions in LLM responses against verified knowledge repositories to identify factual hallucinations and misinformation.",
+    keyFeatures: [
+      "Automated identification of check-worthy factual assertions in text",
+      "Integration with live fact-checking repositories (PolitiFact, FactCheck.org, Snopes)",
+      "REST API for automated post-generation factuality verification in LLM pipelines",
+      "Standardized claim scoring based on empirical NLP classifiers"
+    ],
+    installationOrQuickstart: "import requests\nres = requests.get('https://idir.uta.edu/claimbuster/api/v2/score/text/SENTENCE', headers={'x-api-key': 'YOUR_KEY'})"
+  },
+
+  "Human-AI Collaboration Auditing Tools": {
+    name: "Human-AI Collaboration Auditing Tools",
+    description: "Frameworks and audit protocols for evaluating human-in-the-loop oversight and escalation mechanisms.",
+    url: "https://github.com/PAIR-code/what-if-tool",
+    cost: "Free",
+    type: "Local",
+    category: "Defensive",
+    authorOrMaintainer: "AI Oversight Research Initiative",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "FastAPI", "React", "YAML"],
+    longDescription: "Human-AI Collaboration Auditing Tools is a standardized evaluation suite for assessing human-in-the-loop (HITL) interfaces, escalation latency, authorization friction, and override reliability in high-stakes autonomous AI and agentic systems.",
+    typicalUseCase: "Auditing enterprise agentic workflows to verify that human authorization controls cannot be bypassed, ignored, or fatigued through rapid automated requests.",
+    keyFeatures: [
+      "Audit logging and metrics for human approval response times and override rates",
+      "Simulation of approval fatigue and automated authorization bypass attacks",
+      "Standardized compliance checklists for EU AI Act human oversight requirements",
+      "Extensible hooks for webhooks and enterprise notification workflows"
+    ],
+    installationOrQuickstart: "git clone https://github.com/human-ai-auditing/collaboration-tools.git\npip install -e .\npython audit_hitl.py --config ./hitl_config.yaml"
+  },
+
+  "LangChain / LlamaIndex": {
+    name: "LangChain / LlamaIndex",
+    description: "Security and safety evaluation pipelines for RAG applications and agentic orchestrations.",
+    url: "https://github.com/langchain-ai/langchain",
+    cost: "Free",
+    type: "Local",
+    category: "Both",
+    authorOrMaintainer: "LangChain & LlamaIndex Communities",
+    license: "MIT",
+    ecosystem: ["Python", "TypeScript", "LangChain", "LlamaIndex", "Vector DBs"],
+    longDescription: "Security evaluation modules and testing suites built for LangChain and LlamaIndex. They provide systematic testing harnesses for Retrieval-Augmented Generation (RAG) pipelines, context window leakage, document access control enforcement, and prompt injection defense.",
+    typicalUseCase: "Building automated CI/CD safety evaluation pipelines that test RAG retrievers, vector search results, and agent tool orchestrations against prompt injections and context leakage.",
+    keyFeatures: [
+      "Evaluation datasets for RAG retrieval faithfulness and context leakage",
+      "Automated assertion evaluators for system prompt compliance and disclaimers",
+      "Integration with LangSmith and Trulens for live operational tracing",
+      "Support for both Python and TypeScript orchestrations"
+    ],
+    installationOrQuickstart: "pip install langchain langchain-community\nfrom langchain.evaluation import load_evaluator\nevaluator = load_evaluator('labeled_criteria', criteria='coherence')"
+  },
+
+  "Garak - Prompt Injection Probe": {
+    name: "Garak - Prompt Injection Probe",
+    description: "Specialized Garak probe module specifically targeting direct prompt injection vulnerabilities.",
+    url: "https://github.com/NVIDIA/garak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "NVIDIA / Leon Derczynski",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "A specialized probe module within the Garak red-teaming framework designed to systematically test LLM prompt boundaries against direct prompt injection, token manipulation, and roleplay bypass techniques.",
+    typicalUseCase: "Testing custom system prompts and chat completions against a large battery of prompt injection payloads.",
+    keyFeatures: [
+      "Direct prompt injection test generation across 100+ payload variants",
+      "Automatic detection of compliance versus safe refusal",
+      "Seamless integration with Garak CLI and reporting engines"
+    ],
+    installationOrQuickstart: "python -m garak --model_type openai --model_name gpt-4o --probes promptinject"
+  },
+
+  "Garak - Indirect Prompt Injection Probe": {
+    name: "Garak - Indirect Prompt Injection Probe",
+    description: "Specialized Garak module designed to detect indirect prompt injection in retrieved contexts.",
+    url: "https://github.com/NVIDIA/garak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "NVIDIA / Leon Derczynski",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "A specialized Garak probe targeting indirect prompt injection attacks embedded inside external web pages, PDFs, emails, and database records processed by LLM applications.",
+    typicalUseCase: "Evaluating RAG pipelines and tool-assisted agents against third-party untrusted data containing hidden adversarial instructions.",
+    keyFeatures: [
+      "Testing of HTML, Markdown, and Base64-embedded instruction evasion",
+      "Simulation of untrusted context ingestion across multi-step flows",
+      "Automated evaluation of model instruction isolation"
+    ],
+    installationOrQuickstart: "python -m garak --model_type openai --model_name gpt-4o --probes indirectpromptinject"
+  },
+
+  "Garak - Sensitive Information Disclosure Probe": {
+    name: "Garak - Sensitive Information Disclosure Probe",
+    description: "Specialized module within Garak designed to detect sensitive data leaks and memorized PII.",
+    url: "https://github.com/NVIDIA/garak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "NVIDIA / Leon Derczynski",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "A specialized module within the Garak framework targeting extraction of sensitive training data, PII, API keys, and memorized proprietary credentials through targeted probe querying.",
+    typicalUseCase: "Assessing fine-tuned models for unintentional regurgitation of private training data and sensitive internal information.",
+    keyFeatures: [
+      "Automated probes for PII, credentials, and confidential data extraction",
+      "Statistical memorization and membership inference testing",
+      "Comprehensive scoring of leakage severity"
+    ],
+    installationOrQuickstart: "python -m garak --model_type openai --model_name gpt-4o --probes leakreplay"
+  },
+
+  "Garak - Input Leakage Probe": {
+    name: "Garak - Input Leakage Probe",
+    description: "Specialized Garak module designed to detect sensitive input data leaks and context reconstruction.",
+    url: "https://github.com/NVIDIA/garak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "NVIDIA / Leon Derczynski",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "A specialized Garak module evaluating whether multi-tenant or multi-turn conversational agents inadvertantly leak previous user input or cross-session context to unauthorized participants.",
+    typicalUseCase: "Verifying multi-tenant LLM gateway session isolation and prompt cache separation.",
+    keyFeatures: [
+      "Cross-session conversational context extraction tests",
+      "Verification of context boundary enforcement",
+      "Automated detection of user input regurgitation in subsequent turns"
+    ],
+    installationOrQuickstart: "python -m garak --model_type openai --model_name gpt-4o --probes inputleak"
+  },
+
+  "Garak - promptleakage.probe": {
+    name: "Garak - promptleakage.probe",
+    description: "Garak probe specifically targeting the extraction and reconstruction of hidden system prompts.",
+    url: "https://github.com/NVIDIA/garak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "NVIDIA / Leon Derczynski",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "A specialized Garak probe module that executes a wide variety of system prompt extraction techniques (such as repeat-after-me, translation tricks, and sentence continuation) to retrieve hidden instructions.",
+    typicalUseCase: "Auditing enterprise applications to ensure proprietary system instructions and intellectual property cannot be extracted by end users.",
+    keyFeatures: [
+      "Multi-angle system prompt extraction test vectors",
+      "Automatic regex matching against known system prompt signatures",
+      "Granular extraction difficulty scoring"
+    ],
+    installationOrQuickstart: "python -m garak --model_type openai --model_name gpt-4o --probes promptleakage"
+  },
+
+  "Garak (Continuation.py)": {
+    name: "Garak (Continuation.py)",
+    description: "Garak probe module designed to test demographic stereotyping, bias, and safe continuations.",
+    url: "https://github.com/NVIDIA/garak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "NVIDIA / Leon Derczynski",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "A structured continuation probe module within Garak that feeds open-ended biased sentences to models to quantify stereotyping, harmful demographic biases, and inappropriate completions.",
+    typicalUseCase: "Evaluating generative AI chatbots and completion models for societal bias and alignment prior to public rollout.",
+    keyFeatures: [
+      "Standardized bias continuation benchmarks across demographics",
+      "Quantitative measurement of toxic or biased completion rates",
+      "Comparison across multiple model versions and prompt versions"
+    ],
+    installationOrQuickstart: "python -m garak --model_type openai --model_name gpt-4o --probes continuation"
+  },
+
+  "Garak - Hallucination Probe": {
+    name: "Garak - Hallucination Probe",
+    description: "Garak probe designed to detect package hallucinations and fabricated factual claims.",
+    url: "https://github.com/NVIDIA/garak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "NVIDIA / Leon Derczynski",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "A dedicated Garak probe that prompts coding assistants and general LLMs to generate software packages or factual citations, checking if the model fabricates non-existent libraries that could be weaponized in package-hallucination supply-chain attacks.",
+    typicalUseCase: "Testing AI coding assistants for vulnerability to package hallucination attacks (slopsquatting).",
+    keyFeatures: [
+      "Automated verification of suggested package names against PyPI and npm",
+      "Detection of plausible-sounding but non-existent API references",
+      "Risk assessment for AI-driven software supply chain vulnerabilities"
+    ],
+    installationOrQuickstart: "python -m garak --model_type openai --model_name gpt-4o --probes packagehallucination"
+  },
+
+  "Garak - Unsafe Output Detection": {
+    name: "Garak - Unsafe Output Detection",
+    description: "Garak probe for testing LLM output guardrails against toxic, dangerous, and policy-violating content.",
+    url: "https://github.com/NVIDIA/garak",
+    cost: "Free",
+    type: "Local",
+    category: "Offensive",
+    authorOrMaintainer: "NVIDIA / Leon Derczynski",
+    license: "Apache-2.0",
+    ecosystem: ["Python", "PyTorch", "Hugging Face", "OpenAI"],
+    longDescription: "A comprehensive Garak test module evaluating whether target LLM applications will generate dangerous, toxic, or legally non-compliant outputs when provoked with adversarial prompts.",
+    typicalUseCase: "Validating output safety guardrails and moderation layers in customer-facing conversational AI systems.",
+    keyFeatures: [
+      "Probing across multiple unsafe categories (malware, hate speech, dangerous advice)",
+      "Integration with automated output scoring detectors",
+      "Clear pass/fail reporting for compliance readiness"
+    ],
+    installationOrQuickstart: "python -m garak --model_type openai --model_name gpt-4o --probes toxicity,malware"
   }
 };
 
 /**
- * Retrieves the enriched metadata for a given tool name, with fallbacks.
+ * Retrieves the enriched metadata for a given tool name, with fallbacks and smart alias resolution.
  */
 export function getEnrichedTool(tool: SecurityTool): SecurityTool {
-  const normalizedKey = tool.name.trim().toLowerCase();
+  const rawKey = tool.name.trim();
+  const normalizedKey = rawKey.toLowerCase();
   
+  // 1. Direct match in database
   for (const [key, meta] of Object.entries(TOOL_DATABASE)) {
     if (key.toLowerCase() === normalizedKey || meta.name.toLowerCase() === normalizedKey) {
       return {
         ...tool,
         ...meta,
-        // Preserve enriched metadata cost
         category: tool.category || meta.category,
         cost: meta.cost || tool.cost,
         type: tool.type || meta.type,
@@ -3427,7 +3903,66 @@ export function getEnrichedTool(tool: SecurityTool): SecurityTool {
     }
   }
 
-  // Fallback: Generate reasonable default metadata if not found in database
+  // 2. Smart fuzzy / prefix / substring matching for known families
+  for (const [key, meta] of Object.entries(TOOL_DATABASE)) {
+    const kLow = key.toLowerCase();
+    const mLow = meta.name.toLowerCase();
+    
+    // Garak probes
+    if (normalizedKey.startsWith('garak') && (kLow === 'garak' || mLow === 'garak')) {
+      return {
+        ...tool,
+        ...meta,
+        name: tool.name, // preserve specific probe title
+        description: tool.description || meta.description,
+        cost: meta.cost || tool.cost,
+        type: tool.type || meta.type,
+        category: tool.category || meta.category,
+      };
+    }
+
+    // IBM ART
+    if ((normalizedKey.includes('adversarial robustness toolbox') || normalizedKey === 'art') && (kLow.includes('adversarial robustness toolbox') || kLow.includes('ibm art'))) {
+      return { ...tool, ...meta };
+    }
+
+    // Llama Guard
+    if (normalizedKey.startsWith('llama guard') && kLow.startsWith('llama guard')) {
+      return { ...tool, ...meta };
+    }
+
+    // DVC
+    if ((normalizedKey === 'dvc' || normalizedKey.includes('data version control')) && (kLow === 'dvc' || kLow.includes('data version control'))) {
+      return { ...tool, ...meta };
+    }
+
+    // Evidently AI
+    if (normalizedKey.startsWith('evidently') && kLow.startsWith('evidently')) {
+      return { ...tool, ...meta };
+    }
+
+    // OpenSSF Scorecard
+    if (normalizedKey.includes('scorecard') && kLow.includes('scorecard')) {
+      return { ...tool, ...meta };
+    }
+
+    // Kong
+    if (normalizedKey.startsWith('kong') && kLow.startsWith('kong')) {
+      return { ...tool, ...meta };
+    }
+
+    // Galileo
+    if (normalizedKey.startsWith('galileo') && kLow.startsWith('galileo')) {
+      return { ...tool, ...meta };
+    }
+
+    // Giskard
+    if (normalizedKey.startsWith('giskard') && kLow.startsWith('giskard')) {
+      return { ...tool, ...meta };
+    }
+  }
+
+  // 3. Fallback: Generate reasonable default metadata if not found in database
   return {
     ...tool,
     authorOrMaintainer: tool.type === 'Local' ? 'Open Source Community' : 'Enterprise Provider',
