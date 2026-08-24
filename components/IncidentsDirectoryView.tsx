@@ -19,9 +19,10 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
   const [selectedIncident, setSelectedIncident] = useState<RealWorldIncident | null>(null);
 
   const handleOpenIncident = (incident: RealWorldIncident) => {
-    setSelectedIncident(incident);
     if (onSelectIncident) {
       onSelectIncident(incident);
+    } else {
+      setSelectedIncident(incident);
     }
   };
 

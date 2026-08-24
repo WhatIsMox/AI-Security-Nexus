@@ -397,5 +397,22 @@ test('Interactive Tools & Incidents - Verified Modal Mounting & Click Handlers A
   assert.ok(threatModalContent.includes('createPortal('), 'ThreatDetailModal must use createPortal to mount on document.body');
   assert.ok(searchModalContent.includes('createPortal('), 'GlobalSearchModal must use createPortal to mount on document.body');
 
-  t.diagnostic('Verified 100% interactive modal wiring, createPortal viewport immunity for tools and real-world incidents across the entire application');
+  // 8. Single-Instance Modal Guarantee (Prevents layered duplicate modal double-click dismiss bugs)
+  const toolModalTagCount = (toolsViewContent.match(/<ToolDetailModal/g) || []).length;
+  assert.strictEqual(toolModalTagCount, 1, 'ToolsDirectoryView must contain exactly ONE <ToolDetailModal instance to avoid double modal layering');
+  
+  const incidentModalTagCount = (incidentsViewContent.match(/<IncidentDetailModal/g) || []).length;
+  assert.strictEqual(incidentModalTagCount, 1, 'IncidentsDirectoryView must contain exactly ONE <IncidentDetailModal instance');
+
+  assert.ok(
+    toolsViewContent.includes('if (onSelectTool)') && toolsViewContent.includes('onSelectTool(tool)') && toolsViewContent.includes('else {') && toolsViewContent.includes('setSelectedTool(tool)'),
+    'ToolsDirectoryView must delegate to onSelectTool when present to avoid setting both local and global state'
+  );
+
+  assert.ok(
+    incidentsViewContent.includes('if (onSelectIncident)') && incidentsViewContent.includes('onSelectIncident(incident)') && incidentsViewContent.includes('else {') && incidentsViewContent.includes('setSelectedIncident(incident)'),
+    'IncidentsDirectoryView must delegate to onSelectIncident when present to avoid setting both local and global state'
+  );
+
+  t.diagnostic('Verified 100% interactive modal wiring, createPortal viewport immunity, and single-instance modal guarantee across the entire application');
 });

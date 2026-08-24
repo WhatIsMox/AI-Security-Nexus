@@ -25,9 +25,10 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
   const [selectedTool, setSelectedTool] = useState<ToolDirectoryEntry | null>(null);
 
   const handleOpenTool = (tool: ToolDirectoryEntry) => {
-    setSelectedTool(tool);
     if (onSelectTool) {
       onSelectTool(tool);
+    } else {
+      setSelectedTool(tool);
     }
   };
 
@@ -297,13 +298,6 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
           ))
         )}
       </div>
-
-      {/* Tool Detail Inspection Modal */}
-      <ToolDetailModal 
-        tool={selectedTool} 
-        onClose={() => setSelectedTool(null)} 
-        onNavigateToOwasp={onNavigateToOwasp} 
-      />
     </div>
   );
 };
