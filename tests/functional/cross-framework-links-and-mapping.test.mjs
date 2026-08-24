@@ -311,9 +311,18 @@ test('UI Component - ThreatDetailModal and Non-Jumping Related Risk Inspection',
 test('UI Layout - OwaspTop10View Balanced Card Grid and Full-Width Sections', (t) => {
   const owaspViewContent = readFile('components/OwaspTop10View.tsx');
 
-  // Verify Recommended Security Tools is rendered with a 2-column responsive grid to avoid empty spaces
-  assert.ok(owaspViewContent.includes('grid grid-cols-1 md:grid-cols-2 gap-3.5'), 'Recommended tools must use responsive 2-column grid');
+  // Verify Row 1: Core Vulnerabilities vs Prevention Strategies
+  assert.ok(owaspViewContent.includes('Common Vulnerabilities & Risks') || owaspViewContent.includes('Risk Mechanics & Impact'), 'Row 1 must render Common Vulnerabilities');
+  assert.ok(owaspViewContent.includes('Prevention Strategies & Defense'), 'Row 1 must render Prevention Strategies');
+
+  // Verify Row 2: Attack Scenarios vs Real-World Incidents
+  assert.ok(owaspViewContent.includes('Attack Scenarios & Exploit Vectors'), 'Row 2 must render Attack Scenarios');
+  assert.ok(owaspViewContent.includes('Real-World Incidents & Case Studies'), 'Row 2 must render Real-World Incidents');
+  assert.ok(owaspViewContent.includes('lg:col-span-2'), 'Empty-column defense: single column expands to full width');
+
+  // Verify Row 3 & 4: Guidance, Mappings, and Recommended Tools
   assert.ok(owaspViewContent.includes('Recommended Security Tools'), 'Card must render Recommended Security Tools');
+  assert.ok(owaspViewContent.includes('grid grid-cols-1 md:grid-cols-2 gap-3.5'), 'Recommended tools must use responsive 2-column grid');
   assert.ok(owaspViewContent.includes('Reference Links'), 'Card must render Reference Links');
 });
 

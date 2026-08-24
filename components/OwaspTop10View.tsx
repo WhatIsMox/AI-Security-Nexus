@@ -290,82 +290,119 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                     <p className="text-sm text-slate-300 leading-relaxed">{entry.whyUnique}</p>
                   </div>
                 )}
-                <div className="grid lg:grid-cols-2 gap-8 mt-6">
-                  <div className="space-y-6">
+                {/* Row 1: Core Vulnerabilities vs Prevention Strategies */}
+                <div className="grid lg:grid-cols-2 gap-6 mt-6">
+                  {/* Common Risks & Threat Mechanics */}
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 sm:p-5 flex flex-col justify-between">
                     <div>
-                      <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
-                        <AlertTriangle className="w-4 h-4 text-orange-400" />
-                        {entry.whyUnique ? 'Risk mechanics & impact' : 'Common risks'}
+                      <h4 className="flex items-center gap-2 text-sm font-bold text-orange-400 uppercase tracking-wider mb-3">
+                        <AlertTriangle className="w-4 h-4 text-orange-400 shrink-0" />
+                        {entry.whyUnique ? 'Risk Mechanics & Impact' : 'Common Vulnerabilities & Risks'}
                       </h4>
-                      <ul className="space-y-2">
+                      <ul className="space-y-2.5">
                         {entry.commonRisks.map((risk, idx) => (
-                          <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm bg-slate-950/50 p-3 rounded-lg border border-slate-800/50">
+                          <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm bg-slate-900/60 p-3 rounded-lg border border-slate-800/60">
                             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 shrink-0"></span>
-                            {risk}
+                            <span className="leading-relaxed">{risk}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
 
                     {entry.realWorldEvidence && entry.realWorldEvidence.length > 0 && (
-                      <div>
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
-                          <BookOpen className="w-4 h-4 text-blue-400" />
-                          Real-world evidence
-                        </h4>
-                        <ul className="space-y-2 max-h-[520px] overflow-y-auto pr-1" style={{ scrollbarGutter: 'stable' }}>
+                      <div className="mt-4 pt-4 border-t border-slate-800/60">
+                        <h5 className="flex items-center gap-2 text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">
+                          <BookOpen className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                          Empirical Research Evidence
+                        </h5>
+                        <ul className="space-y-2">
                           {entry.realWorldEvidence.map((evidence, idx) => (
-                            <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm bg-blue-500/5 p-3 rounded-lg border border-blue-500/10">
-                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
+                            <li key={idx} className="flex items-start gap-2.5 text-slate-300 text-xs bg-blue-500/5 p-2.5 rounded-lg border border-blue-500/10">
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0" />
                               <span className="leading-relaxed">{evidence}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
                     )}
+                  </div>
 
-                    {entry.attackScenarios.length > 0 && (
-                      <div>
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
-                          <Target className="w-4 h-4 text-red-400" />
-                          Attack Scenarios
-                        </h4>
-                        <div
-                          className={`space-y-3 ${entry.attackScenarios.length > 4 ? 'max-h-[520px] overflow-y-auto pr-1' : ''}`}
-                          style={{ scrollbarGutter: 'stable' }}
-                        >
-                          {entry.attackScenarios.map((scenario, idx) => (
-                            <div key={idx} className="bg-red-500/5 p-4 rounded-lg border border-red-500/10">
-                              <div className="font-bold text-red-400 text-sm mb-1">{scenario.title}</div>
-                              <p className="text-slate-400 text-sm leading-relaxed">{scenario.description}</p>
-                            </div>
-                          ))}
+                  {/* Prevention Strategies & Defensive Controls */}
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 sm:p-5 flex flex-col justify-between">
+                    <div>
+                      <h4 className="flex items-center gap-2 text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                        Prevention Strategies & Defense
+                      </h4>
+                      <ul className="space-y-2.5">
+                        {entry.preventionStrategies.map((strategy, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm bg-emerald-500/5 p-3 rounded-lg border border-emerald-500/10">
+                            <Shield className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                            <span className="leading-relaxed">{strategy}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Row 2: Attack Scenarios vs Real-World Incidents */}
+                {(() => {
+                  const incidentLinks = INCIDENTS_BY_THREAT_ID[entry.id] || [];
+                  const hasScenarios = entry.attackScenarios && entry.attackScenarios.length > 0;
+                  const hasIncidents = incidentLinks.length > 0;
+                  if (!hasScenarios && !hasIncidents) return null;
+
+                  return (
+                    <div className="grid lg:grid-cols-2 gap-6 mt-6">
+                      {/* Attack Scenarios */}
+                      {hasScenarios && (
+                        <div className={`rounded-xl border border-red-500/20 bg-red-950/10 p-4 sm:p-5 flex flex-col ${!hasIncidents ? 'lg:col-span-2' : ''}`}>
+                          <div className="flex items-center justify-between gap-2 mb-3">
+                            <h4 className="flex items-center gap-2 text-sm font-bold text-red-400 uppercase tracking-wider">
+                              <Target className="w-4 h-4 text-red-400 shrink-0" />
+                              Attack Scenarios & Exploit Vectors ({entry.attackScenarios.length})
+                            </h4>
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-red-400/80 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                              Offensive Path
+                            </span>
+                          </div>
+                          <div className="space-y-3 flex-1">
+                            {entry.attackScenarios.map((scenario, idx) => (
+                              <div key={idx} className="bg-slate-950/80 p-3.5 sm:p-4 rounded-lg border border-red-500/20 hover:border-red-500/40 transition-colors">
+                                <div className="flex items-center gap-2 font-bold text-red-300 text-sm mb-1.5">
+                                  <span className="font-mono text-xs text-red-400/80">#{idx + 1}</span>
+                                  {scenario.title}
+                                </div>
+                                <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{scenario.description}</p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {(() => {
-                      const incidentLinks = INCIDENTS_BY_THREAT_ID[entry.id] || [];
-                      if (incidentLinks.length === 0) return null;
-                      return (
-                        <div>
-                          <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
-                            <Flame className="w-4 h-4 text-amber-400" />
-                            Real-World Incidents & Case Studies
-                          </h4>
-                          <div
-                            className={`space-y-2 ${incidentLinks.length > 4 ? 'max-h-[240px] overflow-y-auto pr-1' : ''}`}
-                            style={{ scrollbarGutter: 'stable' }}
-                          >
+                      {/* Real-World Incidents & Case Studies */}
+                      {hasIncidents && (
+                        <div className={`rounded-xl border border-amber-500/20 bg-amber-950/10 p-4 sm:p-5 flex flex-col ${!hasScenarios ? 'lg:col-span-2' : ''}`}>
+                          <div className="flex items-center justify-between gap-2 mb-3">
+                            <h4 className="flex items-center gap-2 text-sm font-bold text-amber-400 uppercase tracking-wider">
+                              <Flame className="w-4 h-4 text-amber-400 shrink-0" />
+                              Real-World Incidents & Case Studies ({incidentLinks.length})
+                            </h4>
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400/80 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                              Empirical Intel
+                            </span>
+                          </div>
+                          <div className="space-y-2.5 flex-1">
                             {incidentLinks.map((incident, idx) => (
                               <div
                                 key={idx}
                                 onClick={() => setSelectedIncident(getEnrichedIncident(incident, entry.id))}
-                                className="flex items-center justify-between gap-2 bg-slate-950/60 p-3 rounded-lg border border-slate-800/60 hover:border-amber-500/40 transition-all group cursor-pointer hover:bg-slate-900/80"
+                                className="flex items-center justify-between gap-2.5 bg-slate-950/80 p-3 sm:p-3.5 rounded-lg border border-amber-500/20 hover:border-amber-500/50 transition-all group cursor-pointer hover:bg-slate-900"
                               >
-                                <div className="flex items-start gap-2 min-w-0">
-                                  <Flame className="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0" />
-                                  <span className="text-sm text-slate-300 group-hover:text-amber-300 line-clamp-2 transition-colors">
+                                <div className="flex items-start gap-2.5 min-w-0">
+                                  <Flame className="w-4 h-4 text-amber-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+                                  <span className="text-xs sm:text-sm font-medium text-slate-200 group-hover:text-amber-200 line-clamp-2 transition-colors">
                                     {incident.title}
                                   </span>
                                 </div>
@@ -374,7 +411,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   onClick={(e) => e.stopPropagation()}
-                                  className="p-1 text-slate-500 hover:text-amber-400 transition-colors shrink-0"
+                                  className="p-1.5 text-slate-500 hover:text-amber-400 hover:bg-amber-500/10 rounded transition-colors shrink-0"
                                   title="Open direct external citation"
                                 >
                                   <ExternalLink className="w-3.5 h-3.5" />
@@ -383,107 +420,124 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                             ))}
                           </div>
                         </div>
-                      );
-                    })()}
-                  </div>
-
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
-                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                        Prevention & Mitigation
-                      </h4>
-                      <ul className="space-y-2">
-                        {entry.preventionStrategies.map((strategy, idx) => (
-                          <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm bg-emerald-500/5 p-3 rounded-lg border border-emerald-500/10">
-                            <Shield className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
-                            {strategy}
-                          </li>
-                        ))}
-                      </ul>
+                      )}
                     </div>
+                  );
+                })()}
 
+                {/* Row 3: Implementation Guidance vs Taxonomy & Related Risks */}
+                {(entry.implementationNotes?.length || entry.owaspMappings?.length || entry.otherMappings?.length || entry.maestroMappings?.length || entry.relatedRisks?.length) && (
+                  <div className="grid lg:grid-cols-2 gap-6 mt-6 pt-6 border-t border-slate-800">
+                    {/* Implementation Guidance */}
                     {entry.implementationNotes && entry.implementationNotes.length > 0 && (
-                      <div>
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
+                      <div className={`rounded-xl border border-cyan-500/20 bg-cyan-950/10 p-4 sm:p-5 flex flex-col ${!(entry.owaspMappings?.length || entry.otherMappings?.length || entry.maestroMappings?.length || entry.relatedRisks?.length) ? 'lg:col-span-2' : ''}`}>
+                        <h4 className="flex items-center gap-2 text-sm font-bold text-cyan-300 uppercase tracking-wider mb-3">
                           <ListChecks className="w-4 h-4 text-cyan-400" />
-                          Implementation guidance
+                          Implementation Guidance ({entry.implementationNotes.length})
                         </h4>
-                        <div className="space-y-3">
+                        <div className="space-y-3 flex-1">
                           {entry.implementationNotes.map((note) => (
-                            <div key={note.title} className="rounded-lg border border-cyan-500/10 bg-cyan-500/5 p-4">
+                            <div key={note.title} className="rounded-lg border border-cyan-500/20 bg-slate-950/80 p-3.5">
                               <div className="font-bold text-cyan-300 text-sm mb-1">{note.title}</div>
-                              <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">{note.content}</p>
+                              <p className="text-slate-400 text-xs sm:text-sm leading-relaxed whitespace-pre-line">{note.content}</p>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {(entry.owaspMappings?.length || entry.otherMappings?.length) && (
-                      <div className="pt-6 border-t border-slate-800">
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3"><Shield className="w-4 h-4 text-purple-400" />Framework mappings</h4>
-                        <div className="space-y-4">
-                          {entry.owaspMappings && (
-                            <div>
-                              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-2">OWASP / AISVS</div>
-                              <div className="flex flex-wrap gap-2">{entry.owaspMappings.map((mapping) => <span key={mapping} className="px-2.5 py-1 rounded-md border border-purple-500/20 bg-purple-500/5 text-[11px] text-purple-200">{mapping}</span>)}</div>
-                            </div>
-                          )}
-                          {entry.otherMappings && entry.otherMappings.length > 0 && (
-                            <div>
-                              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-2">Other mappings</div>
-                              <div className="flex flex-wrap gap-2">{entry.otherMappings.map((mapping) => <span key={mapping} className="px-2.5 py-1 rounded-md border border-slate-700 bg-slate-950 text-[11px] text-slate-300">{mapping}</span>)}</div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {entry.maestroMappings && entry.maestroMappings.length > 0 && (
-                      <div className="pt-6 border-t border-slate-800">
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3"><Layers3 className="w-4 h-4 text-indigo-400" />CSA MAESTRO layers</h4>
-                        <div className="space-y-2">
-                          {entry.maestroMappings.map((mapping) => (
-                            <div key={`${mapping.layer}-${mapping.name}`} className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-                              <div className="flex flex-wrap gap-2 items-baseline mb-1"><span className="font-mono text-xs text-indigo-300">{mapping.layer}</span><span className="text-xs font-bold text-slate-200">{mapping.name}</span></div>
-                              <p className="text-xs text-slate-400 leading-relaxed">{mapping.details}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {entry.relatedRisks && entry.relatedRisks.length > 0 && (
-                      <div className="pt-6 border-t border-slate-800">
-                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">
-                          <GitBranch className="w-4 h-4 text-orange-400" />
-                          Related risks ({entry.relatedRisks.length})
-                        </h4>
-                        <div className="space-y-2">
-                          {entry.relatedRisks.map((risk) => (
-                            <button 
-                              key={risk.id}
-                              type="button"
-                              onClick={() => setSelectedThreatId(risk.id)}
-                              className="w-full text-left rounded-lg border border-slate-800 bg-slate-950/60 hover:border-orange-500/40 p-3 transition-all hover:bg-slate-900/80 group cursor-pointer"
-                            >
-                              <div className="flex items-center justify-between gap-2">
+                    {/* Framework Mappings, MAESTRO Layers & Related Risks */}
+                    {(entry.owaspMappings?.length || entry.otherMappings?.length || entry.maestroMappings?.length || entry.relatedRisks?.length) && (
+                      <div className={`space-y-4 rounded-xl border border-purple-500/20 bg-purple-950/10 p-4 sm:p-5 flex flex-col ${!entry.implementationNotes?.length ? 'lg:col-span-2' : ''}`}>
+                        {/* Framework Mappings */}
+                        {(entry.owaspMappings?.length || entry.otherMappings?.length) && (
+                          <div>
+                            <h4 className="flex items-center gap-2 text-sm font-bold text-purple-300 uppercase tracking-wider mb-3">
+                              <Shield className="w-4 h-4 text-purple-400" />
+                              Framework Mappings
+                            </h4>
+                            <div className="space-y-3">
+                              {entry.owaspMappings && (
                                 <div>
-                                  <span className="font-mono text-xs text-orange-300 group-hover:text-orange-200 mr-2 font-bold">{risk.id}</span>
-                                  <span className="text-xs font-bold text-slate-200 group-hover:text-white">{risk.title}</span>
+                                  <div className="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-1.5">OWASP / AISVS</div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {entry.owaspMappings.map((mapping) => (
+                                      <span key={mapping} className="px-2.5 py-1 rounded-md border border-purple-500/30 bg-purple-500/10 text-xs font-mono font-medium text-purple-200">
+                                        {mapping}
+                                      </span>
+                                    ))}
+                                  </div>
                                 </div>
-                                <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-orange-400 transition-colors shrink-0" />
-                              </div>
-                              <p className="text-xs text-slate-400 leading-relaxed mt-1">{risk.relationship}</p>
-                            </button>
-                          ))}
-                        </div>
+                              )}
+                              {entry.otherMappings && entry.otherMappings.length > 0 && (
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-1.5">Other Standards</div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {entry.otherMappings.map((mapping) => (
+                                      <span key={mapping} className="px-2.5 py-1 rounded-md border border-slate-700 bg-slate-950 text-xs font-mono text-slate-300">
+                                        {mapping}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* MAESTRO Layers */}
+                        {entry.maestroMappings && entry.maestroMappings.length > 0 && (
+                          <div className={`${(entry.owaspMappings?.length || entry.otherMappings?.length) ? 'pt-4 border-t border-purple-500/20' : ''}`}>
+                            <h4 className="flex items-center gap-2 text-sm font-bold text-indigo-300 uppercase tracking-wider mb-2.5">
+                              <Layers3 className="w-4 h-4 text-indigo-400" />
+                              CSA MAESTRO Layers
+                            </h4>
+                            <div className="space-y-2">
+                              {entry.maestroMappings.map((mapping) => (
+                                <div key={`${mapping.layer}-${mapping.name}`} className="rounded-lg border border-slate-800 bg-slate-950/80 p-2.5">
+                                  <div className="flex flex-wrap gap-2 items-baseline mb-0.5">
+                                    <span className="font-mono text-xs font-bold text-indigo-300">{mapping.layer}</span>
+                                    <span className="text-xs font-bold text-slate-200">{mapping.name}</span>
+                                  </div>
+                                  <p className="text-xs text-slate-400 leading-relaxed">{mapping.details}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Related Risks */}
+                        {entry.relatedRisks && entry.relatedRisks.length > 0 && (
+                          <div className={`${(entry.owaspMappings?.length || entry.otherMappings?.length || entry.maestroMappings?.length) ? 'pt-4 border-t border-purple-500/20' : ''}`}>
+                            <h4 className="flex items-center gap-2 text-sm font-bold text-orange-300 uppercase tracking-wider mb-2.5">
+                              <GitBranch className="w-4 h-4 text-orange-400" />
+                              Related Framework Risks ({entry.relatedRisks.length})
+                            </h4>
+                            <div className="grid sm:grid-cols-2 gap-2">
+                              {entry.relatedRisks.map((risk) => (
+                                <button 
+                                  key={risk.id}
+                                  type="button"
+                                  onClick={() => setSelectedThreatId(risk.id)}
+                                  className="w-full text-left rounded-lg border border-slate-800 bg-slate-950/80 hover:border-orange-500/40 p-2.5 transition-all hover:bg-slate-900 group cursor-pointer"
+                                >
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="truncate">
+                                      <span className="font-mono text-xs text-orange-400 font-bold mr-1.5">{risk.id}</span>
+                                      <span className="text-xs font-semibold text-slate-200 group-hover:text-white truncate">{risk.title}</span>
+                                    </div>
+                                    <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-orange-400 transition-colors shrink-0" />
+                                  </div>
+                                  <p className="text-[11px] text-slate-400 leading-relaxed mt-1 line-clamp-2">{risk.relationship}</p>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
-
                   </div>
-                </div>
+                )}
 
                 {/* Full-Width Best Tools Section (Spans 100% of card width across both columns) */}
                 {(() => {
