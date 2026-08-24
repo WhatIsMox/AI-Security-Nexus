@@ -13,19 +13,15 @@ interface TestDetailProps {
   test: TestItem;
   onBack: () => void;
   onNavigateToOwasp: (id: string) => void;
-  onSelectTool?: (tool: SecurityTool) => void;
 }
 
-const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp, onSelectTool }) => {
+const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp }) => {
   const [copiedPayloadIndex, setCopiedPayloadIndex] = useState<number | null>(null);
   const [selectedTool, setSelectedTool] = useState<SecurityTool | null>(null);
   const isAgentic = test.id.startsWith('AGT') || !!test.owaspAgenticRef;
 
   const handleToolClick = (tool: SecurityTool) => {
     setSelectedTool(tool);
-    if (onSelectTool) {
-      onSelectTool(tool);
-    }
   };
 
   const handleCopyPayload = (code: string, index: number) => {

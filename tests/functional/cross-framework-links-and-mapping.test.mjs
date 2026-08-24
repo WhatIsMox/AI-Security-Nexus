@@ -319,16 +319,13 @@ test('UI Layout - OwaspTop10View Balanced Card Grid and Full-Width Sections', (t
 
 test('Testing Pillars - Suggested Tools are Interactive and Open ToolDetailModal', (t) => {
   const testDetailContent = readFile('components/TestDetail.tsx');
-  const appContent = readFile('App.tsx');
 
-  // Verify TestDetail imports and mounts ToolDetailModal
+  // Verify TestDetail imports and mounts ToolDetailModal as a single instance
   assert.ok(testDetailContent.includes('import ToolDetailModal from \'./ToolDetailModal\''), 'TestDetail must import ToolDetailModal');
   assert.ok(testDetailContent.includes('getEnrichedTool'), 'TestDetail must use getEnrichedTool');
   assert.ok(testDetailContent.includes('<ToolDetailModal'), 'TestDetail must mount ToolDetailModal');
   assert.ok(testDetailContent.includes('handleToolClick(tool)'), 'Suggested tools must trigger handleToolClick');
-
-  // Verify App.tsx supplies onSelectTool handler
-  assert.ok(appContent.includes('onSelectTool={(tool) => setActiveModalTool(tool)}'), 'App.tsx must pass onSelectTool to TestDetail');
+  assert.ok(testDetailContent.includes('setSelectedTool(tool)'), 'TestDetail must manage single modal instance via local state');
 });
 
 test('Testing Pillars - 100% Suggested Tools in Test Suites Have Verified Enriched Metadata', (t) => {

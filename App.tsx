@@ -517,7 +517,6 @@ const App: React.FC = () => {
                 test={selectedTest} 
                 onBack={handleBackToTests} 
                 onNavigateToOwasp={handleNavigateToOwasp}
-                onSelectTool={(tool) => setActiveModalTool(tool)}
               />
             )}
           </Suspense>

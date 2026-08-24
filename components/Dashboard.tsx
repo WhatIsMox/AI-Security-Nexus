@@ -337,10 +337,10 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   },
 ];
 
-const Dashboard: React.FC<DashboardProps> = ({ 
-  onSelectPillar, 
-  onSelectThreatModel, 
-  onSelectTest, 
+const Dashboard: React.FC<DashboardProps> = ({
+  onSelectPillar,
+  onSelectThreatModel,
+  onSelectTest,
   onNavigateToOwasp,
   onSelectIncidents,
   onSelectTools
@@ -460,7 +460,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
           <p className="max-w-2xl text-slate-400 text-base md:text-lg leading-relaxed mb-6 animate-fade-up [animation-delay:160ms]">
             The unified interactive intelligence hub for modern AI security.
-            AI Security Nexus bridges the gap between static governance frameworks and real-world red teaming—empowering
+            AI Security Nexus bridges the gap between static governance frameworks and real-world red teaming, empowering
             engineers, penetration testers, and security leaders to simulate adversarial threats, benchmark runtime
             guardrails, and audit agentic systems before vulnerabilities reach production.
           </p>
@@ -496,44 +496,44 @@ const Dashboard: React.FC<DashboardProps> = ({
           {/* live stat band */}
           <div className="row g-3 animate-fade-up [animation-delay:400ms]">
             {[
-              { 
-                label: 'Test cases', 
-                value: stats.totalTests, 
-                icon: Bug, 
+              {
+                label: 'Test cases',
+                value: stats.totalTests,
+                icon: Bug,
                 tint: 'text-red-400 bg-red-400/10 border-red-400/20 group-hover:border-red-400/50',
                 action: () => onSelectPillar('ALL'),
                 tooltip: 'Explore all 42+ curated test cases'
               },
-              { 
-                label: 'Attack payloads', 
-                value: stats.totalPayloads, 
-                icon: Zap, 
+              {
+                label: 'Attack payloads',
+                value: stats.totalPayloads,
+                icon: Zap,
                 tint: 'text-amber-400 bg-amber-400/10 border-amber-400/20 group-hover:border-amber-400/50',
                 action: () => onSelectPillar('ALL'),
                 tooltip: 'Explore active attack vectors & red-team payloads'
               },
-              { 
-                label: 'Framework threats', 
-                value: stats.threatEntries, 
-                icon: AlertTriangle, 
+              {
+                label: 'Framework threats',
+                value: stats.threatEntries,
+                icon: AlertTriangle,
                 tint: 'text-orange-400 bg-orange-400/10 border-orange-400/20 group-hover:border-orange-400/50',
                 action: onSelectThreatModel,
                 tooltip: 'Explore interactive SVG threat model'
               },
-              { 
-                label: 'Security standards', 
-                value: frameworks.length, 
-                icon: Radar, 
+              {
+                label: 'Security standards',
+                value: frameworks.length,
+                icon: Radar,
                 tint: 'text-purple-400 bg-purple-400/10 border-purple-400/20 group-hover:border-purple-400/50',
                 action: () => {
                   document.getElementById('frameworks-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 },
                 tooltip: 'View all 7 major AI security standards'
               },
-              { 
-                label: 'Curated tools', 
-                value: stats.uniqueTools.length, 
-                icon: Wrench, 
+              {
+                label: 'Curated tools',
+                value: stats.uniqueTools.length,
+                icon: Wrench,
                 tint: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20 group-hover:border-cyan-400/50',
                 action: () => {
                   if (onSelectTools) onSelectTools();
@@ -541,10 +541,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                 },
                 tooltip: 'Explore security tools matrix & posture filters'
               },
-              { 
-                label: 'Real-world exploits', 
-                value: stats.incidents.length, 
-                icon: Globe, 
+              {
+                label: 'Real-world exploits',
+                value: stats.incidents.length,
+                icon: Globe,
                 tint: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20 group-hover:border-emerald-400/50',
                 action: () => {
                   if (onSelectIncidents) onSelectIncidents();
@@ -595,37 +595,37 @@ const Dashboard: React.FC<DashboardProps> = ({
           {frameworks.map((f, i) => (
             <div key={f.key} className="col-12 col-md-6 col-xl-4 flex">
               <button
-              onClick={() => onSelectPillar(f.key)}
-              className={`reveal group relative h-full w-full overflow-hidden rounded-2xl border ${f.border} ${f.hoverBorder} bg-slate-900/60 backdrop-blur p-5 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 ${f.ring}`}
-              style={{ transitionDelay: `${(i % 3) * 70}ms` }}
-            >
-              {/* corner glow */}
-              <div className={`absolute -top-16 -right-16 w-40 h-40 rounded-full ${f.glow} blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+                onClick={() => onSelectPillar(f.key)}
+                className={`reveal group relative h-full w-full overflow-hidden rounded-2xl border ${f.border} ${f.hoverBorder} bg-slate-900/60 backdrop-blur p-5 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 ${f.ring}`}
+                style={{ transitionDelay: `${(i % 3) * 70}ms` }}
+              >
+                {/* corner glow */}
+                <div className={`absolute -top-16 -right-16 w-40 h-40 rounded-full ${f.glow} blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
 
-              <div className="flex items-start justify-between gap-3 mb-4">
-                <div className={`inline-flex p-3 rounded-xl border ${f.iconBox}`}>
-                  <f.icon className={`w-6 h-6 ${f.text}`} />
+                <div className="flex items-start justify-between gap-3 mb-4">
+                  <div className={`inline-flex p-3 rounded-xl border ${f.iconBox}`}>
+                    <f.icon className={`w-6 h-6 ${f.text}`} />
+                  </div>
+                  <span className={`rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider ${f.chipBg}`}>
+                    {f.count} {f.countLabel.toUpperCase()}
+                  </span>
                 </div>
-                <span className={`rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider ${f.chipBg}`}>
-                  {f.count} {f.countLabel.toUpperCase()}
-                </span>
-              </div>
 
-              <h3 className="text-base font-bold text-white leading-snug mb-1.5">{f.name}</h3>
-              <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">{f.edition} · {f.kind}</p>
-              <p className="text-sm text-slate-400 leading-relaxed mb-4">{f.blurb}</p>
+                <h3 className="text-base font-bold text-white leading-snug mb-1.5">{f.name}</h3>
+                <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">{f.edition} · {f.kind}</p>
+                <p className="text-sm text-slate-400 leading-relaxed mb-4">{f.blurb}</p>
 
-              <div className="mt-auto flex items-center justify-between border-t border-slate-800 pt-4">
-                <div className="min-w-0">
-                  <p className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-0.5">Threat preview</p>
-                  <p className="truncate font-mono text-xs text-slate-300">
-                    <span className={`${f.text} font-bold`}>{f.previewId}</span> — {f.previewTitle}
-                  </p>
+                <div className="mt-auto flex items-center justify-between border-t border-slate-800 pt-4">
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-0.5">Threat preview</p>
+                    <p className="truncate font-mono text-xs text-slate-300">
+                      <span className={`${f.text} font-bold`}>{f.previewId}</span> — {f.previewTitle}
+                    </p>
+                  </div>
+                  <span className={`shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border border-slate-700 text-slate-400 transition-all group-hover:bg-slate-800/80 group-hover:translate-x-0.5 ${f.arrowHover}`}>
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
                 </div>
-                <span className={`shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border border-slate-700 text-slate-400 transition-all group-hover:bg-slate-800/80 group-hover:translate-x-0.5 ${f.arrowHover}`}>
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
               </button>
             </div>
           ))}
@@ -636,26 +636,26 @@ const Dashboard: React.FC<DashboardProps> = ({
               onClick={onSelectThreatModel}
               className="reveal group relative h-full w-full overflow-hidden rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-950 p-5 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/60 hover:shadow-[0_0_40px_-8px_rgba(34,211,238,0.3)]"
             >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(34,211,238,0.12),transparent_60%)] pointer-events-none" />
-            <div className="flex items-start justify-between gap-3 mb-4">
-              <div className="inline-flex p-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10">
-                <Crosshair className="w-6 h-6 text-cyan-400" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(34,211,238,0.12),transparent_60%)] pointer-events-none" />
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className="inline-flex p-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10">
+                  <Crosshair className="w-6 h-6 text-cyan-400" />
+                </div>
+                <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider text-cyan-300">
+                  INTERACTIVE
+                </span>
               </div>
-              <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider text-cyan-300">
-                INTERACTIVE
-              </span>
-            </div>
-            <h3 className="text-base font-bold text-white mb-1.5">AI Threat Modeling Pipeline</h3>
-            <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">SAIF Architecture & Risk Flow</p>
-            <p className="text-sm text-slate-400 leading-relaxed mb-4">
-              Explore an interactive AI pipeline diagram. Trace where threats enter the system, where they manifest, and how to apply controls across 24 core components.
-            </p>
-            <div className="mt-auto flex items-center justify-between border-t border-slate-800 pt-4">
-              <p className="font-mono text-xs text-cyan-300">15 risks · 24 components</p>
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-slate-700 text-slate-400 group-hover:border-cyan-400/60 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all">
-                <ArrowRight className="w-4 h-4" />
-              </span>
-            </div>
+              <h3 className="text-base font-bold text-white mb-1.5">AI Threat Modeling Pipeline</h3>
+              <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">SAIF Architecture & Risk Flow</p>
+              <p className="text-sm text-slate-400 leading-relaxed mb-4">
+                Explore an interactive AI pipeline diagram. Trace where threats enter the system, where they manifest, and how to apply controls across 24 core components.
+              </p>
+              <div className="mt-auto flex items-center justify-between border-t border-slate-800 pt-4">
+                <p className="font-mono text-xs text-cyan-300">15 risks · 24 components</p>
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-slate-700 text-slate-400 group-hover:border-cyan-400/60 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
             </button>
           </div>
         </div>
@@ -977,7 +977,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             </button>
           )}
         </div>
-        <div 
+        <div
           onClick={onSelectTools}
           className={`reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] ${onSelectTools ? 'cursor-pointer' : ''}`}
         >
