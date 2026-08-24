@@ -229,7 +229,7 @@ test('Dashboard - Hero metric stat cards are interactive buttons redirecting to 
     'Framework threats',
     'Security standards',
     'Curated tools',
-    'Real-world exploits'
+    'Real-world incidents'
   ];
 
   for (const label of requiredStatLabels) {

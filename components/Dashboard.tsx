@@ -547,7 +547,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 tooltip: 'Explore security tools matrix & posture filters'
               },
               {
-                label: 'Real-world exploits',
+                label: 'Real-world incidents',
                 value: stats.incidents.length,
                 icon: Globe,
                 tint: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20 group-hover:border-emerald-400/50',
