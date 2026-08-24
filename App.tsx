@@ -428,6 +428,8 @@ const App: React.FC = () => {
                   onNavigateToOwasp={handleNavigateToOwasp}
                   onSelectIncidents={handleSelectIncidents}
                   onSelectTools={handleSelectTools}
+                  onSelectTool={(tool) => setActiveModalTool(tool)}
+                  onSelectIncident={(incident) => setActiveModalIncident(incident)}
                 />
               )}
 

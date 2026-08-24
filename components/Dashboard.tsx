@@ -1,12 +1,12 @@
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { Pillar, TestItem, OwaspTop10Entry } from '../types';
+import { Pillar, TestItem, OwaspTop10Entry, SecurityTool, RealWorldIncident } from '../types';
 import {
   Activity, AlertTriangle, ArrowRight,
   BookOpen, Bot, Brain, Bug, CheckCircle2, ChevronLeft, ChevronRight,
   Cpu, Crosshair, Database, ExternalLink, FileText, Flame, Gavel,
   Github, Globe, Layers, Network, Radar, Server,
-  Shield, Sparkles, Star, Terminal, Wrench, Zap, Play,
+  Shield, Sparkles, Star, Terminal, Wrench, Zap, Play, Info
 } from 'lucide-react';
 import {
   TEST_DATA,
@@ -23,6 +23,7 @@ import {
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
+import { getEnrichedIncident } from '../incident_details_catalog';
 
 type PillarKey = Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
 
@@ -33,6 +34,8 @@ interface DashboardProps {
   onNavigateToOwasp: (id: string) => void;
   onSelectIncidents?: () => void;
   onSelectTools?: () => void;
+  onSelectTool?: (tool: SecurityTool) => void;
+  onSelectIncident?: (incident: RealWorldIncident) => void;
 }
 
 /* ------------------------------------------------------------------ */
@@ -343,7 +346,9 @@ const Dashboard: React.FC<DashboardProps> = ({
   onSelectTest,
   onNavigateToOwasp,
   onSelectIncidents,
-  onSelectTools
+  onSelectTools,
+  onSelectTool,
+  onSelectIncident
 }) => {
   useRevealObserver();
 
@@ -365,7 +370,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     };
 
     const incidents = Object.entries(INCIDENTS_BY_THREAT_ID).flatMap(([threatId, list]) =>
-      list.map((r) => ({ threatId, title: r.title, url: r.url }))
+      list.map((r) => getEnrichedIncident(r, threatId))
     );
 
     const threatEntries = OWASP_TOP_10_DATA.length + OWASP_ML_TOP_10_DATA.length + OWASP_AGENTIC_APPLICATIONS_DATA.length + OWASP_AGENTIC_THREATS_DATA.length + OWASP_SAIF_THREATS_DATA.length + OWASP_MCP_TOP_10_DATA.length;
@@ -978,20 +983,35 @@ const Dashboard: React.FC<DashboardProps> = ({
           )}
         </div>
         <div
-          onClick={onSelectTools}
-          className={`reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] ${onSelectTools ? 'cursor-pointer' : ''}`}
+          className="reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
         >
           <div className="flex overflow-hidden">
             <div className="flex shrink-0 animate-marquee hover:[animation-play-state:paused]">
               {[...stats.uniqueTools, ...stats.uniqueTools].map((tool, i) => (
-                <ToolChip key={`${tool.name}-${i}`} name={tool.name} cost={tool.cost} category={tool.category} />
+                <ToolChip 
+                  key={`${tool.name}-${i}`} 
+                  tool={tool} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onSelectTool) onSelectTool(tool);
+                    else if (onSelectTools) onSelectTools();
+                  }} 
+                />
               ))}
             </div>
           </div>
           <div className="flex overflow-hidden">
             <div className="flex shrink-0 animate-marquee-reverse hover:[animation-play-state:paused]">
               {[...stats.uniqueTools.slice().reverse(), ...stats.uniqueTools.slice().reverse()].map((tool, i) => (
-                <ToolChip key={`r-${tool.name}-${i}`} name={tool.name} cost={tool.cost} category={tool.category} />
+                <ToolChip 
+                  key={`r-${tool.name}-${i}`} 
+                  tool={tool} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onSelectTool) onSelectTool(tool);
+                    else if (onSelectTools) onSelectTools();
+                  }} 
+                />
               ))}
             </div>
           </div>
@@ -1002,11 +1022,22 @@ const Dashboard: React.FC<DashboardProps> = ({
           INCIDENT RADAR
       ================================================================= */}
       <section className="mb-16">
-        <SectionHeader
-          kicker="Threat intelligence"
-          title="Documented security incidents & research disclosures"
-          blurb="Verified real-world breaches, CVE advisories, and academic exploit papers demonstrating how these threats occur in the wild."
-        />
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-6">
+          <SectionHeader
+            kicker="Threat intelligence"
+            title="Documented security incidents & research disclosures"
+            blurb="Verified real-world breaches, CVE advisories, and academic exploit papers demonstrating how these threats occur in the wild."
+          />
+          {onSelectIncidents && (
+            <button
+              type="button"
+              onClick={onSelectIncidents}
+              className="shrink-0 mb-6 text-xs font-semibold text-orange-400 hover:text-orange-300 inline-flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+            >
+              Browse all incidents <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
         {incident && (
           <div className="reveal relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 md:p-8">
             <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
@@ -1020,29 +1051,28 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <Globe className="w-4 h-4 text-orange-400" />
                 <span className="font-mono text-[11px] font-bold tracking-wider text-orange-300 uppercase">Mapped to {incident.threatId}</span>
               </button>
-              <p key={incidentIndex} className="flex-1 text-slate-200 font-medium leading-relaxed animate-fade-up text-base md:text-lg">
+              <p 
+                key={incidentIndex} 
+                onClick={() => {
+                  if (onSelectIncident) onSelectIncident(incident);
+                  else if (onSelectIncidents) onSelectIncidents();
+                }}
+                className="flex-1 text-slate-200 font-medium leading-relaxed animate-fade-up text-base md:text-lg cursor-pointer hover:text-orange-300 transition-colors"
+                title="Inspect real-world incident case study"
+              >
                 {incident.title}
               </p>
-              {onSelectIncidents ? (
-                <button
-                  type="button"
-                  onClick={onSelectIncidents}
-                  className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-orange-500/40 bg-orange-500/10 px-5 py-2.5 text-sm font-bold text-orange-300 hover:bg-orange-500/20 hover:border-orange-400 hover:text-white transition-all cursor-pointer shadow-sm hover:shadow-[0_0_15px_rgba(249,115,22,0.25)]"
-                >
-                  Read Case Study
-                  <ArrowRight className="w-4 h-4 text-orange-400" />
-                </button>
-              ) : (
-                <a
-                  href={incident.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-bold text-slate-200 hover:border-orange-400/60 hover:text-white transition-all"
-                >
-                  Read Case Study
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              )}
+              <button
+                type="button"
+                onClick={() => {
+                  if (onSelectIncident) onSelectIncident(incident);
+                  else if (onSelectIncidents) onSelectIncidents();
+                }}
+                className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-orange-500/40 bg-orange-500/10 px-5 py-2.5 text-sm font-bold text-orange-300 hover:bg-orange-500/20 hover:border-orange-400 hover:text-white transition-all cursor-pointer shadow-sm hover:shadow-[0_0_15px_rgba(249,115,22,0.25)]"
+              >
+                Read Case Study
+                <ArrowRight className="w-4 h-4 text-orange-400" />
+              </button>
             </div>
             <div className="relative mt-5 flex items-center gap-1.5">
               {stats.incidents.slice(0, 10).map((_, i) => (
@@ -1187,12 +1217,21 @@ const CATEGORY_DOT: Record<string, string> = {
   Both: 'bg-amber-400',
 };
 
-const ToolChip: React.FC<{ name: string; cost: string; category?: 'Offensive' | 'Defensive' | 'Both' }> = ({ name, cost, category }) => (
-  <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-800 bg-slate-900/80 px-4 py-2 mr-3 text-sm text-slate-300 hover:border-cyan-500/40 hover:text-white transition-colors">
-    <span className={`h-1.5 w-1.5 rounded-full ${category ? CATEGORY_DOT[category] : 'bg-slate-500'}`} />
-    <span className="font-semibold">{name}</span>
-    <span className="font-mono text-[10px] text-slate-500 border-l border-slate-800 pl-2">{cost}</span>
-  </span>
+const ToolChip: React.FC<{
+  tool: SecurityTool;
+  onClick?: (e: React.MouseEvent) => void;
+}> = ({ tool, onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-800 bg-slate-900/80 px-4 py-2 mr-3 text-sm text-slate-300 hover:border-cyan-500/40 hover:text-white transition-all cursor-pointer shadow-sm hover:scale-105 group"
+    title={`Inspect ${tool.name} tool intelligence`}
+  >
+    <span className={`h-1.5 w-1.5 rounded-full ${tool.category ? CATEGORY_DOT[tool.category] : 'bg-slate-500'} group-hover:scale-125 transition-transform`} />
+    <span className="font-semibold">{tool.name}</span>
+    <span className="font-mono text-[10px] text-slate-500 border-l border-slate-800 pl-2">{tool.cost}</span>
+    <Info className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+  </button>
 );
 
 export default Dashboard;

@@ -289,6 +289,13 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
           ))
         )}
       </div>
+
+      {/* Tool Detail Inspection Modal */}
+      <ToolDetailModal 
+        tool={selectedTool} 
+        onClose={() => setSelectedTool(null)} 
+        onNavigateToOwasp={onNavigateToOwasp} 
+      />
     </div>
   );
 };

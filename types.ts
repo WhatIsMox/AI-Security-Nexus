@@ -19,6 +19,7 @@ export interface ExternalResource {
 
 export interface RealWorldIncident extends ExternalResource {
   id?: string;
+  threatId?: string;
   title: string;
   url: string;
   year?: string;
