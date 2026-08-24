@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Terminal, ExternalLink, Shield, Zap, CheckCircle2, Cpu, 
   X, Copy, Check, Info, Code2, ShieldAlert, ArrowRight
@@ -19,9 +20,15 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+    if (tool) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [tool, onClose]);
 
   if (!tool) return null;
 
@@ -46,16 +53,16 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
     tool.category === 'Defensive' ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' :
     'text-purple-400 border-purple-500/30 bg-purple-500/10';
 
-  return (
+  const modalContent = (
     <div 
-      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center pt-[calc(env(safe-area-inset-top,0px)+3.5rem)] sm:pt-4 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:pb-4 px-3 sm:px-4 md:p-6 bg-slate-950/85 backdrop-blur-md animate-modal-backdrop"
+      className="fixed inset-0 z-[100] flex items-center justify-center pt-[calc(env(safe-area-inset-top,0px)+1rem)] sm:pt-4 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:pb-4 px-3 sm:px-4 md:p-6 bg-slate-950/85 backdrop-blur-md animate-modal-backdrop"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="tool-modal-title"
     >
       <div 
-        className="relative w-full max-w-3xl max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-4.5rem)] sm:max-h-[88vh] rounded-2xl border border-slate-700/80 bg-slate-900 shadow-[0_0_50px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden animate-modal-card"
+        className="relative w-full max-w-3xl max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-2rem)] sm:max-h-[90vh] rounded-2xl border border-slate-700/80 bg-slate-900 shadow-[0_0_50px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden animate-modal-card my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Scrollable Container */}
@@ -271,5 +278,10 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined') {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 };
 export default ToolDetailModal;

@@ -10,12 +10,20 @@ import { ExternalResource, RealWorldIncident } from '../types';
 
 interface IncidentsDirectoryViewProps {
   onNavigateToOwasp: (threatId: string) => void;
+  onSelectIncident?: (incident: RealWorldIncident) => void;
 }
 
-export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ onNavigateToOwasp }) => {
+export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ onNavigateToOwasp, onSelectIncident }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [frameworkFilter, setFrameworkFilter] = useState<'All' | 'LLM' | 'ML' | 'ASI' | 'AST' | 'SAIF' | 'MCP' | 'DSGAI'>('All');
   const [selectedIncident, setSelectedIncident] = useState<RealWorldIncident | null>(null);
+
+  const handleOpenIncident = (incident: RealWorldIncident) => {
+    setSelectedIncident(incident);
+    if (onSelectIncident) {
+      onSelectIncident(incident);
+    }
+  };
 
   // Consolidate unique incidents with all mapped threats and enriched verified metadata
   const allIncidents = useMemo<RealWorldIncident[]>(() => {
@@ -139,7 +147,7 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
           filteredIncidents.map((incident, idx) => (
             <div 
               key={`${incident.title}-${idx}`}
-              onClick={() => setSelectedIncident(incident)}
+              onClick={() => handleOpenIncident(incident)}
               className="content-auto bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer hover:shadow-lg hover:shadow-amber-500/5"
             >
               <div>

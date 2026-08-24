@@ -366,11 +366,11 @@ test('Interactive Tools & Incidents - Verified Modal Mounting & Click Handlers A
 
   // 2. Tools Directory View: Modal mounted and grid items interactive
   assert.ok(toolsViewContent.includes('<ToolDetailModal'), 'ToolsDirectoryView must mount ToolDetailModal');
-  assert.ok(toolsViewContent.includes('setSelectedTool(tool)'), 'Tool cards in ToolsDirectoryView must trigger setSelectedTool');
+  assert.ok(toolsViewContent.includes('handleOpenTool(tool)'), 'Tool cards in ToolsDirectoryView must trigger handleOpenTool');
 
   // 3. Incidents Directory View: Modal mounted and grid items interactive
   assert.ok(incidentsViewContent.includes('<IncidentDetailModal'), 'IncidentsDirectoryView must mount IncidentDetailModal');
-  assert.ok(incidentsViewContent.includes('setSelectedIncident(incident)'), 'Incident cards in IncidentsDirectoryView must trigger setSelectedIncident');
+  assert.ok(incidentsViewContent.includes('handleOpenIncident(incident)'), 'Incident cards in IncidentsDirectoryView must trigger handleOpenIncident');
 
   // 4. OWASP Top 10 Views: Modals mounted and rows interactive
   assert.ok(owaspViewContent.includes('<ToolDetailModal'), 'OwaspTop10View must mount ToolDetailModal');
@@ -385,8 +385,17 @@ test('Interactive Tools & Incidents - Verified Modal Mounting & Click Handlers A
   // 6. Global Search Modal & App.tsx routing
   assert.ok(searchModalContent.includes('onSelectTool(item.tool)'), 'GlobalSearchModal must support direct tool modal opening');
   assert.ok(searchModalContent.includes('onSelectIncident(item.incident)'), 'GlobalSearchModal must support direct incident modal opening');
-  assert.ok(appContent.includes('onSelectTool={(tool) => setActiveModalTool(tool)}'), 'App.tsx must wire onSelectTool to Dashboard');
-  assert.ok(appContent.includes('onSelectIncident={(incident) => setActiveModalIncident(incident)}'), 'App.tsx must wire onSelectIncident to Dashboard');
+  assert.ok(appContent.includes('onSelectTool={(tool) => setActiveModalTool(tool)}'), 'App.tsx must wire onSelectTool');
+  assert.ok(appContent.includes('onSelectIncident={(incident) => setActiveModalIncident(incident)}'), 'App.tsx must wire onSelectIncident');
 
-  t.diagnostic('Verified 100% interactive modal wiring for tools and real-world incidents across the entire application');
+  // 7. Viewport Isolation & React Portal Immunity (avoids CSS transform clipping)
+  const toolModalContent = readFile('components/ToolDetailModal.tsx');
+  const incidentModalContent = readFile('components/IncidentDetailModal.tsx');
+  const threatModalContent = readFile('components/ThreatDetailModal.tsx');
+  assert.ok(toolModalContent.includes('createPortal('), 'ToolDetailModal must use createPortal to mount on document.body');
+  assert.ok(incidentModalContent.includes('createPortal('), 'IncidentDetailModal must use createPortal to mount on document.body');
+  assert.ok(threatModalContent.includes('createPortal('), 'ThreatDetailModal must use createPortal to mount on document.body');
+  assert.ok(searchModalContent.includes('createPortal('), 'GlobalSearchModal must use createPortal to mount on document.body');
+
+  t.diagnostic('Verified 100% interactive modal wiring, createPortal viewport immunity for tools and real-world incidents across the entire application');
 });

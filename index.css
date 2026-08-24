@@ -313,8 +313,6 @@
 .animate-page-enter,
 .page-view-transition {
   animation: page-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: transform, opacity;
-  transform: translateZ(0);
 }
 
 /* Modal Window Entrance Animations */

@@ -14,14 +14,22 @@ export interface ToolDirectoryEntry extends SecurityTool {
 
 interface ToolsDirectoryViewProps {
   onNavigateToOwasp: (threatId: string) => void;
+  onSelectTool?: (tool: SecurityTool) => void;
 }
 
-export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNavigateToOwasp }) => {
+export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNavigateToOwasp, onSelectTool }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'All' | 'Defensive' | 'Offensive' | 'Both'>('All');
   const [typeFilter, setTypeFilter] = useState<'All' | 'Local' | 'Third-party'>('All');
   const [costFilter, setCostFilter] = useState<'All' | 'Free' | 'Paid'>('All');
   const [selectedTool, setSelectedTool] = useState<ToolDirectoryEntry | null>(null);
+
+  const handleOpenTool = (tool: ToolDirectoryEntry) => {
+    setSelectedTool(tool);
+    if (onSelectTool) {
+      onSelectTool(tool);
+    }
+  };
 
   // Consolidate unique tools with all mapped threats
   const allTools = useMemo<ToolDirectoryEntry[]>(() => {
@@ -188,7 +196,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
           filteredTools.map(tool => (
             <div 
               key={tool.name}
-              onClick={() => setSelectedTool(tool)}
+              onClick={() => handleOpenTool(tool)}
               className="content-auto bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 rounded-xl p-4 transition-all flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer shadow-sm hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
             >
               <div>
@@ -213,7 +221,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedTool(tool);
+                      handleOpenTool(tool);
                     }}
                     className="p-1 text-slate-500 hover:text-purple-300 transition-colors"
                     title={`Inspect ${tool.name} details`}

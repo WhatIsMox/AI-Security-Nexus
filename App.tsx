@@ -450,12 +450,14 @@ const App: React.FC = () => {
               {currentView === 'tools' && (
                 <ToolsDirectoryView 
                   onNavigateToOwasp={handleNavigateToOwasp}
+                  onSelectTool={(tool) => setActiveModalTool(tool)}
                 />
               )}
 
               {currentView === 'incidents' && (
                 <IncidentsDirectoryView 
                   onNavigateToOwasp={handleNavigateToOwasp}
+                  onSelectIncident={(incident) => setActiveModalIncident(incident)}
                 />
               )}
 

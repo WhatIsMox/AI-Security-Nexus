@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Search, X, Brain, Cpu, Bot, Gavel, Network, Database, 
   Terminal, Flame, Shield, ArrowRight, CornerDownLeft, Sparkles, Layers
@@ -408,9 +409,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div 
-      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center pt-[calc(env(safe-area-inset-top,0px)+3.5rem)] sm:pt-6 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:pb-6 px-3 sm:px-6 md:p-12 bg-black/75 backdrop-blur-md animate-modal-backdrop"
+      className="fixed inset-0 z-[100] flex items-center justify-center pt-[calc(env(safe-area-inset-top,0px)+1rem)] sm:pt-6 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:pb-6 px-3 sm:px-6 md:p-12 bg-black/75 backdrop-blur-md animate-modal-backdrop"
       onClick={onClose}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -418,7 +419,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       aria-labelledby="global-search-title"
     >
       <div 
-        className="w-full max-w-3xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-4.5rem)] sm:max-h-[85vh] animate-modal-card"
+        className="w-full max-w-3xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-2rem)] sm:max-h-[85vh] animate-modal-card my-auto"
         onClick={e => e.stopPropagation()}
       >
         <h2 id="global-search-title" className="sr-only">Global Search</h2>
@@ -551,5 +552,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined') {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 };
 export default GlobalSearchModal;
