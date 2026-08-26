@@ -6,18 +6,19 @@ import {
 import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
 import { getEnrichedTool } from '../tool_details_catalog';
 import { ToolDetailModal } from './ToolDetailModal';
-import { SecurityTool } from '../types';
+import { SecurityTool, GlobalDomain } from '../types';
 
 export interface ToolDirectoryEntry extends SecurityTool {
   mappedThreats: string[];
 }
 
 interface ToolsDirectoryViewProps {
+  globalDomain: GlobalDomain;
   onNavigateToOwasp: (threatId: string) => void;
   onSelectTool?: (tool: SecurityTool) => void;
 }
 
-export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNavigateToOwasp, onSelectTool }) => {
+export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ globalDomain, onNavigateToOwasp, onSelectTool }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'All' | 'Defensive' | 'Offensive' | 'Both'>('All');
   const [typeFilter, setTypeFilter] = useState<'All' | 'Local' | 'Third-party'>('All');
@@ -37,6 +38,11 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
     const toolMap = new Map<string, ToolDirectoryEntry>();
 
     for (const [threatId, tools] of Object.entries(TOOLS_BY_THREAT_ID)) {
+      if (globalDomain === 'LLM' && !threatId.startsWith('LLM')) continue;
+      if (globalDomain === 'ML' && !threatId.startsWith('ML')) continue;
+      if (globalDomain === 'AGENT' && !threatId.startsWith('AS') && !threatId.startsWith('AST')) continue;
+      if (globalDomain === 'MCP' && !threatId.startsWith('MCP')) continue;
+
       for (const rawTool of tools) {
         const tool = getEnrichedTool(rawTool);
         const key = tool.name.toLowerCase().trim();
@@ -55,7 +61,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ onNaviga
     }
 
     return Array.from(toolMap.values()).sort((a, b) => a.name.localeCompare(b.name));
-  }, []);
+  }, [globalDomain]);
 
   // Filtered tools
   const filteredTools = useMemo(() => {

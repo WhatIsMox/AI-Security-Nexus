@@ -15,12 +15,20 @@ export default defineConfig(({ command }) => {
       {
         name: 'html-security-meta',
         transformIndexHtml() {
+          const isDev = command !== 'build';
+          const scriptSrc = isDev 
+            ? "'self' 'unsafe-inline' https://stats.byreference.net" 
+            : "'self' https://stats.byreference.net";
+          const connectSrc = isDev
+            ? "'self' https://stats.byreference.net ws: wss:"
+            : "'self' https://stats.byreference.net";
+
           return [
             {
               tag: 'meta',
               attrs: {
                 'http-equiv': 'Content-Security-Policy',
-                content: "default-src 'self'; script-src 'self' https://stats.byreference.net; connect-src 'self' https://stats.byreference.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+                content: `default-src 'self'; script-src ${scriptSrc}; connect-src ${connectSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests`,
               },
               injectTo: 'head-prepend',
             },

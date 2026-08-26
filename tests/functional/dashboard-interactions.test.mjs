@@ -40,8 +40,8 @@ test('Dashboard - Data Aggregations & Memoization', (t) => {
   assert.ok(content.includes('uniqueTools.filter((t) => t.category === \'Offensive\')'), 'Dashboard must categorize tools into Offensive/Defensive');
   
   // Verify cross-framework coverage mappings
-  assert.ok(content.includes('TEST_DATA.filter((t) => t.owaspTop10Ref)'), 'Dashboard must compute LLM Top 10 coverage');
-  assert.ok(content.includes('TEST_DATA.filter((t) => t.owaspAgenticRef)'), 'Dashboard must compute Agentic Top 10 coverage');
+  assert.ok(content.includes('domainTests.filter((t) => t.owaspTop10Ref)'), 'Dashboard must compute LLM Top 10 coverage');
+  assert.ok(content.includes('domainTests.filter((t) => t.owaspAgenticRef)'), 'Dashboard must compute Agentic Top 10 coverage');
 
   // Verify spotlight and sorting
   assert.ok(content.includes('stats.spotlight[spotIndex % stats.spotlight.length]'), 'Dashboard must cycle through spotlight items');

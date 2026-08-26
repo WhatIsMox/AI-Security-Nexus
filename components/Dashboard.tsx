@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { Pillar, TestItem, OwaspTop10Entry, SecurityTool, RealWorldIncident } from '../types';
+import { Pillar, TestItem, OwaspTop10Entry, SecurityTool, RealWorldIncident, GlobalDomain } from '../types';
 import {
   Activity, AlertTriangle, ArrowRight,
   BookOpen, Bot, Brain, Bug, CheckCircle2, ChevronLeft, ChevronRight,
@@ -28,6 +28,7 @@ import { getEnrichedIncident } from '../incident_details_catalog';
 type PillarKey = Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
 
 interface DashboardProps {
+  globalDomain: GlobalDomain;
   onSelectPillar: (pillar: PillarKey) => void;
   onSelectThreatModel: () => void;
   onSelectTest: (test: TestItem) => void;
@@ -341,6 +342,7 @@ const buildFrameworkCards = (): FrameworkCard[] => [
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({
+  globalDomain,
   onSelectPillar,
   onSelectThreatModel,
   onSelectTest,
@@ -354,43 +356,77 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   /* ---------------- live aggregates ---------------- */
   const stats = useMemo(() => {
-    const totalPayloads = TEST_DATA.reduce((acc, t) => acc + t.payloads.length, 0);
+    // 1. Pre-filter tests by domain
+    const domainTests = TEST_DATA.filter(t => {
+      if (globalDomain === 'LLM') return !!t.owaspTop10Ref;
+      if (globalDomain === 'ML') return !!t.owaspMlTop10Ref;
+      if (globalDomain === 'AGENT') return !!t.owaspAgenticRef;
+      if (globalDomain === 'MCP') return !!t.owaspMcpTop10Ref;
+      return true;
+    });
+
+    const totalPayloads = domainTests.reduce((acc, t) => acc + t.payloads.length, 0);
     const byRisk: Record<TestItem['riskLevel'], number> = { Critical: 0, High: 0, Medium: 0, Low: 0 };
-    TEST_DATA.forEach((t) => { byRisk[t.riskLevel] += 1; });
+    domainTests.forEach((t) => { byRisk[t.riskLevel] += 1; });
 
     const byPillar: Record<Pillar, TestItem[]> = { [Pillar.APP]: [], [Pillar.MODEL]: [], [Pillar.INFRA]: [], [Pillar.DATA]: [] };
-    TEST_DATA.forEach((t) => byPillar[t.pillar].push(t));
+    domainTests.forEach((t) => byPillar[t.pillar].push(t));
 
-    const tools = Object.values(TOOLS_BY_THREAT_ID).flat();
-    const uniqueTools = Array.from(new Map(tools.map((t) => [t.name.toLowerCase(), t])).values());
+    // 2. Pre-filter tools by domain threats
+    const filteredTools = Object.entries(TOOLS_BY_THREAT_ID).flatMap(([threatId, list]) => {
+      if (globalDomain === 'LLM' && !threatId.startsWith('LLM')) return [];
+      if (globalDomain === 'ML' && !threatId.startsWith('ML')) return [];
+      if (globalDomain === 'AGENT' && !threatId.startsWith('AS') && !threatId.startsWith('AST')) return [];
+      if (globalDomain === 'MCP' && !threatId.startsWith('MCP')) return [];
+      return list;
+    });
+    const uniqueTools = Array.from(new Map(filteredTools.map((t) => [t.name.toLowerCase(), t])).values());
     const toolCategories = {
       Offensive: uniqueTools.filter((t) => t.category === 'Offensive').length,
       Defensive: uniqueTools.filter((t) => t.category === 'Defensive').length,
       Both: uniqueTools.filter((t) => t.category === 'Both').length,
     };
 
-    const incidents = Object.entries(INCIDENTS_BY_THREAT_ID).flatMap(([threatId, list]) =>
-      list.map((r) => getEnrichedIncident(r, threatId))
-    );
+    // 3. Pre-filter incidents by domain threats
+    const incidents = Object.entries(INCIDENTS_BY_THREAT_ID).flatMap(([threatId, list]) => {
+      if (globalDomain === 'LLM' && !threatId.startsWith('LLM')) return [];
+      if (globalDomain === 'ML' && !threatId.startsWith('ML')) return [];
+      if (globalDomain === 'AGENT' && !threatId.startsWith('AS') && !threatId.startsWith('AST')) return [];
+      if (globalDomain === 'MCP' && !threatId.startsWith('MCP')) return [];
+      return list.map((r) => getEnrichedIncident(r, threatId));
+    });
 
-    const threatEntries = OWASP_TOP_10_DATA.length + OWASP_ML_TOP_10_DATA.length + OWASP_AGENTIC_APPLICATIONS_DATA.length + OWASP_AGENTIC_THREATS_DATA.length + OWASP_SAIF_THREATS_DATA.length + OWASP_MCP_TOP_10_DATA.length;
+    let threatEntries = 0;
+    if (globalDomain === 'ALL' || globalDomain === 'LLM') threatEntries += OWASP_TOP_10_DATA.length;
+    if (globalDomain === 'ALL' || globalDomain === 'ML') threatEntries += OWASP_ML_TOP_10_DATA.length;
+    if (globalDomain === 'ALL' || globalDomain === 'AGENT') threatEntries += OWASP_AGENTIC_APPLICATIONS_DATA.length + OWASP_AGENTIC_THREATS_DATA.length;
+    if (globalDomain === 'ALL') threatEntries += OWASP_SAIF_THREATS_DATA.length;
+    if (globalDomain === 'ALL' || globalDomain === 'MCP') threatEntries += OWASP_MCP_TOP_10_DATA.length;
 
     const coverage = [
-      { key: 'TOP10' as const, label: 'LLM Top 10', count: TEST_DATA.filter((t) => t.owaspTop10Ref).length },
-      { key: 'MLTOP10' as const, label: 'ML Top 10', count: TEST_DATA.filter((t) => t.owaspMlTop10Ref).length },
-      { key: 'AGENTTOP10' as const, label: 'Agentic', count: TEST_DATA.filter((t) => t.owaspAgenticRef).length },
-      { key: 'SAIFTOP10' as const, label: 'SAIF', count: TEST_DATA.filter((t) => t.owaspSaifRef).length },
-      { key: 'MCPTOP10' as const, label: 'MCP Top 10', count: TEST_DATA.filter((t) => t.owaspMcpTop10Ref).length },
+      { key: 'TOP10' as const, label: 'LLM Top 10', count: domainTests.filter((t) => t.owaspTop10Ref).length },
+      { key: 'MLTOP10' as const, label: 'ML Top 10', count: domainTests.filter((t) => t.owaspMlTop10Ref).length },
+      { key: 'AGENTTOP10' as const, label: 'Agentic', count: domainTests.filter((t) => t.owaspAgenticRef).length },
+      { key: 'SAIFTOP10' as const, label: 'SAIF', count: domainTests.filter((t) => t.owaspSaifRef).length },
+      { key: 'MCPTOP10' as const, label: 'MCP Top 10', count: domainTests.filter((t) => t.owaspMcpTop10Ref).length },
     ];
 
-    const spotlight = TEST_DATA.filter((t) => t.riskLevel === 'Critical' || t.riskLevel === 'High').sort(
+    const spotlight = domainTests.filter((t) => t.riskLevel === 'Critical' || t.riskLevel === 'High').sort(
       (a, b) => RISK_META[b.riskLevel].rank - RISK_META[a.riskLevel].rank || a.id.localeCompare(b.id)
     );
 
-    return { totalPayloads, byRisk, byPillar, uniqueTools, toolCategories, incidents, threatEntries, coverage, spotlight, totalTests: TEST_DATA.length };
-  }, []);
+    return { totalPayloads, byRisk, byPillar, uniqueTools, toolCategories, incidents, threatEntries, coverage, spotlight, totalTests: domainTests.length };
+  }, [globalDomain]);
 
-  const frameworks = useMemo(buildFrameworkCards, []);
+  const frameworks = useMemo(() => {
+    return buildFrameworkCards().filter(f => {
+      if (globalDomain === 'LLM') return f.key === 'TOP10';
+      if (globalDomain === 'ML') return f.key === 'MLTOP10';
+      if (globalDomain === 'AGENT') return f.key === 'AGENTTOP10';
+      if (globalDomain === 'MCP') return f.key === 'MCPTOP10' || f.key === 'SECUREMCPGUIDE';
+      return true;
+    });
+  }, [globalDomain]);
 
   /* ---------------- hero typewriter ---------------- */
   const heroPhrases = useMemo(() => {

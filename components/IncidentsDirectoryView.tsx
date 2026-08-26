@@ -6,14 +6,15 @@ import {
 import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
 import { getEnrichedIncident } from '../incident_details_catalog';
 import { IncidentDetailModal } from './IncidentDetailModal';
-import { ExternalResource, RealWorldIncident } from '../types';
+import { ExternalResource, RealWorldIncident, GlobalDomain } from '../types';
 
 interface IncidentsDirectoryViewProps {
+  globalDomain: GlobalDomain;
   onNavigateToOwasp: (threatId: string) => void;
   onSelectIncident?: (incident: RealWorldIncident) => void;
 }
 
-export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ onNavigateToOwasp, onSelectIncident }) => {
+export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ globalDomain, onNavigateToOwasp, onSelectIncident }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [frameworkFilter, setFrameworkFilter] = useState<'All' | 'LLM' | 'ML' | 'ASI' | 'AST' | 'SAIF' | 'MCP' | 'DSGAI'>('All');
   const [selectedIncident, setSelectedIncident] = useState<RealWorldIncident | null>(null);
@@ -31,6 +32,11 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
     const incidentMap = new Map<string, RealWorldIncident>();
 
     for (const [threatId, incidents] of Object.entries(INCIDENTS_BY_THREAT_ID)) {
+      if (globalDomain === 'LLM' && !threatId.startsWith('LLM')) continue;
+      if (globalDomain === 'ML' && !threatId.startsWith('ML')) continue;
+      if (globalDomain === 'AGENT' && !threatId.startsWith('AS') && !threatId.startsWith('AST')) continue;
+      if (globalDomain === 'MCP' && !threatId.startsWith('MCP')) continue;
+
       for (const incident of incidents) {
         const key = incident.title.toLowerCase().trim();
         if (incidentMap.has(key)) {
@@ -49,7 +55,7 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
     }
 
     return Array.from(incidentMap.values()).sort((a, b) => a.title.localeCompare(b.title));
-  }, []);
+  }, [globalDomain]);
 
   // Filtered incidents
   const filteredIncidents = useMemo(() => {

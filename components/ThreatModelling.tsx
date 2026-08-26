@@ -7,8 +7,10 @@ import {
   UserCheck, ShieldAlert, Wrench, Info, AlertOctagon,
   Eye, EyeOff, Lock, Network
 } from 'lucide-react';
+import { GlobalDomain } from '../types';
 
 interface ThreatModellingProps {
+  globalDomain: GlobalDomain;
   onNavigateToTest: (testId: string) => void;
   onNavigateToOwasp: (threatId: string) => void;
 }
@@ -880,7 +882,7 @@ const getSeverityTheme = (level: string) => {
   }
 };
 
-const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onNavigateToOwasp }) => {
+const ThreatModelling: React.FC<ThreatModellingProps> = ({ globalDomain, onNavigateToTest, onNavigateToOwasp }) => {
   const [activeTab, setActiveTab] = useState<'architecture' | 'impact' | 'mapping'>('architecture');
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [selectedThreatId, setSelectedThreatId] = useState<string | null>(null);
@@ -888,15 +890,25 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
   const [sortMethod, setSortMethod] = useState<'default' | 'severity'>('default');
   const [ownershipFilter, setOwnershipFilter] = useState<'all' | 'creator' | 'consumer' | 'shared'>('all');
 
-  const selectedThreat = useMemo(() => THREAT_LIBRARY.find(t => t.id === selectedThreatId), [selectedThreatId]);
+  const domainThreats = useMemo(() => {
+    return THREAT_LIBRARY.filter(t => {
+      if (globalDomain === 'LLM') return t.id.startsWith('LLM');
+      if (globalDomain === 'ML') return t.id.startsWith('ML');
+      if (globalDomain === 'AGENT') return t.id.startsWith('AS') || t.id.startsWith('AST');
+      if (globalDomain === 'MCP') return t.id.startsWith('MCP');
+      return true;
+    });
+  }, [globalDomain]);
+
+  const selectedThreat = useMemo(() => domainThreats.find(t => t.id === selectedThreatId), [selectedThreatId, domainThreats]);
   const selectedComponent = SAIF_COMPONENTS.find(c => c.id === selectedComponentId);
   
   const threatsForComponent = selectedComponentId 
-    ? THREAT_LIBRARY.filter(t => t.affectedComponents.includes(selectedComponentId))
+    ? domainThreats.filter(t => t.affectedComponents.includes(selectedComponentId))
     : [];
 
   const sortedThreats = useMemo(() => {
-    let list = [...THREAT_LIBRARY];
+    let list = [...domainThreats];
     if (sortMethod === 'severity') {
       const weights = { Critical: 4, High: 3, Medium: 2, Low: 1, Unrated: 0 };
       list.sort((a, b) => (weights[b.riskLevel] || 0) - (weights[a.riskLevel] || 0));
@@ -964,7 +976,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
         <div className="flex gap-4">
             <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 flex flex-col items-center">
                 <span className="text-[10px] text-slate-500 uppercase font-bold mb-1">Total Risks</span>
-                <span className="text-2xl font-bold text-white">{THREAT_LIBRARY.length}</span>
+                <span className="text-2xl font-bold text-white">{domainThreats.length}</span>
             </div>
             <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 flex flex-col items-center">
                 <span className="text-[10px] text-slate-500 uppercase font-bold mb-1">SAIF Coverage</span>
@@ -1070,7 +1082,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ onNavigateToTest, onN
 
             <div className="grid gap-3 p-4 sm:grid-cols-2">
               {SAIF_COMPONENTS.filter((component) => component.layer === mobileLayer).map((component) => {
-                const threatCount = THREAT_LIBRARY.filter((threat) => threat.affectedComponents.includes(component.id)).length;
+                const threatCount = domainThreats.filter((threat) => threat.affectedComponents.includes(component.id)).length;
                 const isSelected = selectedComponentId === component.id;
                 const isIntroduced = selectedThreat?.introducedAt?.includes(component.id);
                 const isExposed = selectedThreat?.exposedAt?.includes(component.id);

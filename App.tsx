@@ -6,7 +6,7 @@ import GlobalSearchModal from './components/GlobalSearchModal';
 import ToolDetailModal from './components/ToolDetailModal';
 import IncidentDetailModal from './components/IncidentDetailModal';
 import { TEST_DATA, OWASP_TOP_10_DATA, OWASP_ML_TOP_10_DATA, OWASP_SAIF_THREATS_DATA, OWASP_MCP_TOP_10_DATA } from './data';
-import { Pillar, TestItem, SecurityTool, RealWorldIncident } from './types';
+import { Pillar, TestItem, SecurityTool, RealWorldIncident, GlobalDomain } from './types';
 import { Menu, Book, Search, Loader2 } from 'lucide-react';
 
 const TestList = lazy(() => import('./components/TestList'));
@@ -116,6 +116,7 @@ const stateToHash = (view: AppView, pillar: ActivePillarKey, testId?: string | n
 
 const App: React.FC = () => {
   const initialHashState = useMemo(() => parseHashToState(window.location.hash), []);
+  const [globalDomain, setGlobalDomain] = useState<GlobalDomain>('ALL');
   const [currentView, setCurrentView] = useState<AppView>(initialHashState.view);
   const [activePillar, setActivePillar] = useState<ActivePillarKey>(initialHashState.pillar);
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(() => {
@@ -196,9 +197,19 @@ const App: React.FC = () => {
   }, [isSidebarOpen]);
 
   const filteredTests = useMemo(() => {
-    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'SECUREMCPGUIDE' || activePillar === 'GENAIDATASECURITY') return TEST_DATA;
-    return TEST_DATA.filter(t => t.pillar === activePillar);
-  }, [activePillar]);
+    let tests = TEST_DATA;
+    if (globalDomain !== 'ALL') {
+      tests = tests.filter(t => {
+        if (globalDomain === 'LLM') return !!t.owaspTop10Ref;
+        if (globalDomain === 'ML') return !!t.owaspMlTop10Ref;
+        if (globalDomain === 'AGENT') return !!t.owaspAgenticRef;
+        if (globalDomain === 'MCP') return !!t.owaspMcpTop10Ref;
+        return true;
+      });
+    }
+    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'SECUREMCPGUIDE' || activePillar === 'GENAIDATASECURITY') return tests;
+    return tests.filter(t => t.pillar === activePillar);
+  }, [activePillar, globalDomain]);
 
   const handleSelectPillar = (pillar: ActivePillarKey) => {
     setActivePillar(pillar);
@@ -363,6 +374,8 @@ const App: React.FC = () => {
       </header>
 
       <Sidebar 
+        globalDomain={globalDomain}
+        onSelectDomain={setGlobalDomain}
         activePillar={activePillar} 
         currentView={currentView}
         onSelectPillar={handleSelectPillar} 
@@ -422,6 +435,7 @@ const App: React.FC = () => {
             >
               {currentView === 'dashboard' && (
                 <Dashboard 
+                  globalDomain={globalDomain}
                   onSelectPillar={handleSelectPillar} 
                   onSelectThreatModel={handleSelectThreatModel}
                   onSelectTest={handleSelectTest}
@@ -435,6 +449,7 @@ const App: React.FC = () => {
 
               {currentView === 'threat-model' && (
                 <ThreatModelling 
+                  globalDomain={globalDomain}
                   onNavigateToTest={handleNavigateToTestFromThreatModel} 
                   onNavigateToOwasp={handleNavigateToOwasp}
                 />
@@ -442,6 +457,7 @@ const App: React.FC = () => {
 
               {currentView === 'audit-checklist' && (
                 <AuditChecklistView 
+                  globalDomain={globalDomain}
                   onSelectTest={handleSelectTest}
                   onNavigateToOwasp={handleNavigateToOwasp}
                 />
@@ -449,6 +465,7 @@ const App: React.FC = () => {
 
               {currentView === 'tools' && (
                 <ToolsDirectoryView 
+                  globalDomain={globalDomain}
                   onNavigateToOwasp={handleNavigateToOwasp}
                   onSelectTool={(tool) => setActiveModalTool(tool)}
                 />
@@ -456,6 +473,7 @@ const App: React.FC = () => {
 
               {currentView === 'incidents' && (
                 <IncidentsDirectoryView 
+                  globalDomain={globalDomain}
                   onNavigateToOwasp={handleNavigateToOwasp}
                   onSelectIncident={(incident) => setActiveModalIncident(incident)}
                 />

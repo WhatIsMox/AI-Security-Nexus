@@ -1,3 +1,4 @@
+export type GlobalDomain = 'ALL' | 'LLM' | 'ML' | 'AGENT' | 'MCP';
 
 export enum Pillar {
   APP = "AI Application",

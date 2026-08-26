@@ -5,7 +5,7 @@ import {
   Brain, Cpu, Bot, Gavel, Network, FileText, Search, CheckCircle2, 
   Terminal, Flame, Sparkles 
 } from 'lucide-react';
-import { Pillar } from '../types';
+import { Pillar, GlobalDomain } from '../types';
 
 export type AppView = 
   | 'dashboard' 
@@ -37,6 +37,8 @@ interface SidebarProps {
   onOpenSearch: () => void;
   isOpen: boolean;
   onClose: () => void;
+  globalDomain: GlobalDomain;
+  onSelectDomain: (domain: GlobalDomain) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -50,7 +52,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   onSelectIncidents,
   onOpenSearch,
   isOpen,
-  onClose
+  onClose,
+  globalDomain,
+  onSelectDomain
 }) => {
   const navItems = [
     { id: Pillar.APP, icon: LayoutGrid, label: "Application Testing" },
@@ -110,6 +114,27 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
+        {/* Global Domain Selector */}
+        <div className="p-3 border-b border-slate-800/80">
+          <label htmlFor="domain-select" className="sr-only">Select Domain Focus</label>
+          <div className="relative">
+            <select
+              id="domain-select"
+              value={globalDomain}
+              onChange={(e) => onSelectDomain(e.target.value as GlobalDomain)}
+              className="w-full appearance-none bg-slate-900 border border-slate-700 hover:border-cyan-500/50 text-slate-300 text-xs rounded-xl pl-8 pr-8 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all cursor-pointer shadow-sm"
+            >
+              <option value="ALL">🌐 All AI Domains</option>
+              <option value="LLM">🧠 Large Language Models</option>
+              <option value="ML">⚙️ Machine Learning</option>
+              <option value="AGENT">🤖 Agentic Applications</option>
+              <option value="MCP">🔌 Model Context Protocol</option>
+            </select>
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 text-xs">▼</div>
+          </div>
+        </div>
+
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800">
           {/* Main Navigation */}
           <button
@@ -155,53 +180,61 @@ const Sidebar: React.FC<SidebarProps> = ({
             </p>
           </div>
 
-          <button
-            onClick={() => { onSelectPillar('TOP10'); onClose(); }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
-              currentView === 'owasp-top10' || (currentView === 'tests' && activePillar === 'TOP10')
-                ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/10 text-pink-400 border border-pink-500/30'
-                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-            }`}
-          >
-            <Brain className="w-4 h-4 shrink-0 text-pink-400" />
-            <span>OWASP Top 10 LLM (2026)</span>
-          </button>
+          {(globalDomain === 'ALL' || globalDomain === 'LLM') && (
+            <button
+              onClick={() => { onSelectPillar('TOP10'); onClose(); }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
+                currentView === 'owasp-top10' || (currentView === 'tests' && activePillar === 'TOP10')
+                  ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/10 text-pink-400 border border-pink-500/30'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+              }`}
+            >
+              <Brain className="w-4 h-4 shrink-0 text-pink-400" />
+              <span>OWASP Top 10 LLM (2026)</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => { onSelectPillar('MLTOP10'); onClose(); }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
-              currentView === 'owasp-ml-top10' || (currentView === 'tests' && activePillar === 'MLTOP10')
-                ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 border border-emerald-500/30'
-                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-            }`}
-          >
-            <Cpu className="w-4 h-4 shrink-0 text-emerald-400" />
-            <span>OWASP Top 10 ML</span>
-          </button>
+          {(globalDomain === 'ALL' || globalDomain === 'ML') && (
+            <button
+              onClick={() => { onSelectPillar('MLTOP10'); onClose(); }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
+                currentView === 'owasp-ml-top10' || (currentView === 'tests' && activePillar === 'MLTOP10')
+                  ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 border border-emerald-500/30'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+              }`}
+            >
+              <Cpu className="w-4 h-4 shrink-0 text-emerald-400" />
+              <span>OWASP Top 10 ML</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => { onSelectPillar('AGENTTOP10'); onClose(); }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
-              currentView === 'owasp-agent-top10' || (currentView === 'tests' && activePillar === 'AGENTTOP10')
-                ? 'bg-gradient-to-r from-orange-500/20 to-amber-500/10 text-orange-400 border border-orange-500/30'
-                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-            }`}
-          >
-            <Bot className="w-4 h-4 shrink-0 text-orange-400" />
-            <span>OWASP Agentic Top 10</span>
-          </button>
+          {(globalDomain === 'ALL' || globalDomain === 'AGENT') && (
+            <button
+              onClick={() => { onSelectPillar('AGENTTOP10'); onClose(); }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
+                currentView === 'owasp-agent-top10' || (currentView === 'tests' && activePillar === 'AGENTTOP10')
+                  ? 'bg-gradient-to-r from-orange-500/20 to-amber-500/10 text-orange-400 border border-orange-500/30'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+              }`}
+            >
+              <Bot className="w-4 h-4 shrink-0 text-orange-400" />
+              <span>OWASP Agentic Top 10</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => { onSelectPillar('MCPTOP10'); onClose(); }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
-              currentView === 'owasp-mcp-top10' || (currentView === 'tests' && activePillar === 'MCPTOP10')
-                ? 'bg-gradient-to-r from-cyan-500/20 to-sky-500/10 text-cyan-400 border border-cyan-500/30'
-                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-            }`}
-          >
-            <Network className="w-4 h-4 shrink-0 text-cyan-400" />
-            <span>OWASP MCP Top 10</span>
-          </button>
+          {(globalDomain === 'ALL' || globalDomain === 'MCP') && (
+            <button
+              onClick={() => { onSelectPillar('MCPTOP10'); onClose(); }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
+                currentView === 'owasp-mcp-top10' || (currentView === 'tests' && activePillar === 'MCPTOP10')
+                  ? 'bg-gradient-to-r from-cyan-500/20 to-sky-500/10 text-cyan-400 border border-cyan-500/30'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+              }`}
+            >
+              <Network className="w-4 h-4 shrink-0 text-cyan-400" />
+              <span>OWASP MCP Top 10</span>
+            </button>
+          )}
 
           <button
             onClick={() => { onSelectPillar('GENAIDATASECURITY'); onClose(); }}
@@ -215,17 +248,19 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span>OWASP GenAI Data Security</span>
           </button>
 
-          <button
-            onClick={() => { onSelectPillar('SECUREMCPGUIDE'); onClose(); }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
-              currentView === 'secure-mcp-guide' || (currentView === 'tests' && activePillar === 'SECUREMCPGUIDE')
-                ? 'bg-gradient-to-r from-cyan-500/20 to-emerald-500/10 text-cyan-300 border border-cyan-500/30'
-                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-            }`}
-          >
-            <FileText className="w-4 h-4 shrink-0 text-cyan-300" />
-            <span>Secure MCP Server Guide</span>
-          </button>
+          {(globalDomain === 'ALL' || globalDomain === 'MCP') && (
+            <button
+              onClick={() => { onSelectPillar('SECUREMCPGUIDE'); onClose(); }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
+                currentView === 'secure-mcp-guide' || (currentView === 'tests' && activePillar === 'SECUREMCPGUIDE')
+                  ? 'bg-gradient-to-r from-cyan-500/20 to-emerald-500/10 text-cyan-300 border border-cyan-500/30'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+              }`}
+            >
+              <FileText className="w-4 h-4 shrink-0 text-cyan-300" />
+              <span>Secure MCP Server Guide</span>
+            </button>
+          )}
 
           <button
             onClick={() => { onSelectPillar('SAIFTOP10'); onClose(); }}

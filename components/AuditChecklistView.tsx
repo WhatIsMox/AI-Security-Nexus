@@ -5,7 +5,7 @@ import {
   Layers, Box, Server, Database, ArrowRight, Save, Check
 } from 'lucide-react';
 import { TEST_DATA } from '../data';
-import { Pillar, TestItem } from '../types';
+import { Pillar, TestItem, GlobalDomain } from '../types';
 
 export type AuditStatus = 'NOT_TESTED' | 'PASSED' | 'VULNERABLE' | 'MITIGATED' | 'NA';
 
@@ -16,6 +16,7 @@ export interface AuditRecord {
 }
 
 interface AuditChecklistViewProps {
+  globalDomain: GlobalDomain;
   onSelectTest: (test: TestItem) => void;
   onNavigateToOwasp: (id: string) => void;
 }
@@ -30,7 +31,7 @@ const STATUS_CONFIG: Record<AuditStatus, { label: string; bg: string; text: stri
   NA: { label: 'N/A', bg: 'bg-slate-900', text: 'text-slate-500', border: 'border-slate-800', icon: XCircle }
 };
 
-export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelectTest, onNavigateToOwasp }) => {
+export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ globalDomain, onSelectTest, onNavigateToOwasp }) => {
   const [records, setRecords] = useState<Record<string, AuditRecord>>({});
   const [selectedPillar, setSelectedPillar] = useState<Pillar | 'ALL'>('ALL');
   const [selectedStatus, setSelectedStatus] = useState<AuditStatus | 'ALL'>('ALL');
@@ -46,6 +47,16 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
       default: return 0;
     }
   };
+
+  const domainTests = useMemo(() => {
+    return TEST_DATA.filter(t => {
+      if (globalDomain === 'LLM') return !!t.owaspTop10Ref;
+      if (globalDomain === 'ML') return !!t.owaspMlTop10Ref;
+      if (globalDomain === 'AGENT') return !!t.owaspAgenticRef;
+      if (globalDomain === 'MCP') return !!t.owaspMcpTop10Ref;
+      return true;
+    });
+  }, [globalDomain]);
 
   const getRiskBadgeClass = (riskLevel: string) => {
     switch (riskLevel) {
@@ -123,14 +134,14 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
 
   // Metrics computation
   const stats = useMemo(() => {
-    const total = TEST_DATA.length;
+    const total = domainTests.length;
     let passed = 0;
     let vulnerable = 0;
     let mitigated = 0;
     let na = 0;
     let notTested = 0;
 
-    for (const test of TEST_DATA) {
+    for (const test of domainTests) {
       const status = records[test.id]?.status || 'NOT_TESTED';
       if (status === 'PASSED') passed++;
       else if (status === 'VULNERABLE') vulnerable++;
@@ -143,13 +154,13 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
     const progressPercent = Math.round((tested / total) * 100);
 
     return { total, passed, vulnerable, mitigated, na, notTested, tested, progressPercent };
-  }, [records]);
+  }, [records, domainTests]);
 
   // Filter & sort tests by Criticality (highest severity first)
   const sortedTests = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
-    const filtered = TEST_DATA.filter(test => {
+    const filtered = domainTests.filter(test => {
       if (selectedPillar !== 'ALL' && test.pillar !== selectedPillar) return false;
       
       const status = records[test.id]?.status || 'NOT_TESTED';
@@ -170,11 +181,11 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
       }
       return a.id.localeCompare(b.id);
     });
-  }, [selectedPillar, selectedStatus, searchQuery, records, sortMethod]);
+  }, [selectedPillar, selectedStatus, searchQuery, records, sortMethod, domainTests]);
 
   // Export JSON report (sorted by criticality)
   const exportJson = () => {
-    const sortedExportTests = [...TEST_DATA].sort((a, b) => {
+    const sortedExportTests = [...domainTests].sort((a, b) => {
       const diff = getRiskWeight(b.riskLevel) - getRiskWeight(a.riskLevel);
       if (diff !== 0) return diff;
       return a.id.localeCompare(b.id);
@@ -211,7 +222,7 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
 
   // Export Markdown report (sorted by criticality)
   const exportMarkdown = () => {
-    const sortedExportTests = [...TEST_DATA].sort((a, b) => {
+    const sortedExportTests = [...domainTests].sort((a, b) => {
       const diff = getRiskWeight(b.riskLevel) - getRiskWeight(a.riskLevel);
       if (diff !== 0) return diff;
       return a.id.localeCompare(b.id);
@@ -392,7 +403,7 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ onSelect
               onClick={() => setSelectedPillar('ALL')}
               className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${selectedPillar === 'ALL' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              All ({TEST_DATA.length})
+              All ({domainTests.length})
             </button>
             {[Pillar.APP, Pillar.MODEL, Pillar.INFRA, Pillar.DATA].map(p => (
               <button

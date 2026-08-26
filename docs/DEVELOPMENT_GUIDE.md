@@ -36,7 +36,19 @@ npm install --include=dev
 
 ---
 
-## 3. Mandatory Testing Policy for New Code & Implementations
+## 3. Application Architecture & Global Domain Filtering
+
+The AI Security Nexus acts as a consolidated browser for multiple distinct AI frameworks (LLM, ML, Agentic, MCP, etc.). 
+To provide a focused user experience, the application implements a **Global Domain Filtering** pattern.
+
+- **State Management**: The central state `globalDomain` of type `GlobalDomain` (defined in `types.ts`) is maintained in `App.tsx`.
+- **Prop Drilling Contract**: Any view component that renders aggregated cross-domain data (e.g., `Dashboard`, `ToolsDirectoryView`, `ThreatModelling`) MUST accept the `globalDomain: GlobalDomain` prop.
+- **Local Filtering**: View components MUST use `useMemo` hooks to filter their respective data structures based on the `globalDomain` (e.g., `if (globalDomain === 'LLM') return ...`).
+- **Testing Requirement**: New cross-domain views MUST be added to the assertions in `tests/functional/global-domain-filtering.test.mjs` to ensure the filter propagates without regression.
+
+---
+
+## 4. Mandatory Testing Policy for New Code & Implementations
 
 > 🧪 **DEVELOPMENT MANDATE**: Every new component, route, framework threat entry, or security test case **must include a corresponding automated test** in `tests/` before being finalized.
 
@@ -46,7 +58,7 @@ npm install --include=dev
 
 ---
 
-## 4. Local Development & Live Reloading
+## 5. Local Development & Live Reloading
 
 1. Run `npm run dev`.
 2. Open `http://127.0.0.1:5173` in a modern browser.
@@ -54,7 +66,7 @@ npm install --include=dev
 
 ---
 
-## 5. GitHub Pages Deployment & Continuous Operability
+## 6. GitHub Pages Deployment & Continuous Operability
 
 The application is deployed as a **GitHub Pages** static website:
 - **Primary CI/CD Workflow**: [`.github/workflows/deploy.yml`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/.github/workflows/deploy.yml)
@@ -62,7 +74,7 @@ The application is deployed as a **GitHub Pages** static website:
 - **Deployment Trigger**: Any push to `main` or `master`.
 - **Target Output Directory**: `dist/`
 
-### 5.1 Maintaining Continuous GitHub Pages Compatibility
+### 6.1 Maintaining Continuous GitHub Pages Compatibility
 
 Every update made to the codebase must preserve full compatibility with GitHub Pages:
 
@@ -89,7 +101,7 @@ Every update made to the codebase must preserve full compatibility with GitHub P
 
 ---
 
-## 6. Process Lifecycle, Debugging Shells & Resource Cleanup
+## 7. Process Lifecycle, Debugging Shells & Resource Cleanup
 
 > 🧹 **PROCESS HYGIENE DIRECTIVE**: When spawning background test environments, dev servers, preview servers, child processes, or debugging subshells, **they must be explicitly and cleanly shut down after testing concludes**.
 
