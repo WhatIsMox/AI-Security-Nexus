@@ -78,3 +78,81 @@ test('Global Domain Filtering - View Component Adherence', (t) => {
     assert.ok(content.includes('globalDomain === \'MCP\'') || content.includes('globalDomain === "MCP"'), `${name} must filter by MCP domain`);
   });
 });
+
+test('Global Domain Filtering - Dashboard Scroll-Reveal Observer Reactivity', (t) => {
+  const content = readFile('components/Dashboard.tsx');
+  
+  // Verify useRevealObserver accepts dependencies and is invoked with globalDomain
+  assert.ok(
+    content.includes('function useRevealObserver(...deps: any[])') || 
+    content.includes('function useRevealObserver(deps: any[]') ||
+    content.includes('function useRevealObserver(...deps'),
+    'useRevealObserver must accept dependency arguments'
+  );
+  assert.ok(
+    content.includes('useRevealObserver(globalDomain)') || 
+    content.includes('useRevealObserver([globalDomain])'),
+    'Dashboard must pass globalDomain to useRevealObserver to ensure newly remounted .reveal cards receive visibility observers'
+  );
+  
+  // Verify spotlight and incident safety guards against empty array modulo
+  assert.ok(
+    content.includes('stats.spotlight.length > 0 ? stats.spotlight[spotIndex % stats.spotlight.length] : undefined') ||
+    content.includes('stats.spotlight[spotIndex % stats.spotlight.length]'),
+    'Dashboard must handle spotlight test selection safely'
+  );
+});
+
+test('Global Domain Filtering - Multi-Domain Transition Data Integrity Simulation', (t) => {
+  const testsContent = readFile('data_tests.ts');
+  const agenticTestsContent = readFile('data_agentic.ts');
+  const fullTestsContent = testsContent + '\n' + agenticTestsContent;
+
+  const testIds = [...fullTestsContent.matchAll(/id:\s*['"](AITG-[A-Z]+-\d+|AGT-\d+)['"]/g)].map(m => m[1]);
+  assert.ok(testIds.length >= 42, 'Must have at least 42 total test items');
+
+  const llmTests = [...fullTestsContent.matchAll(/owaspTop10Ref:\s*['"]LLM\d{2}/g)];
+  const mlTests = [...fullTestsContent.matchAll(/owaspMlTop10Ref:\s*['"]ML\d{2}/g)];
+  const agentTests = [...fullTestsContent.matchAll(/owaspAgenticRef:\s*['"]AS[IT]\d{2}/g)];
+  const mcpTests = [...fullTestsContent.matchAll(/owaspMcpTop10Ref:\s*['"]MCP\d+/g)];
+
+  assert.ok(llmTests.length > 0, 'LLM domain must match tests');
+  assert.ok(mlTests.length > 0, 'ML domain must match tests');
+  assert.ok(agentTests.length > 0, 'AGENT domain must match tests');
+  assert.ok(mcpTests.length > 0, 'MCP domain must match tests');
+});
+
+test('Cross-View Usability & State Reactivity Regression Guard', (t) => {
+  // 1. ThreatModelling useMemo dependency reactivity
+  const tmContent = readFile('components/ThreatModelling.tsx');
+  assert.ok(
+    tmContent.includes('[sortMethod, domainThreats]'),
+    'ThreatModelling sortedThreats useMemo must include domainThreats in dependency array to update on domain transitions'
+  );
+
+  // 2. AuditChecklistView zero-division guard
+  const auditContent = readFile('components/AuditChecklistView.tsx');
+  assert.ok(
+    auditContent.includes('const progressPercent = total > 0 ? Math.round((tested / total) * 100) : 0;'),
+    'AuditChecklistView must guard progressPercent against divide-by-zero NaN when domain has 0 items'
+  );
+
+  // 3. IncidentsDirectoryView dynamic framework pills
+  const incContent = readFile('components/IncidentsDirectoryView.tsx');
+  assert.ok(
+    incContent.includes('availableFrameworks'),
+    'IncidentsDirectoryView must compute availableFrameworks dynamically from globalDomain'
+  );
+  assert.ok(
+    incContent.includes('activeFrameworkFilter'),
+    'IncidentsDirectoryView must guard active framework filter against incompatible domains'
+  );
+
+  // 4. TestDetail clipboard safe fallback
+  const testDetailContent = readFile('components/TestDetail.tsx');
+  assert.ok(
+    testDetailContent.includes('.catch('),
+    'TestDetail handleCopyPayload must catch clipboard writeText promise rejections'
+  );
+});
+

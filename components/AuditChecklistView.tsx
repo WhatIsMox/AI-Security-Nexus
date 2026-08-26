@@ -151,7 +151,7 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ globalDo
     }
 
     const tested = passed + vulnerable + mitigated + na;
-    const progressPercent = Math.round((tested / total) * 100);
+    const progressPercent = total > 0 ? Math.round((tested / total) * 100) : 0;
 
     return { total, passed, vulnerable, mitigated, na, notTested, tested, progressPercent };
   }, [records, domainTests]);

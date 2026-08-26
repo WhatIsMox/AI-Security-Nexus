@@ -914,7 +914,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ globalDomain, onNavig
       list.sort((a, b) => (weights[b.riskLevel] || 0) - (weights[a.riskLevel] || 0));
     }
     return list;
-  }, [sortMethod]);
+  }, [sortMethod, domainThreats]);
 
   const impactThreats = useMemo(() => {
     if (ownershipFilter === 'all') return sortedThreats;

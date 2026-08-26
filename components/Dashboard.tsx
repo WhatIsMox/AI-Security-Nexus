@@ -127,35 +127,49 @@ const useTypewriter = (phrases: string[], typeMs = 45, holdMs = 2200) => {
 };
 
 /** Scroll-reveal: any `.reveal` element fades up when it enters the viewport. */
-function useRevealObserver() {
+function useRevealObserver(...deps: any[]) {
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal'));
-    // Mark elements already in or near viewport as visible immediately
-    els.forEach((el) => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight + 100) {
-        el.classList.add('is-visible');
-      }
-    });
+    const revealVisible = () => {
+      const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal'));
+      // Mark elements already in or near viewport as visible immediately
+      els.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 300 && rect.bottom > -200) {
+          el.classList.add('is-visible');
+        }
+      });
 
-    if (!('IntersectionObserver' in window)) {
-      els.forEach((el) => el.classList.add('is-visible'));
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-visible');
-            observer.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.02, rootMargin: '60px 0px 60px 0px' }
-    );
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+      if (!('IntersectionObserver' in window)) {
+        els.forEach((el) => el.classList.add('is-visible'));
+        return null;
+      }
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-visible');
+              observer.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.01, rootMargin: '180px 0px 180px 0px' }
+      );
+      els.forEach((el) => {
+        if (!el.classList.contains('is-visible')) {
+          observer.observe(el);
+        }
+      });
+      return observer;
+    };
+
+    const observer = revealVisible();
+    const timer = setTimeout(revealVisible, 80);
+
+    return () => {
+      clearTimeout(timer);
+      if (observer) observer.disconnect();
+    };
+  }, deps);
 }
 
 /* ------------------------------------------------------------------ */
@@ -352,7 +366,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   onSelectTool,
   onSelectIncident
 }) => {
-  useRevealObserver();
+  useRevealObserver(globalDomain);
 
   /* ---------------- live aggregates ---------------- */
   const stats = useMemo(() => {
@@ -440,7 +454,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   /* ---------------- featured test spotlight ---------------- */
   const [spotIndex, setSpotIndex] = useState(0);
   const [spotPaused, setSpotPaused] = useState(false);
-  const featured = stats.spotlight[spotIndex % stats.spotlight.length];
+  const featured = stats.spotlight.length > 0 ? stats.spotlight[spotIndex % stats.spotlight.length] : undefined;
 
   useEffect(() => {
     if (spotPaused || stats.spotlight.length === 0) return;

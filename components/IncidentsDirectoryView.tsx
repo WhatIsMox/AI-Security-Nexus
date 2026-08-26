@@ -57,13 +57,25 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
     return Array.from(incidentMap.values()).sort((a, b) => a.title.localeCompare(b.title));
   }, [globalDomain]);
 
+  // Available framework filter options matching the active globalDomain
+  const availableFrameworks = useMemo<('All' | 'LLM' | 'ML' | 'ASI' | 'AST' | 'SAIF' | 'MCP' | 'DSGAI')[]>(() => {
+    if (globalDomain === 'LLM') return ['All', 'LLM', 'DSGAI'];
+    if (globalDomain === 'ML') return ['All', 'ML'];
+    if (globalDomain === 'AGENT') return ['All', 'ASI', 'AST'];
+    if (globalDomain === 'MCP') return ['All', 'MCP'];
+    return ['All', 'LLM', 'ML', 'ASI', 'AST', 'SAIF', 'MCP', 'DSGAI'];
+  }, [globalDomain]);
+
+  // Reset framework filter if active filter is incompatible with globalDomain
+  const activeFrameworkFilter = availableFrameworks.includes(frameworkFilter) ? frameworkFilter : 'All';
+
   // Filtered incidents
   const filteredIncidents = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
     return allIncidents.filter(incident => {
-      if (frameworkFilter !== 'All') {
-        const hasMatchingThreat = (incident.mappedThreats || []).some(tid => tid.startsWith(frameworkFilter));
+      if (activeFrameworkFilter !== 'All') {
+        const hasMatchingThreat = (incident.mappedThreats || []).some(tid => tid.startsWith(activeFrameworkFilter));
         if (!hasMatchingThreat) return false;
       }
 
@@ -74,7 +86,7 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
 
       return true;
     });
-  }, [allIncidents, searchQuery, frameworkFilter]);
+  }, [allIncidents, searchQuery, activeFrameworkFilter]);
 
   const getSeverityBadge = (severity?: string) => {
     switch (severity) {
@@ -128,12 +140,12 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
         {/* Framework Filter Pills */}
         <div className="flex flex-wrap items-center gap-1.5 pt-2 text-xs">
           <span className="text-slate-500 uppercase font-mono text-[11px] mr-2">Framework:</span>
-          {(['All', 'LLM', 'ML', 'ASI', 'AST', 'SAIF', 'MCP', 'DSGAI'] as const).map(fw => (
+          {availableFrameworks.map(fw => (
             <button
               key={fw}
               onClick={() => setFrameworkFilter(fw)}
               className={`px-2.5 py-1 rounded transition-all font-mono ${
-                frameworkFilter === fw
+                activeFrameworkFilter === fw
                   ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
               }`}

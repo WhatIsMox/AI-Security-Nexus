@@ -25,12 +25,16 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
   };
 
   const handleCopyPayload = (code: string, index: number) => {
-    navigator.clipboard.writeText(code).then(() => {
-      setCopiedPayloadIndex(index);
-      setTimeout(() => {
-        setCopiedPayloadIndex(null);
-      }, 2000);
-    });
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(code).then(() => {
+        setCopiedPayloadIndex(index);
+        setTimeout(() => {
+          setCopiedPayloadIndex(null);
+        }, 2000);
+      }).catch(() => {
+        // Fallback for restricted clipboard contexts
+      });
+    }
   };
 
   return (
