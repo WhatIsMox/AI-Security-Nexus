@@ -110,6 +110,14 @@ test('Advanced Features - Interactive Audit Checklist & Export Suite', (t) => {
   assert.ok(auditContent.includes('progressPercent'), 'Audit checklist must compute percentage progress');
   assert.ok(auditContent.includes("sortMethod === 'severity'"), 'Audit checklist must implement sorting by severity / criticality');
   assert.ok(auditContent.includes('getRiskWeight'), 'Audit checklist must assign risk weights for criticality sorting');
+  
+  // Verify data safety interlocks
+  assert.ok(auditContent.includes('window.confirm'), 'Audit checklist must use window.confirm before resetting all data to prevent accidental loss');
+  assert.ok(auditContent.includes('handleReset'), 'Audit checklist must implement handleReset functionality');
+
+  // Verify interactive state updates
+  assert.ok(auditContent.includes('handleStatusChange'), 'Audit checklist must handle individual test status updates');
+  assert.ok(auditContent.includes('handleNotesChange'), 'Audit checklist must handle individual test note updates');
 });
 
 test('Advanced Features - Consolidated Tools Matrix & Incidents Explorer Views', (t) => {

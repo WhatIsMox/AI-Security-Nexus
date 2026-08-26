@@ -37,3 +37,25 @@ test('Functional - Threat Modeling Component SVG and Layers', (t) => {
   assert.ok(threatModelingContent.includes('onNavigateToTest'), 'Must support navigation to linked test');
   assert.ok(threatModelingContent.includes('onNavigateToOwasp'), 'Must support navigation to OWASP risk');
 });
+
+test('Functional - Threat Modeling Component Interactive State & Filtering', (t) => {
+  const content = readFile('components/ThreatModelling.tsx');
+
+  // Verify state hooks for interactive drills
+  assert.ok(content.includes('const [selectedComponentId, setSelectedComponentId] = useState'), 'Must manage selected component state');
+  assert.ok(content.includes('const [selectedThreatId, setSelectedThreatId] = useState'), 'Must manage selected threat state');
+  assert.ok(content.includes('const [activeTab, setActiveTab] = useState'), 'Must manage active tab state for right pane');
+  
+  // Verify ownership filter
+  assert.ok(content.includes('const [ownershipFilter, setOwnershipFilter] = useState'), 'Must manage ownership filter state');
+  assert.ok(content.includes('\'all\' | \'creator\' | \'consumer\' | \'shared\''), 'Ownership filter must support standard SAIF ownership types');
+  
+  // Verify SVG click handlers
+  assert.ok(content.includes('handleComponentClick'), 'Must implement handler for component selection');
+  assert.ok(content.includes('onClick={(e) => { e.stopPropagation(); handleComponentClick(comp.id); }}'), 'SVG groups must have click handlers to set selected component');
+  
+  // Verify active tab logic
+  assert.ok(content.includes('setActiveTab(\'architecture\')'), 'Must support switching to architecture tab');
+  assert.ok(content.includes('setActiveTab(\'impact\')'), 'Must support switching to impact tab');
+  assert.ok(content.includes('setActiveTab(\'mapping\')'), 'Must support switching to mapping tab');
+});
