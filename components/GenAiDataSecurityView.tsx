@@ -503,7 +503,7 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
     return { DSGAI01: true };
   });
 
-  const scrollToRisk = (id: string) => {
+  const scrollToSection = (id: string) => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const el = document.getElementById(id);
@@ -518,11 +518,12 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
       });
     });
   };
+  const scrollToRisk = scrollToSection;
 
   useEffect(() => {
     if (initialExpandedId) {
       setExpandedIds((prev) => ({ ...prev, [initialExpandedId]: true }));
-      scrollToRisk(initialExpandedId);
+      scrollToSection(initialExpandedId);
     }
   }, [initialExpandedId]);
 
@@ -670,17 +671,18 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
                 const isActive = activeSectionId === item.targetId
                   || (item.targetId === 'risk-navigator' && isRiskEntryActive);
                 return (
-                  <a
+                  <button
                     key={item.targetId}
-                    href={`#${item.targetId}`}
-                    className={`block shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal ${
+                    type="button"
+                    onClick={() => scrollToSection(item.targetId)}
+                    className={`block w-full text-left shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal cursor-pointer ${
                       isActive
                         ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200'
                         : 'border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
                     }`}
                   >
                     {item.label}
-                  </a>
+                  </button>
                 );
               })}
             </nav>
@@ -695,11 +697,14 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
                   const isActive = activeSectionId === risk.id;
                   const style = THEME_STYLES[risk.theme];
                   return (
-                    <a
+                    <button
                       key={risk.id}
-                      href={`#${risk.id}`}
-                      onClick={() => setExpandedIds((current) => ({ ...current, [risk.id]: true }))}
-                      className={`flex min-w-[12rem] items-center gap-2 rounded-md border px-2 py-2 text-xs transition-colors lg:min-w-0 ${
+                      type="button"
+                      onClick={() => {
+                        setExpandedIds((current) => ({ ...current, [risk.id]: true }));
+                        scrollToSection(risk.id);
+                      }}
+                      className={`flex w-full text-left min-w-[12rem] items-center gap-2 rounded-md border px-2 py-2 text-xs transition-colors lg:min-w-0 cursor-pointer ${
                         isActive
                           ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200'
                           : 'border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -708,7 +713,7 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
                       <span className={`h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
                       <span className="font-mono">{risk.id}</span>
                       <span className="truncate">{risk.title}</span>
-                    </a>
+                    </button>
                   );
                 })}
                 {filteredRisks.length === 0 && (

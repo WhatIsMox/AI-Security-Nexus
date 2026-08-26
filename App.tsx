@@ -46,35 +46,65 @@ const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKe
   if (clean === 'incidents') {
     return { view: 'incidents', pillar: 'ALL', id: null };
   }
-  if (clean === 'secure-mcp-guide') {
-    return { view: 'secure-mcp-guide', pillar: 'SECUREMCPGUIDE', id: null };
+  if (clean === 'secure-mcp-guide' || clean.startsWith('secure-mcp-guide/')) {
+    const parts = clean.split('/');
+    return { view: 'secure-mcp-guide', pillar: 'SECUREMCPGUIDE', id: parts[1] || null };
+  }
+  if (
+    clean === 'minimum-bar' ||
+    clean === 'server-architecture' ||
+    clean === 'client-transport-security' ||
+    clean === 'authorization-boundaries' ||
+    clean === 'tool-execution-safety' ||
+    clean === 'data-privacy-context-hygiene' ||
+    clean === 'audit-logging-monitoring' ||
+    clean === 'supply-chain-dependency-security' ||
+    clean === 'testing-verification' ||
+    clean === 'deployment-infrastructure-hardening' ||
+    clean === 'incident-response-preparedness'
+  ) {
+    return { view: 'secure-mcp-guide', pillar: 'SECUREMCPGUIDE', id: clean };
   }
   if (clean.startsWith('genai-data-security')) {
     const parts = clean.split('/');
     return { view: 'genai-data-security', pillar: 'GENAIDATASECURITY', id: parts[1] || null };
   }
-  if (clean.startsWith('owasp-top10')) {
-    const parts = clean.split('/');
-    return { view: 'owasp-top10', pillar: 'TOP10', id: parts[1] || null };
+  if (
+    clean.startsWith('DSGAI') ||
+    clean.startsWith('ai-dspm') ||
+    clean === 'genai-data-security-context' ||
+    clean === 'risk-navigator' ||
+    clean === 'dspm-framework'
+  ) {
+    return { view: 'genai-data-security', pillar: 'GENAIDATASECURITY', id: clean };
   }
-  if (clean.startsWith('owasp-ml-top10')) {
+  if (clean.startsWith('owasp-top10') || clean.startsWith('LLM')) {
     const parts = clean.split('/');
-    return { view: 'owasp-ml-top10', pillar: 'MLTOP10', id: parts[1] || null };
+    const id = clean.startsWith('LLM') ? clean : (parts[1] || null);
+    return { view: 'owasp-top10', pillar: 'TOP10', id };
   }
-  if (clean.startsWith('owasp-agent-top10')) {
+  if (clean.startsWith('owasp-ml-top10') || clean.startsWith('ML')) {
     const parts = clean.split('/');
-    return { view: 'owasp-agent-top10', pillar: 'AGENTTOP10', id: parts[1] || null };
+    const id = clean.startsWith('ML') ? clean : (parts[1] || null);
+    return { view: 'owasp-ml-top10', pillar: 'MLTOP10', id };
   }
-  if (clean.startsWith('owasp-saif-top10')) {
+  if (clean.startsWith('owasp-agent-top10') || clean.startsWith('ASI') || clean.startsWith('AST')) {
     const parts = clean.split('/');
-    return { view: 'owasp-saif-top10', pillar: 'SAIFTOP10', id: parts[1] || null };
+    const id = (clean.startsWith('ASI') || clean.startsWith('AST')) ? clean : (parts[1] || null);
+    return { view: 'owasp-agent-top10', pillar: 'AGENTTOP10', id };
   }
-  if (clean.startsWith('owasp-mcp-top10')) {
+  if (clean.startsWith('owasp-saif-top10') || clean.startsWith('SAIF')) {
     const parts = clean.split('/');
-    return { view: 'owasp-mcp-top10', pillar: 'MCPTOP10', id: parts[1] || null };
+    const id = clean.startsWith('SAIF') ? clean : (parts[1] || null);
+    return { view: 'owasp-saif-top10', pillar: 'SAIFTOP10', id };
   }
-  if (clean.startsWith('detail/')) {
-    const testId = clean.replace('detail/', '').trim();
+  if (clean.startsWith('owasp-mcp-top10') || clean.startsWith('MCP')) {
+    const parts = clean.split('/');
+    const id = clean.startsWith('MCP') ? clean : (parts[1] || null);
+    return { view: 'owasp-mcp-top10', pillar: 'MCPTOP10', id };
+  }
+  if (clean.startsWith('detail/') || clean.startsWith('AITG-') || clean.startsWith('AGT-')) {
+    const testId = clean.startsWith('detail/') ? clean.replace('detail/', '').trim() : clean;
     return { view: 'detail', pillar: 'ALL', id: testId };
   }
   if (clean.startsWith('tests')) {
@@ -96,7 +126,7 @@ const stateToHash = (view: AppView, pillar: ActivePillarKey, testId?: string | n
   if (view === 'audit-checklist') return '#/audit-checklist';
   if (view === 'tools') return '#/tools';
   if (view === 'incidents') return '#/incidents';
-  if (view === 'secure-mcp-guide') return '#/secure-mcp-guide';
+  if (view === 'secure-mcp-guide') return threatId ? `#/secure-mcp-guide/${threatId}` : '#/secure-mcp-guide';
   if (view === 'genai-data-security') return threatId ? `#/genai-data-security/${threatId}` : '#/genai-data-security';
   if (view === 'owasp-top10') return threatId ? `#/owasp-top10/${threatId}` : '#/owasp-top10';
   if (view === 'owasp-ml-top10') return threatId ? `#/owasp-ml-top10/${threatId}` : '#/owasp-ml-top10';
@@ -524,7 +554,7 @@ const App: React.FC = () => {
               )}
 
               {currentView === 'secure-mcp-guide' && (
-                <SecureMcpGuideView />
+                <SecureMcpGuideView initialExpandedId={owaspTargetId} />
               )}
 
               {currentView === 'genai-data-security' && (

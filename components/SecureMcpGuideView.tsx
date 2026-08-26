@@ -194,7 +194,11 @@ const GuideSection: React.FC<{
 
 const SECURE_MCP_CHECKLIST_STORAGE_KEY = 'ai_security_nexus_secure_mcp_checklist_v1';
 
-const SecureMcpGuideView: React.FC = () => {
+interface SecureMcpGuideViewProps {
+  initialExpandedId?: string | null;
+}
+
+const SecureMcpGuideView: React.FC<SecureMcpGuideViewProps> = ({ initialExpandedId }) => {
   const meta = SECURE_MCP_GUIDE_META;
   const checklistItems = useMemo(
     () => SECURE_MCP_MINIMUM_BAR.flatMap((group) => group.items),
@@ -232,9 +236,35 @@ const SecureMcpGuideView: React.FC = () => {
 
   const [search, setSearch] = useState('');
   const [activeSectionId, setActiveSectionId] = useState(VISIBLE_SECURE_MCP_SECTIONS[0]?.id || '');
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    [VISIBLE_SECURE_MCP_SECTIONS[0]?.id || '']: true,
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
+    if (initialExpandedId) {
+      return { [initialExpandedId]: true };
+    }
+    return { [VISIBLE_SECURE_MCP_SECTIONS[0]?.id || '']: true };
   });
+
+  const scrollToSection = (id: string) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          const headerOffset = window.innerWidth < 768 ? 72 : 88;
+          const elementTop = el.getBoundingClientRect().top + window.pageYOffset;
+          window.scrollTo({
+            top: Math.max(0, elementTop - headerOffset),
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (initialExpandedId) {
+      setExpandedSections((prev) => ({ ...prev, [initialExpandedId]: true }));
+      scrollToSection(initialExpandedId);
+    }
+  }, [initialExpandedId]);
 
   const filteredSections = useMemo(
     () => VISIBLE_SECURE_MCP_SECTIONS.filter((section) => sectionMatchesSearch(section, search)),
@@ -342,19 +372,29 @@ const SecureMcpGuideView: React.FC = () => {
         </p>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {CONTROL_FAMILIES.map((family) => (
-            <a
-              key={family.title}
-              href={`#${SECURE_MCP_GUIDE_SECTIONS.find((section) => family.match.some((term) => normalize(section.title).includes(term)))?.id || 'minimum-bar'}`}
-              className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 transition-colors hover:border-cyan-500/30"
-            >
-              <div className="mb-2 flex min-w-0 items-center gap-2 text-sm font-bold text-white">
-                <ShieldCheck className="h-4 w-4 text-cyan-300" />
-                <span className="min-w-0 break-words">{family.title}</span>
-              </div>
-              <p className="text-sm leading-relaxed text-slate-400">{family.description}</p>
-            </a>
-          ))}
+          {CONTROL_FAMILIES.map((family) => {
+            const targetSection = SECURE_MCP_GUIDE_SECTIONS.find((section) => family.match.some((term) => normalize(section.title).includes(term)));
+            const targetId = targetSection?.id || 'minimum-bar';
+            return (
+              <button
+                key={family.title}
+                type="button"
+                onClick={() => {
+                  if (targetSection) {
+                    setExpandedSections((current) => ({ ...current, [targetSection.id]: true }));
+                  }
+                  scrollToSection(targetId);
+                }}
+                className="w-full text-left rounded-xl border border-slate-800 bg-slate-950/60 p-4 transition-colors hover:border-cyan-500/30 cursor-pointer"
+              >
+                <div className="mb-2 flex min-w-0 items-center gap-2 text-sm font-bold text-white">
+                  <ShieldCheck className="h-4 w-4 text-cyan-300" />
+                  <span className="min-w-0 break-words">{family.title}</span>
+                </div>
+                <p className="text-sm leading-relaxed text-slate-400">{family.description}</p>
+              </button>
+            );
+          })}
         </div>
 
         <div className="mt-6 grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
@@ -398,30 +438,34 @@ const SecureMcpGuideView: React.FC = () => {
               {filteredSections.map((section) => {
                 const isActive = activeSectionId === section.id;
                 return (
-                  <a
+                  <button
                     key={section.id}
-                    href={`#${section.id}`}
-                    onClick={() => setExpandedSections((current) => ({ ...current, [section.id]: true }))}
-                    className={`block shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal ${
+                    type="button"
+                    onClick={() => {
+                      setExpandedSections((current) => ({ ...current, [section.id]: true }));
+                      scrollToSection(section.id);
+                    }}
+                    className={`block w-full text-left shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal cursor-pointer ${
                       isActive
                         ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200'
                         : 'border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
                     }`}
                   >
                     {section.title}
-                  </a>
+                  </button>
                 );
               })}
-              <a
-                href="#minimum-bar"
-                className={`block shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal ${
+              <button
+                type="button"
+                onClick={() => scrollToSection('minimum-bar')}
+                className={`block w-full text-left shrink-0 rounded-md border px-3 py-2 text-sm transition-colors lg:shrink lg:whitespace-normal cursor-pointer ${
                   activeSectionId === 'minimum-bar'
                     ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
                     : 'border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
                 }`}
               >
                 MCP Security Minimum Bar
-              </a>
+              </button>
             </nav>
           </div>
         </aside>
