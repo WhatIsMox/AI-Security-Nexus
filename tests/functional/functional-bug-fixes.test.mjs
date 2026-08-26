@@ -132,7 +132,7 @@ test('Bug Fix 13: IncidentsDirectoryView search matches repercussions, remediati
 
 test('Bug Fix 14: Dashboard Incident Radar mapped threat badge is interactive', (t) => {
   const content = readFile('components/Dashboard.tsx');
-  assert.ok(content.includes('onClick={() => onNavigateToOwasp(incident.threatId)}'), 'Incident Radar threat badge must be clickable and navigate to threat');
+  assert.ok(content.includes('onNavigateToOwasp(incident.threatId'), 'Incident Radar threat badge must be clickable and navigate to threat');
   assert.ok(content.includes('Mapped to {incident.threatId}'), 'Must display Mapped to threat ID');
   t.diagnostic('Verified interactive threat deep-link in Dashboard Incident Radar');
 });
@@ -143,3 +143,13 @@ test('Bug Fix 15: App.tsx prevents test ID pollution of owaspTargetId', (t) => {
   assert.ok(content.includes("setOwaspTargetId(parsed.view !== 'detail' ? parsed.id : null)"), 'Hash change handler must only set owaspTargetId for framework views');
   t.diagnostic('Verified state isolation of owaspTargetId in App.tsx');
 });
+
+test('Bug Fix 16: ThreatDetailModal implements mobile safe area padding and clean body overflow reset', (t) => {
+  const content = readFile('components/ThreatDetailModal.tsx');
+  assert.ok(content.includes('safe-area-inset-top'), 'ThreatDetailModal must include safe area top inset padding');
+  assert.ok(content.includes('safe-area-inset-bottom'), 'ThreatDetailModal must include safe area bottom inset padding');
+  assert.ok(content.includes("document.body.style.overflow = '';"), 'ThreatDetailModal cleanup must reset body overflow to empty string');
+  assert.ok(!content.includes("document.body.style.overflow = 'unset';"), 'ThreatDetailModal cleanup must not use non-standard unset string');
+  t.diagnostic('Verified ThreatDetailModal safe area clearance and overflow cleanup');
+});
+

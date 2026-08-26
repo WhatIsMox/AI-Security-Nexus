@@ -36,9 +36,14 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
 
   const handleCopyCode = () => {
     if (!enriched.installationOrQuickstart) return;
-    navigator.clipboard.writeText(enriched.installationOrQuickstart);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(enriched.installationOrQuickstart).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }).catch(() => {
+        // Fallback for restricted clipboard contexts
+      });
+    }
   };
 
   const handleThreatClick = (threatId: string) => {

@@ -43,6 +43,13 @@ test('Accessibility - GlobalSearchModal uses role="dialog" and aria-modal="true"
   assert.ok(content.includes('aria-modal="true"'), 'GlobalSearchModal must specify aria-modal="true"');
 });
 
+test('Accessibility - ThreatDetailModal uses role="dialog" and aria-modal="true"', (t) => {
+  const content = readFile('components/ThreatDetailModal.tsx');
+
+  assert.ok(content.includes('role="dialog"'), 'ThreatDetailModal must specify role="dialog"');
+  assert.ok(content.includes('aria-modal="true"'), 'ThreatDetailModal must specify aria-modal="true"');
+});
+
 // ─── 2. Modal Keyboard Focus Trap (Escape Key) ──────────────────────────────
 
 test('Accessibility - All modals implement Escape key listener for focus trap', (t) => {
@@ -50,6 +57,7 @@ test('Accessibility - All modals implement Escape key listener for focus trap', 
     'components/ToolDetailModal.tsx',
     'components/IncidentDetailModal.tsx',
     'components/GlobalSearchModal.tsx',
+    'components/ThreatDetailModal.tsx',
   ];
 
   for (const modal of modals) {
@@ -91,6 +99,7 @@ test('Accessibility - Close buttons in modals have discernible accessible label'
     { file: 'components/ToolDetailModal.tsx', name: 'ToolDetailModal' },
     { file: 'components/IncidentDetailModal.tsx', name: 'IncidentDetailModal' },
     { file: 'components/GlobalSearchModal.tsx', name: 'GlobalSearchModal' },
+    { file: 'components/ThreatDetailModal.tsx', name: 'ThreatDetailModal' },
   ];
 
   for (const { file, name } of modals) {
@@ -223,6 +232,7 @@ test('Accessibility - Modal close buttons meet minimum touch target size (36px)'
   const modals = [
     'components/ToolDetailModal.tsx',
     'components/IncidentDetailModal.tsx',
+    'components/ThreatDetailModal.tsx',
   ];
 
   for (const modal of modals) {

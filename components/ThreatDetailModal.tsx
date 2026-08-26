@@ -186,13 +186,13 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
         onClose();
       }
     };
-    if (currentThreatId) {
+    if (currentThreatId && resolveThreatData(currentThreatId)) {
       window.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
     }
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     };
   }, [currentThreatId, onClose]);
 
@@ -207,21 +207,26 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
 
   const handleCopy = () => {
     const text = `${threat.id} - ${threat.title}\nFramework: ${threat.frameworkName}\n\nDescription:\n${threat.description}\n\nKey Prevention Controls:\n${threat.preventionStrategies.slice(0, 4).map(s => `• ${s}`).join('\n')}`;
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }).catch(() => {
+        // Fallback for restricted clipboard contexts
+      });
+    }
   };
 
   const modalContent = (
     <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md animate-modal-backdrop"
+      className="fixed inset-0 z-[100] flex items-center justify-center pt-[calc(env(safe-area-inset-top,0px)+1rem)] sm:pt-4 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:pb-4 px-3 sm:px-4 md:p-6 bg-black/85 backdrop-blur-md animate-modal-backdrop"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="threat-modal-title"
     >
       <div 
-        className="w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col max-h-[90vh] animate-modal-card my-auto"
+        className="w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-2rem)] sm:max-h-[90vh] animate-modal-card my-auto"
         onClick={e => e.stopPropagation()}
       >
         {/* Modal Scrollable Container */}

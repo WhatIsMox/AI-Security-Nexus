@@ -40,10 +40,10 @@ const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKe
   if (clean === 'audit-checklist') {
     return { view: 'audit-checklist', pillar: 'ALL', id: null };
   }
-  if (clean === 'tools') {
+  if (clean === 'tools' || clean.startsWith('tools/')) {
     return { view: 'tools', pillar: 'ALL', id: null };
   }
-  if (clean === 'incidents') {
+  if (clean === 'incidents' || clean.startsWith('incidents/')) {
     return { view: 'incidents', pillar: 'ALL', id: null };
   }
   if (clean === 'secure-mcp-guide' || clean.startsWith('secure-mcp-guide/')) {
@@ -576,6 +576,21 @@ const App: React.FC = () => {
                   onBack={handleBackToTests} 
                   onNavigateToOwasp={handleNavigateToOwasp}
                 />
+              )}
+
+              {currentView === 'detail' && !selectedTest && (
+                <div className="container-fluid p-8 max-w-4xl mx-auto text-center">
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl">
+                    <h2 className="text-xl font-bold text-white mb-2">Test Case Not Found</h2>
+                    <p className="text-slate-400 text-sm mb-6">The requested test case ID does not exist in the security catalog.</p>
+                    <button
+                      onClick={handleBackToTests}
+                      className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-cyan-500/20"
+                    >
+                      Back to All Tests
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </Suspense>

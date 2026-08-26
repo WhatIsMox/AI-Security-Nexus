@@ -3888,12 +3888,10 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
  */
 export function getEnrichedTool(toolInput: Partial<SecurityTool> & { name: string; url: string; description?: string }): SecurityTool {
   const tool: SecurityTool = {
-    name: toolInput.name,
-    description: toolInput.description || '',
-    url: toolInput.url,
-    cost: toolInput.cost || 'Free',
-    type: toolInput.type || 'Local',
-    category: toolInput.category || 'Offensive',
+    description: '',
+    cost: 'Free',
+    type: 'Local',
+    category: 'Offensive',
     ...toolInput,
   };
 

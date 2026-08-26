@@ -1094,7 +1094,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             <div className="relative flex flex-col md:flex-row md:items-center gap-5">
               <button
                 type="button"
-                onClick={() => onNavigateToOwasp(incident.threatId)}
+                onClick={() => incident.threatId && onNavigateToOwasp(incident.threatId)}
                 className="shrink-0 inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 hover:border-orange-400/60 px-4 py-1.5 self-start md:self-center transition-all cursor-pointer"
                 title={`Jump to threat ${incident.threatId}`}
               >

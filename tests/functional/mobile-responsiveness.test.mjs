@@ -55,6 +55,19 @@ test('Mobile Responsiveness - IncidentDetailModal Layout & Touch Scrolling', (t)
   assert.ok(modalContent.includes('grid-cols-1 sm:grid-cols-2'), 'Recovery vs Fallout boxes must stack in single column on mobile');
 });
 
+test('Mobile Responsiveness - ThreatDetailModal Layout & Touch Scrolling', (t) => {
+  const modalContent = readFile('components/ThreatDetailModal.tsx');
+
+  // Assert top menu bar / notch clearance & dynamic viewport height
+  assert.ok(modalContent.includes('safe-area-inset-top') || modalContent.includes('pt-[calc'), 'Threat modal must include safe area top clearance to prevent hiding under mobile menu bar');
+  assert.ok(modalContent.includes('overflow-y-auto'), 'Threat modal must be vertically scrollable');
+
+  // Assert sticky header and close button ergonomics
+  assert.ok(modalContent.includes('sticky top-0 z-20'), 'Threat modal header must be sticky');
+  assert.ok(modalContent.includes('break-words'), 'Threat title must wrap cleanly on narrow screens');
+  assert.ok(modalContent.includes('grid-cols-1 lg:grid-cols-2'), 'Threat mechanics must stack responsively on mobile');
+});
+
 test('Mobile Responsiveness - Dashboard Charts, Radar & Architecture Bands', (t) => {
   const dashContent = readFile('components/Dashboard.tsx');
 

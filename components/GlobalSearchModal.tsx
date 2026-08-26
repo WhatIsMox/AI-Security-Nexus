@@ -362,9 +362,11 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       onClose();
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
+      if (filteredResults.length === 0) return;
       setSelectedIndex(prev => (prev + 1 < filteredResults.length ? prev + 1 : 0));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
+      if (filteredResults.length === 0) return;
       setSelectedIndex(prev => (prev - 1 >= 0 ? prev - 1 : filteredResults.length - 1));
     } else if (e.key === 'Enter') {
       e.preventDefault();
