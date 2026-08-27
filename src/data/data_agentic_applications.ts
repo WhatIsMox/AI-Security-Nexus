@@ -1,4 +1,4 @@
-import { FrameworkOverview, OwaspTop10Entry } from './types';
+import { FrameworkOverview, OwaspTop10Entry } from '../types';
 
 const OFFICIAL_ASI_PAGE = 'https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/';
 const INCIDENT_TRACKER = 'https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/blob/main/initiatives/agent_security_initiative/ASI%20Agentic%20Exploits%20%26%20Incidents/ASI_Agentic_Exploits_Incidents.md';

@@ -34,12 +34,23 @@ export class ErrorBoundary extends Component<Props, State> {
           <pre className="bg-slate-900 p-4 rounded border border-red-500/20 text-red-400 text-xs font-mono max-w-2xl overflow-auto w-full">
             {this.state.error?.message}
           </pre>
-          <button 
-            onClick={() => window.location.reload()}
-            className="mt-6 px-6 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg font-medium transition-colors border border-slate-700"
-          >
-            Reload Application
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+            <button 
+              onClick={() => {
+                window.location.hash = '#/dashboard';
+                window.location.reload();
+              }}
+              className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl font-bold text-sm transition-all shadow-lg shadow-cyan-500/20"
+            >
+              Return to Dashboard
+            </button>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-medium text-sm transition-colors border border-slate-700"
+            >
+              Reload Page
+            </button>
+          </div>
         </div>
       );
     }

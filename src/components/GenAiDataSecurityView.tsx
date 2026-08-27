@@ -23,7 +23,7 @@ import {
   GENAI_DSPM_CAPABILITIES,
   GenAiDataSecurityRisk,
   GenAiDataSecurityTier,
-} from '../data_genai_data_security';
+} from '../data/data_genai_data_security';
 
 type ThemeFilter = GenAiDataSecurityRisk['theme'] | 'All';
 

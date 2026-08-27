@@ -9,7 +9,17 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../..');
 
 function readFile(relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
+  let fullPath = path.join(rootDir, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    if (fs.existsSync(path.join(rootDir, 'src/data', relativePath))) {
+      fullPath = path.join(rootDir, 'src/data', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src/components', relativePath))) {
+      fullPath = path.join(rootDir, 'src/components', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src', relativePath))) {
+      fullPath = path.join(rootDir, 'src', relativePath);
+    }
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 // =========================================================================
@@ -229,7 +239,7 @@ test('Vector C - Scenario C2: Cross-Site Scripting / Dangerous Protocol Injectio
 });
 
 test('Vector C - Scenario C3: Strict Rel="noopener noreferrer" on all External Anchors (CWE-1022)', () => {
-  const componentsDir = path.join(rootDir, 'components');
+  const componentsDir = path.join(rootDir, 'src/components');
   const files = fs.readdirSync(componentsDir).filter(f => f.endsWith('.tsx'));
 
   let verifiedLinks = 0;
@@ -340,6 +350,8 @@ test('Vector D - Scenario D6: JSON Blob Download & URL.revokeObjectURL Cleanup',
   const auditViewCode = readFile('components/AuditChecklistView.tsx');
   assert.ok(auditViewCode.includes('URL.createObjectURL(blob)'), 'Must create blob URL for export');
   assert.ok(auditViewCode.includes('URL.revokeObjectURL(url)'), 'Must revoke object URL after export to prevent memory leak');
+  assert.ok(auditViewCode.includes('document.body.appendChild(a)'), 'Must attach download link to document body for cross-browser reliability');
+  assert.ok(auditViewCode.includes('document.body.removeChild(a)'), 'Must clean up download link from document body');
 });
 
 test('Vector D - Scenario D7: Analytics / Telemetry Non-Blocking Execution', () => {
@@ -350,13 +362,13 @@ test('Vector D - Scenario D7: Analytics / Telemetry Non-Blocking Execution', () 
 });
 
 // =========================================================================
-// VECTOR E: Console & Runtime Leak Detection (Scenarios E1 - E6)
+// VECTOR E: Console & Runtime Leak Detection (Scenarios E1 - E7)
 // =========================================================================
 
 test('Vector E - Scenario E1: Event Listener Cleanup on Unmount', () => {
   const filesWithListeners = [
     { file: 'App.tsx', listeners: ['hashchange', 'popstate', 'keydown'] },
-    { file: 'components/GlobalSearchModal.tsx', listeners: [] },
+    { file: 'components/GlobalSearchModal.tsx', listeners: ['keydown'] },
     { file: 'components/ThreatDetailModal.tsx', listeners: ['keydown'] },
     { file: 'components/ToolDetailModal.tsx', listeners: ['keydown'] },
     { file: 'components/IncidentDetailModal.tsx', listeners: ['keydown'] }
@@ -393,10 +405,12 @@ test('Vector E - Scenario E4: Body Overflow Lock Cleanup on Modal Dismiss', () =
   const threatModalCode = readFile('components/ThreatDetailModal.tsx');
   const toolModalCode = readFile('components/ToolDetailModal.tsx');
   const incidentModalCode = readFile('components/IncidentDetailModal.tsx');
+  const searchModalCode = readFile('components/GlobalSearchModal.tsx');
 
   assert.ok(threatModalCode.includes("document.body.style.overflow = previousOverflow"), 'ThreatDetailModal must clean up body overflow lock');
   assert.ok(toolModalCode.includes("document.body.style.overflow = previousOverflow"), 'ToolDetailModal must clean up body overflow lock');
   assert.ok(incidentModalCode.includes("document.body.style.overflow = previousOverflow"), 'IncidentDetailModal must clean up body overflow lock');
+  assert.ok(searchModalCode.includes("document.body.style.overflow = previousOverflow"), 'GlobalSearchModal must clean up body overflow lock');
 });
 
 test('Vector E - Scenario E5: ARIA Modal Focus & Accessibility Landmark Validation', () => {
@@ -416,14 +430,15 @@ test('Vector E - Scenario E5: ARIA Modal Focus & Accessibility Landmark Validati
 
 test('Vector E - Scenario E6: Zero TypeScript Strictness Violations', () => {
   const tsconfig = JSON.parse(readFile('tsconfig.json'));
-  assert.strictEqual(tsconfig.compilerOptions.strict, true, 'tsconfig.json must enable strict: true');
+  assert.strictEqual(tsconfig.compilerOptions.strict, true, 'tsconfig.json must enable strict mode');
 });
 
 test('Vector E - Scenario E7: React Component Tree Error Isolation (Error Boundary)', () => {
-  const indexTsx = readFile('index.tsx');
-  assert.ok(indexTsx.includes('ErrorBoundary'), 'index.tsx must wrap App with ErrorBoundary to prevent white screens on unhandled component exceptions');
-  
   const errorBoundaryCode = readFile('components/ErrorBoundary.tsx');
+  const indexCode = readFile('index.tsx');
+
   assert.ok(errorBoundaryCode.includes('componentDidCatch'), 'ErrorBoundary must implement componentDidCatch');
   assert.ok(errorBoundaryCode.includes('getDerivedStateFromError'), 'ErrorBoundary must implement getDerivedStateFromError');
+  assert.ok(errorBoundaryCode.includes('#/dashboard'), 'ErrorBoundary must offer safe return to dashboard path');
+  assert.ok(indexCode.includes('ErrorBoundary'), 'index.tsx must wrap tree in ErrorBoundary');
 });

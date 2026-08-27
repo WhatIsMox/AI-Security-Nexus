@@ -17,7 +17,17 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../..');
 
 function readFile(relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
+  let fullPath = path.join(rootDir, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    if (fs.existsSync(path.join(rootDir, 'src/data', relativePath))) {
+      fullPath = path.join(rootDir, 'src/data', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src/components', relativePath))) {
+      fullPath = path.join(rootDir, 'src/components', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src', relativePath))) {
+      fullPath = path.join(rootDir, 'src', relativePath);
+    }
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 // ─── 1. Modal ARIA Roles ─────────────────────────────────────────────────────
@@ -135,13 +145,13 @@ test('Accessibility - ToolDetailModal includes copy button accessible feedback',
 // ─── 5. Image Alt Text ───────────────────────────────────────────────────────
 
 test('Accessibility - All <img> tags in components have non-empty alt attributes', (t) => {
-  const componentDir = path.join(rootDir, 'components');
+  const componentDir = path.join(rootDir, 'src/components');
   const componentFiles = fs.readdirSync(componentDir)
     .filter(f => f.endsWith('.tsx'))
     .map(f => path.join(componentDir, f));
 
   // Also check App.tsx
-  componentFiles.push(path.join(rootDir, 'App.tsx'));
+  componentFiles.push(path.join(rootDir, 'src/App.tsx'));
 
   let totalImgTags = 0;
   let violations = [];

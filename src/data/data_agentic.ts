@@ -1,4 +1,4 @@
-import { FrameworkOverview, OwaspTop10Entry, Pillar, TestItem } from './types';
+import { FrameworkOverview, OwaspTop10Entry, Pillar, TestItem } from '../types';
 
 const PROJECT_ROOT = 'https://github.com/OWASP/www-project-agentic-skills-top-10';
 const OFFICIAL_PROJECT_PAGE = 'https://owasp.org/www-project-agentic-skills-top-10/';

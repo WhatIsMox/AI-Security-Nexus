@@ -34,7 +34,7 @@ The **AI Security Nexus** is a state-of-the-art interactive graphical exploratio
 - **Hosting & Bundling**: GitHub Pages static bundle (`dist/`) via GitHub Actions
 
 ### Strict TypeScript Guidelines
-- **Zero `any` policy**: Every entity must adhere to interfaces in [`types.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/types.ts).
+- **Zero `any` policy**: Every entity must adhere to interfaces in [`types.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/types.ts).
 - **Pillar Enum**: Always use `Pillar.APP`, `Pillar.MODEL`, `Pillar.INFRA`, or `Pillar.DATA` from `types.ts`.
 - **Framework IDs**: Maintain standardized ID formats:
   - LLM: `LLM01:2026` ... `LLM10:2026`
@@ -63,7 +63,7 @@ The **AI Security Nexus** is a state-of-the-art interactive graphical exploratio
 3. **Responsive Grid & Mobile Compatibility**:
    - Use Tailwind responsive prefixes (`hidden md:flex`, `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3`).
    - Use `bootstrap-grid.scss` classes (`container-fluid`, `row`, `col-*`) where applicable for fluid layouts.
-   - Support mobile header drawer toggling via `isSidebarOpen` state in [`App.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/App.tsx).
+   - Support mobile header drawer toggling via `isSidebarOpen` state in [`App.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/App.tsx).
 
 ---
 
@@ -146,7 +146,7 @@ npm run dev
 > 🧪 **MANDATORY TESTING DIRECTIVE**: Every new implementation, UI feature, framework addition, or security test case **MUST be accompanied by an automated test** in [`tests/`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/tests/) verifying that it functions as expected and preserves data integrity.
 
 ### Adding a Security Test
-1. Edit [`data_tests.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/data_tests.ts) (or [`data_agentic.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/data_agentic.ts) for agentic skill tests).
+1. Edit [`data_tests.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/data_tests.ts) (or [`data_agentic.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/data_agentic.ts) for agentic skill tests).
 2. Ensure the test object provides:
    - `id`: unique ID matching pattern `AITG-[APP|MOD|INF|DAT|INFRA|DATA]-NN` or `AGT-NN`.
    - `pillar`: correct `Pillar` enum.
@@ -165,9 +165,9 @@ npm run dev
 4. Run `npm test` and `npm run docs:sync`.
 
 ### Adding or Modifying Security Tools & Metadata (MANDATORY DIRECTIVE)
-1. Whenever adding or referencing a security tool in [`tools_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/tools_catalog.ts):
+1. Whenever adding or referencing a security tool in [`tools_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/tools_catalog.ts):
    - You MUST define the base tool with `name`, `description`, `url`, `cost` (`'Free' | 'Free+Paid' | 'Paid'`), `type` (`'Local' | 'Third-party'`), and `category` (`'Offensive' | 'Defensive' | 'Both'`).
-   - You **MUST ALWAYS** add a corresponding verified metadata entry in [`tool_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/tool_details_catalog.ts) (`TOOL_DATABASE`) supplying ALL mandatory fields:
+   - You **MUST ALWAYS** add a corresponding verified metadata entry in [`tool_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/tool_details_catalog.ts) (`TOOL_DATABASE`) supplying ALL mandatory fields:
      - `authorOrMaintainer`: Engineering team, foundation, or company (e.g. `NVIDIA / Leon Derczynski`, `Microsoft AI Red Team`, `CNCF`, `Aqua Security`).
      - `license`: Verified software license (e.g. `Apache-2.0`, `MIT`, `Commercial / SaaS API`).
      - `longDescription`: Detailed technical architecture and inner mechanics (minimum 30 characters).
@@ -182,9 +182,9 @@ npm run dev
    *(The CI data integrity validator `validate-data-integrity.mjs` will strictly fail if any tool lacks verified metadata!)*
 
 ### Adding or Modifying Real-World Incidents & Case Studies (MANDATORY DIRECTIVE)
-1. Whenever adding or referencing a real-world incident, CVE, or academic case study in [`incidents_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/incidents_catalog.ts):
+1. Whenever adding or referencing a real-world incident, CVE, or academic case study in [`incidents_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/incidents_catalog.ts):
    - You MUST define the base incident citation with `title` and active `url` (resolving `HTTP 200 OK`).
-   - You **MUST ALWAYS** add a corresponding verified intelligence entry in [`incident_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/incident_details_catalog.ts) (`INCIDENT_DATABASE`) supplying ALL mandatory fields:
+   - You **MUST ALWAYS** add a corresponding verified intelligence entry in [`incident_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/incident_details_catalog.ts) (`INCIDENT_DATABASE`) supplying ALL mandatory fields:
      - `year`: Event or publication year (e.g. `'2024'`, `'2023'`).
      - `targetOrVictim`: Affected organization, model, company, or target system (e.g. `'Samsung Semiconductor'`, `'Air Canada'`, `'OpenAI ChatGPT'`).
      - `cveOrAdvisoryId`: Official CVE ID, advisory number, or arXiv code (e.g. `'CVE-2024-5184'`, `'arXiv:2302.12173'`).

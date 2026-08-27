@@ -1,5 +1,5 @@
 
-import { OwaspTop10Entry } from './types';
+import { OwaspTop10Entry } from '../types';
 
 export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
   {

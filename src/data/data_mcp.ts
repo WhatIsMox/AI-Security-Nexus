@@ -1,5 +1,5 @@
 
-import { OwaspTop10Entry } from './types';
+import { OwaspTop10Entry } from '../types';
 
 export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
   {

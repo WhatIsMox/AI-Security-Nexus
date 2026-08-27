@@ -21,9 +21,9 @@ import {
   GENAI_DATA_SECURITY_META,
   GENAI_DATA_SECURITY_RISKS,
 } from '../data';
-import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
-import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
-import { getEnrichedIncident } from '../incident_details_catalog';
+import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
+import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
+import { getEnrichedIncident } from '../data/incident_details_catalog';
 
 type PillarKey = Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
 
@@ -485,7 +485,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     return refs;
   }, []);
 
-  const incident = stats.incidents[incidentIndex % stats.incidents.length];
+  const incident = stats.incidents.length > 0 ? stats.incidents[incidentIndex % stats.incidents.length] : undefined;
 
   return (
     <div className="container-fluid mx-auto max-w-7xl px-3 sm:px-4 md:px-8 pb-8">

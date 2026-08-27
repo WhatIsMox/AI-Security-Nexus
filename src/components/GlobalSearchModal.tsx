@@ -15,10 +15,10 @@ import {
   GENAI_DATA_SECURITY_RISKS,
   GENAI_DSPM_CAPABILITIES
 } from '../data';
-import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
-import { getEnrichedTool } from '../tool_details_catalog';
-import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
-import { getEnrichedIncident } from '../incident_details_catalog';
+import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
+import { getEnrichedTool } from '../data/tool_details_catalog';
+import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
+import { getEnrichedIncident } from '../data/incident_details_catalog';
 import { TestItem, SecurityTool, RealWorldIncident } from '../types';
 
 export interface SearchResultItem {

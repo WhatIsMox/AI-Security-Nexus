@@ -17,7 +17,17 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../..');
 
 function readFile(relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
+  let fullPath = path.join(rootDir, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    if (fs.existsSync(path.join(rootDir, 'src/data', relativePath))) {
+      fullPath = path.join(rootDir, 'src/data', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src/components', relativePath))) {
+      fullPath = path.join(rootDir, 'src/components', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src', relativePath))) {
+      fullPath = path.join(rootDir, 'src', relativePath);
+    }
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 // ─── 1. AppView Type Completeness ────────────────────────────────────────────
@@ -236,3 +246,50 @@ test('Dashboard - Hero metric stat cards are interactive buttons redirecting to 
     assert.ok(dashboardContent.includes(`label: '${label}'`), `Dashboard must include stat card with label '${label}'`);
   }
 });
+
+// ─── 9. Menu Icons Color Styling ─────────────────────────────────────────────
+
+test('Sidebar - All navigation menu icons have explicit color classes applied', (t) => {
+  const sidebarContent = readFile('components/Sidebar.tsx');
+
+  // 1. Overview & Dashboard, Threat Modelling, Audit Checklist
+  assert.ok(
+    sidebarContent.includes('<BookOpen className="w-4 h-4 shrink-0 text-cyan-400" />'),
+    'Overview & Dashboard icon must have color class (text-cyan-400)'
+  );
+  assert.ok(
+    sidebarContent.includes('<Shield className="w-4 h-4 shrink-0 text-indigo-400" />'),
+    'Threat Modelling icon must have color class (text-indigo-400)'
+  );
+  assert.ok(
+    sidebarContent.includes('<CheckCircle2 className="w-4 h-4 shrink-0 text-cyan-400" />'),
+    'Audit Checklist icon must preserve color class (text-cyan-400)'
+  );
+
+  // 2. Frameworks & Top 10s (must preserve existing colors)
+  assert.ok(sidebarContent.includes('<Brain className="w-4 h-4 shrink-0 text-pink-400" />'), 'LLM Top 10 icon must preserve text-pink-400');
+  assert.ok(sidebarContent.includes('<Cpu className="w-4 h-4 shrink-0 text-emerald-400" />'), 'ML Top 10 icon must preserve text-emerald-400');
+  assert.ok(sidebarContent.includes('<Bot className="w-4 h-4 shrink-0 text-orange-400" />'), 'Agentic Top 10 icon must preserve text-orange-400');
+  assert.ok(sidebarContent.includes('<Network className="w-4 h-4 shrink-0 text-cyan-400" />'), 'MCP Top 10 icon must preserve text-cyan-400');
+  assert.ok(sidebarContent.includes('<Database className="w-4 h-4 shrink-0 text-emerald-400" />'), 'GenAI Data Security icon must preserve text-emerald-400');
+  assert.ok(sidebarContent.includes('<FileText className="w-4 h-4 shrink-0 text-cyan-300" />'), 'Secure MCP Guide icon must preserve text-cyan-300');
+  assert.ok(sidebarContent.includes('<Gavel className="w-4 h-4 shrink-0 text-blue-400" />'), 'SAIF Risk Flow icon must preserve text-blue-400');
+
+  // 3. Testing Pillars
+  assert.ok(sidebarContent.includes('<BookOpen className="w-4 h-4 shrink-0 text-cyan-400" />'), 'All Tests icon must preserve text-cyan-400');
+  assert.ok(sidebarContent.includes('color: "text-blue-400"'), 'Application Testing pillar must have text-blue-400');
+  assert.ok(sidebarContent.includes('color: "text-purple-400"'), 'Model Testing pillar must have text-purple-400');
+  assert.ok(sidebarContent.includes('color: "text-amber-400"'), 'Infrastructure Testing pillar must have text-amber-400');
+  assert.ok(sidebarContent.includes('color: "text-emerald-400"'), 'Data Testing pillar must have text-emerald-400');
+  assert.ok(sidebarContent.includes('<item.icon className={`w-4 h-4 shrink-0 ${item.color}`} />'), 'navItems must render icon with item.color');
+
+  // 4. Intelligence & Catalogs
+  assert.ok(sidebarContent.includes('<Terminal className="w-4 h-4 shrink-0 text-purple-400" />'), 'Security Tools Matrix icon must preserve text-purple-400');
+  assert.ok(sidebarContent.includes('<Flame className="w-4 h-4 shrink-0 text-amber-400" />'), 'Real-World Incidents icon must preserve text-amber-400');
+
+  // 5. Ensure no uncolored w-4 h-4 shrink-0 icons remain in Sidebar.tsx
+  assert.ok(!sidebarContent.includes('className="w-4 h-4 shrink-0"'), 'Sidebar must not contain any uncolored w-4 h-4 shrink-0 icons');
+
+  t.diagnostic('Verified all sidebar menu icons have explicit and preserved color classes');
+});
+

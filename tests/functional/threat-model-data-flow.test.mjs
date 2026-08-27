@@ -9,7 +9,17 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../..');
 
 function readFile(relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
+  let fullPath = path.join(rootDir, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    if (fs.existsSync(path.join(rootDir, 'src/data', relativePath))) {
+      fullPath = path.join(rootDir, 'src/data', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src/components', relativePath))) {
+      fullPath = path.join(rootDir, 'src/components', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src', relativePath))) {
+      fullPath = path.join(rootDir, 'src', relativePath);
+    }
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 test('Functional - Threat Model SAIF Risks Structure', (t) => {

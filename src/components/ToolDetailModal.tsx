@@ -4,7 +4,7 @@ import {
   Terminal, ExternalLink, Shield, Zap, CheckCircle2, Cpu, 
   X, Copy, Check, Info, Code2, ShieldAlert, ArrowRight
 } from 'lucide-react';
-import { getEnrichedTool } from '../tool_details_catalog';
+import { getEnrichedTool } from '../data/tool_details_catalog';
 import { SecurityTool } from '../types';
 
 export interface ToolDetailModalProps {

@@ -3,7 +3,7 @@
 // 100% verified intelligence across all real-world AI incidents & research citations
 // ============================================================================
 
-import { RealWorldIncident, ExternalResource } from './types';
+import { RealWorldIncident, ExternalResource } from '../types';
 
 export const INCIDENT_DATABASE: Record<string, RealWorldIncident> = {
   "Prompt Injection attacks against LLM-integrated applications (Perez & Ribeiro, arXiv:2306.05499)": {

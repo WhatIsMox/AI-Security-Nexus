@@ -1,4 +1,4 @@
-import { ExternalResource } from './types';
+import { ExternalResource } from '../types';
 
 // ============================================================================
 // AI Security Nexus - Verified Real-World Incidents & Empirical CVE Catalog

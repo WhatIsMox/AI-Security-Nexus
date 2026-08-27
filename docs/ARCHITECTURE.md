@@ -66,7 +66,7 @@ graph TD
 
 ## 2. Component Hierarchy & Navigation Routing
 
-The application avoids heavy URL-routing libraries in favor of high-speed deterministic state switching in [`App.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/App.tsx):
+The application avoids heavy URL-routing libraries in favor of high-speed deterministic state switching in [`App.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/App.tsx):
 
 - **State Model**:
   - `currentView`: `'dashboard' | 'tests' | 'detail' | 'threat-model' | 'owasp-top10' | 'owasp-ml-top10' | 'owasp-agent-top10' | 'owasp-saif-top10' | 'owasp-mcp-top10' | 'secure-mcp-guide' | 'genai-data-security'`
@@ -79,7 +79,7 @@ The application avoids heavy URL-routing libraries in favor of high-speed determ
 
 ## 3. Interactive Threat Modeling & SVG Visualization Engine
 
-In [`components/ThreatModelling.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/components/ThreatModelling.tsx):
+In [`components/ThreatModelling.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedThreatModelling.tsx):
 - **Visual AI Pipeline**: A graphical SVG representation of the 4 AI Architecture Layers:
   1. **Application Layer**: User interface, API gateways, agent planners, orchestrators.
   2. **Model Layer**: LLMs, fine-tuned weights, embeddings, inference pipelines.

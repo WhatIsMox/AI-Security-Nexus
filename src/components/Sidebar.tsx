@@ -68,10 +68,10 @@ const Sidebar: React.FC<SidebarProps> = ({
   const DomainIcon = currentDomainOption.icon;
 
   const navItems = [
-    { id: Pillar.APP, icon: LayoutGrid, label: "Application Testing" },
-    { id: Pillar.MODEL, icon: Box, label: "Model Testing" },
-    { id: Pillar.INFRA, icon: Server, label: "Infrastructure" },
-    { id: Pillar.DATA, icon: Database, label: "Data Testing" },
+    { id: Pillar.APP, icon: LayoutGrid, label: "Application Testing", color: "text-blue-400" },
+    { id: Pillar.MODEL, icon: Box, label: "Model Testing", color: "text-purple-400" },
+    { id: Pillar.INFRA, icon: Server, label: "Infrastructure", color: "text-amber-400" },
+    { id: Pillar.DATA, icon: Database, label: "Data Testing", color: "text-emerald-400" },
   ];
 
   return (
@@ -171,7 +171,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
             }`}
           >
-            <BookOpen className="w-4 h-4 shrink-0" />
+            <BookOpen className="w-4 h-4 shrink-0 text-cyan-400" />
             <span>Overview & Dashboard</span>
           </button>
 
@@ -183,7 +183,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
             }`}
           >
-            <Shield className="w-4 h-4 shrink-0" />
+            <Shield className="w-4 h-4 shrink-0 text-indigo-400" />
             <span>Threat Modelling</span>
           </button>
 
@@ -329,7 +329,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
               }`}
             >
-              <item.icon className={`w-4 h-4 shrink-0 ${(currentView === 'tests' || currentView === 'detail') && activePillar === item.id ? 'text-cyan-400' : ''}`} />
+              <item.icon className={`w-4 h-4 shrink-0 ${item.color}`} />
               <span>{item.label}</span>
             </button>
           ))}

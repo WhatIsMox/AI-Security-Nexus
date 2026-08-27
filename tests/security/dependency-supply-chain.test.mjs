@@ -17,7 +17,17 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../..');
 
 function readFile(relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
+  let fullPath = path.join(rootDir, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    if (fs.existsSync(path.join(rootDir, 'src/data', relativePath))) {
+      fullPath = path.join(rootDir, 'src/data', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src/components', relativePath))) {
+      fullPath = path.join(rootDir, 'src/components', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src', relativePath))) {
+      fullPath = path.join(rootDir, 'src', relativePath);
+    }
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 function readJson(relativePath) {
@@ -157,8 +167,8 @@ test('Supply Chain - GitHub Actions workflows use pinned action versions (not @l
 
 test('Supply Chain - no hardcoded secrets or API keys in source TypeScript files', (t) => {
   const sourceFiles = [
-    'App.tsx', 'index.tsx', 'data.ts', 'vite.config.ts',
-    'data_tests.ts', 'data_llm.ts', 'data_ml.ts'
+    'src/App.tsx', 'src/index.tsx', 'src/data/data.ts', 'vite.config.ts',
+    'src/data/data_tests.ts', 'src/data/data_llm.ts', 'src/data/data_ml.ts'
   ];
 
   // Common secret patterns

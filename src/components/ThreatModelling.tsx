@@ -1288,21 +1288,21 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ globalDomain, onNavig
                                     <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />
                                     <div>
                                         <div className="text-[10px] font-bold text-red-400 uppercase">Introduced At</div>
-                                        <div className="text-xs text-slate-300">{selectedThreat?.introducedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).join(', ')}</div>
+                                        <div className="text-xs text-slate-300">{selectedThreat?.introducedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).filter(Boolean).join(', ') || 'N/A'}</div>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <div className="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0" />
                                     <div>
                                         <div className="text-[10px] font-bold text-orange-400 uppercase">Exposed At</div>
-                                        <div className="text-xs text-slate-300">{selectedThreat?.exposedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).join(', ')}</div>
+                                        <div className="text-xs text-slate-300">{selectedThreat?.exposedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).filter(Boolean).join(', ') || 'N/A'}</div>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
                                     <div>
                                         <div className="text-[10px] font-bold text-emerald-400 uppercase">Mitigated At</div>
-                                        <div className="text-xs text-slate-300">{selectedThreat?.mitigatedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).join(', ')}</div>
+                                        <div className="text-xs text-slate-300">{selectedThreat?.mitigatedAt?.map(id => SAIF_COMPONENTS.find(c => c.id === id)?.name).filter(Boolean).join(', ') || 'N/A'}</div>
                                     </div>
                                 </div>
                             </div>

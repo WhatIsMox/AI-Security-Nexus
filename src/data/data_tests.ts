@@ -1,5 +1,5 @@
 
-import { TestItem, Pillar } from './types';
+import { TestItem, Pillar } from '../types';
 
 export const TEST_DATA: TestItem[] = [
   // ==========================================

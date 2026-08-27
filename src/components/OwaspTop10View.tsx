@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { FrameworkOverview, OwaspTop10Entry, SecurityTool, RealWorldIncident } from '../types';
 import { ChevronDown, Shield, AlertTriangle, ExternalLink, ShieldCheck, Target, Wrench, Globe, Lock, BookOpen, Layers3, GitBranch, Info, ListChecks, Flame, ArrowUpRight } from 'lucide-react';
-import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
-import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
-import { getEnrichedIncident } from '../incident_details_catalog';
+import { TOOLS_BY_THREAT_ID, mergeTools } from '../data/tools_catalog';
+import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
+import { getEnrichedIncident } from '../data/incident_details_catalog';
 import { ToolDetailModal } from './ToolDetailModal';
 import { IncidentDetailModal } from './IncidentDetailModal';
 import { ThreatDetailModal } from './ThreatDetailModal';

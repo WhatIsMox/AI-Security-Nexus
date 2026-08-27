@@ -12,8 +12,8 @@ Follow this exact procedure whenever adding or modifying an AI security incident
 ## 1. Step-by-Step Incident Authoring Workflow
 
 ### Step 1: Add Incident Citation in `incidents_catalog.ts`
-1. Locate or create the category array (e.g. `PROMPT_INJECTION_INCIDENTS`, `DATA_POISONING_INCIDENTS`, `SERVING_INFRASTRUCTURE_INCIDENTS`) in [`incidents_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/incidents_catalog.ts).
-2. Define the incident citation adhering to `ExternalResource` in [`types.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/types.ts):
+1. Locate or create the category array (e.g. `PROMPT_INJECTION_INCIDENTS`, `DATA_POISONING_INCIDENTS`, `SERVING_INFRASTRUCTURE_INCIDENTS`) in [`incidents_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/incidents_catalog.ts).
+2. Define the incident citation adhering to `ExternalResource` in [`types.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/types.ts):
    ```typescript
    {
      title: 'CVE-2024-XXXX: Concise descriptive summary of the exploit',
@@ -25,7 +25,7 @@ Follow this exact procedure whenever adding or modifying an AI security incident
 ---
 
 ### Step 2: Add Verified Intelligence in `incident_details_catalog.ts`
-Every incident in `incidents_catalog.ts` **MUST** have a corresponding entry in `INCIDENT_DATABASE` in [`incident_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/incident_details_catalog.ts):
+Every incident in `incidents_catalog.ts` **MUST** have a corresponding entry in `INCIDENT_DATABASE` in [`incident_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/incident_details_catalog.ts):
 
 ```typescript
   "CVE-2024-XXXX: Concise descriptive summary of the exploit": {

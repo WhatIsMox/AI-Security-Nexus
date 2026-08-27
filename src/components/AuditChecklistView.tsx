@@ -216,7 +216,9 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ globalDo
     const a = document.createElement('a');
     a.href = url;
     a.download = `ai-security-audit-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -248,7 +250,9 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ globalDo
     const a = document.createElement('a');
     a.href = url;
     a.download = `ai-security-assessment-${new Date().toISOString().slice(0, 10)}.md`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 

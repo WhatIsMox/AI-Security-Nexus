@@ -20,7 +20,7 @@ import {
   SECURE_MCP_MINIMUM_BAR,
   SecureMcpGuideSection,
   SecureMcpGuideSubsection,
-} from '../data_secure_mcp_guide';
+} from '../data/data_secure_mcp_guide';
 
 const CONTROL_FAMILIES = [
   {

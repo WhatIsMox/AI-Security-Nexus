@@ -12,8 +12,8 @@ Follow this exact procedure whenever adding or modifying a security tool in the 
 ## 1. Step-by-Step Tool Authoring Workflow
 
 ### Step 1: Add Tool Reference in `tools_catalog.ts`
-1. Locate or create the category array (e.g. `PROMPT_INJECTION_TOOLS`, `SUPPLY_CHAIN_TOOLS`, `AGENT_MONITORING_TOOLS`) in [`tools_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/tools_catalog.ts).
-2. Define the tool object adhering to `SecurityTool` in [`types.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/types.ts):
+1. Locate or create the category array (e.g. `PROMPT_INJECTION_TOOLS`, `SUPPLY_CHAIN_TOOLS`, `AGENT_MONITORING_TOOLS`) in [`tools_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/tools_catalog.ts).
+2. Define the tool object adhering to `SecurityTool` in [`types.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/types.ts):
    ```typescript
    {
      name: 'MyTool',
@@ -29,7 +29,7 @@ Follow this exact procedure whenever adding or modifying a security tool in the 
 ---
 
 ### Step 2: Add Complete Verified Metadata in `tool_details_catalog.ts`
-Every tool in `tools_catalog.ts` **MUST** have an entry in `TOOL_DATABASE` in [`tool_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/tool_details_catalog.ts):
+Every tool in `tools_catalog.ts` **MUST** have an entry in `TOOL_DATABASE` in [`tool_details_catalog.ts`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/data/tool_details_catalog.ts):
 
 ```typescript
   "MyTool": {

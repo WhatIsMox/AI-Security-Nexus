@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { TestItem, SecurityTool } from '../types';
-import { getEnrichedTool } from '../tool_details_catalog';
+import { getEnrichedTool } from '../data/tool_details_catalog';
 import ToolDetailModal from './ToolDetailModal';
 import { 
   ArrowLeft, Target, Code, ShieldCheck, ExternalLink, BookOpen, 

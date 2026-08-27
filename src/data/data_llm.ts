@@ -1,4 +1,4 @@
-import { OwaspTop10Entry } from './types';
+import { OwaspTop10Entry } from '../types';
 
 const OWASP_2026_REFERENCE = "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/";
 

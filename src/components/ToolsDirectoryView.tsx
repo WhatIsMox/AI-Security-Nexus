@@ -3,8 +3,8 @@ import {
   Terminal, Search, Filter, ExternalLink, Shield, Wrench, 
   Tag, Layers, ArrowRight, Zap, CheckCircle2, Lock, Cpu, Globe, Info
 } from 'lucide-react';
-import { TOOLS_BY_THREAT_ID } from '../tools_catalog';
-import { getEnrichedTool } from '../tool_details_catalog';
+import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
+import { getEnrichedTool } from '../data/tool_details_catalog';
 import { ToolDetailModal } from './ToolDetailModal';
 import { SecurityTool, GlobalDomain } from '../types';
 

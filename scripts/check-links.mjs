@@ -20,18 +20,18 @@ const rootDir = path.resolve(__dirname, '..');
 const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 const DATA_FILES = [
-  'data_tests.ts',
-  'data_agentic.ts',
-  'data_llm.ts',
-  'data_ml.ts',
-  'data_saif.ts',
-  'data_mcp.ts',
-  'data_secure_mcp_guide.ts',
-  'data_genai_data_security.ts',
-  'tools_catalog.ts',
-  'tool_details_catalog.ts',
-  'incidents_catalog.ts',
-  'incident_details_catalog.ts'
+  'src/data/data_tests.ts',
+  'src/data/data_agentic.ts',
+  'src/data/data_llm.ts',
+  'src/data/data_ml.ts',
+  'src/data/data_saif.ts',
+  'src/data/data_mcp.ts',
+  'src/data/data_secure_mcp_guide.ts',
+  'src/data/data_genai_data_security.ts',
+  'src/data/tools_catalog.ts',
+  'src/data/tool_details_catalog.ts',
+  'src/data/incidents_catalog.ts',
+  'src/data/incident_details_catalog.ts'
 ];
 
 async function testUrl(url) {

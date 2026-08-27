@@ -1,4 +1,4 @@
-import { SecurityTool } from './types';
+import { SecurityTool } from '../types';
 
 /**
  * AI Security Nexus - Master Enriched Tool Database

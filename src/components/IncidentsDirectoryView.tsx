@@ -3,8 +3,8 @@ import {
   Flame, Search, Filter, ExternalLink, Shield, AlertTriangle, 
   BookOpen, Layers, ArrowRight, Globe, Building2, Calendar, Tag, Info
 } from 'lucide-react';
-import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
-import { getEnrichedIncident } from '../incident_details_catalog';
+import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
+import { getEnrichedIncident } from '../data/incident_details_catalog';
 import { IncidentDetailModal } from './IncidentDetailModal';
 import { ExternalResource, RealWorldIncident, GlobalDomain } from '../types';
 

@@ -21,7 +21,17 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../..');
 
 function readFile(relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
+  let fullPath = path.join(rootDir, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    if (fs.existsSync(path.join(rootDir, 'src/data', relativePath))) {
+      fullPath = path.join(rootDir, 'src/data', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src/components', relativePath))) {
+      fullPath = path.join(rootDir, 'src/components', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src', relativePath))) {
+      fullPath = path.join(rootDir, 'src', relativePath);
+    }
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 function readJson(relativePath) {
@@ -91,12 +101,12 @@ test('TypeScript - tsconfig.json includes DOM lib for browser APIs', () => {
 
 test('TypeScript Strictness - no @ts-ignore directives in source files', (t) => {
   const sourceFiles = [
-    'App.tsx', 'index.tsx', 'data.ts', 'types.ts',
-    'data_tests.ts', 'data_llm.ts', 'data_ml.ts', 'data_agentic.ts',
-    'data_agentic_applications.ts', 'data_mcp.ts', 'data_saif.ts',
-    'data_genai_data_security.ts', 'data_secure_mcp_guide.ts',
-    'tools_catalog.ts', 'incidents_catalog.ts',
-    'tool_details_catalog.ts', 'incident_details_catalog.ts',
+    'src/App.tsx', 'src/index.tsx', 'src/data/data.ts', 'src/types.ts',
+    'src/data/data_tests.ts', 'src/data/data_llm.ts', 'src/data/data_ml.ts', 'src/data/data_agentic.ts',
+    'src/data/data_agentic_applications.ts', 'src/data/data_mcp.ts', 'src/data/data_saif.ts',
+    'src/data/data_genai_data_security.ts', 'src/data/data_secure_mcp_guide.ts',
+    'src/data/tools_catalog.ts', 'src/data/incidents_catalog.ts',
+    'src/data/tool_details_catalog.ts', 'src/data/incident_details_catalog.ts',
   ];
 
   const violations = [];
@@ -126,12 +136,12 @@ test('TypeScript Strictness - no @ts-ignore directives in source files', (t) => 
 
 test('TypeScript Strictness - no @ts-nocheck directives in source files', (t) => {
   const sourceFiles = [
-    'App.tsx', 'index.tsx', 'data.ts', 'types.ts',
+    'src/App.tsx', 'src/index.tsx', 'src/data/data.ts', 'src/types.ts',
   ];
 
-  const componentFiles = fs.readdirSync(path.join(rootDir, 'components'))
+  const componentFiles = fs.readdirSync(path.join(rootDir, 'src/components'))
     .filter(f => f.endsWith('.tsx') || f.endsWith('.ts'))
-    .map(f => `components/${f}`);
+    .map(f => `src/components/${f}`);
 
   const allFiles = [...sourceFiles, ...componentFiles];
   const violations = [];
@@ -248,7 +258,7 @@ test('TypeScript - types.ts does not use "any" type except in legacy Stat.icon',
 // ─── 5. Component TypeScript Props ───────────────────────────────────────────
 
 test('TypeScript - All component files use typed props interfaces (not untyped objects)', (t) => {
-  const componentFiles = fs.readdirSync(path.join(rootDir, 'components'))
+  const componentFiles = fs.readdirSync(path.join(rootDir, 'src/components'))
     .filter(f => f.endsWith('.tsx'));
 
   let typedComponents = 0;

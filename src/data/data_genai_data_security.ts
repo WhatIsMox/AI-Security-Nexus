@@ -1,4 +1,4 @@
-import { ExternalResource } from './types';
+import { ExternalResource } from '../types';
 
 export type GenAiDataSecurityTier = 1 | 2 | 3;
 export type GenAiDataSecurityScope = 'Buy' | 'Build' | 'Buy and Build';

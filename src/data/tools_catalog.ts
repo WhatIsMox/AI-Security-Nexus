@@ -1,4 +1,4 @@
-import { SecurityTool } from './types';
+import { SecurityTool } from '../types';
 
 const PROMPT_INJECTION_TOOLS: SecurityTool[] = [
   { name: "garak", description: "LLM vulnerability scanner with prompt-injection probes.", url: "https://github.com/NVIDIA/garak", cost: "~$30k - $75k/yr (Enterprise)", type: "Local", category: "Offensive" },

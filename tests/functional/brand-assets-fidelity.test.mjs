@@ -50,9 +50,9 @@ test('Brand Assets - HTML & React Component Integrations', () => {
   assert.ok(indexHtml.includes('rel="alternate icon" type="image/png" href="./icon.png"'), 'index.html must reference icon.png');
   assert.ok(indexHtml.includes('rel="apple-touch-icon" href="./icon.png"'), 'index.html must reference apple-touch-icon');
 
-  const sidebarContent = fs.readFileSync(path.join(ROOT_DIR, 'components', 'Sidebar.tsx'), 'utf8');
+  const sidebarContent = fs.readFileSync(path.join(ROOT_DIR, 'src', 'components', 'Sidebar.tsx'), 'utf8');
   assert.ok(sidebarContent.includes('favicon.svg'), 'Sidebar.tsx must render the official brand emblem');
 
-  const appContent = fs.readFileSync(path.join(ROOT_DIR, 'App.tsx'), 'utf8');
+  const appContent = fs.readFileSync(path.join(ROOT_DIR, 'src', 'App.tsx'), 'utf8');
   assert.ok(appContent.includes('favicon.svg'), 'App.tsx mobile header must render the official brand emblem');
 });

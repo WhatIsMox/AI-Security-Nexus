@@ -42,10 +42,16 @@ function logFail(msg) {
 }
 
 function readFileContent(relativePath) {
-  const fullPath = path.join(rootDir, relativePath);
+  let fullPath = path.join(rootDir, relativePath);
   if (!fs.existsSync(fullPath)) {
-    logFail(`Required file missing: ${relativePath}`);
-    return '';
+    if (fs.existsSync(path.join(rootDir, 'src/data', relativePath))) {
+      fullPath = path.join(rootDir, 'src/data', relativePath);
+    } else if (fs.existsSync(path.join(rootDir, 'src', relativePath))) {
+      fullPath = path.join(rootDir, 'src', relativePath);
+    } else {
+      logFail(`Required file missing: ${relativePath}`);
+      return '';
+    }
   }
   return fs.readFileSync(fullPath, 'utf8');
 }

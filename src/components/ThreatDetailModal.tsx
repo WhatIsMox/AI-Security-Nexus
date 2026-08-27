@@ -6,16 +6,16 @@ import {
   Wrench, Sparkles, Layers, ArrowRight, Lock, Globe
 } from 'lucide-react';
 import { OwaspTop10Entry, SecurityTool, RealWorldIncident } from '../types';
-import { OWASP_TOP_10_DATA } from '../data_llm';
-import { OWASP_ML_TOP_10_DATA } from '../data_ml';
-import { OWASP_AGENTIC_APPLICATIONS_DATA } from '../data_agentic_applications';
-import { OWASP_AGENTIC_THREATS_DATA } from '../data_agentic';
-import { OWASP_SAIF_THREATS_DATA } from '../data_saif';
-import { OWASP_MCP_TOP_10_DATA } from '../data_mcp';
-import { GENAI_DATA_SECURITY_RISKS, GENAI_DSPM_CAPABILITIES } from '../data_genai_data_security';
-import { TOOLS_BY_THREAT_ID, mergeTools } from '../tools_catalog';
-import { INCIDENTS_BY_THREAT_ID } from '../incidents_catalog';
-import { getEnrichedIncident } from '../incident_details_catalog';
+import { OWASP_TOP_10_DATA } from '../data/data_llm';
+import { OWASP_ML_TOP_10_DATA } from '../data/data_ml';
+import { OWASP_AGENTIC_APPLICATIONS_DATA } from '../data/data_agentic_applications';
+import { OWASP_AGENTIC_THREATS_DATA } from '../data/data_agentic';
+import { OWASP_SAIF_THREATS_DATA } from '../data/data_saif';
+import { OWASP_MCP_TOP_10_DATA } from '../data/data_mcp';
+import { GENAI_DATA_SECURITY_RISKS, GENAI_DSPM_CAPABILITIES } from '../data/data_genai_data_security';
+import { TOOLS_BY_THREAT_ID, mergeTools } from '../data/tools_catalog';
+import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
+import { getEnrichedIncident } from '../data/incident_details_catalog';
 
 export interface ThreatDetailModalProps {
   threatId: string | null;
