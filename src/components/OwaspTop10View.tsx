@@ -632,6 +632,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                         <div className="flex flex-wrap items-center gap-2">
                           <div className="inline-flex rounded-lg border border-slate-800 bg-slate-950 p-0.5 text-[10px] font-bold uppercase tracking-wider">
                             <button
+                              type="button"
                               onClick={() => setToolFilter(entry.id, { category: 'all' })}
                               className={`px-2.5 py-1 rounded-md transition-colors ${
                                 filter.category === 'all'
@@ -642,6 +643,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                               All ({mergedTools.length})
                             </button>
                             <button
+                              type="button"
                               onClick={() => setToolFilter(entry.id, { category: 'defensive' })}
                               className={`px-2.5 py-1 rounded-md transition-colors ${
                                 filter.category === 'defensive'
@@ -652,6 +654,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                               Defensive
                             </button>
                             <button
+                              type="button"
                               onClick={() => setToolFilter(entry.id, { category: 'offensive' })}
                               className={`px-2.5 py-1 rounded-md transition-colors ${
                                 filter.category === 'offensive'
@@ -665,6 +668,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
                           <div className="inline-flex rounded-lg border border-slate-800 bg-slate-950 p-0.5 text-[10px] font-bold uppercase tracking-wider">
                             <button
+                              type="button"
                               onClick={() => setToolFilter(entry.id, { pricing: 'all' })}
                               className={`px-2.5 py-1 rounded-md transition-colors ${
                                 filter.pricing === 'all'
@@ -675,6 +679,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                               All Pricing
                             </button>
                             <button
+                              type="button"
                               onClick={() => setToolFilter(entry.id, { pricing: 'free' })}
                               className={`px-2.5 py-1 rounded-md transition-colors ${
                                 filter.pricing === 'free'
@@ -685,6 +690,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                               Free ({freeCount})
                             </button>
                             <button
+                              type="button"
                               onClick={() => setToolFilter(entry.id, { pricing: 'paid' })}
                               className={`px-2.5 py-1 rounded-md transition-colors ${
                                 filter.pricing === 'paid'

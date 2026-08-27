@@ -61,6 +61,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
   return (
     <div className="container-fluid p-3 sm:p-5 md:p-8 max-w-5xl mx-auto animate-in slide-in-from-right-4 duration-300">
       <button 
+        type="button"
         onClick={onBack}
         className="flex items-center text-sm text-slate-400 hover:text-cyan-400 mb-6 transition-colors"
       >

@@ -61,7 +61,9 @@ test('GenAiDataSecurityView - supports initialExpandedId prop and auto-scrolls',
   );
   assert.ok(
     content.includes('scrollToSection(initialExpandedId)') ||
-    content.includes('scrollToRisk(initialExpandedId)'),
+    content.includes('scrollToRisk(initialExpandedId)') ||
+    content.includes('scrollToSection(norm)') ||
+    content.includes('scrollToSection(norm || initialExpandedId)'),
     'GenAiDataSecurityView must scroll to initialExpandedId when mounted'
   );
 });

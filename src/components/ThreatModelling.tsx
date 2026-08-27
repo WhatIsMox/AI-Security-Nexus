@@ -1158,6 +1158,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ globalDomain, onNavig
                 </div>
                 {selectedThreatId && (
                     <button 
+                      type="button"
                       onClick={() => setSelectedThreatId(null)}
                       className="bg-slate-900/90 text-white px-3 py-1.5 rounded-lg border border-slate-700 text-xs hover:bg-slate-800 transition-colors"
                     >
@@ -1552,6 +1553,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ globalDomain, onNavig
                     <div className="p-5 border-b border-slate-800/50 bg-slate-900/30">
                       <div className="flex justify-between items-start mb-3">
                          <button 
+                            type="button"
                             onClick={() => onNavigateToOwasp(threat.id)}
                             className={`flex items-center gap-1.5 font-mono text-xs px-2.5 py-1 rounded-md border transition-transform hover:scale-105 ${theme.bg} ${theme.text} ${theme.border}`}
                           >
@@ -1577,6 +1579,7 @@ const ThreatModelling: React.FC<ThreatModellingProps> = ({ globalDomain, onNavig
                              {threat.relatedTestIds.map(testId => (
                                 <button 
                                     key={testId}
+                                    type="button"
                                     onClick={() => onNavigateToTest(testId)}
                                     className="px-2 py-1 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 text-[10px] font-mono rounded border border-slate-800 transition-all"
                                 >

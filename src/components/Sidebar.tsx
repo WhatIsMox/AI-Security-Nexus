@@ -117,6 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* Global Search Quick Button */}
         <div className="p-3 border-b border-slate-800/80">
           <button
+            type="button"
             onClick={() => { onOpenSearch(); onClose(); }}
             className="w-full flex items-center justify-between px-3 py-2 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 rounded-xl text-xs text-slate-400 hover:text-slate-200 transition-all group shadow-sm"
           >
@@ -169,6 +170,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800">
           {/* Main Navigation */}
           <button
+            type="button"
             onClick={() => { onSelectDashboard(); onClose(); }}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-sm ${
               currentView === 'dashboard'
@@ -181,6 +183,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={() => { onSelectThreatModel(); onClose(); }}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-sm ${
               currentView === 'threat-model'
@@ -193,6 +196,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={() => { onSelectAuditChecklist(); onClose(); }}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-sm ${
               currentView === 'audit-checklist'
@@ -213,6 +217,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {(globalDomain === 'ALL' || globalDomain === 'LLM') && (
             <button
+              type="button"
               onClick={() => { onSelectPillar('TOP10'); onClose(); }}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
                 currentView === 'owasp-top10' || (currentView === 'tests' && activePillar === 'TOP10')
@@ -227,6 +232,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {(globalDomain === 'ALL' || globalDomain === 'ML') && (
             <button
+              type="button"
               onClick={() => { onSelectPillar('MLTOP10'); onClose(); }}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
                 currentView === 'owasp-ml-top10' || (currentView === 'tests' && activePillar === 'MLTOP10')
@@ -241,6 +247,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {(globalDomain === 'ALL' || globalDomain === 'AGENT') && (
             <button
+              type="button"
               onClick={() => { onSelectPillar('AGENTTOP10'); onClose(); }}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
                 currentView === 'owasp-agent-top10' || (currentView === 'tests' && activePillar === 'AGENTTOP10')
@@ -255,6 +262,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {(globalDomain === 'ALL' || globalDomain === 'MCP') && (
             <button
+              type="button"
               onClick={() => { onSelectPillar('MCPTOP10'); onClose(); }}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
                 currentView === 'owasp-mcp-top10' || (currentView === 'tests' && activePillar === 'MCPTOP10')
@@ -268,6 +276,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           <button
+            type="button"
             onClick={() => { onSelectPillar('GENAIDATASECURITY'); onClose(); }}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
               currentView === 'genai-data-security' || (currentView === 'tests' && activePillar === 'GENAIDATASECURITY')
@@ -281,6 +290,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {(globalDomain === 'ALL' || globalDomain === 'MCP') && (
             <button
+              type="button"
               onClick={() => { onSelectPillar('SECUREMCPGUIDE'); onClose(); }}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
                 currentView === 'secure-mcp-guide' || (currentView === 'tests' && activePillar === 'SECUREMCPGUIDE')
@@ -294,6 +304,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           <button
+            type="button"
             onClick={() => { onSelectPillar('SAIFTOP10'); onClose(); }}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
               currentView === 'owasp-saif-top10' || (currentView === 'tests' && activePillar === 'SAIFTOP10')
@@ -313,6 +324,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <button
+            type="button"
             onClick={() => { onSelectPillar('ALL'); onClose(); }}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
               (currentView === 'tests' || currentView === 'detail') && activePillar === 'ALL'
@@ -327,6 +339,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {navItems.map((item) => (
             <button
               key={item.id}
+              type="button"
               onClick={() => { onSelectPillar(item.id); onClose(); }}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
                 (currentView === 'tests' || currentView === 'detail') && activePillar === item.id
@@ -347,6 +360,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <button
+            type="button"
             onClick={() => { onSelectTools(); onClose(); }}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
               currentView === 'tools'
@@ -359,6 +373,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={() => { onSelectIncidents(); onClose(); }}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
               currentView === 'incidents'

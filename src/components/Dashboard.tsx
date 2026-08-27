@@ -555,6 +555,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           {/* CTA row */}
           <div className="flex flex-wrap items-center gap-3 mb-12 animate-fade-up [animation-delay:320ms]">
             <button
+              type="button"
               onClick={() => onSelectPillar('ALL')}
               className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-6 py-3 text-sm font-bold text-cyan-300 backdrop-blur transition-all hover:border-cyan-400 hover:bg-cyan-500/20 hover:-translate-y-0.5"
             >
@@ -562,6 +563,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               Explore {stats.totalTests} Test Cases
             </button>
             <button
+              type="button"
               onClick={onSelectThreatModel}
               className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/70 px-6 py-3 text-sm font-bold text-slate-200 backdrop-blur transition-all hover:border-slate-500 hover:bg-slate-800 hover:-translate-y-0.5"
             >
@@ -672,6 +674,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           {frameworks.map((f, i) => (
             <div key={f.key} className="col-12 col-md-6 col-xl-4 flex">
               <button
+                type="button"
                 onClick={() => onSelectPillar(f.key)}
                 className={`reveal group relative h-full w-full overflow-hidden rounded-2xl border ${f.border} ${f.hoverBorder} bg-slate-900/60 backdrop-blur p-5 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 ${f.ring}`}
                 style={{ transitionDelay: `${(i % 3) * 70}ms` }}
@@ -710,6 +713,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           {/* threat modelling card (special) */}
           <div className="col-12 col-md-6 col-xl-4 flex">
             <button
+              type="button"
               onClick={onSelectThreatModel}
               className="reveal group relative h-full w-full overflow-hidden rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-950 p-5 sm:p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/60 hover:shadow-[0_0_40px_-8px_rgba(34,211,238,0.3)]"
             >
@@ -818,6 +822,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               Test severity breakdown
             </h3>
             <button
+              type="button"
               onClick={() => onSelectPillar('ALL')}
               className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 self-start sm:self-auto cursor-pointer"
             >
@@ -868,7 +873,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               <span className="font-bold text-red-300">{stats.byRisk.Critical + stats.byRisk.High} of {stats.totalTests} test cases</span> carry Critical or High severity. We recommend prioritizing these high-impact attack vectors in your audits, or tracing them in the{' '}
-              <button onClick={onSelectThreatModel} className="text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2">threat model</button>.
+              <button type="button" onClick={onSelectThreatModel} className="text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2">threat model</button>.
             </p>
           </div>
         </div>
@@ -885,7 +890,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             {stats.coverage.map((c, i) => {
               const pct = stats.totalTests ? (c.count / stats.totalTests) * 100 : 0;
               return (
-                <button key={c.key} onClick={() => onSelectPillar(c.key)} className="w-full text-left group">
+                <button key={c.key} type="button" onClick={() => onSelectPillar(c.key)} className="w-full text-left group">
                   <div className="flex items-baseline justify-between mb-1.5">
                     <span className="text-xs sm:text-sm font-semibold text-slate-300 group-hover:text-white transition-colors truncate pr-2">{c.label}</span>
                     <span className="text-[11px] sm:text-xs text-slate-500 font-mono tabular-nums shrink-0">{c.count} mapped</span>
@@ -938,6 +943,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   {/* rotation controls */}
                   <div className="flex items-center gap-1.5">
                     <button
+                      type="button"
                       onClick={() => setSpotIndex((i) => (i - 1 + stats.spotlight.length) % stats.spotlight.length)}
                       aria-label="Previous test"
                       className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:border-slate-600 transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center"
@@ -945,6 +951,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
+                      type="button"
                       onClick={() => setSpotIndex((i) => (i + 1) % stats.spotlight.length)}
                       aria-label="Next test"
                       className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:border-slate-600 transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center"
@@ -964,6 +971,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   {refsFor(featured).map((r) => (
                     <button
                       key={r.id}
+                      type="button"
                       onClick={() => onNavigateToOwasp(r.id)}
                       className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2 py-0.5 sm:px-2.5 sm:py-1 font-mono text-[10px] sm:text-[11px] font-bold text-cyan-300 hover:bg-cyan-500/20 transition-colors"
                       title={`Open threat ${r.id}`}
@@ -994,6 +1002,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => onSelectTest(featured)}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold text-red-300 hover:bg-red-500/20 hover:border-red-400 transition-all self-start w-full sm:w-auto"
                 >
@@ -1024,6 +1033,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                     {stats.spotlight.slice(0, 8).map((_, i) => (
                       <button
                         key={i}
+                        type="button"
                         onClick={() => setSpotIndex(i)}
                         aria-label={`Go to test ${i + 1}`}
                         className={`h-1.5 rounded-full transition-all ${i === spotIndex % stats.spotlight.length ? 'w-6 bg-red-400' : 'w-1.5 bg-slate-700 hover:bg-slate-500'}`}
@@ -1163,6 +1173,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               {stats.incidents.slice(0, 10).map((_, i) => (
                 <button
                   key={i}
+                  type="button"
                   onClick={() => setIncidentIndex(i)}
                   aria-label={`Incident ${i + 1}`}
                   className={`h-1 rounded-full transition-all ${i === incidentIndex % stats.incidents.length ? 'w-8 bg-orange-400' : 'w-4 bg-slate-700 hover:bg-slate-500'}`}
@@ -1261,6 +1272,7 @@ const PillarNode: React.FC<{ pillar: Pillar; tests: TestItem[]; onOpen: () => vo
   const top = [...tests].sort((a, b) => RISK_META[b.riskLevel].rank - RISK_META[a.riskLevel].rank)[0];
   return (
     <button
+      type="button"
       onClick={onOpen}
       className={`group relative w-full overflow-hidden rounded-2xl border ${meta.ring} bg-slate-900/80 backdrop-blur p-3.5 sm:p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:bg-slate-900`}
     >

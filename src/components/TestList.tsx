@@ -144,12 +144,14 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
             </span>
             <div className="flex bg-slate-950 rounded-lg p-1 border border-slate-800 flex-1 sm:flex-none">
               <button 
+                type="button"
                 onClick={() => setFilterType('all')}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${filterType === 'all' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
               >
                 All
               </button>
               <button 
+                type="button"
                 onClick={() => setFilterType('aitg')}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'aitg' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-sm' : 'text-slate-400 hover:text-cyan-300'}`}
               >
@@ -157,6 +159,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                 AI Testing Guide
               </button>
               <button 
+                type="button"
                 onClick={() => setFilterType('top10')}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'top10' ? 'bg-pink-500/10 text-pink-400 border border-pink-500/20 shadow-sm' : 'text-slate-400 hover:text-pink-300'}`}
               >
@@ -164,6 +167,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                 LLM
               </button>
               <button 
+                type="button"
                 onClick={() => setFilterType('mltop10')}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'mltop10' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm' : 'text-slate-400 hover:text-emerald-300'}`}
               >
@@ -171,6 +175,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                 ML
               </button>
               <button 
+                type="button"
                 onClick={() => setFilterType('agenttop10')}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'agenttop10' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20 shadow-sm' : 'text-slate-400 hover:text-orange-300'}`}
               >
@@ -178,6 +183,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                 Agentic
               </button>
               <button 
+                type="button"
                 onClick={() => setFilterType('saiftop10')}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'saiftop10' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-sm' : 'text-slate-400 hover:text-blue-300'}`}
               >
@@ -185,6 +191,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                 SAIF
               </button>
               <button 
+                type="button"
                 onClick={() => setFilterType('mcptop10')}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'mcptop10' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-sm' : 'text-slate-400 hover:text-cyan-300'}`}
               >
@@ -202,12 +209,14 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
             </span>
             <div className="flex bg-slate-950 rounded-lg p-1 border border-slate-800 flex-1 sm:flex-none">
               <button 
+                type="button"
                 onClick={() => setSortMethod('id')}
                 className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-medium transition-all ${sortMethod === 'id' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'}`}
               >
                 By ID
               </button>
               <button 
+                type="button"
                 onClick={() => setSortMethod('severity')}
                 className={`flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-medium transition-all ${sortMethod === 'severity' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'}`}
               >
@@ -224,7 +233,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
         {sortedTests.length === 0 ? (
           <div className="text-center py-12 border border-dashed border-slate-800 rounded-xl bg-slate-900/30">
             <p className="text-slate-500">No test cases found matching the current filter.</p>
-            <button onClick={() => setFilterType('all')} className="mt-2 text-cyan-400 text-sm hover:underline">
+            <button type="button" onClick={() => setFilterType('all')} className="mt-2 text-cyan-400 text-sm hover:underline">
               Clear filters
             </button>
           </div>
@@ -256,6 +265,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                     </span>
                     {test.owaspTop10Ref && (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           onNavigateToOwasp(test.owaspTop10Ref!);
@@ -268,6 +278,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                     )}
                     {test.owaspMlTop10Ref && (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           onNavigateToOwasp(test.owaspMlTop10Ref!);
@@ -280,6 +291,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                     )}
                     {test.owaspAgenticRef && (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           onNavigateToOwasp(test.owaspAgenticRef!);
@@ -292,6 +304,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                     )}
                     {test.owaspSaifRef && (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           onNavigateToOwasp(test.owaspSaifRef!);
@@ -304,6 +317,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                     )}
                     {test.owaspMcpTop10Ref && (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           onNavigateToOwasp(test.owaspMcpTop10Ref!);
@@ -316,6 +330,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                     )}
                     {test.owaspDsgaiRef && (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           onNavigateToOwasp(test.owaspDsgaiRef!);

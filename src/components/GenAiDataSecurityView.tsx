@@ -536,7 +536,7 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
     if (initialExpandedId) {
       const norm = normalizeRiskId(initialExpandedId) || initialExpandedId;
       setExpandedIds((prev) => ({ ...prev, [norm]: true }));
-      scrollToSection(initialExpandedId);
+      scrollToSection(norm);
     }
   }, [initialExpandedId]);
 

@@ -143,6 +143,7 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
           {availableFrameworks.map(fw => (
             <button
               key={fw}
+              type="button"
               onClick={() => setFrameworkFilter(fw)}
               className={`px-2.5 py-1 rounded transition-all font-mono ${
                 activeFrameworkFilter === fw

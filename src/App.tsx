@@ -618,6 +618,7 @@ const App: React.FC = () => {
                     <h2 className="text-xl font-bold text-white mb-2">Test Case Not Found</h2>
                     <p className="text-slate-400 text-sm mb-6">The requested test case ID does not exist in the security catalog.</p>
                     <button
+                      type="button"
                       onClick={handleBackToTests}
                       className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-cyan-500/20"
                     >

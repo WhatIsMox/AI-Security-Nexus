@@ -470,7 +470,7 @@ test('Vector E - Scenario E7: React Component Tree Error Isolation (Error Bounda
   assert.ok(indexCode.includes('ErrorBoundary'), 'index.tsx must wrap tree in ErrorBoundary');
 });
 
-test('Vector E - Scenario E8: Semantic Button Type Safety Across All Catalogs and Modals', () => {
+test('Vector E - Scenario E8: Semantic Button Type Safety Across All Frontend Components & App Shell', () => {
   const components = [
     'components/ToolsDirectoryView.tsx',
     'components/IncidentsDirectoryView.tsx',
@@ -478,13 +478,29 @@ test('Vector E - Scenario E8: Semantic Button Type Safety Across All Catalogs an
     'components/ThreatModelling.tsx',
     'components/ThreatDetailModal.tsx',
     'components/IncidentDetailModal.tsx',
-    'components/ToolDetailModal.tsx'
+    'components/ToolDetailModal.tsx',
+    'components/Sidebar.tsx',
+    'components/TestList.tsx',
+    'components/OwaspTop10View.tsx',
+    'components/AuditChecklistView.tsx',
+    'components/SecureMcpGuideView.tsx',
+    'components/Dashboard.tsx',
+    'components/AgenticTop10View.tsx',
+    'components/GlobalSearchModal.tsx',
+    'components/GenAiDataSecurityView.tsx',
+    'components/ErrorBoundary.tsx',
+    'App.tsx'
   ];
 
   for (const comp of components) {
     const code = readFile(comp);
     assert.ok(code.includes('type="button"'), `${comp} must declare explicit type="button"`);
   }
+});
+
+test('Vector B - Scenario B15: GenAiDataSecurityView Normalized Scroll Target Resolution', () => {
+  const dsgaiCode = readFile('components/GenAiDataSecurityView.tsx');
+  assert.ok(dsgaiCode.includes('scrollToSection(norm)'), 'GenAiDataSecurityView must scroll to normalized uppercase ID');
 });
 
 test('Vector E - Scenario E9: Global Search Combobox & Listbox WAI-ARIA 1.2 Conformance', () => {
@@ -501,12 +517,14 @@ test('Vector E - Scenario E10: Comprehensive Keyboard Navigation on All Cards an
   const incidentsViewCode = readFile('components/IncidentsDirectoryView.tsx');
   const threatModalCode = readFile('components/ThreatDetailModal.tsx');
   const owaspViewCode = readFile('components/OwaspTop10View.tsx');
+  const threatModellingCode = readFile('components/ThreatModelling.tsx');
 
   assert.ok(testListCode.includes('onKeyDown='), 'TestList cards must have keyboard keydown handler');
   assert.ok(toolsViewCode.includes('onKeyDown='), 'ToolsDirectoryView cards must have keyboard keydown handler');
   assert.ok(incidentsViewCode.includes('onKeyDown='), 'IncidentsDirectoryView cards must have keyboard keydown handler');
   assert.ok(threatModalCode.includes('onKeyDown='), 'ThreatDetailModal sub-items must have keyboard keydown handler');
   assert.ok(owaspViewCode.includes('onKeyDown='), 'OwaspTop10View items must have keyboard keydown handler');
+  assert.ok(threatModellingCode.includes('onKeyDown='), 'ThreatModelling table items must have keyboard keydown handler');
 });
 
 test('Vector A - Scenario A9: GenAI Data Security ID Normalization and Deep-Linking', () => {

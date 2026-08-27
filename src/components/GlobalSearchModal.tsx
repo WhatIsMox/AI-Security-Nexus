@@ -484,30 +484,35 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         {/* Filter Tabs */}
         <div className="flex items-center gap-1 px-3 sm:px-4 py-2 border-b border-slate-800 bg-slate-950/40 text-xs overflow-x-auto scrollbar-none">
           <button
+            type="button"
             onClick={() => handleTabChange('all')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'all' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
             All Results ({allSearchItems.length})
           </button>
           <button
+            type="button"
             onClick={() => handleTabChange('tests')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'tests' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
             Tests ({categoryCounts.tests})
           </button>
           <button
+            type="button"
             onClick={() => handleTabChange('threats')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'threats' ? 'bg-pink-500/20 text-pink-300 border border-pink-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
             Threats ({categoryCounts.threats})
           </button>
           <button
+            type="button"
             onClick={() => handleTabChange('tools')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'tools' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >
             Tools ({categoryCounts.tools})
           </button>
           <button
+            type="button"
             onClick={() => handleTabChange('incidents')}
             className={`px-2.5 py-1 rounded-md transition-colors whitespace-nowrap ${activeTab === 'incidents' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-400 hover:text-slate-200'}`}
           >

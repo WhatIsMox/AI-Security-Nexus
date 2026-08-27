@@ -143,6 +143,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ globalDo
             {(['All', 'Defensive', 'Offensive', 'Both'] as const).map(cat => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setCategoryFilter(cat)}
                 className={`px-2.5 py-1 rounded transition-all ${
                   categoryFilter === cat
@@ -161,6 +162,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ globalDo
             {(['All', 'Local', 'Third-party'] as const).map(t => (
               <button
                 key={t}
+                type="button"
                 onClick={() => setTypeFilter(t)}
                 className={`px-2.5 py-1 rounded transition-all ${
                   typeFilter === t
@@ -179,6 +181,7 @@ export const ToolsDirectoryView: React.FC<ToolsDirectoryViewProps> = ({ globalDo
             {(['All', 'Free', 'Paid'] as const).map(c => (
               <button
                 key={c}
+                type="button"
                 onClick={() => setCostFilter(c)}
                 className={`px-2.5 py-1 rounded transition-all ${
                   costFilter === c
