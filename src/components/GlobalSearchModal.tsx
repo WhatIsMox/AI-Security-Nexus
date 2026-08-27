@@ -56,7 +56,7 @@ function getSearchIndex(): SearchResultItem[] {
       category: 'test',
       categoryLabel,
       badgeColor: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400',
-      searchText: `${title} ${subtitle} ${categoryLabel} ${test.pillar} ${test.riskLevel} ${(test.objectives || []).join(' ')}`.toLowerCase(),
+      searchText: `${title} ${subtitle} ${categoryLabel} ${test.pillar} ${test.riskLevel} ${test.owaspDsgaiRef || ''} ${test.owaspTop10Ref || ''} ${test.owaspSaifRef || ''} ${test.owaspMcpTop10Ref || ''} ${test.owaspMlTop10Ref || ''} ${test.owaspAgenticRef || ''} ${(test.objectives || []).join(' ')}`.toLowerCase(),
       testItem: test
     });
   }
@@ -453,6 +453,11 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-expanded={filteredResults.length > 0}
+            aria-autocomplete="list"
+            aria-controls="search-results-list"
+            aria-activedescendant={filteredResults.length > 0 ? `search-option-${selectedIndex}` : undefined}
             value={query}
             onChange={e => {
               setQuery(e.target.value);
@@ -511,7 +516,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         </div>
 
         {/* Results List */}
-        <div ref={listRef} className="flex-1 overflow-y-auto p-2 space-y-1 divide-y divide-slate-800/40">
+        <div ref={listRef} role="listbox" id="search-results-list" className="flex-1 overflow-y-auto p-2 space-y-1 divide-y divide-slate-800/40">
           {filteredResults.length === 0 ? (
             <div className="py-12 text-center text-slate-500">
               <p className="text-sm">No results found for &ldquo;{query}&rdquo;</p>
@@ -521,6 +526,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             filteredResults.map((item, index) => (
               <div
                 key={item.id}
+                role="option"
+                aria-selected={selectedIndex === index}
+                id={`search-option-${index}`}
+                tabIndex={-1}
                 onClick={() => handleSelectItem(item)}
                 onMouseEnter={() => setSelectedIndex(index)}
                 className={`p-2.5 sm:p-3 rounded-xl cursor-pointer transition-all flex items-start justify-between gap-2.5 sm:gap-3 ${

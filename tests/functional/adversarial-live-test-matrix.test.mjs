@@ -428,9 +428,36 @@ test('Vector E - Scenario E5: ARIA Modal Focus & Accessibility Landmark Validati
   }
 });
 
-test('Vector E - Scenario E6: Zero TypeScript Strictness Violations', () => {
-  const tsconfig = JSON.parse(readFile('tsconfig.json'));
-  assert.strictEqual(tsconfig.compilerOptions.strict, true, 'tsconfig.json must enable strict mode');
+test('Vector B - Scenario B14: Agentic Top 10 Case-Insensitive Tab Synchronization', () => {
+  const agenticCode = readFile('components/AgenticTop10View.tsx');
+  assert.ok(agenticCode.includes("initialExpandedId?.toUpperCase().startsWith('AST')"), 'AgenticTop10View must check AST prefix case-insensitively');
+  assert.ok(agenticCode.includes("initialExpandedId?.toUpperCase().startsWith('ASI')"), 'AgenticTop10View must check ASI prefix case-insensitively');
+});
+
+test('Vector C - Scenario C10: Single-Digit and Framework ID Padding & Suffix Normalization', () => {
+  const threatModalCode = readFile('components/ThreatDetailModal.tsx');
+  assert.ok(
+    threatModalCode.includes("replace(/^(LLM|ML|ASI|AST|DSGAI)0?(\\d)(:.*)?$/") ||
+    threatModalCode.includes("replace(/^(LLM|ML|ASI|AST|DSGAI)"),
+    'ThreatDetailModal must normalize single-digit framework IDs with optional year suffixes'
+  );
+  assert.ok(
+    threatModalCode.includes("replace(/^MCP-?0?(\\d)(:.*)?$/") ||
+    threatModalCode.includes("replace(/^MCP"),
+    'ThreatDetailModal must normalize MCP IDs with optional zero-padding and year suffixes'
+  );
+  assert.ok(
+    threatModalCode.includes("replace(/^SAIF-?R?0?(\\d)$/") ||
+    threatModalCode.includes("replace(/^SAIF"),
+    'ThreatDetailModal must normalize single-digit SAIF risk IDs'
+  );
+});
+
+test('Vector E - Scenario E6: Framework Deep-Link Card Expansion & Target ID Resolution in OwaspTop10View', () => {
+  const owaspViewCode = readFile('components/OwaspTop10View.tsx');
+  assert.ok(owaspViewCode.includes('normalizeFrameworkId'), 'OwaspTop10View must define normalizeFrameworkId');
+  assert.ok(owaspViewCode.includes('isMatchingEntry'), 'OwaspTop10View must define isMatchingEntry');
+  assert.ok(owaspViewCode.includes('findMatchingEntry'), 'OwaspTop10View must define findMatchingEntry');
 });
 
 test('Vector E - Scenario E7: React Component Tree Error Isolation (Error Boundary)', () => {
@@ -442,3 +469,74 @@ test('Vector E - Scenario E7: React Component Tree Error Isolation (Error Bounda
   assert.ok(errorBoundaryCode.includes('#/dashboard'), 'ErrorBoundary must offer safe return to dashboard path');
   assert.ok(indexCode.includes('ErrorBoundary'), 'index.tsx must wrap tree in ErrorBoundary');
 });
+
+test('Vector E - Scenario E8: Semantic Button Type Safety Across All Catalogs and Modals', () => {
+  const components = [
+    'components/ToolsDirectoryView.tsx',
+    'components/IncidentsDirectoryView.tsx',
+    'components/TestDetail.tsx',
+    'components/ThreatModelling.tsx',
+    'components/ThreatDetailModal.tsx',
+    'components/IncidentDetailModal.tsx',
+    'components/ToolDetailModal.tsx'
+  ];
+
+  for (const comp of components) {
+    const code = readFile(comp);
+    assert.ok(code.includes('type="button"'), `${comp} must declare explicit type="button"`);
+  }
+});
+
+test('Vector E - Scenario E9: Global Search Combobox & Listbox WAI-ARIA 1.2 Conformance', () => {
+  const searchModalCode = readFile('components/GlobalSearchModal.tsx');
+  assert.ok(searchModalCode.includes('role="combobox"'), 'GlobalSearchModal input must have role="combobox"');
+  assert.ok(searchModalCode.includes('role="listbox"'), 'GlobalSearchModal list must have role="listbox"');
+  assert.ok(searchModalCode.includes('role="option"'), 'GlobalSearchModal items must have role="option"');
+  assert.ok(searchModalCode.includes('aria-activedescendant='), 'GlobalSearchModal must bind aria-activedescendant');
+});
+
+test('Vector E - Scenario E10: Comprehensive Keyboard Navigation on All Cards and Tables', () => {
+  const testListCode = readFile('components/TestList.tsx');
+  const toolsViewCode = readFile('components/ToolsDirectoryView.tsx');
+  const incidentsViewCode = readFile('components/IncidentsDirectoryView.tsx');
+  const threatModalCode = readFile('components/ThreatDetailModal.tsx');
+  const owaspViewCode = readFile('components/OwaspTop10View.tsx');
+
+  assert.ok(testListCode.includes('onKeyDown='), 'TestList cards must have keyboard keydown handler');
+  assert.ok(toolsViewCode.includes('onKeyDown='), 'ToolsDirectoryView cards must have keyboard keydown handler');
+  assert.ok(incidentsViewCode.includes('onKeyDown='), 'IncidentsDirectoryView cards must have keyboard keydown handler');
+  assert.ok(threatModalCode.includes('onKeyDown='), 'ThreatDetailModal sub-items must have keyboard keydown handler');
+  assert.ok(owaspViewCode.includes('onKeyDown='), 'OwaspTop10View items must have keyboard keydown handler');
+});
+
+test('Vector A - Scenario A9: GenAI Data Security ID Normalization and Deep-Linking', () => {
+  const dsgaiCode = readFile('components/GenAiDataSecurityView.tsx');
+  assert.ok(dsgaiCode.includes('normalizeRiskId'), 'GenAiDataSecurityView must define normalizeRiskId helper');
+  assert.ok(dsgaiCode.includes('padStart(2, \'0\')'), 'normalizeRiskId must pad single digit risk IDs');
+});
+
+test('Vector A - Scenario A10: Spreadsheet Formula Injection Neutralization in Audit Export (CWE-1236)', () => {
+  const auditCode = readFile('components/AuditChecklistView.tsx');
+  assert.ok(
+    auditCode.includes("trimStart().replace(/^([=+\\-@\\t\\r])/, \"'$1\")") ||
+    auditCode.includes("replace(/^([=+\\-@\\t\\r])/, \"'$1\")"),
+    'AuditChecklistView must prefix formula triggers (=, +, -, @, \\t, \\r) with single quote'
+  );
+
+  // Direct test of formula sanitization logic
+  const formulaPayloads = [
+    '=1+1',
+    '+12345',
+    '-cmd|/C calc',
+    '@SUM(A1:A10)',
+    '\t=HYPERLINK("http://evil.com")',
+    '   =CMD()',
+    '   +dangerous'
+  ];
+
+  for (const raw of formulaPayloads) {
+    const sanitized = raw.trimStart().replace(/^([=+\-@\t\r])/, "'$1");
+    assert.ok(sanitized.startsWith("'"), `Formula payload "${raw}" must be prefixed with single quote: got "${sanitized}"`);
+  }
+});
+

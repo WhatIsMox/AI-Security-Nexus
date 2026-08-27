@@ -810,7 +810,19 @@ const Dashboard: React.FC<DashboardProps> = ({
               const count = stats.byRisk[level];
               const pct = stats.totalTests ? (count / stats.totalTests) * 100 : 0;
               return (
-                <div key={level} className="group cursor-pointer" onClick={() => onSelectPillar('ALL')}>
+                <div 
+                  key={level} 
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onSelectPillar('ALL');
+                    }
+                  }}
+                  className="group cursor-pointer focus:outline-none focus:ring-1 focus:ring-cyan-500/40 rounded-xl p-1" 
+                  onClick={() => onSelectPillar('ALL')}
+                >
                   <div className="flex items-baseline justify-between mb-1.5">
                     <span className={`text-xs sm:text-sm font-bold ${meta.text}`}>{meta.label}</span>
                     <span className="text-[11px] sm:text-xs text-slate-500 font-mono tabular-nums">
@@ -1101,17 +1113,18 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <Globe className="w-4 h-4 text-orange-400" />
                 <span className="font-mono text-[11px] font-bold tracking-wider text-orange-300 uppercase">Mapped to {incident.threatId}</span>
               </button>
-              <p 
+              <button
+                type="button"
                 key={incidentIndex} 
                 onClick={() => {
                   if (onSelectIncident) onSelectIncident(incident);
                   else if (onSelectIncidents) onSelectIncidents();
                 }}
-                className="flex-1 text-slate-200 font-medium leading-relaxed animate-fade-up text-base md:text-lg cursor-pointer hover:text-orange-300 transition-colors"
+                className="text-left flex-1 text-slate-200 font-medium leading-relaxed animate-fade-up text-base md:text-lg cursor-pointer hover:text-orange-300 transition-colors focus:outline-none focus:ring-1 focus:ring-orange-500/40 rounded-lg p-1"
                 title="Inspect real-world incident case study"
               >
                 {incident.title}
-              </p>
+              </button>
               <button
                 type="button"
                 onClick={() => {

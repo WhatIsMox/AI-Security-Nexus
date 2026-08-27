@@ -124,6 +124,7 @@ export const IncidentDetailModal: React.FC<IncidentDetailModalProps> = ({
                 </a>
               )}
               <button
+                type="button"
                 onClick={onClose}
                 className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
                 aria-label="Close dialog"
@@ -215,6 +216,7 @@ export const IncidentDetailModal: React.FC<IncidentDetailModalProps> = ({
                   {incident.mappedThreats.map(threatId => (
                     <button
                       key={threatId}
+                      type="button"
                       onClick={() => {
                         if (onNavigateToOwasp) {
                           onClose();

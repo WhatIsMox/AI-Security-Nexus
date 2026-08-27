@@ -94,7 +94,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       `}>
         {/* Brand Header */}
         <div className="p-5 flex items-center justify-between border-b border-slate-800">
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => { onSelectDashboard(); onClose(); }}>
+          <button
+            type="button"
+            className="flex items-center space-x-3 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-cyan-500/50 rounded-lg p-1"
+            onClick={() => { onSelectDashboard(); onClose(); }}
+            aria-label="Return to Dashboard"
+          >
             <div className="relative w-9 h-9 rounded-xl overflow-hidden border border-cyan-500/30 bg-slate-900 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.25)] group shrink-0">
               <div className="absolute inset-0 bg-cyan-500/20 blur-md group-hover:bg-cyan-400/30 transition-all pointer-events-none"></div>
               <img src="./favicon.svg" alt="AI Security Nexus" className="w-full h-full object-cover relative z-10" />
@@ -103,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <h1 className="font-bold text-slate-100 leading-tight tracking-tight uppercase text-sm">AI Security</h1>
               <p className="text-[10px] text-cyan-400 font-mono font-semibold tracking-wide">Nexus Platform</p>
             </div>
-          </div>
+          </button>
           <button onClick={onClose} type="button" aria-label="Close navigation menu" className="mobile-menu-button md:hidden text-slate-400 hover:text-white">
             <X className="w-6 h-6" />
           </button>

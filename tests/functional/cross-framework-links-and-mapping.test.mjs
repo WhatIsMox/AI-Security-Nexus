@@ -53,9 +53,9 @@ test('Cross-Framework - Complete ID Catalog Registry', (t) => {
   assert.equal(mcpIds.size, 10, 'Expected 10 MCP IDs');
   assert.equal(dsgaiIds.size, 21, 'Expected 21 DSGAI IDs');
   assert.equal(dspmIds.size, 13, 'Expected 13 AI-DSPM IDs');
-  assert.equal(allTestIds.size, 42, 'Expected 42 total test items (32 standard + 10 agentic)');
+  assert.equal(allTestIds.size, 62, 'Expected 62 total test items (52 standard + 10 agentic)');
 
-  t.diagnostic(`Verified ${allTestIds.size} tests and 89 framework threat entries`);
+  t.diagnostic(`Verified ${allTestIds.size} tests and 110 framework threat entries`);
 });
 
 test('Cross-Framework - Test Items Framework Cross-References Resolution', (t) => {
@@ -65,6 +65,7 @@ test('Cross-Framework - Test Items Framework Cross-References Resolution', (t) =
   const astContent = readFile('data_agentic.ts');
   const saifContent = readFile('data_saif.ts');
   const mcpContent = readFile('data_mcp.ts');
+  const dsgaiContent = readFile('data_genai_data_security.ts');
   const testsContent = readFile('data_tests.ts');
 
   const validLlmIds = new Set([...llmContent.matchAll(/id:\s*["'](LLM\d{2}:\d{4})["']/g)].map(m => m[1]));
@@ -75,6 +76,7 @@ test('Cross-Framework - Test Items Framework Cross-References Resolution', (t) =
   ]);
   const validSaifIds = new Set([...saifContent.matchAll(/id:\s*["'](SAIF-R\d+)["']/g)].map(m => m[1]));
   const validMcpIds = new Set([...mcpContent.matchAll(/id:\s*["'](MCP\d+:\d{4})["']/g)].map(m => m[1]));
+  const validDsgaiIds = new Set([...dsgaiContent.matchAll(/id:\s*["'](DSGAI\d{2})["']/g)].map(m => m[1]));
 
   // Extract all test references
   const llmRefs = [...testsContent.matchAll(/owaspTop10Ref:\s*["']([^"']+)["']/g)].map(m => m[1]);
@@ -82,6 +84,7 @@ test('Cross-Framework - Test Items Framework Cross-References Resolution', (t) =
   const agenticRefs = [...testsContent.matchAll(/owaspAgenticRef:\s*["']([^"']+)["']/g)].map(m => m[1]);
   const saifRefs = [...testsContent.matchAll(/owaspSaifRef:\s*["']([^"']+)["']/g)].map(m => m[1]);
   const mcpRefs = [...testsContent.matchAll(/owaspMcpTop10Ref:\s*["']([^"']+)["']/g)].map(m => m[1]);
+  const dsgaiRefs = [...testsContent.matchAll(/owaspDsgaiRef:\s*["']([^"']+)["']/g)].map(m => m[1]);
 
   for (const ref of llmRefs) {
     assert.ok(validLlmIds.has(ref), `Test references unknown LLM ID: "${ref}"`);
@@ -98,6 +101,9 @@ test('Cross-Framework - Test Items Framework Cross-References Resolution', (t) =
   for (const ref of mcpRefs) {
     assert.ok(validMcpIds.has(ref), `Test references unknown MCP ID: "${ref}"`);
   }
+  for (const ref of dsgaiRefs) {
+    assert.ok(validDsgaiIds.has(ref), `Test references unknown DSGAI ID: "${ref}"`);
+  }
 });
 
 test('Cross-Framework - Threat Modelling IDs and Related Tests Resolution', (t) => {
@@ -108,6 +114,7 @@ test('Cross-Framework - Threat Modelling IDs and Related Tests Resolution', (t) 
   const astContent = readFile('data_agentic.ts');
   const saifContent = readFile('data_saif.ts');
   const mcpContent = readFile('data_mcp.ts');
+  const dsgaiContent = readFile('data_genai_data_security.ts');
   const testsContent = readFile('data_tests.ts');
   const agenticTestsContent = readFile('data_agentic.ts');
 
@@ -121,11 +128,12 @@ test('Cross-Framework - Threat Modelling IDs and Related Tests Resolution', (t) 
     ...[...asiContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
     ...[...astContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
     ...[...saifContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
-    ...[...mcpContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1])
+    ...[...mcpContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1]),
+    ...[...dsgaiContent.matchAll(/id:\s*["']([^"']+)["']/g)].map(m => m[1])
   ]);
 
-  // Extract all threat IDs defined in ThreatModelling datasets (SAIF, LLM, ML, ASI, AST, MCP)
-  const threatIdMatches = [...threatModelContent.matchAll(/id:\s*["']((?:LLM|ML|ASI|AST|SAIF|MCP)[^"']+)["']/g)].map(m => m[1]);
+  // Extract all threat IDs defined in ThreatModelling datasets (SAIF, LLM, ML, ASI, AST, MCP, DSGAI)
+  const threatIdMatches = [...threatModelContent.matchAll(/id:\s*["']((?:LLM|ML|ASI|AST|SAIF|MCP|DSGAI)[^"']+)["']/g)].map(m => m[1]);
   for (const tid of threatIdMatches) {
     assert.ok(allValidThreatIds.has(tid), `ThreatModelling defines threat with unknown canonical ID: "${tid}"`);
   }

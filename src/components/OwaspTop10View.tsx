@@ -18,6 +18,28 @@ interface OwaspTop10ViewProps {
   frameworkOverview?: FrameworkOverview;
 }
 
+const normalizeFrameworkId = (id: string | null | undefined): string => {
+  if (!id) return '';
+  return id
+    .trim()
+    .toUpperCase()
+    .replace(/^(LLM|ML|ASI|AST|DSGAI)0?(\d)(:.*)?$/, '$10$2$3')
+    .replace(/^MCP-?0?(\d)(:.*)?$/, 'MCP$1$2')
+    .replace(/^SAIF-?R?0?(\d)$/, 'SAIF-R0$1')
+    .replace(/^SAIF-?R?(\d{2})$/, 'SAIF-R$1');
+};
+
+const isMatchingEntry = (entryId: string, targetId: string | null | undefined): boolean => {
+  if (!targetId) return false;
+  const eNorm = normalizeFrameworkId(entryId);
+  const tNorm = normalizeFrameworkId(targetId);
+  if (eNorm === tNorm) return true;
+  if (eNorm.startsWith(tNorm + ':') || tNorm.startsWith(eNorm + ':')) return true;
+  const ePrefix = eNorm.split(':')[0];
+  const tPrefix = tNorm.split(':')[0];
+  return ePrefix === tPrefix;
+};
+
 const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({ 
   initialExpandedId, 
   data, 
@@ -26,7 +48,15 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   colorTheme = 'pink',
   frameworkOverview,
 }) => {
-  const [expandedId, setExpandedId] = useState<string | null>(initialExpandedId || null);
+  const findMatchingEntry = React.useCallback((targetId: string | null | undefined): OwaspTop10Entry | undefined => {
+    if (!targetId) return undefined;
+    return data.find(e => isMatchingEntry(e.id, targetId));
+  }, [data]);
+
+  const [expandedId, setExpandedId] = useState<string | null>(() => {
+    const matched = findMatchingEntry(initialExpandedId);
+    return matched ? matched.id : (initialExpandedId || null);
+  });
   const [toolFilters, setToolFilters] = useState<Record<string, { category: 'all' | 'defensive' | 'offensive'; pricing: 'all' | 'free' | 'paid' }>>({});
   const [openOverviewSection, setOpenOverviewSection] = useState<'overview' | 'terminology' | 'triage' | null>(null);
   const [selectedTool, setSelectedTool] = useState<SecurityTool | null>(null);
@@ -36,7 +66,9 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   const scrollToCard = (id: string) => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        const element = document.getElementById(id);
+        const matched = findMatchingEntry(id);
+        const domId = matched ? matched.id : id;
+        const element = document.getElementById(domId);
         if (element) {
           const headerOffset = window.innerWidth < 768 ? 72 : 88;
           const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
@@ -51,23 +83,28 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
   useEffect(() => {
     if (initialExpandedId) {
-      setExpandedId(initialExpandedId);
-      scrollToCard(initialExpandedId);
+      const matched = findMatchingEntry(initialExpandedId);
+      const targetId = matched ? matched.id : initialExpandedId;
+      setExpandedId(targetId);
+      scrollToCard(targetId);
     }
-  }, [initialExpandedId]);
+  }, [initialExpandedId, findMatchingEntry]);
 
   const toggleExpand = (id: string) => {
-    const isOpening = expandedId !== id;
-    setExpandedId(isOpening ? id : null);
+    const isCurrentActive = expandedId === id || isMatchingEntry(id, expandedId);
+    const nextId = isCurrentActive ? null : id;
+    setExpandedId(nextId);
 
-    if (isOpening) {
-      scrollToCard(id);
+    if (nextId) {
+      scrollToCard(nextId);
     }
   };
 
   const openRelatedEntry = (id: string) => {
-    setExpandedId(id);
-    scrollToCard(id);
+    const matched = findMatchingEntry(id);
+    const targetId = matched ? matched.id : id;
+    setExpandedId(targetId);
+    scrollToCard(targetId);
   };
 
   const getToolFilter = (id: string) => toolFilters[id] || { category: 'all', pricing: 'all' };
@@ -257,43 +294,45 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
       )}
 
       <div className="space-y-4">
-        {data.map((entry) => (
-          <div 
-            key={entry.id}
-            id={entry.id}
-            className={`scroll-mt-20 sm:scroll-mt-24 border rounded-xl transition-all duration-300 overflow-hidden ${
-              expandedId === entry.id 
-                ? `bg-slate-900 ${currentTheme.activeBorder} ${currentTheme.activeShadow}` 
-                : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
-            }`}
-          >
+        {data.map((entry) => {
+          const isExpanded = expandedId === entry.id || isMatchingEntry(entry.id, expandedId);
+          return (
             <div 
-              onClick={() => toggleExpand(entry.id)}
-              className="p-3 sm:p-5 cursor-pointer flex items-start sm:items-center justify-between gap-2 group"
+              key={entry.id}
+              id={entry.id}
+              className={`scroll-mt-20 sm:scroll-mt-24 border rounded-xl transition-all duration-300 overflow-hidden ${
+                isExpanded 
+                  ? `bg-slate-900 ${currentTheme.activeBorder} ${currentTheme.activeShadow}` 
+                  : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
+              }`}
             >
-              <div className="flex min-w-0 items-start sm:items-center gap-3 sm:gap-4">
-                <div className={`
-                  min-w-[72px] sm:min-w-[90px] h-10 px-2 rounded-lg flex items-center justify-center font-mono font-bold text-[9px] sm:text-[10px] md:text-xs shrink-0 transition-colors text-center
-                  ${expandedId === entry.id 
-                    ? currentTheme.badgeActive
-                    : `bg-slate-950 text-slate-500 border border-slate-800 ${currentTheme.badgeHover}`
-                  }
-                `}>
-                  {formatId(entry.id)}
-                </div>
-                <div className="min-w-0">
-                  <h3 className={`break-words text-base sm:text-xl font-bold transition-colors ${expandedId === entry.id ? 'text-white' : 'text-slate-200 group-hover:text-white'}`}>
-                    {entry.title}
-                  </h3>
-                  <div className={`text-sm transition-colors mt-1 ${expandedId === entry.id ? 'text-slate-400' : 'text-slate-500 group-hover:text-slate-400 line-clamp-1'}`}>
-                    {entry.description}
+              <div 
+                onClick={() => toggleExpand(entry.id)}
+                className="p-3 sm:p-5 cursor-pointer flex items-start sm:items-center justify-between gap-2 group"
+              >
+                <div className="flex min-w-0 items-start sm:items-center gap-3 sm:gap-4">
+                  <div className={`
+                    min-w-[72px] sm:min-w-[90px] h-10 px-2 rounded-lg flex items-center justify-center font-mono font-bold text-[9px] sm:text-[10px] md:text-xs shrink-0 transition-colors text-center
+                    ${isExpanded 
+                      ? currentTheme.badgeActive
+                      : `bg-slate-950 text-slate-500 border border-slate-800 ${currentTheme.badgeHover}`
+                    }
+                  `}>
+                    {formatId(entry.id)}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className={`break-words text-base sm:text-xl font-bold transition-colors ${isExpanded ? 'text-white' : 'text-slate-200 group-hover:text-white'}`}>
+                      {entry.title}
+                    </h3>
+                    <div className={`text-sm transition-colors mt-1 ${isExpanded ? 'text-slate-400' : 'text-slate-500 group-hover:text-slate-400 line-clamp-1'}`}>
+                      {entry.description}
+                    </div>
                   </div>
                 </div>
+                <ChevronDown className={`mt-2 sm:mt-0 w-5 h-5 sm:w-6 sm:h-6 shrink-0 text-slate-500 transition-transform duration-300 ${isExpanded ? `rotate-180 ${currentTheme.iconActive}` : 'group-hover:text-slate-300'}`} />
               </div>
-              <ChevronDown className={`mt-2 sm:mt-0 w-5 h-5 sm:w-6 sm:h-6 shrink-0 text-slate-500 transition-transform duration-300 ${expandedId === entry.id ? `rotate-180 ${currentTheme.iconActive}` : 'group-hover:text-slate-300'}`} />
-            </div>
 
-            {expandedId === entry.id && (
+              {isExpanded && (
               <div className="p-3 sm:p-6 pt-0 border-t border-slate-800/50 animate-in fade-in duration-200">
                 {entry.whyUnique && (
                   <div className="mt-6 mb-6 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
@@ -408,8 +447,16 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                             {incidentLinks.map((incident, idx) => (
                               <div
                                 key={idx}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    setSelectedIncident(getEnrichedIncident(incident, entry.id));
+                                  }
+                                }}
                                 onClick={() => setSelectedIncident(getEnrichedIncident(incident, entry.id))}
-                                className="flex items-center justify-between gap-2.5 bg-slate-950/80 p-3 sm:p-3.5 rounded-lg border border-amber-500/20 hover:border-amber-500/50 transition-all group cursor-pointer hover:bg-slate-900"
+                                className="flex items-center justify-between gap-2.5 bg-slate-950/80 p-3 sm:p-3.5 rounded-lg border border-amber-500/20 hover:border-amber-500/50 transition-all group cursor-pointer hover:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-amber-500/40"
                               >
                                 <div className="flex items-start gap-2.5 min-w-0">
                                   <Flame className="w-4 h-4 text-amber-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
@@ -654,9 +701,17 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                         {filteredTools.map((tool, idx) => (
                           <div 
-                            key={idx} 
+                            key={tool.name || idx} 
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setSelectedTool(tool);
+                              }
+                            }}
                             onClick={() => setSelectedTool(tool)}
-                            className="bg-slate-950 border border-slate-800/80 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all cursor-pointer hover:bg-slate-900/40 shadow-sm flex flex-col justify-between"
+                            className="bg-slate-950 border border-slate-800/80 p-4 rounded-xl group/tool hover:border-cyan-500/50 transition-all cursor-pointer hover:bg-slate-900/40 shadow-sm flex flex-col justify-between focus:outline-none focus:ring-1 focus:ring-cyan-500/40"
                           >
                             <div>
                               <div className="flex items-start justify-between gap-2 mb-2">
@@ -735,7 +790,8 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
               </div>
             )}
           </div>
-        ))}
+        );
+      })}
       </div>
 
       {/* Threat Detail Modal (Opens when clicking related risks or threat references) */}

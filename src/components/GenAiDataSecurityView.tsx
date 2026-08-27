@@ -491,14 +491,26 @@ interface GenAiDataSecurityViewProps {
   initialExpandedId?: string | null;
 }
 
+const normalizeRiskId = (id: string | null | undefined): string | null => {
+  if (!id) return null;
+  const upper = id.trim().toUpperCase();
+  const match = upper.match(/^DSGAI-?(\d{1,2})$/);
+  if (match) {
+    const num = match[1].padStart(2, '0');
+    return `DSGAI${num}`;
+  }
+  return id.trim();
+};
+
 const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialExpandedId }) => {
   const [activeSectionId, setActiveSectionId] = useState('genai-data-security-context');
   const [search, setSearch] = useState('');
   const [themeFilter, setThemeFilter] = useState<ThemeFilter>('All');
   const [tierFilter, setTierFilter] = useState<GenAiDataSecurityTier | 'All'>('All');
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>(() => {
-    if (initialExpandedId) {
-      return { [initialExpandedId]: true };
+    const norm = normalizeRiskId(initialExpandedId);
+    if (norm) {
+      return { [norm]: true };
     }
     return { DSGAI01: true };
   });
@@ -522,7 +534,8 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
 
   useEffect(() => {
     if (initialExpandedId) {
-      setExpandedIds((prev) => ({ ...prev, [initialExpandedId]: true }));
+      const norm = normalizeRiskId(initialExpandedId) || initialExpandedId;
+      setExpandedIds((prev) => ({ ...prev, [norm]: true }));
       scrollToSection(initialExpandedId);
     }
   }, [initialExpandedId]);

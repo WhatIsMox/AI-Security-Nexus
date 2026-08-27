@@ -119,6 +119,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
             </div>
 
             <button
+              type="button"
               onClick={onClose}
               aria-label="Close tool window"
               className="p-2 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-white hover:border-slate-600 hover:bg-slate-800 transition-all shrink-0 min-w-[36px] min-h-[36px] flex items-center justify-center"
@@ -215,6 +216,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
                   Quickstart & Installation Command
                 </h3>
                 <button
+                  type="button"
                   onClick={handleCopyCode}
                   className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-cyan-300 transition-colors font-mono"
                   title="Copy command to clipboard"
@@ -267,6 +269,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
                 {tool.mappedThreats.map((threatId) => (
                   <button
                     key={threatId}
+                    type="button"
                     onClick={() => handleThreatClick(threatId)}
                     className="inline-flex items-center gap-1 px-3 py-1 bg-slate-950 hover:bg-cyan-950/40 border border-cyan-500/30 hover:border-cyan-400 rounded-lg text-xs font-mono text-cyan-300 hover:text-white transition-all cursor-pointer"
                   >
@@ -286,6 +289,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
             </span>
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
+                type="button"
                 onClick={onClose}
                 className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-sm font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-all"
               >

@@ -79,7 +79,7 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ globalDo
           const validStatuses = new Set<AuditStatus>(['NOT_TESTED', 'PASSED', 'VULNERABLE', 'MITIGATED', 'NA']);
           for (const [key, val] of Object.entries(parsed)) {
             // Guard against prototype poisoning and oversized input
-            if (typeof key === 'string' && key.length <= 50 && key !== '__proto__' && key !== 'constructor' && val && typeof val === 'object') {
+            if (typeof key === 'string' && key.length <= 50 && key !== '__proto__' && key !== 'constructor' && key !== 'prototype' && val && typeof val === 'object') {
               const rec = val as Partial<AuditRecord>;
               sanitized[key] = {
                 status: rec.status && validStatuses.has(rec.status) ? rec.status : 'NOT_TESTED',
@@ -241,7 +241,9 @@ export const AuditChecklistView: React.FC<AuditChecklistViewProps> = ({ globalDo
     for (const test of sortedExportTests) {
       const rec = records[test.id];
       const status = rec?.status || 'NOT_TESTED';
-      const notes = (rec?.notes || '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
+      const rawNotes = rec?.notes || '';
+      const safeFormulaNotes = rawNotes.trimStart().replace(/^([=+\-@\t\r])/, "'$1");
+      const notes = safeFormulaNotes.replace(/\|/g, '\\|').replace(/\n/g, ' ');
       md += `| ${test.id} | ${test.title} | ${test.pillar} | ${test.riskLevel} | **${status}** | ${notes} |\n`;
     }
 

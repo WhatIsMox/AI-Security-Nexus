@@ -166,8 +166,16 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
           filteredIncidents.map((incident, idx) => (
             <div 
               key={`${incident.title}-${idx}`}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleOpenIncident(incident);
+                }
+              }}
               onClick={() => handleOpenIncident(incident)}
-              className="content-auto bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer hover:shadow-lg hover:shadow-amber-500/5"
+              className="content-auto bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between group hover:bg-slate-900/90 cursor-pointer hover:shadow-lg hover:shadow-amber-500/5 focus:outline-none focus:ring-1 focus:ring-amber-500/40"
             >
               <div>
                 {/* Meta Badges */}
@@ -230,6 +238,7 @@ export const IncidentsDirectoryView: React.FC<IncidentsDirectoryViewProps> = ({ 
                   {(incident.mappedThreats || []).map(tid => (
                     <button
                       key={tid}
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         onNavigateToOwasp(tid);

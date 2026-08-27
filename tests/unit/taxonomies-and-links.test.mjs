@@ -60,15 +60,18 @@ test('Taxonomy - Cross-Framework References Resolution', (t) => {
   const llmContent = readFile('data_llm.ts');
   const agenticAppsContent = readFile('data_agentic_applications.ts');
   const saifContent = readFile('data_saif.ts');
+  const dsgaiContent = readFile('data_genai_data_security.ts');
   const testsContent = readFile('data_tests.ts');
 
   const validLlmIds = new Set([...llmContent.matchAll(/id:\s*["'](LLM\d{2}:\d{4})["']/g)].map(m => m[1]));
   const validAsiIds = new Set([...agenticAppsContent.matchAll(/id:\s*["'](ASI\d{2})["']/g)].map(m => m[1]));
   const validSaifIds = new Set([...saifContent.matchAll(/id:\s*["'](SAIF-R\d+)["']/g)].map(m => m[1]));
+  const validDsgaiIds = new Set([...dsgaiContent.matchAll(/id:\s*["'](DSGAI\d{2})["']/g)].map(m => m[1]));
 
   const testLlmRefs = [...testsContent.matchAll(/owaspTop10Ref:\s*["']([^"']+)["']/g)].map(m => m[1]);
   const testAsiRefs = [...testsContent.matchAll(/owaspAgenticRef:\s*["']([^"']+)["']/g)].map(m => m[1]);
   const testSaifRefs = [...testsContent.matchAll(/owaspSaifRef:\s*["']([^"']+)["']/g)].map(m => m[1]);
+  const testDsgaiRefs = [...testsContent.matchAll(/owaspDsgaiRef:\s*["']([^"']+)["']/g)].map(m => m[1]);
 
   for (const ref of testLlmRefs) {
     assert.ok(validLlmIds.has(ref), `Test references unknown LLM ID: ${ref}`);
@@ -80,5 +83,9 @@ test('Taxonomy - Cross-Framework References Resolution', (t) => {
 
   for (const ref of testSaifRefs) {
     assert.ok(validSaifIds.has(ref), `Test references unknown SAIF ID: ${ref}`);
+  }
+
+  for (const ref of testDsgaiRefs) {
+    assert.ok(validDsgaiIds.has(ref), `Test references unknown DSGAI ID: ${ref}`);
   }
 });

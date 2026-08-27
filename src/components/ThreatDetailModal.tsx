@@ -47,10 +47,20 @@ interface ResolvedThreatInfo {
 }
 
 export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
-  const normId = threatId.trim().toUpperCase();
+  let normId = threatId.trim().toUpperCase();
+  // Normalize single digit framework IDs (e.g. LLM1 -> LLM01, LLM1:2026 -> LLM01:2026, ML1 -> ML01, ASI1 -> ASI01, AST1 -> AST01, DSGAI1 -> DSGAI01)
+  normId = normId.replace(/^(LLM|ML|ASI|AST|DSGAI)0?(\d)(:.*)?$/, '$10$2$3');
+  // Normalize MCP formats (e.g. MCP01 -> MCP1, MCP-1 -> MCP1, MCP01:2025 -> MCP1:2025)
+  normId = normId.replace(/^MCP-?0?(\d)(:.*)?$/, 'MCP$1$2');
+  // Normalize SAIF formats (e.g. SAIF1 -> SAIF-R01, SAIF-1 -> SAIF-R01, SAIF-R1 -> SAIF-R01)
+  normId = normId.replace(/^SAIF-?R?0?(\d)$/, 'SAIF-R0$1');
+  normId = normId.replace(/^SAIF-?R?(\d{2})$/, 'SAIF-R$1');
 
   // 1. OWASP Top 10 for LLMs (2026)
-  const llm = OWASP_TOP_10_DATA.find(e => e.id.toUpperCase() === normId || e.id.toUpperCase().startsWith(normId + ':') || normId.startsWith(e.id.toUpperCase().split(':')[0]));
+  const llm = OWASP_TOP_10_DATA.find(e => {
+    const eUpper = e.id.toUpperCase();
+    return eUpper === normId || eUpper.startsWith(normId + ':') || normId.startsWith(eUpper.split(':')[0]) || eUpper.split(':')[0] === normId.split(':')[0];
+  });
   if (llm) {
     return {
       ...llm,
@@ -61,7 +71,7 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
   }
 
   // 2. OWASP Agentic Applications Top 10 (ASI)
-  const asi = OWASP_AGENTIC_APPLICATIONS_DATA.find(e => e.id.toUpperCase() === normId);
+  const asi = OWASP_AGENTIC_APPLICATIONS_DATA.find(e => e.id.toUpperCase() === normId || e.id.toUpperCase() === normId.split(':')[0]);
   if (asi) {
     return {
       ...asi,
@@ -72,7 +82,7 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
   }
 
   // 3. OWASP Agentic Skills Top 10 (AST)
-  const ast = OWASP_AGENTIC_THREATS_DATA.find(e => e.id.toUpperCase() === normId);
+  const ast = OWASP_AGENTIC_THREATS_DATA.find(e => e.id.toUpperCase() === normId || e.id.toUpperCase() === normId.split(':')[0]);
   if (ast) {
     return {
       ...ast,
@@ -83,7 +93,10 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
   }
 
   // 4. OWASP ML Security Top 10
-  const ml = OWASP_ML_TOP_10_DATA.find(e => e.id.toUpperCase() === normId || e.id.toUpperCase().startsWith(normId + ':') || normId.startsWith(e.id.toUpperCase().split(':')[0]));
+  const ml = OWASP_ML_TOP_10_DATA.find(e => {
+    const eUpper = e.id.toUpperCase();
+    return eUpper === normId || eUpper.startsWith(normId + ':') || normId.startsWith(eUpper.split(':')[0]) || eUpper.split(':')[0] === normId.split(':')[0];
+  });
   if (ml) {
     return {
       ...ml,
@@ -94,7 +107,10 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
   }
 
   // 5. OWASP MCP Top 10
-  const mcp = OWASP_MCP_TOP_10_DATA.find(e => e.id.toUpperCase() === normId || e.id.toUpperCase().startsWith(normId + ':') || normId.startsWith(e.id.toUpperCase().split(':')[0]));
+  const mcp = OWASP_MCP_TOP_10_DATA.find(e => {
+    const eUpper = e.id.toUpperCase();
+    return eUpper === normId || eUpper.startsWith(normId + ':') || normId.startsWith(eUpper.split(':')[0]) || eUpper.split(':')[0] === normId.split(':')[0];
+  });
   if (mcp) {
     return {
       ...mcp,
@@ -105,7 +121,7 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
   }
 
   // 6. Google SAIF Threat Matrix
-  const saif = OWASP_SAIF_THREATS_DATA.find(e => e.id.toUpperCase() === normId);
+  const saif = OWASP_SAIF_THREATS_DATA.find(e => e.id.toUpperCase() === normId || e.id.toUpperCase().replace('-', '') === normId.replace('-', ''));
   if (saif) {
     return {
       ...saif,
@@ -116,7 +132,7 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
   }
 
   // 7. OWASP GenAI Data Security Risks (DSGAI)
-  const dsgai = GENAI_DATA_SECURITY_RISKS.find(e => e.id.toUpperCase() === normId);
+  const dsgai = GENAI_DATA_SECURITY_RISKS.find(e => e.id.toUpperCase() === normId || e.id.toUpperCase() === normId.split(':')[0]);
   if (dsgai) {
     const prevention = dsgai.mitigations.flatMap(m => m.items.map(i => `${i.title}: ${i.description}`));
     const attacks = (dsgai.howItUnfolds || []).map((step, idx) => ({
@@ -292,6 +308,7 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
             {/* Header Action Buttons */}
             <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
               <button
+                type="button"
                 onClick={handleCopy}
                 className="p-2 sm:p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 transition-colors"
                 title="Copy threat summary"
@@ -301,6 +318,7 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
               </button>
 
               <button
+                type="button"
                 onClick={onClose}
                 className="p-2 sm:p-2.5 rounded-xl bg-slate-800/80 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border border-slate-700/80 hover:border-rose-500/30 transition-colors"
                 title="Close window (Esc)"
@@ -495,8 +513,17 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
                   {incidentLinks.map((incident, idx) => (
                     <div
                       key={idx}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          if (onSelectIncident) onSelectIncident(getEnrichedIncident(incident, threat.id));
+                          else window.open(incident.url, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
                       onClick={() => onSelectIncident ? onSelectIncident(getEnrichedIncident(incident, threat.id)) : window.open(incident.url, '_blank', 'noopener,noreferrer')}
-                      className="flex items-center justify-between gap-3 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 hover:border-amber-500/40 transition-all group cursor-pointer hover:bg-slate-900/80"
+                      className="flex items-center justify-between gap-3 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 hover:border-amber-500/40 transition-all group cursor-pointer hover:bg-slate-900/80 focus:outline-none focus:ring-1 focus:ring-amber-500/40"
                     >
                       <div className="flex items-start gap-2 min-w-0">
                         <Flame className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
@@ -522,8 +549,17 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
                   {mergedTools.map((tool) => (
                     <div
                       key={tool.name}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          if (onSelectTool) onSelectTool(tool);
+                          else window.open(tool.url, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
                       onClick={() => onSelectTool ? onSelectTool(tool) : window.open(tool.url, '_blank', 'noopener,noreferrer')}
-                      className="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-cyan-500/40 hover:bg-slate-900/80 transition-all group cursor-pointer flex flex-col justify-between"
+                      className="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-cyan-500/40 hover:bg-slate-900/80 transition-all group cursor-pointer flex flex-col justify-between focus:outline-none focus:ring-1 focus:ring-cyan-500/40"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2 mb-2">
@@ -595,6 +631,7 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
               {onNavigateToOwasp && (
                 <button
+                  type="button"
                   onClick={() => {
                     onClose();
                     onNavigateToOwasp(threat.id);
@@ -607,6 +644,7 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
               )}
 
               <button
+                type="button"
                 onClick={onClose}
                 className="flex-1 sm:flex-none px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition-all shadow-lg shadow-cyan-500/10"
               >

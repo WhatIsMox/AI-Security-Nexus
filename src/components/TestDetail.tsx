@@ -6,7 +6,7 @@ import ToolDetailModal from './ToolDetailModal';
 import { 
   ArrowLeft, Target, Code, ShieldCheck, ExternalLink, BookOpen, 
   Wrench, Shield, Brain, Terminal, Eye, Link as LinkIcon, Cpu, 
-  Bot, AlertCircle, Gavel, Network, Copy, Check, Lock, Globe, Info
+  Bot, AlertCircle, Gavel, Network, Database, Copy, Check, Lock, Globe, Info
 } from 'lucide-react';
 
 interface TestDetailProps {
@@ -81,6 +81,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   </span>
                   {test.owaspTop10Ref && (
                     <button 
+                      type="button"
                       onClick={() => onNavigateToOwasp(test.owaspTop10Ref!)}
                       className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-pink-400 bg-pink-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-pink-500/20 hover:bg-pink-500/20 hover:border-pink-500/40 transition-all cursor-pointer"
                       title="Go to OWASP LLM Top 10 Entry"
@@ -90,6 +91,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   )}
                   {test.owaspMlTop10Ref && (
                     <button 
+                      type="button"
                       onClick={() => onNavigateToOwasp(test.owaspMlTop10Ref!)}
                       className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-emerald-400 bg-emerald-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all cursor-pointer"
                       title="Go to OWASP ML Top 10 Entry"
@@ -99,6 +101,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   )}
                   {test.owaspAgenticRef && (
                     <button 
+                      type="button"
                       onClick={() => onNavigateToOwasp(test.owaspAgenticRef!)}
                       className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-orange-400 bg-orange-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/40 transition-all cursor-pointer"
                       title="Go to OWASP Agentic Top 10 entry"
@@ -108,6 +111,7 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   )}
                   {test.owaspSaifRef && (
                     <button 
+                      type="button"
                       onClick={() => onNavigateToOwasp(test.owaspSaifRef!)}
                       className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-blue-400 bg-blue-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 transition-all cursor-pointer"
                       title="Go to Google SAIF Risk Entry"
@@ -117,11 +121,22 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   )}
                   {test.owaspMcpTop10Ref && (
                     <button 
+                      type="button"
                       onClick={() => onNavigateToOwasp(test.owaspMcpTop10Ref!)}
                       className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-cyan-400 bg-cyan-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-cyan-500/20 hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all cursor-pointer"
                       title="Go to OWASP MCP Top 10 Entry"
                     >
                       <Network className="w-3.5 h-3.5" /> {test.owaspMcpTop10Ref}
+                    </button>
+                  )}
+                  {test.owaspDsgaiRef && (
+                    <button 
+                      type="button"
+                      onClick={() => onNavigateToOwasp(test.owaspDsgaiRef!)}
+                      className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-indigo-400 bg-indigo-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-indigo-500/20 hover:bg-indigo-500/20 hover:border-indigo-500/40 transition-all cursor-pointer"
+                      title="Go to OWASP GenAI Data Security Entry"
+                    >
+                      <Database className="w-3.5 h-3.5" /> {test.owaspDsgaiRef}
                     </button>
                   )}
                   <span className="text-slate-400 text-xs sm:text-sm font-medium border-l border-slate-800 pl-2 sm:pl-3">
@@ -286,8 +301,16 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                   return (
                     <div 
                       key={i} 
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleToolClick(tool);
+                        }
+                      }}
                       onClick={() => handleToolClick(tool)}
-                      className="bg-slate-950 border border-slate-800 hover:border-pink-500/50 rounded-xl p-4 transition-all hover:bg-slate-900/60 cursor-pointer group shadow-sm flex flex-col justify-between"
+                      className="bg-slate-950 border border-slate-800 hover:border-pink-500/50 rounded-xl p-4 transition-all hover:bg-slate-900/60 cursor-pointer group shadow-sm flex flex-col justify-between focus:outline-none focus:ring-1 focus:ring-pink-500/40"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2 mb-2">

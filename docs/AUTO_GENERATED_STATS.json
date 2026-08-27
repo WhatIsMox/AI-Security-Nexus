@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-27T16:13:33.721Z",
+  "timestamp": "2026-08-27T17:24:03.858Z",
   "frameworks": {
     "owaspLlmTop10_2026": {
       "count": 10,
@@ -142,14 +142,14 @@
     }
   },
   "tests": {
-    "standard": 32,
+    "standard": 52,
     "agentic": 10,
-    "total": 42,
+    "total": 62,
     "byPillar": {
       "application": 17,
       "model": 7,
       "infrastructure": 6,
-      "data": 5
+      "data": 25
     }
   },
   "catalogs": {

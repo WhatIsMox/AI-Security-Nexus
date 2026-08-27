@@ -1,7 +1,7 @@
 # AI Security Nexus — System Project Map & Taxonomy Index
 
 > **Auto-Generated Reference Document**  
-> **Last Synchronized**: `2026-08-27T16:13:33.721Z`  
+> **Last Synchronized**: `2026-08-27T17:24:03.858Z`  
 > *Do not edit manually. Re-generate via `npm run docs:sync`.*
 
 ---
@@ -18,7 +18,7 @@
 | **Google SAIF Threat Model** | `SAIF-R01` - `SAIF-R15` | **15** | [`data_saif.ts`](../src/data/data_saif.ts) |
 | **OWASP GenAI Data Security (2026)** | `DSGAI01` - `DSGAI21` | **21** | [`data_genai_data_security.ts`](../src/data/data_genai_data_security.ts) |
 | **AI-DSPM Posture Capabilities** | `ai-dspm-01` - `ai-dspm-13` | **13** | [`data_genai_data_security.ts`](../src/data/data_genai_data_security.ts) |
-| **Security Test Cases (Total)** | `AITG-*`, `AGT-*` | **42** | [`data_tests.ts`](../src/data/data_tests.ts) & [`data_agentic.ts`](../src/data/data_agentic.ts) |
+| **Security Test Cases (Total)** | `AITG-*`, `AGT-*` | **62** | [`data_tests.ts`](../src/data/data_tests.ts) & [`data_agentic.ts`](../src/data/data_agentic.ts) |
 | **Tooling Registry Entries** | Security Tools | **241** | [`tools_catalog.ts`](../src/data/tools_catalog.ts) |
 | **Real-World Incident Citations** | CVEs / Papers / Outages | **156** | [`incidents_catalog.ts`](../src/data/incidents_catalog.ts) |
 
@@ -26,7 +26,7 @@
 - **AI Application Pillar (`Pillar.APP`)**: 17 tests
 - **AI Model Pillar (`Pillar.MODEL`)**: 7 tests
 - **AI Infrastructure Pillar (`Pillar.INFRA`)**: 6 tests
-- **AI Data Pillar (`Pillar.DATA`)**: 5 tests
+- **AI Data Pillar (`Pillar.DATA`)**: 25 tests
 
 ---
 

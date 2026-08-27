@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { TestItem } from '../types';
-import { ArrowRight, Brain, Filter, ListFilter, Cpu, Bot, Book, Gavel, Network, Search, X } from 'lucide-react';
+import { ArrowRight, Brain, Filter, ListFilter, Cpu, Bot, Book, Gavel, Network, Database, Search, X } from 'lucide-react';
 
 interface TestListProps {
   tests: TestItem[];
@@ -232,8 +232,16 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
           sortedTests.map((test) => (
             <div 
               key={test.id}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectTest(test);
+                }
+              }}
               onClick={() => onSelectTest(test)}
-              className="content-auto group bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-200 relative overflow-hidden"
+              className="content-auto group bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-200 relative overflow-hidden focus:outline-none focus:ring-1 focus:ring-cyan-500/40"
             >
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 relative z-10">
                 
@@ -304,6 +312,18 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                         title="Go to OWASP MCP Top 10 Entry"
                       >
                         <Network className="w-3 h-3" /> {test.owaspMcpTop10Ref}
+                      </button>
+                    )}
+                    {test.owaspDsgaiRef && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onNavigateToOwasp(test.owaspDsgaiRef!);
+                        }}
+                        className="flex items-center gap-1 font-mono text-xs text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20 whitespace-nowrap hover:bg-indigo-500/20 hover:border-indigo-500/40 hover:scale-105 active:scale-95 transition-all z-20 cursor-pointer"
+                        title="Go to OWASP GenAI Data Security Entry"
+                      >
+                        <Database className="w-3 h-3" /> {test.owaspDsgaiRef}
                       </button>
                     )}
                   </div>

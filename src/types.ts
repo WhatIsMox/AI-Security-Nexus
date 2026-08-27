@@ -81,6 +81,7 @@ export interface TestItem {
   owaspAgenticRef?: string;
   owaspSaifRef?: string;
   owaspMcpTop10Ref?: string;
+  owaspDsgaiRef?: string;
 }
 
 export interface OwaspTop10Entry {

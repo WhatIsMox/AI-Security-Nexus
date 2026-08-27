@@ -16,12 +16,12 @@ interface AgenticTop10ViewProps {
 
 const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }) => {
   const [framework, setFramework] = useState<AgenticFramework>(
-    initialExpandedId?.startsWith('AST') ? 'skills' : 'applications',
+    initialExpandedId?.toUpperCase().startsWith('AST') ? 'skills' : 'applications',
   );
 
   useEffect(() => {
-    if (initialExpandedId?.startsWith('AST')) setFramework('skills');
-    if (initialExpandedId?.startsWith('ASI')) setFramework('applications');
+    if (initialExpandedId?.toUpperCase().startsWith('AST')) setFramework('skills');
+    if (initialExpandedId?.toUpperCase().startsWith('ASI')) setFramework('applications');
   }, [initialExpandedId]);
 
   const selectFramework = (next: AgenticFramework) => {
@@ -82,7 +82,7 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
         <div key="agentic-applications-panel" id="agentic-applications-panel" role="tabpanel" aria-labelledby="agentic-applications-tab" className="page-view-transition animate-page-enter">
           <OwaspTop10View
             key="agentic-applications"
-            initialExpandedId={initialExpandedId?.startsWith('ASI') ? initialExpandedId : null}
+            initialExpandedId={initialExpandedId?.toUpperCase().startsWith('ASI') ? initialExpandedId : null}
             data={OWASP_AGENTIC_APPLICATIONS_DATA}
             title="OWASP Top 10 for Agentic Applications (2026)"
             description="System-wide security threats for autonomous multi-agent environments—covering goal hijacking, over-privileged tool invocation, rogue memory poisoning, cascading failures, and unauthorized inter-agent messaging."
@@ -94,7 +94,7 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
         <div key="agentic-skills-panel" id="agentic-skills-panel" role="tabpanel" aria-labelledby="agentic-skills-tab" className="page-view-transition animate-page-enter">
           <OwaspTop10View
             key="agentic-skills"
-            initialExpandedId={initialExpandedId?.startsWith('AST') ? initialExpandedId : null}
+            initialExpandedId={initialExpandedId?.toUpperCase().startsWith('AST') ? initialExpandedId : null}
             data={OWASP_AGENTIC_THREATS_DATA}
             title="OWASP Agentic Skills Top 10"
             description="Focused security standards for modular, reusable agent tool definitions—addressing malicious skill packages, metadata poisoning, permission creep, unverified updates, and cross-platform isolation failures."
