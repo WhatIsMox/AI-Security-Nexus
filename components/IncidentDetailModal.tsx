@@ -25,13 +25,14 @@ export const IncidentDetailModal: React.FC<IncidentDetailModalProps> = ({
         onClose();
       }
     };
+    const previousOverflow = document.body.style.overflow;
     if (incident) {
       window.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
     }
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
     };
   }, [incident, onClose]);
 

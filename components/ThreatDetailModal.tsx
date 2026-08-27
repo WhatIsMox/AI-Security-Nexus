@@ -186,13 +186,14 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
         onClose();
       }
     };
+    const previousOverflow = document.body.style.overflow;
     if (currentThreatId && resolveThreatData(currentThreatId)) {
       window.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
     }
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
     };
   }, [currentThreatId, onClose]);
 
@@ -207,13 +208,34 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
 
   const handleCopy = () => {
     const text = `${threat.id} - ${threat.title}\nFramework: ${threat.frameworkName}\n\nDescription:\n${threat.description}\n\nKey Prevention Controls:\n${threat.preventionStrategies.slice(0, 4).map(s => `• ${s}`).join('\n')}`;
+    const fallbackCopy = () => {
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        // Fallback failed
+      }
+    };
+
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text).then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       }).catch(() => {
-        // Fallback for restricted clipboard contexts
+        fallbackCopy();
       });
+    } else {
+      fallbackCopy();
     }
   };
 

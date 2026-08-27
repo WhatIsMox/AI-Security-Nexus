@@ -128,6 +128,41 @@ test('Vector B - Scenario B2: Rapid Hash Navigation & Popstate Churn', () => {
   assert.ok(appCode.includes("window.removeEventListener('popstate', handleHashChange)"), 'App must clean up popstate listener');
 });
 
+test('Vector B - Scenario B9: Malformed URI Component Decoding', () => {
+  const appCode = readFile('App.tsx');
+  assert.ok(appCode.includes("decodeURIComponent("), 'App must safely decode URI component');
+  assert.ok(appCode.includes("catch"), 'App must wrap decodeURIComponent in try/catch to prevent malformed URI crashes');
+});
+
+test('Vector B - Scenario B10: Cross-Navigation State Leakage via React Key', () => {
+  const appCode = readFile('App.tsx');
+  assert.ok(appCode.includes("key={selectedTest.id}"), 'App must pass unique key to TestDetail to reset instance state on navigation');
+});
+
+test('Vector B - Scenario B11: Mobile Sidebar Resize Scroll Lock Release', () => {
+  const appCode = readFile('App.tsx');
+  assert.ok(appCode.includes("window.addEventListener('resize'"), 'App must listen for window resize');
+  assert.ok(appCode.includes("innerWidth >= 768"), 'App must check desktop breakpoint');
+  assert.ok(appCode.includes("setIsSidebarOpen(false)"), 'App must close sidebar to release scroll lock');
+});
+
+test('Vector B - Scenario B12: Modal Stacking Scroll Lock Preservation', () => {
+  const modals = ['components/ThreatDetailModal.tsx', 'components/ToolDetailModal.tsx', 'components/IncidentDetailModal.tsx'];
+  for (const file of modals) {
+    const code = readFile(file);
+    assert.ok(code.includes("const previousOverflow = document.body.style.overflow;"), `${file} must capture previous overflow`);
+    assert.ok(code.includes("document.body.style.overflow = previousOverflow;"), `${file} must restore previous overflow on unmount`);
+  }
+});
+
+test('Vector B - Scenario B13: Global Search Keyboard Auto-Scroll and Body Overflow Lock', () => {
+  const searchModalCode = readFile('components/GlobalSearchModal.tsx');
+  assert.ok(searchModalCode.includes("document.body.style.overflow = 'hidden';"), 'GlobalSearchModal must lock body overflow on open');
+  assert.ok(searchModalCode.includes("document.body.style.overflow = previousOverflow;"), 'GlobalSearchModal must restore previous overflow on close');
+  assert.ok(searchModalCode.includes("scrollIntoView({ block: 'nearest' })"), 'GlobalSearchModal must auto-scroll active search items into view');
+  assert.ok(searchModalCode.includes("window.addEventListener('keydown', handleWindowKeyDown)"), 'GlobalSearchModal must attach keydown listener to window for reliable shortcut capture');
+});
+
 test('Vector B - Scenario B3: Modal Stacking & Simultaneous Triggers', () => {
   const appCode = readFile('App.tsx');
   assert.ok(appCode.includes('activeModalTool'), 'App.tsx must manage activeModalTool state');
@@ -246,6 +281,20 @@ test('Vector C - Scenario C7: Safe Area and Mobile Touch Target Bounds', () => {
   assert.ok(incidentModalCode.includes('safe-area-inset-top'), 'IncidentDetailModal must account for safe-area-inset-top');
 });
 
+test('Vector C - Scenario C8: Hash Route Query String Tampering / Isolation', () => {
+  const appCode = readFile('App.tsx');
+  assert.ok(appCode.includes("clean.indexOf('?')"), 'App must locate query strings in hashes');
+  assert.ok(appCode.includes("clean.substring(0, queryIndex)"), 'App must isolate and drop query strings from hash routes');
+});
+
+test('Vector C - Scenario C9: Case-Insensitive Deep-Link Route & Test ID Resolution', () => {
+  const appCode = readFile('App.tsx');
+  assert.ok(appCode.includes("upper.startsWith('AITG-')"), 'App must match test prefixes case-insensitively');
+  assert.ok(appCode.includes("upper.startsWith('ASI')"), 'App must match agentic prefixes case-insensitively');
+  assert.ok(appCode.includes("upper.startsWith('ML')"), 'App must match ML prefixes case-insensitively');
+  assert.ok(appCode.includes("id.startsWith(\"ML\")"), 'handleNavigateToOwasp must match framework prefixes');
+});
+
 // =========================================================================
 // VECTOR D: Network & Failure Resilience (Scenarios D1 - D7)
 // =========================================================================
@@ -345,9 +394,9 @@ test('Vector E - Scenario E4: Body Overflow Lock Cleanup on Modal Dismiss', () =
   const toolModalCode = readFile('components/ToolDetailModal.tsx');
   const incidentModalCode = readFile('components/IncidentDetailModal.tsx');
 
-  assert.ok(threatModalCode.includes("document.body.style.overflow = ''"), 'ThreatDetailModal must clean up body overflow lock');
-  assert.ok(toolModalCode.includes("document.body.style.overflow = ''"), 'ToolDetailModal must clean up body overflow lock');
-  assert.ok(incidentModalCode.includes("document.body.style.overflow = ''"), 'IncidentDetailModal must clean up body overflow lock');
+  assert.ok(threatModalCode.includes("document.body.style.overflow = previousOverflow"), 'ThreatDetailModal must clean up body overflow lock');
+  assert.ok(toolModalCode.includes("document.body.style.overflow = previousOverflow"), 'ToolDetailModal must clean up body overflow lock');
+  assert.ok(incidentModalCode.includes("document.body.style.overflow = previousOverflow"), 'IncidentDetailModal must clean up body overflow lock');
 });
 
 test('Vector E - Scenario E5: ARIA Modal Focus & Accessibility Landmark Validation', () => {
@@ -368,4 +417,13 @@ test('Vector E - Scenario E5: ARIA Modal Focus & Accessibility Landmark Validati
 test('Vector E - Scenario E6: Zero TypeScript Strictness Violations', () => {
   const tsconfig = JSON.parse(readFile('tsconfig.json'));
   assert.strictEqual(tsconfig.compilerOptions.strict, true, 'tsconfig.json must enable strict: true');
+});
+
+test('Vector E - Scenario E7: React Component Tree Error Isolation (Error Boundary)', () => {
+  const indexTsx = readFile('index.tsx');
+  assert.ok(indexTsx.includes('ErrorBoundary'), 'index.tsx must wrap App with ErrorBoundary to prevent white screens on unhandled component exceptions');
+  
+  const errorBoundaryCode = readFile('components/ErrorBoundary.tsx');
+  assert.ok(errorBoundaryCode.includes('componentDidCatch'), 'ErrorBoundary must implement componentDidCatch');
+  assert.ok(errorBoundaryCode.includes('getDerivedStateFromError'), 'ErrorBoundary must implement getDerivedStateFromError');
 });

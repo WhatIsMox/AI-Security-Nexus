@@ -304,14 +304,29 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
+  // Focus input and lock body scroll on open
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
       setSelectedIndex(0);
+      const previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = previousOverflow;
+      };
     } else {
       setQuery('');
     }
   }, [isOpen]);
+
+  // Keep active item scrolled into view during keyboard navigation
+  useEffect(() => {
+    if (!isOpen || !listRef.current) return;
+    const activeElement = listRef.current.children[selectedIndex] as HTMLElement;
+    if (activeElement && typeof activeElement.scrollIntoView === 'function') {
+      activeElement.scrollIntoView({ block: 'nearest' });
+    }
+  }, [selectedIndex, isOpen]);
 
   const allSearchItems = useMemo(() => getSearchIndex(), []);
 
@@ -356,26 +371,33 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     setSelectedIndex(0);
   };
 
-  // Handle keyboard events
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      onClose();
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (filteredResults.length === 0) return;
-      setSelectedIndex(prev => (prev + 1 < filteredResults.length ? prev + 1 : 0));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (filteredResults.length === 0) return;
-      setSelectedIndex(prev => (prev - 1 >= 0 ? prev - 1 : filteredResults.length - 1));
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      const selected = filteredResults[selectedIndex];
-      if (selected) {
-        handleSelectItem(selected);
+  // Handle keyboard events via window listener for consistent capture
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleWindowKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (filteredResults.length === 0) return;
+        setSelectedIndex(prev => (prev + 1 < filteredResults.length ? prev + 1 : 0));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (filteredResults.length === 0) return;
+        setSelectedIndex(prev => (prev - 1 >= 0 ? prev - 1 : filteredResults.length - 1));
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const selected = filteredResults[selectedIndex];
+        if (selected) {
+          handleSelectItem(selected);
+        }
       }
-    }
-  };
+    };
+
+    window.addEventListener('keydown', handleWindowKeyDown);
+    return () => window.removeEventListener('keydown', handleWindowKeyDown);
+  }, [isOpen, filteredResults, selectedIndex, onClose]);
 
   const handleSelectItem = (item: SearchResultItem) => {
     if (item.testItem) {
@@ -415,7 +437,6 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     <div 
       className="fixed inset-0 z-[100] flex items-center justify-center pt-[calc(env(safe-area-inset-top,0px)+1rem)] sm:pt-6 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:pb-6 px-3 sm:px-6 md:p-12 bg-black/75 backdrop-blur-md animate-modal-backdrop"
       onClick={onClose}
-      onKeyDown={handleKeyDown}
       role="dialog"
       aria-modal="true"
       aria-labelledby="global-search-title"

@@ -3,7 +3,7 @@ import React from 'react';
 import { 
   Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, 
   Brain, Cpu, Bot, Gavel, Network, FileText, Search, CheckCircle2, 
-  Terminal, Flame, Sparkles 
+  Terminal, Flame, Sparkles, ChevronDown, Globe, SlidersHorizontal 
 } from 'lucide-react';
 import { Pillar, GlobalDomain } from '../types';
 
@@ -24,6 +24,14 @@ export type AppView =
   | 'incidents';
 
 export type ActivePillarKey = Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
+
+const DOMAIN_OPTIONS: { id: GlobalDomain; label: string; icon: React.ComponentType<{ className?: string }>; color: string; badge: string }[] = [
+  { id: 'ALL', label: 'All AI Domains', icon: Globe, color: 'text-cyan-400', badge: 'Global' },
+  { id: 'LLM', label: 'Large Language Models', icon: Brain, color: 'text-cyan-400', badge: 'LLM' },
+  { id: 'ML', label: 'Machine Learning', icon: Cpu, color: 'text-emerald-400', badge: 'ML' },
+  { id: 'AGENT', label: 'Agentic Applications', icon: Bot, color: 'text-pink-400', badge: 'Agents' },
+  { id: 'MCP', label: 'Model Context Protocol', icon: Network, color: 'text-indigo-400', badge: 'MCP' },
+];
 
 interface SidebarProps {
   activePillar: ActivePillarKey;
@@ -56,6 +64,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   globalDomain,
   onSelectDomain
 }) => {
+  const currentDomainOption = DOMAIN_OPTIONS.find(opt => opt.id === globalDomain) || DOMAIN_OPTIONS[0];
+  const DomainIcon = currentDomainOption.icon;
+
   const navItems = [
     { id: Pillar.APP, icon: LayoutGrid, label: "Application Testing" },
     { id: Pillar.MODEL, icon: Box, label: "Model Testing" },
@@ -114,24 +125,39 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* Global Domain Selector */}
-        <div className="p-3 border-b border-slate-800/80">
-          <label htmlFor="domain-select" className="sr-only">Select Domain Focus</label>
-          <div className="relative">
+        {/* Global Domain Scope Selector */}
+        <div className="px-3 py-2.5 border-b border-slate-800/80">
+          <div className="flex items-center justify-between mb-1.5 px-0.5">
+            <label htmlFor="domain-select" className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <SlidersHorizontal className="w-3 h-3 text-cyan-400" />
+              <span>Scope Filter</span>
+            </label>
+            {globalDomain !== 'ALL' ? (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-mono font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                {currentDomainOption.badge}
+              </span>
+            ) : (
+              <span className="text-[9px] font-mono text-slate-500">
+                Global
+              </span>
+            )}
+          </div>
+          <div className="relative group">
             <select
               id="domain-select"
               value={globalDomain}
               onChange={(e) => onSelectDomain(e.target.value as GlobalDomain)}
-              className="w-full appearance-none bg-slate-900 border border-slate-700 hover:border-cyan-500/50 text-slate-300 text-xs rounded-xl pl-8 pr-8 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all cursor-pointer shadow-sm"
+              aria-label="Select AI Domain Focus"
+              className="w-full appearance-none bg-slate-900/90 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/40 focus:border-cyan-400 text-slate-200 text-xs font-medium rounded-xl pl-9 pr-8 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 transition-all cursor-pointer shadow-sm shadow-black/20"
             >
-              <option value="ALL">🌐 All AI Domains</option>
-              <option value="LLM">🧠 Large Language Models</option>
-              <option value="ML">⚙️ Machine Learning</option>
-              <option value="AGENT">🤖 Agentic Applications</option>
-              <option value="MCP">🔌 Model Context Protocol</option>
+              {DOMAIN_OPTIONS.map((opt) => (
+                <option key={opt.id} value={opt.id} className="bg-slate-950 text-slate-200 py-1.5">
+                  {opt.label}
+                </option>
+              ))}
             </select>
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 text-xs">▼</div>
+            <DomainIcon className={`w-3.5 h-3.5 ${currentDomainOption.color} absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-transform duration-200 group-hover:scale-110`} />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-cyan-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors" />
           </div>
         </div>
 

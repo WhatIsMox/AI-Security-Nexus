@@ -25,6 +25,25 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
   };
 
   const handleCopyPayload = (code: string, index: number) => {
+    const fallbackCopy = () => {
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = code;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+        setCopiedPayloadIndex(index);
+        setTimeout(() => setCopiedPayloadIndex(null), 2000);
+      } catch (err) {
+        // Fallback failed
+      }
+    };
+
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(code).then(() => {
         setCopiedPayloadIndex(index);
@@ -32,8 +51,10 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
           setCopiedPayloadIndex(null);
         }, 2000);
       }).catch(() => {
-        // Fallback for restricted clipboard contexts
+        fallbackCopy();
       });
+    } else {
+      fallbackCopy();
     }
   };
 

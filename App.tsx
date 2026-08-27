@@ -30,7 +30,16 @@ const ViewLoadingFallback = () => (
 );
 
 const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKey; id: string | null } => {
-  const clean = hash.replace(/^#\/?/, '').trim();
+  let clean = hash.replace(/^#\/?/, '').trim();
+  try {
+    clean = decodeURIComponent(clean);
+  } catch (e) {
+    // Malformed URI string
+  }
+  const queryIndex = clean.indexOf('?');
+  if (queryIndex !== -1) {
+    clean = clean.substring(0, queryIndex);
+  }
   if (!clean || clean === 'dashboard') {
     return { view: 'dashboard', pillar: 'ALL', id: null };
   }
@@ -69,8 +78,10 @@ const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKe
     const parts = clean.split('/');
     return { view: 'genai-data-security', pillar: 'GENAIDATASECURITY', id: parts[1] || null };
   }
+  const upper = clean.toUpperCase();
   if (
     clean.startsWith('DSGAI') ||
+    upper.startsWith('DSGAI') ||
     clean.startsWith('ai-dspm') ||
     clean === 'genai-data-security-context' ||
     clean === 'risk-navigator' ||
@@ -78,34 +89,35 @@ const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKe
   ) {
     return { view: 'genai-data-security', pillar: 'GENAIDATASECURITY', id: clean };
   }
-  if (clean.startsWith('owasp-top10') || clean.startsWith('LLM')) {
+  if (clean.startsWith('owasp-top10') || clean.startsWith('LLM') || upper.startsWith('LLM')) {
     const parts = clean.split('/');
-    const id = clean.startsWith('LLM') ? clean : (parts[1] || null);
+    const id = (clean.startsWith('LLM') || upper.startsWith('LLM')) ? clean : (parts[1] || null);
     return { view: 'owasp-top10', pillar: 'TOP10', id };
   }
-  if (clean.startsWith('owasp-ml-top10') || clean.startsWith('ML')) {
+  if (clean.startsWith('owasp-ml-top10') || clean.startsWith('ML') || upper.startsWith('ML')) {
     const parts = clean.split('/');
-    const id = clean.startsWith('ML') ? clean : (parts[1] || null);
+    const id = (clean.startsWith('ML') || upper.startsWith('ML')) ? clean : (parts[1] || null);
     return { view: 'owasp-ml-top10', pillar: 'MLTOP10', id };
   }
-  if (clean.startsWith('owasp-agent-top10') || clean.startsWith('ASI') || clean.startsWith('AST')) {
+  if (clean.startsWith('owasp-agent-top10') || clean.startsWith('ASI') || clean.startsWith('AST') || upper.startsWith('ASI') || upper.startsWith('AST')) {
     const parts = clean.split('/');
-    const id = (clean.startsWith('ASI') || clean.startsWith('AST')) ? clean : (parts[1] || null);
+    const id = (clean.startsWith('ASI') || clean.startsWith('AST') || upper.startsWith('ASI') || upper.startsWith('AST')) ? clean : (parts[1] || null);
     return { view: 'owasp-agent-top10', pillar: 'AGENTTOP10', id };
   }
-  if (clean.startsWith('owasp-saif-top10') || clean.startsWith('SAIF')) {
+  if (clean.startsWith('owasp-saif-top10') || clean.startsWith('SAIF') || upper.startsWith('SAIF')) {
     const parts = clean.split('/');
-    const id = clean.startsWith('SAIF') ? clean : (parts[1] || null);
+    const id = (clean.startsWith('SAIF') || upper.startsWith('SAIF')) ? clean : (parts[1] || null);
     return { view: 'owasp-saif-top10', pillar: 'SAIFTOP10', id };
   }
-  if (clean.startsWith('owasp-mcp-top10') || clean.startsWith('MCP')) {
+  if (clean.startsWith('owasp-mcp-top10') || clean.startsWith('MCP') || upper.startsWith('MCP')) {
     const parts = clean.split('/');
-    const id = clean.startsWith('MCP') ? clean : (parts[1] || null);
+    const id = (clean.startsWith('MCP') || upper.startsWith('MCP')) ? clean : (parts[1] || null);
     return { view: 'owasp-mcp-top10', pillar: 'MCPTOP10', id };
   }
-  if (clean.startsWith('detail/') || clean.startsWith('AITG-') || clean.startsWith('AGT-')) {
-    const testId = clean.startsWith('detail/') ? clean.replace('detail/', '').trim() : clean;
-    return { view: 'detail', pillar: 'ALL', id: testId };
+  if (clean.startsWith('detail/') || clean.startsWith('AITG-') || clean.startsWith('AGT-') || upper.startsWith('AITG-') || upper.startsWith('AGT-')) {
+    const rawId = clean.startsWith('detail/') ? clean.replace(/^detail\//, '').trim() : clean;
+    const foundTest = TEST_DATA.find(t => t.id.toUpperCase() === rawId.toUpperCase());
+    return { view: 'detail', pillar: 'ALL', id: foundTest ? foundTest.id : rawId };
   }
   if (clean.startsWith('tests')) {
     const parts = clean.split('/');
@@ -151,7 +163,7 @@ const App: React.FC = () => {
   const [activePillar, setActivePillar] = useState<ActivePillarKey>(initialHashState.pillar);
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(() => {
     if (initialHashState.view === 'detail' && initialHashState.id) {
-      return TEST_DATA.find(t => t.id === initialHashState.id) || null;
+      return TEST_DATA.find(t => t.id.toUpperCase() === initialHashState.id!.toUpperCase()) || null;
     }
     return null;
   });
@@ -179,7 +191,7 @@ const App: React.FC = () => {
       setActivePillar(parsed.pillar);
       setOwaspTargetId(parsed.view !== 'detail' ? parsed.id : null);
       if (parsed.view === 'detail' && parsed.id) {
-        const found = TEST_DATA.find(t => t.id === parsed.id);
+        const found = TEST_DATA.find(t => t.id.toUpperCase() === parsed.id!.toUpperCase());
         setSelectedTest(found || null);
       } else if (parsed.view !== 'detail') {
         setSelectedTest(null);
@@ -224,6 +236,17 @@ const App: React.FC = () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', closeOnEscape);
     };
+  }, [isSidebarOpen]);
+
+  // Handle window resize to release mobile scroll lock on desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768 && isSidebarOpen) {
+        setIsSidebarOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [isSidebarOpen]);
 
   const filteredTests = useMemo(() => {
@@ -276,19 +299,19 @@ const App: React.FC = () => {
     let view: AppView = 'owasp-top10';
     let pillar: ActivePillarKey = 'TOP10';
 
-    if (id.startsWith("ML")) {
+    if (id.startsWith("ML") || id.toUpperCase().startsWith("ML")) {
       pillar = 'MLTOP10';
       view = 'owasp-ml-top10';
-    } else if (id.startsWith("ASI") || id.startsWith("AST")) {
+    } else if (id.startsWith("ASI") || id.startsWith("AST") || id.toUpperCase().startsWith("ASI") || id.toUpperCase().startsWith("AST")) {
       pillar = 'AGENTTOP10';
       view = 'owasp-agent-top10';
-    } else if (id.startsWith("SAIF")) {
+    } else if (id.startsWith("SAIF") || id.toUpperCase().startsWith("SAIF")) {
       pillar = 'SAIFTOP10';
       view = 'owasp-saif-top10';
-    } else if (id.startsWith("MCP")) {
+    } else if (id.startsWith("MCP") || id.toUpperCase().startsWith("MCP")) {
       pillar = 'MCPTOP10';
       view = 'owasp-mcp-top10';
-    } else if (id.startsWith("DSGAI") || id.startsWith("ai-dspm")) {
+    } else if (id.startsWith("DSGAI") || id.startsWith("ai-dspm") || id.toUpperCase().startsWith("DSGAI")) {
       pillar = 'GENAIDATASECURITY';
       view = 'genai-data-security';
     }
@@ -572,6 +595,7 @@ const App: React.FC = () => {
 
               {currentView === 'detail' && selectedTest && (
                 <TestDetail 
+                  key={selectedTest.id}
                   test={selectedTest} 
                   onBack={handleBackToTests} 
                   onNavigateToOwasp={handleNavigateToOwasp}

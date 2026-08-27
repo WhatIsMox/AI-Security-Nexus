@@ -20,13 +20,14 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
+    const previousOverflow = document.body.style.overflow;
     if (tool) {
       window.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
     }
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
     };
   }, [tool, onClose]);
 
@@ -35,14 +36,36 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose,
   const enriched = getEnrichedTool(tool);
 
   const handleCopyCode = () => {
-    if (!enriched.installationOrQuickstart) return;
+    const textToCopy = enriched.installationOrQuickstart;
+    if (!textToCopy) return;
+    const fallbackCopy = () => {
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        // Fallback failed
+      }
+    };
+
     if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(enriched.installationOrQuickstart).then(() => {
+      navigator.clipboard.writeText(textToCopy).then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       }).catch(() => {
-        // Fallback for restricted clipboard contexts
+        fallbackCopy();
       });
+    } else {
+      fallbackCopy();
     }
   };
 

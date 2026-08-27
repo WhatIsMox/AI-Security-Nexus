@@ -145,11 +145,10 @@ test('Bug Fix 15: App.tsx prevents test ID pollution of owaspTargetId', (t) => {
 });
 
 test('Bug Fix 16: ThreatDetailModal implements mobile safe area padding and clean body overflow reset', (t) => {
-  const content = readFile('components/ThreatDetailModal.tsx');
-  assert.ok(content.includes('safe-area-inset-top'), 'ThreatDetailModal must include safe area top inset padding');
-  assert.ok(content.includes('safe-area-inset-bottom'), 'ThreatDetailModal must include safe area bottom inset padding');
-  assert.ok(content.includes("document.body.style.overflow = '';"), 'ThreatDetailModal cleanup must reset body overflow to empty string');
-  assert.ok(!content.includes("document.body.style.overflow = 'unset';"), 'ThreatDetailModal cleanup must not use non-standard unset string');
+  const code = readFile('components/ThreatDetailModal.tsx');
+  assert.ok(code.includes('env(safe-area-inset-top'), 'ThreatDetailModal must account for safe-area-inset-top');
+  assert.ok(code.includes('safe-area-inset-bottom'), 'ThreatDetailModal must include safe area bottom inset padding');
+  assert.ok(code.includes("document.body.style.overflow = previousOverflow"), 'ThreatDetailModal cleanup must reset body overflow to previousOverflow');
+  assert.ok(!code.includes("document.body.style.overflow = 'unset';"), 'ThreatDetailModal cleanup must not use non-standard unset string');
   t.diagnostic('Verified ThreatDetailModal safe area clearance and overflow cleanup');
 });
-
