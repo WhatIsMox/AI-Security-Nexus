@@ -212,37 +212,69 @@
   animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Animated grid background */
+/* Animated grid background (hardware-compositor accelerated) */
 .bg-grid-animated {
+  position: absolute;
+  top: -44px;
+  left: -44px;
+  width: calc(100% + 44px);
+  height: calc(100% + 44px);
   background-image:
     linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
   background-size: 44px 44px;
   animation: grid-pan 9s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  pointer-events: none;
 }
 @keyframes grid-pan {
-  from { background-position: 0 0; }
-  to   { background-position: 44px 44px; }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(44px, 44px, 0); }
 }
 
-/* Aurora blobs */
+/* Aurora blobs (GPU compositor accelerated) */
+.aurora-blob {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: paint;
+  pointer-events: none;
+}
+
 @keyframes aurora-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(60px, 40px) scale(1.15); }
-  66%      { transform: translate(-30px, 70px) scale(0.95); }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33%      { transform: translate3d(60px, 40px, 0) scale(1.15); }
+  66%      { transform: translate3d(-30px, 70px, 0) scale(0.95); }
 }
 @keyframes aurora-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(-70px, 30px) scale(1.1); }
-  66%      { transform: translate(40px, -40px) scale(0.9); }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33%      { transform: translate3d(-70px, 30px, 0) scale(1.1); }
+  66%      { transform: translate3d(40px, -40px, 0) scale(0.9); }
 }
 @keyframes aurora-c {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(50px, -50px) scale(1.2); }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(50px, -50px, 0) scale(1.2); }
 }
-.animate-aurora-a { animation: aurora-a 18s ease-in-out infinite; }
-.animate-aurora-b { animation: aurora-b 22s ease-in-out infinite; }
-.animate-aurora-c { animation: aurora-c 26s ease-in-out infinite; }
+.animate-aurora-a {
+  animation: aurora-a 18s ease-in-out infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+.animate-aurora-b {
+  animation: aurora-b 22s ease-in-out infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+.animate-aurora-c {
+  animation: aurora-c 26s ease-in-out infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
 
 /* Typewriter caret */
 @keyframes caret-blink {
@@ -251,21 +283,40 @@
 }
 .animate-caret { animation: caret-blink 1s step-end infinite; }
 
-/* Tool marquees */
+/* Tool marquees (GPU compositor accelerated with layer containment) */
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 @keyframes marquee-reverse {
-  from { transform: translateX(-50%); }
-  to   { transform: translateX(0); }
+  from { transform: translate3d(-50%, 0, 0); }
+  to   { transform: translate3d(0, 0, 0); }
 }
 .animate-marquee {
   animation: marquee 420s linear infinite;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: layout paint;
 }
 .animate-marquee-reverse {
   animation: marquee-reverse 460s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: layout paint;
+}
+
+/* App fixed backdrop containment */
+.app-backdrop {
+  contain: strict;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+.app-backdrop-orb {
+  contain: paint;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
   will-change: transform;
 }
 

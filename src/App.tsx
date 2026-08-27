@@ -475,9 +475,19 @@ const App: React.FC = () => {
         pt-16 md:pt-0
         md:ml-64
       `}>
-        <div className="app-backdrop fixed inset-0 pointer-events-none z-0">
-          <div className="app-backdrop-orb absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[100px]" />
-          <div className="app-backdrop-orb absolute bottom-0 left-64 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[100px]" />
+        <div className="app-backdrop fixed inset-0 pointer-events-none z-0 overflow-hidden">
+          <div
+            className="app-backdrop-orb absolute top-0 right-0 w-[500px] h-[500px] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, rgba(6, 182, 212, 0.02) 45%, transparent 70%)',
+            }}
+          />
+          <div
+            className="app-backdrop-orb absolute bottom-0 left-64 w-[500px] h-[500px] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0.02) 45%, transparent 70%)',
+            }}
+          />
         </div>
 
         <div className="app-content relative z-10 py-8">

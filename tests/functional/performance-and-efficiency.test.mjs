@@ -98,3 +98,33 @@ test('Performance & Efficiency - Non-Blocking Analytics & 0ms Loading Shell', (t
   assert.ok(indexHtml.includes('Loading frameworks'), 'index.html must provide pre-render visual loading status');
   assert.ok(indexHtml.includes('AI Security Nexus'), 'Pre-render shell must include brand title for 0ms initial paint');
 });
+
+test('Performance & Efficiency - GPU Hardware Compositor Acceleration & Zero Repaint Grid', (t) => {
+  const indexCss = readFile('index.css');
+
+  // Assert .bg-grid-animated uses compositor-safe transform instead of repainting background-position
+  assert.ok(indexCss.includes('.bg-grid-animated'), 'index.css must define .bg-grid-animated');
+  assert.ok(indexCss.includes('grid-pan'), 'index.css must define grid-pan animation');
+  assert.ok(indexCss.includes('transform: translate3d('), 'index.css animations must use 3D hardware-accelerated transforms');
+  assert.ok(!indexCss.includes('background-position: 44px'), 'grid-pan must not animate background-position (which causes 120Hz GPU repaints)');
+
+  // Assert aurora blobs use hardware compositor layer promotion
+  assert.ok(indexCss.includes('.animate-aurora-a') && indexCss.includes('will-change: transform;'), 'Aurora animations must declare will-change: transform');
+  assert.ok(indexCss.includes('.animate-aurora-b') && indexCss.includes('will-change: transform;'), 'Aurora animations must declare will-change: transform');
+  assert.ok(indexCss.includes('.animate-aurora-c') && indexCss.includes('will-change: transform;'), 'Aurora animations must declare will-change: transform');
+
+  // Assert tool marquee uses layout and paint containment with 3D translation
+  assert.ok(indexCss.includes('.animate-marquee') && indexCss.includes('contain: layout paint;'), 'Marquee must declare contain: layout paint for layer isolation');
+  assert.ok(indexCss.includes('.animate-marquee-reverse') && indexCss.includes('contain: layout paint;'), 'Marquee reverse must declare contain: layout paint');
+});
+
+test('Performance & Efficiency - React Reconciliation Isolation for Typewriter Loop', (t) => {
+  const dashboardContent = readFile('components/Dashboard.tsx');
+
+  // Assert HeroTypewriter is isolated as a React.memo subcomponent to prevent full-dashboard re-renders on every character
+  assert.ok(dashboardContent.includes('const HeroTypewriter: React.FC'), 'Dashboard must define isolated HeroTypewriter subcomponent');
+  assert.ok(dashboardContent.includes('React.memo('), 'HeroTypewriter must be wrapped in React.memo');
+  assert.ok(!dashboardContent.includes('const typed = useTypewriter('), 'Dashboard root component must not subscribe to high-frequency useTypewriter state');
+  assert.ok(dashboardContent.includes('<HeroTypewriter phrases={heroPhrases} />'), 'Dashboard must render HeroTypewriter subcomponent');
+});
+

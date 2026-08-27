@@ -126,6 +126,18 @@ const useTypewriter = (phrases: string[], typeMs = 45, holdMs = 2200) => {
   return text;
 };
 
+/** Memoized isolated typewriter component preventing full Dashboard re-renders. */
+const HeroTypewriter: React.FC<{ phrases: string[] }> = React.memo(({ phrases }) => {
+  const activePhrase = useTypewriter(phrases);
+  return (
+    <span className="min-w-0 break-words font-mono text-sm text-slate-300">
+      <span className="text-slate-500">test defenses against </span>
+      <span className="text-cyan-300 font-semibold">{activePhrase}</span>
+      <span className="text-cyan-400 animate-caret">▍</span>
+    </span>
+  );
+});
+
 /** Scroll-reveal: any `.reveal` element fades up when it enters the viewport. */
 function useRevealObserver(...deps: any[]) {
   useEffect(() => {
@@ -442,14 +454,13 @@ const Dashboard: React.FC<DashboardProps> = ({
     });
   }, [globalDomain]);
 
-  /* ---------------- hero typewriter ---------------- */
+  /* ---------------- hero typewriter phrases ---------------- */
   const heroPhrases = useMemo(() => {
     const titles = [...OWASP_TOP_10_DATA, ...OWASP_AGENTIC_APPLICATIONS_DATA, ...OWASP_AGENTIC_THREATS_DATA, ...OWASP_MCP_TOP_10_DATA, ...OWASP_ML_TOP_10_DATA]
       .slice(0, 14)
       .map((e: OwaspTop10Entry) => e.title);
     return Array.from(new Set(titles));
   }, []);
-  const typed = useTypewriter(heroPhrases);
 
   /* ---------------- featured test spotlight ---------------- */
   const [spotIndex, setSpotIndex] = useState(0);
@@ -494,11 +505,26 @@ const Dashboard: React.FC<DashboardProps> = ({
       ================================================================= */}
       <section className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 mb-10">
         {/* animated backdrop */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0 bg-grid-animated opacity-60 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_35%,black,transparent)]" />
-          <div className="absolute -top-32 -left-24 w-[420px] h-[420px] rounded-full bg-cyan-500/15 blur-[110px] animate-aurora-a" />
-          <div className="absolute top-10 right-0 w-[380px] h-[380px] rounded-full bg-purple-500/15 blur-[110px] animate-aurora-b" />
-          <div className="absolute -bottom-40 left-1/3 w-[460px] h-[460px] rounded-full bg-pink-500/10 blur-[120px] animate-aurora-c" />
+          <div
+            className="aurora-blob absolute -top-32 -left-24 w-[420px] h-[420px] rounded-full animate-aurora-a"
+            style={{
+              background: 'radial-gradient(circle, rgba(6, 182, 212, 0.22) 0%, rgba(6, 182, 212, 0.10) 40%, transparent 70%)',
+            }}
+          />
+          <div
+            className="aurora-blob absolute top-10 right-0 w-[380px] h-[380px] rounded-full animate-aurora-b"
+            style={{
+              background: 'radial-gradient(circle, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.10) 40%, transparent 70%)',
+            }}
+          />
+          <div
+            className="aurora-blob absolute -bottom-40 left-1/3 w-[460px] h-[460px] rounded-full animate-aurora-c"
+            style={{
+              background: 'radial-gradient(circle, rgba(236, 72, 153, 0.16) 0%, rgba(236, 72, 153, 0.07) 40%, transparent 70%)',
+            }}
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/60" />
         </div>
 
@@ -523,11 +549,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           {/* typewriter */}
           <div className="flex items-start sm:items-center gap-3 mb-9 min-h-7 animate-fade-up [animation-delay:240ms]">
             <Shield className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span className="min-w-0 break-words font-mono text-sm text-slate-300">
-              <span className="text-slate-500">test defenses against </span>
-              <span className="text-cyan-300 font-semibold">{typed}</span>
-              <span className="text-cyan-400 animate-caret">▍</span>
-            </span>
+            <HeroTypewriter phrases={heroPhrases} />
           </div>
 
           {/* CTA row */}
@@ -1045,7 +1067,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           )}
         </div>
         <div
-          className="reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+          className="reveal relative space-y-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [isolation:isolate]"
         >
           <div className="flex overflow-hidden">
             <div className="flex shrink-0 animate-marquee hover:[animation-play-state:paused]">
