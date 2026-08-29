@@ -1,7 +1,12 @@
 
 import React, { useState, useMemo } from 'react';
 import { TestItem } from '../types';
-import { ArrowRight, Brain, Filter, ListFilter, Cpu, Bot, Book, Gavel, Network, Database, Search, X } from 'lucide-react';
+import { 
+  ArrowRight, Brain, Filter, ListFilter, Cpu, Bot, Book, Gavel, 
+  Network, Database, Search, X, Shield, Flame, ChevronDown, ChevronUp, 
+  Layers, ExternalLink, Sparkles 
+} from 'lucide-react';
+import { MITRE_ATLAS_TECHNIQUES } from '../data';
 
 interface TestListProps {
   tests: TestItem[];
@@ -12,8 +17,9 @@ interface TestListProps {
 
 const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOwasp, category }) => {
   const [sortMethod, setSortMethod] = useState<'id' | 'severity'>('id');
-  const [filterType, setFilterType] = useState<'all' | 'top10' | 'mltop10' | 'agenttop10' | 'saiftop10' | 'mcptop10' | 'aitg'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'top10' | 'mltop10' | 'agenttop10' | 'saiftop10' | 'mcptop10' | 'aitg' | 'atlas'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAtlasExpanded, setIsAtlasExpanded] = useState(false);
 
   const getRiskColor = (level: string) => {
     switch(level) {
@@ -33,6 +39,28 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
     }
   };
 
+  // Mapped MITRE ATLAS Techniques for the current Pillar / test collection
+  const mappedAtlasTechniques = useMemo(() => {
+    const atlasIdSet = new Set<string>();
+    for (const t of tests) {
+      if (t.mitreAtlasRef) atlasIdSet.add(t.mitreAtlasRef);
+    }
+    const result: { id: string; name: string; tacticName?: string }[] = [];
+    for (const id of atlasIdSet) {
+      const match = MITRE_ATLAS_TECHNIQUES.find(tech => tech.id === id);
+      if (match) {
+        result.push({
+          id: match.id,
+          name: match.name,
+          tacticName: match.tactics?.[0]?.name || match.tactics?.[0]?.id || 'MITRE ATLAS'
+        });
+      } else {
+        result.push({ id, name: id, tacticName: 'MITRE ATLAS' });
+      }
+    }
+    return result;
+  }, [tests]);
+
   // 1. Filter the tests based on the selected filterType & free-text searchQuery
   const filteredTests = useMemo(() => {
     const cleanQuery = searchQuery.trim().toLowerCase();
@@ -45,6 +73,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
       if (filterType === 'saiftop10' && !test.owaspSaifRef) return false;
       if (filterType === 'mcptop10' && !test.owaspMcpTop10Ref) return false;
       if (filterType === 'aitg' && !test.id.startsWith('AITG')) return false;
+      if (filterType === 'atlas' && !test.mitreAtlasRef) return false;
 
       // Free-text keyword search
       if (cleanQuery) {
@@ -59,6 +88,7 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
           test.owaspAgenticRef || '',
           test.owaspSaifRef || '',
           test.owaspMcpTop10Ref || '',
+          test.mitreAtlasRef || '',
           ...(test.objectives || []),
           ...(test.payloads || []).map(p => `${p.name} ${p.description} ${p.code || ''}`),
           ...(test.mitigationStrategies || []).map(m => m.content)
@@ -109,6 +139,82 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
           </div>
         </div>
 
+        {/* MITRE ATLAS Mapped Matrix Section for Testing Pillar */}
+        {mappedAtlasTechniques.length > 0 && (
+          <div className="mb-6 rounded-2xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 via-slate-900/90 to-slate-950 p-4 shadow-lg shadow-orange-950/20 backdrop-blur-md">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 shrink-0">
+                  <Flame className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xs md:text-sm font-bold text-slate-100 uppercase tracking-wide">
+                      MITRE ATLAS™ Matrix Mappings
+                    </h3>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">
+                      {mappedAtlasTechniques.length} Techniques
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Directly mapped adversarial tactics & techniques for this testing pillar
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => onNavigateToOwasp(mappedAtlasTechniques[0]?.id || 'AML.T0051')}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40 hover:border-orange-400 rounded-lg text-xs font-semibold transition-all"
+                >
+                  <span>Open Full Matrix</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAtlasExpanded(prev => !prev)}
+                  className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
+                  aria-label={isAtlasExpanded ? "Collapse ATLAS matrix section" : "Expand ATLAS matrix section"}
+                >
+                  {isAtlasExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Collapsed Preview or Expanded Grid */}
+            <div className={`mt-3 pt-3 border-t border-slate-800/80 transition-all ${isAtlasExpanded ? 'block' : 'max-h-16 overflow-hidden relative'}`}>
+              <div className="flex flex-wrap gap-2">
+                {mappedAtlasTechniques.map(tech => (
+                  <button
+                    key={tech.id}
+                    type="button"
+                    onClick={() => onNavigateToOwasp(tech.id)}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-medium bg-slate-900/90 hover:bg-orange-500/20 text-slate-200 hover:text-orange-200 border border-slate-800 hover:border-orange-500/40 transition-all group"
+                  >
+                    <span className="text-orange-400 font-bold">{tech.id}</span>
+                    <span className="text-slate-400 group-hover:text-slate-300 font-sans text-[11px] truncate max-w-[200px]">{tech.name}</span>
+                    <ExternalLink className="w-2.5 h-2.5 text-slate-500 group-hover:text-orange-400 shrink-0" />
+                  </button>
+                ))}
+              </div>
+
+              {!isAtlasExpanded && mappedAtlasTechniques.length > 5 && (
+                <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent flex items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsAtlasExpanded(true)}
+                    className="text-[10px] font-semibold text-orange-400 hover:text-orange-300 uppercase tracking-wider flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded-full border border-orange-500/30"
+                  >
+                    <span>+{mappedAtlasTechniques.length - 5} More Techniques</span>
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Search Input Bar */}
         <div className="mb-4 relative">
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
@@ -149,6 +255,14 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${filterType === 'all' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
               >
                 All
+              </button>
+              <button 
+                type="button"
+                onClick={() => setFilterType('atlas')}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${filterType === 'atlas' ? 'bg-orange-500/15 text-orange-400 border border-orange-500/30 shadow-sm' : 'text-slate-400 hover:text-orange-300'}`}
+              >
+                <Flame className="w-3 h-3" />
+                ATLAS
               </button>
               <button 
                 type="button"
@@ -339,6 +453,19 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
                         title="Go to OWASP GenAI Data Security Entry"
                       >
                         <Database className="w-3 h-3" /> {test.owaspDsgaiRef}
+                      </button>
+                    )}
+                    {test.mitreAtlasRef && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onNavigateToOwasp(test.mitreAtlasRef!);
+                        }}
+                        className="flex items-center gap-1 font-mono text-xs text-rose-400 bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20 whitespace-nowrap hover:bg-rose-500/20 hover:border-rose-500/40 hover:scale-105 active:scale-95 transition-all z-20 cursor-pointer"
+                        title="Jump to MITRE ATLAS™ Technique Matrix"
+                      >
+                        <Shield className="w-3 h-3" /> {test.mitreAtlasRef}
                       </button>
                     )}
                   </div>

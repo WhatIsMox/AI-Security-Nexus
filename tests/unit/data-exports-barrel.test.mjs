@@ -180,6 +180,22 @@ test('Barrel - data.ts re-exports Secure MCP Guide constructs', () => {
   assert.ok(guideSource.includes('SECURE_MCP_MINIMUM_BAR'), 'data_secure_mcp_guide.ts must export SECURE_MCP_MINIMUM_BAR');
 });
 
+test('Barrel - data.ts re-exports MITRE ATLAS data', () => {
+  const content = readFile('data.ts');
+  const atlasSource = readFile('data_mitre_atlas.ts');
+
+  const hasAtlasReExport =
+    content.includes("export * from './data_mitre_atlas'") ||
+    content.includes('export * from "./data_mitre_atlas"') ||
+    content.includes('MITRE_ATLAS_TACTICS');
+
+  assert.ok(hasAtlasReExport, 'data.ts must re-export MITRE ATLAS data from data_mitre_atlas.ts');
+  assert.ok(
+    atlasSource.includes('MITRE_ATLAS_TACTICS') || atlasSource.includes('MITRE_ATLAS_META'),
+    'data_mitre_atlas.ts must export MITRE ATLAS constants'
+  );
+});
+
 // ─── 3. Framework Overview Re-Exports ────────────────────────────────────────
 
 test('Barrel - data.ts re-exports Agentic overview objects (AGENTIC_SKILLS_OVERVIEW, AGENTIC_APPLICATIONS_OVERVIEW)', () => {

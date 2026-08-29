@@ -12,6 +12,7 @@ export type AppView =
   | 'tests' 
   | 'detail' 
   | 'threat-model' 
+  | 'mitre-atlas'
   | 'owasp-top10' 
   | 'owasp-ml-top10' 
   | 'owasp-agent-top10' 
@@ -23,7 +24,7 @@ export type AppView =
   | 'tools'
   | 'incidents';
 
-export type ActivePillarKey = Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
+export type ActivePillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
 
 const DOMAIN_OPTIONS: { id: GlobalDomain; label: string; icon: React.ComponentType<{ className?: string }>; color: string; badge: string }[] = [
   { id: 'ALL', label: 'All AI Domains', icon: Globe, color: 'text-cyan-400', badge: 'Global' },
@@ -208,10 +209,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span>Audit Checklist & Export</span>
           </button>
 
-          {/* Frameworks & Guidelines */}
+          {/* Frameworks & Top 10s */}
           <div className="pt-3 pb-1">
             <p className="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">
-              Frameworks & Top 10s
+              Frameworks & Standards
             </p>
           </div>
 
@@ -316,10 +317,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span>Google SAIF Risk Flow</span>
           </button>
 
-          {/* Testing Pillars */}
+          {/* Testing Pillars & Attack Matrix */}
           <div className="pt-3 pb-1">
             <p className="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">
-              Testing Pillars (42 Tests)
+              Testing Pillars & Matrix
             </p>
           </div>
 
@@ -334,6 +335,19 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <BookOpen className="w-4 h-4 shrink-0 text-cyan-400" />
             <span>All 42 Security Tests</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { onSelectPillar('MITREATLAS'); onClose(); }}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
+              currentView === 'mitre-atlas' || (currentView === 'tests' && activePillar === 'MITREATLAS')
+                ? 'bg-gradient-to-r from-orange-500/20 to-amber-500/10 text-orange-400 border border-orange-500/30 font-semibold'
+                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+            }`}
+          >
+            <Flame className="w-4 h-4 shrink-0 text-orange-400" />
+            <span>MITRE ATLAS™ Matrix</span>
           </button>
 
           {navItems.map((item) => (

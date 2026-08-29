@@ -20,12 +20,15 @@ import {
   SECURE_MCP_GUIDE_SECTIONS,
   GENAI_DATA_SECURITY_META,
   GENAI_DATA_SECURITY_RISKS,
+  MITRE_ATLAS_META,
+  MITRE_ATLAS_TECHNIQUES,
+  MITRE_ATLAS_TACTICS,
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
 import { getEnrichedIncident } from '../data/incident_details_catalog';
 
-type PillarKey = Pillar | 'ALL' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
+type PillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
 
 interface DashboardProps {
   globalDomain: GlobalDomain;
@@ -203,7 +206,7 @@ const PILLAR_META: Record<Pillar, { name: string; blurb: string; icon: any; text
 };
 
 interface FrameworkCard {
-  key: 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'MCPTOP10' | 'SAIFTOP10' | 'GENAIDATASECURITY' | 'SECUREMCPGUIDE';
+  key: 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'MCPTOP10' | 'SAIFTOP10' | 'GENAIDATASECURITY' | 'SECUREMCPGUIDE' | 'MITREATLAS';
   name: string;
   edition: string;
   kind: string;
@@ -225,6 +228,26 @@ interface FrameworkCard {
 }
 
 const buildFrameworkCards = (): FrameworkCard[] => [
+  {
+    key: 'MITREATLAS',
+    name: 'MITRE ATLAS™ Matrix',
+    edition: MITRE_ATLAS_META.version,
+    kind: 'Adversary Tactics & Techniques',
+    blurb: 'Curated knowledge base of 16 tactics, 170+ techniques, mitigations, and real-world case studies modeling adversary lifecycles targeting AI/ML systems.',
+    icon: Flame,
+    count: MITRE_ATLAS_TECHNIQUES.length,
+    countLabel: 'techniques',
+    previewId: MITRE_ATLAS_TECHNIQUES[0]?.id ?? '',
+    previewTitle: MITRE_ATLAS_TECHNIQUES[0]?.name ?? '',
+    text: 'text-orange-400',
+    border: 'border-orange-500/25',
+    hoverBorder: 'hover:border-orange-400/70',
+    iconBox: 'bg-orange-500/10 border-orange-500/30',
+    chipBg: 'bg-orange-500/10 text-orange-300 border-orange-500/30',
+    glow: 'bg-orange-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(249,115,22,0.35)]',
+    arrowHover: 'group-hover:border-orange-500/60 group-hover:text-orange-300',
+  },
   {
     key: 'TOP10',
     name: 'OWASP Top 10 for LLM Applications',
@@ -493,6 +516,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     if (test.owaspAgenticRef) refs.push({ id: test.owaspAgenticRef, label: test.owaspAgenticRef.startsWith('AST') ? 'AST' : 'ASI' });
     if (test.owaspSaifRef) refs.push({ id: test.owaspSaifRef, label: 'SAIF' });
     if (test.owaspMcpTop10Ref) refs.push({ id: test.owaspMcpTop10Ref, label: 'MCP' });
+    if (test.mitreAtlasRef) refs.push({ id: test.mitreAtlasRef, label: 'ATLAS' });
     return refs;
   }, []);
 

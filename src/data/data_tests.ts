@@ -13,6 +13,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM01:2026",
     owaspAgenticRef: "ASI01",
     owaspSaifRef: "SAIF-R10",
+    mitreAtlasRef: "AML.T0054",
     summary: "Technically verify if an LLM or AI application is vulnerable to prompt injection techniques can be directly influenced through carefully crafted prompts to perform unauthorized actions or generate harmful outputs. This test specifically addresses direct prompt injection techniques.",
     objectives: [
       "Verify if the LLM can be influenced to perform unauthorized actions.",
@@ -87,6 +88,7 @@ export const TEST_DATA: TestItem[] = [
     owaspAgenticRef: "ASI01",
     owaspSaifRef: "SAIF-R10",
     owaspMcpTop10Ref: "MCP6:2025",
+    mitreAtlasRef: "AML.T0051",
     summary: "Indirect prompt injection occurs when external, untrusted content that is processed by a large language model (LLM) contains hidden instructions or manipulative prompts. These embedded payloads may unintentionally alter the model's behavior, bypassing security measures.",
     objectives: [
       "Verify if the LLM executes hidden commands embedded in retrieved content (RAG).",
@@ -148,6 +150,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspSaifRef: "SAIF-R12",
     owaspMcpTop10Ref: "MCP1:2025",
+    mitreAtlasRef: "AML.T0057",
     summary: "Sensitive data leak vulnerabilities occur when large language models (LLMs) unintentionally reveal confidential or protected information during interactions. Such leaks can include PII, credentials, internal API keys, or database details.",
     objectives: [
       "Determine if the model outputs PII (email, SSN) when prompted.",
@@ -211,6 +214,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspSaifRef: "SAIF-R12",
     owaspMcpTop10Ref: "MCP10:2025",
+        mitreAtlasRef: "AML.T0024",
     summary: "Input leakage occurs when sensitive user input (passwords, PII) is inadvertently stored and later surfaced in logs, error messages, or other user sessions due to improper session isolation.",
     objectives: [
       "Check if user session data leaks into other sessions (cross-user leakage).",
@@ -272,6 +276,7 @@ export const TEST_DATA: TestItem[] = [
     owaspAgenticRef: "ASI05",
     owaspSaifRef: "SAIF-R14",
     owaspMcpTop10Ref: "MCP5:2025",
+        mitreAtlasRef: "AML.T0048",
     summary: "Unsafe outputs in large language models (LLMs) refer to content-level risks (hazardous responses) and application-level risks (security vulnerabilities like XSS/SSRF). In ML systems, this also maps to Output Integrity Attacks where results are manipulated.",
     objectives: [
       "Check for XSS vectors in output (JavaScript generation).",
@@ -315,6 +320,7 @@ export const TEST_DATA: TestItem[] = [
     owaspAgenticRef: "ASI10",
     owaspSaifRef: "SAIF-R15",
     owaspMcpTop10Ref: "MCP2:2025",
+        mitreAtlasRef: "AML.T0040",
     summary: "Agentic behavior limits refer to the safeguards placed around AI agents to prevent unintended autonomous actions. This test verifies whether AI agents operate within their designed autonomy, respect user instructions, and avoid unsafe behaviors.",
     objectives: [
       "Ensure agents terminate operations when instructed.",
@@ -398,6 +404,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'Medium',
     owaspTop10Ref: "LLM08:2026",
     owaspSaifRef: "SAIF-R12",
+        mitreAtlasRef: "AML.T0051",
     summary: "Hidden context exposure occurs when an LLM reveals, reconstructs, or enables inference of non-user-facing instructions, tool schemas, policy logic, roles, workflow rules, or sensitive operational context.",
     objectives: [
       "Extract initial system or developer instructions.",
@@ -459,6 +466,7 @@ export const TEST_DATA: TestItem[] = [
     owaspAgenticRef: "ASI06",
     owaspSaifRef: "SAIF-R01",
     owaspMcpTop10Ref: "MCP6:2025",
+    mitreAtlasRef: "AML.T0020",
     summary: "Embedding manipulation represents a critical security vulnerability in modern AI systems that utilize Retrieval Augmented Generation (RAG) and vector databases. These attacks involve adversaries injecting, altering, or exploiting data within embedding spaces.",
     objectives: [
       "Identify Embedding Manipulation Vulnerabilities in the RAG pipeline.",
@@ -524,6 +532,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'High',
     owaspMlTop10Ref: "ML05:2023",
     owaspSaifRef: "SAIF-R08",
+        mitreAtlasRef: "AML.T0024",
     summary: "Model extraction attacks involve adversaries systematically querying a machine learning model to reconstruct a surrogate model that closely replicates the original's decision-making process.",
     objectives: [
       "Identify susceptibility to model extraction attacks through various query strategies.",
@@ -566,6 +575,7 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'Medium',
     owaspTop10Ref: "LLM07:2026",
+        mitreAtlasRef: "AML.T0043",
     summary: "This test aims to identify vulnerabilities related to content bias in AI-generated outputs that typically originate from training data, how the data is provided to the model and the prompt used to describe the task.",
     objectives: [
       "Measure disparate impact in classification.",
@@ -622,6 +632,7 @@ export const TEST_DATA: TestItem[] = [
     pillar: Pillar.APP,
     riskLevel: 'Medium',
     owaspTop10Ref: "LLM07:2026",
+        mitreAtlasRef: "AML.T0043",
     summary: "This test identifies vulnerabilities related to AI hallucinations, where the AI generates factually incorrect, fabricated, or misleading information.",
     objectives: [
       "Detect instances where AI-generated outputs include incorrect or fabricated information.",
@@ -672,6 +683,7 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Toxic Output",
     pillar: Pillar.APP,
     riskLevel: 'High',
+        mitreAtlasRef: "AML.T0043",
     summary: "This test identifies vulnerabilities associated with toxic outputs generated by AI, including offensive, abusive, discriminatory, or otherwise harmful responses.",
     objectives: [
       "Detect AI-generated content containing offensive, abusive, discriminatory, or harmful language.",
@@ -724,6 +736,7 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Over-Reliance on AI",
     pillar: Pillar.APP,
     riskLevel: 'Medium',
+        mitreAtlasRef: "AML.T0040",
     summary: "This test focuses on identifying vulnerabilities associated with over-reliance on AI-generated outputs without sufficient human oversight, validation, or critical analysis.",
     objectives: [
       "Identify instances where AI outputs are presented as authoritative facts without disclaimers.",
@@ -777,6 +790,7 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Explainability and Interpretability",
     pillar: Pillar.APP,
     riskLevel: 'Low',
+        mitreAtlasRef: "AML.T0040",
     summary: "This test focuses on evaluating vulnerabilities related to insufficient explainability and interpretability in AI-generated outputs. Lack of explainability can undermine trust and complicate validation.",
     objectives: [
       "Determine whether AI-generated outputs provide clear, understandable explanations.",
@@ -832,6 +846,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'High',
     owaspMlTop10Ref: "ML01:2023",
     owaspSaifRef: "SAIF-R11",
+    mitreAtlasRef: "AML.T0015",
     summary: "This test identifies vulnerabilities in AI models related to evasion attacks, where attackers manipulate input data at inference time to mislead AI models.",
     objectives: [
       "Detect susceptibility of AI models to evasion attacks through adversarial input.",
@@ -893,6 +908,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM05:2026",
     owaspMlTop10Ref: "ML08:2023",
     owaspSaifRef: "SAIF-R01",
+    mitreAtlasRef: "AML.T0020",
     summary: "This test identifies vulnerabilities associated with runtime model poisoning (and Model Skewing ML08), where adversaries intentionally manipulate inputs during model inference to gradually degrade or alter model behavior.",
     objectives: [
       "Detect vulnerabilities in AI models to runtime poisoning attacks.",
@@ -948,6 +964,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM05:2026",
     owaspMlTop10Ref: "ML02:2023",
     owaspSaifRef: "SAIF-R01",
+    mitreAtlasRef: "AML.T0020",
     summary: "This test identifies vulnerabilities associated with poisoned training datasets, where adversaries deliberately inject or alter training data to compromise AI model integrity.",
     objectives: [
       "Detect the presence and impact of maliciously poisoned samples.",
@@ -1004,6 +1021,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspMlTop10Ref: "ML04:2023",
     owaspSaifRef: "SAIF-R13",
+        mitreAtlasRef: "AML.T0025",
     summary: "This test identifies vulnerabilities to membership inference attacks, where adversaries determine whether specific data points were used during model training.",
     objectives: [
       "Detect vulnerabilities that allow adversaries to infer presence of training data.",
@@ -1059,6 +1077,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspMlTop10Ref: "ML03:2023",
     owaspSaifRef: "SAIF-R13",
+        mitreAtlasRef: "AML.T0024",
     summary: "This test identifies vulnerabilities associated with model inversion attacks, where adversaries reconstruct sensitive training data or attributes from model outputs.",
     objectives: [
       "Detect vulnerabilities enabling reconstruction of sensitive training data.",
@@ -1111,6 +1130,7 @@ export const TEST_DATA: TestItem[] = [
     title: "Testing for Robustness to New Data",
     pillar: Pillar.MODEL,
     riskLevel: 'Medium',
+        mitreAtlasRef: "AML.T0015",
     summary: "This test identifies vulnerabilities associated with the lack of robustness to new or out-of-distribution (OOD) data.",
     objectives: [
       "Evaluate model resilience to new, shifted data distributions.",
@@ -1162,6 +1182,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM01:2026",
     owaspAgenticRef: "ASI01",
     owaspSaifRef: "SAIF-R10",
+        mitreAtlasRef: "AML.T0051",
     summary: "This test evaluates vulnerabilities associated with AI model goal misalignment, where AI systems act in ways inconsistent with intended ethical, operational, and organizational objectives.",
     objectives: [
       "Identify vulnerabilities in model behavior alignment.",
@@ -1225,6 +1246,7 @@ export const TEST_DATA: TestItem[] = [
     owaspAgenticRef: "ASI04",
     owaspSaifRef: "SAIF-R03",
     owaspMcpTop10Ref: "MCP4:2025",
+        mitreAtlasRef: "AML.T0010",
     summary: "Supply Chain Tampering involves unauthorized modifications or compromises introduced at any stage of the AI model's development or deployment pipeline.",
     objectives: [
       "Identify vulnerabilities in the AI supply chain.",
@@ -1281,6 +1303,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM06:2026",
     owaspAgenticRef: "ASI08",
     owaspSaifRef: "SAIF-R07",
+        mitreAtlasRef: "AML.T0029",
     summary: "Resource Exhaustion attacks exploit vulnerabilities by consuming excessive resources (memory, CPU, bandwidth), disrupting AI services.",
     objectives: [
       "Identify vulnerabilities leading to resource exhaustion.",
@@ -1339,6 +1362,7 @@ export const TEST_DATA: TestItem[] = [
     owaspAgenticRef: "ASI02",
     owaspSaifRef: "SAIF-R09",
     owaspMcpTop10Ref: "MCP7:2025",
+        mitreAtlasRef: "AML.T0040",
     summary: "Plugin Boundary Violations occur when AI systems fail to maintain strict boundaries, allowing plugins to perform unintended operations.",
     objectives: [
       "Identify security boundaries between plugins.",
@@ -1391,6 +1415,7 @@ export const TEST_DATA: TestItem[] = [
     owaspAgenticRef: "ASI02",
     owaspSaifRef: "SAIF-R15",
     owaspMcpTop10Ref: "MCP2:2025",
+        mitreAtlasRef: "AML.T0040",
     summary: "Capability Misuse involves scenarios where legitimate capabilities of AI systems are exploited or misdirected.",
     objectives: [
       "Identify vulnerabilities allowing misuse.",
@@ -1441,6 +1466,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM05:2026",
     owaspMlTop10Ref: "ML10:2023",
     owaspSaifRef: "SAIF-R01",
+        mitreAtlasRef: "AML.T0020",
     summary: "This test identifies vulnerabilities arising from poisoning during fine-tuning, a targeted manipulation of datasets or parameters. This also aligns with Model Poisoning (ML10) where parameters are directly manipulated.",
     objectives: [
       "Detect poisoning vulnerabilities in fine-tuning.",
@@ -1497,6 +1523,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM04:2026",
     owaspMlTop10Ref: "ML05:2023",
     owaspSaifRef: "SAIF-R05",
+        mitreAtlasRef: "AML.T0024",
     summary: "Dev-Time Model Theft refers to unauthorized access, copying, extraction, or leakage of AI models during development. This corresponds to the Model Theft (ML05) risk.",
     objectives: [
       "Identify vulnerabilities permitting unauthorized access.",
@@ -1556,6 +1583,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspSaifRef: "SAIF-R12",
     owaspDsgaiRef: "DSGAI01",
+        mitreAtlasRef: "AML.T0024",
     summary: "Training Data Exposure refers to unauthorized or inadvertent access, leakage, or disclosure of sensitive or proprietary datasets used during the AI model training phase.",
     objectives: [
       "Identify vulnerabilities allowing unauthorized access to training datasets.",
@@ -1607,6 +1635,7 @@ export const TEST_DATA: TestItem[] = [
     owaspSaifRef: "SAIF-R12",
     owaspMcpTop10Ref: "MCP1:2025",
     owaspDsgaiRef: "DSGAI01",
+        mitreAtlasRef: "AML.T0010",
     summary: "Runtime Exfiltration involves unauthorized extraction or leakage of sensitive data from an AI system during its operational (inference) phase.",
     objectives: [
       "Identify vulnerabilities permitting data exfiltration.",
@@ -1656,6 +1685,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM05:2026",
     owaspSaifRef: "SAIF-R02",
     owaspDsgaiRef: "DSGAI07",
+        mitreAtlasRef: "AML.T0024",
     summary: "Dataset Diversity & Coverage testing ensures that AI training and evaluation datasets comprehensively represent diverse scenarios, populations, and contexts.",
     objectives: [
       "Verify datasets represent diverse demographic groups.",
@@ -1705,6 +1735,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM05:2026",
     owaspSaifRef: "SAIF-R01",
     owaspDsgaiRef: "DSGAI04",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Harmful Content in Data involves identifying and mitigating any inappropriate, biased, offensive, or harmful material present within datasets.",
     objectives: [
       "Identify harmful/toxic content within datasets.",
@@ -1754,6 +1785,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'Medium',
     owaspSaifRef: "SAIF-R04",
     owaspDsgaiRef: "DSGAI08",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Data Minimization & Consent involves assessing whether AI systems adhere strictly to privacy principles and ensure explicit consent.",
     objectives: [
       "Ensure AI systems only collect necessary data.",
@@ -1806,6 +1838,7 @@ export const TEST_DATA: TestItem[] = [
     owaspSaifRef: "SAIF-R12",
     owaspMcpTop10Ref: "MCP1:2025",
     owaspDsgaiRef: "DSGAI02",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Agent Identity Sprawl & Credential Exposure evaluates whether autonomous agent pipelines, delegated sub-agents, and background task workers inherit or leak long-lived OAuth tokens, API keys, and service account credentials across data tiers.",
     objectives: [
       "Detect long-lived credential inheritance in delegated sub-agent memory.",
@@ -1884,6 +1917,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspSaifRef: "SAIF-R04",
     owaspDsgaiRef: "DSGAI03",
+        mitreAtlasRef: "AML.T0057",
     summary: "Testing for Shadow AI Ingestion & Unsanctioned Data Flows verifies that corporate networks, developer endpoints, and cloud workloads block unauthorized prompt submission, unvetted GenAI integrations, and sensitive data transfers to external AI APIs.",
     objectives: [
       "Identify data egress to unapproved consumer and public AI services.",
@@ -1959,6 +1993,7 @@ export const TEST_DATA: TestItem[] = [
     owaspMlTop10Ref: "ML02:2023",
     owaspSaifRef: "SAIF-R01",
     owaspDsgaiRef: "DSGAI04",
+        mitreAtlasRef: "AML.T0060",
     summary: "Testing for Training Artifact & LoRA Adapter Poisoning validates the cryptographic integrity, provenance, and behavioral fidelity of fine-tuning weights, LoRA adapters, tokenizer definitions, and embedding checkpoints against backdoor implants and unauthorized modifications.",
     objectives: [
       "Detect latent trojan triggers embedded in low-rank adaptation matrices.",
@@ -2038,6 +2073,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM09:2026",
     owaspSaifRef: "SAIF-R07",
     owaspDsgaiRef: "DSGAI05",
+        mitreAtlasRef: "AML.T0036",
     summary: "Testing for Vector Snapshot & Ingestion Validation Failures assesses vector database ingestion endpoints, snapshot restore archives, and document embedding extractors against path traversal, symlink hijacking, and malicious metadata injection.",
     objectives: [
       "Verify vector database snapshot extractors are immune to Zip Slip and symlink traversal.",
@@ -2113,6 +2149,7 @@ export const TEST_DATA: TestItem[] = [
     owaspSaifRef: "SAIF-R11",
     owaspMcpTop10Ref: "MCP6:2025",
     owaspDsgaiRef: "DSGAI06",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Cross-Plugin Data Forwarding & Boundary Leakage verifies that MCP server bridges, tool dispatchers, and agent execution layers prevent unauthorized sharing, leaking, or exfiltration of sensitive context and credentials across plugin boundaries.",
     objectives: [
       "Verify context isolation between third-party MCP servers and private core models.",
@@ -2186,6 +2223,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'High',
     owaspSaifRef: "SAIF-R04",
     owaspDsgaiRef: "DSGAI07",
+        mitreAtlasRef: "AML.T0010",
     summary: "Testing for AI Data Lineage & Derived Artifact Erasure assesses whether Data Subject Requests (DSR) and GDPR Right to Erasure / Right to be Forgotten requests propagate completely from raw data tables to vector embeddings, fine-tuning checkpoints, caches, and memory.",
     objectives: [
       "Verify that deleting a source data record triggers automatic purging of corresponding vector embeddings.",
@@ -2259,6 +2297,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'Medium',
     owaspSaifRef: "SAIF-R04",
     owaspDsgaiRef: "DSGAI08",
+        mitreAtlasRef: "AML.T0048",
     summary: "Testing for Cross-Border Data Transfer & Regulatory Boundaries audits multi-region LLM routing, cloud provider inference dispatchers, and distributed embedding pipelines to ensure compliance with geographic residency and sovereign data constraints.",
     objectives: [
       "Validate that regulated datasets remain in designated geographical regions (e.g. EU, US, Switzerland).",
@@ -2333,6 +2372,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspSaifRef: "SAIF-R12",
     owaspDsgaiRef: "DSGAI09",
+        mitreAtlasRef: "AML.T0040",
     summary: "Testing for Multimodal OCR/ASR Derivative Data Leakage tests whether multimodal ingestion pipelines (images, PDFs, whiteboard photos, audio recordings) extract and expose sensitive text, PII, barcodes, or credentials through unmonitored downstream storage.",
     objectives: [
       "Detect sensitive PII extracted from attached images, screenshots, or document scans.",
@@ -2407,6 +2447,7 @@ export const TEST_DATA: TestItem[] = [
     owaspMlTop10Ref: "ML03:2023",
     owaspSaifRef: "SAIF-R04",
     owaspDsgaiRef: "DSGAI10",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Re-Identification in Synthetic Data & Masking Bypasses evaluates synthetic dataset generators, differential privacy mechanisms, and pseudonymization pipelines for quasi-identifier linkage and sample reconstruction vulnerabilities.",
     objectives: [
       "Verify differential privacy epsilon (ε) guarantees in generative synthetic data pipelines.",
@@ -2487,6 +2528,7 @@ export const TEST_DATA: TestItem[] = [
     owaspSaifRef: "SAIF-R12",
     owaspMcpTop10Ref: "MCP10:2025",
     owaspDsgaiRef: "DSGAI11",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Multi-Tenant Conversation Cache & Context Bleed assesses multi-tenant LLM serving layers, key-value (KV) caches, and session state managers to detect cross-session data leakage and unauthorized context bleeding between disparate users.",
     objectives: [
       "Identify cache key collision vulnerabilities in shared LLM semantic caches.",
@@ -2562,6 +2604,7 @@ export const TEST_DATA: TestItem[] = [
     owaspSaifRef: "SAIF-R10",
     owaspMcpTop10Ref: "MCP5:2025",
     owaspDsgaiRef: "DSGAI12",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Natural-Language to SQL/Cypher Query Injection evaluates natural-language database gateways (Text-to-SQL, Text-to-GraphQL, Text-to-Cypher) against prompt-driven injection attacks that generate unauthorized destructive queries or bypass data access controls.",
     objectives: [
       "Detect SQL/Cypher injection via adversarial user prompts.",
@@ -2636,6 +2679,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM09:2026",
     owaspSaifRef: "SAIF-R12",
     owaspDsgaiRef: "DSGAI13",
+        mitreAtlasRef: "AML.T0025",
     summary: "Testing for Vector Database ACLs & Namespace Isolation audits vector database deployments (Pinecone, Qdrant, Milvus, pgvector, Weaviate) for tenant namespace isolation, API token scoping, and query-time access control list (ACL) enforcement.",
     objectives: [
       "Verify metadata filtering enforces tenant boundary restrictions.",
@@ -2710,6 +2754,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspMcpTop10Ref: "MCP8:2025",
     owaspDsgaiRef: "DSGAI14",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Unredacted PII in LLM Observability & Traces assesses LLM observability platforms, distributed tracing pipelines, and telemetry collectors (Langfuse, Arize Phoenix, OpenTelemetry, Datadog) to ensure prompts, completions, and secrets are redacted before logging.",
     objectives: [
       "Detect cleartext credentials, credit card numbers, and PII in trace payloads.",
@@ -2784,6 +2829,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM08:2026",
     owaspMcpTop10Ref: "MCP10:2025",
     owaspDsgaiRef: "DSGAI15",
+        mitreAtlasRef: "AML.T0048",
     summary: "Testing for Context Window Inflation & Excessive Prompt Sharing evaluates RAG retrieval context construction and agent orchestration prompts to prevent prompt inflation, over-broad data ingestion, and excessive sharing of non-essential records with model providers.",
     objectives: [
       "Validate semantic relevance filtering before context inclusion.",
@@ -2858,6 +2904,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM02:2026",
     owaspAgenticRef: "ASI06",
     owaspDsgaiRef: "DSGAI16",
+        mitreAtlasRef: "AML.T0048",
     summary: "Testing for Endpoint AI Assistant Clipboard & DOM Snooping tests local AI desktop assistants, IDE plugins, and browser extensions for excessive host permissions, unprompted clipboard reading, DOM scraping, and local file exfiltration.",
     objectives: [
       "Identify unauthorized access to system clipboards, local .env files, and private browser tabs.",
@@ -2932,6 +2979,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM06:2026",
     owaspSaifRef: "SAIF-R09",
     owaspDsgaiRef: "DSGAI17",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Vector Pipeline Stale Failover & Denial of Service assesses vector indexing infrastructure, embedding pipeline queues, and replica failover mechanisms under high load to detect stale replica data serving, desynchronization, and availability failures.",
     objectives: [
       "Test vector replica consistency during failover events.",
@@ -3007,6 +3055,7 @@ export const TEST_DATA: TestItem[] = [
     owaspMlTop10Ref: "ML03:2023",
     owaspSaifRef: "SAIF-R12",
     owaspDsgaiRef: "DSGAI18",
+        mitreAtlasRef: "AML.T0040",
     summary: "Testing for Membership Inference & Embedding Inversion Attacks assesses LLM APIs, classification endpoints, and embedding vectors against membership inference, attribute inference, and vector inversion attacks that reconstruct original proprietary training texts.",
     objectives: [
       "Quantify membership inference vulnerability using confidence score distributions.",
@@ -3080,6 +3129,7 @@ export const TEST_DATA: TestItem[] = [
     riskLevel: 'High',
     owaspSaifRef: "SAIF-R04",
     owaspDsgaiRef: "DSGAI19",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Unmasked PII Exposure in RLHF & Labeling Pipelines audits human-in-the-loop (HITL), RLHF annotation, and third-party data labeling workflows to verify that human reviewers are not exposed to unmasked customer PII, health data, or confidential telemetry.",
     objectives: [
       "Verify automated PII masking on datasets exported to annotation vendors.",
@@ -3155,6 +3205,7 @@ export const TEST_DATA: TestItem[] = [
     owaspMlTop10Ref: "ML04:2023",
     owaspSaifRef: "SAIF-R08",
     owaspDsgaiRef: "DSGAI20",
+        mitreAtlasRef: "AML.T0024",
     summary: "Testing for Systematic Model Distillation & IP Exfiltration evaluates public-facing LLM API endpoints to detect systematic queries, scraping patterns, and algorithmic model distillation attempts aimed at replicating proprietary model capabilities and IP.",
     objectives: [
       "Detect automated probing designed to collect teacher-student distillation pairs.",
@@ -3234,6 +3285,7 @@ export const TEST_DATA: TestItem[] = [
     owaspTop10Ref: "LLM05:2026",
     owaspSaifRef: "SAIF-R01",
     owaspDsgaiRef: "DSGAI21",
+    mitreAtlasRef: "AML.T0020",
     summary: "Testing for Knowledge Base Poisoning & Disinformation Injection tests enterprise RAG knowledge bases, live web search retrieval integrations, and collaborative wiki stores against adversarial document poisoning that plants credible disinformation or incorrect operational instructions.",
     objectives: [
       "Detect malicious document injection in corporate knowledge bases.",

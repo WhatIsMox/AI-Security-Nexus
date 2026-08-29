@@ -13,7 +13,8 @@ import {
   OWASP_SAIF_THREATS_DATA, 
   OWASP_MCP_TOP_10_DATA, 
   GENAI_DATA_SECURITY_RISKS,
-  GENAI_DSPM_CAPABILITIES
+  GENAI_DSPM_CAPABILITIES,
+  MITRE_ATLAS_TECHNIQUES
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
 import { getEnrichedTool } from '../data/tool_details_catalog';
@@ -25,7 +26,7 @@ export interface SearchResultItem {
   id: string;
   title: string;
   subtitle: string;
-  category: 'test' | 'llm' | 'ml' | 'agentic' | 'saif' | 'mcp' | 'dsgai' | 'dspm' | 'tool' | 'incident';
+  category: 'test' | 'llm' | 'ml' | 'agentic' | 'saif' | 'mcp' | 'dsgai' | 'dspm' | 'atlas' | 'tool' | 'incident';
   categoryLabel: string;
   badgeColor: string;
   searchText: string;
@@ -197,7 +198,24 @@ function getSearchIndex(): SearchResultItem[] {
     });
   }
 
-  // 10. Tools Catalog
+  // 10. MITRE ATLAS Techniques
+  for (const entry of MITRE_ATLAS_TECHNIQUES) {
+    const title = `${entry.id}: ${entry.name}`;
+    const subtitle = `${entry.tacticName} • ${entry.description}`;
+    const categoryLabel = 'MITRE ATLAS';
+    items.push({
+      id: `atlas-${entry.id}`,
+      title,
+      subtitle,
+      category: 'atlas',
+      categoryLabel,
+      badgeColor: 'border-orange-500/30 bg-orange-500/10 text-orange-400',
+      searchText: `${title} ${subtitle} ${categoryLabel} ${entry.tacticName} ${(entry.platforms || []).join(' ')}`.toLowerCase(),
+      targetId: entry.id
+    });
+  }
+
+  // 11. Tools Catalog
   const toolItemsMap = new Map<string, { tool: SecurityTool & { mappedThreats: string[] } }>();
   for (const [threatId, tools] of Object.entries(TOOLS_BY_THREAT_ID)) {
     for (const rawTool of tools) {
@@ -352,7 +370,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     if (activeTab === 'tests') {
       list = list.filter(i => i.category === 'test');
     } else if (activeTab === 'threats') {
-      list = list.filter(i => ['llm', 'ml', 'agentic', 'saif', 'mcp', 'dsgai', 'dspm'].includes(i.category));
+      list = list.filter(i => ['llm', 'ml', 'agentic', 'saif', 'mcp', 'dsgai', 'dspm', 'atlas'].includes(i.category));
     } else if (activeTab === 'tools') {
       list = list.filter(i => i.category === 'tool');
     } else if (activeTab === 'incidents') {
@@ -424,6 +442,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       case 'agentic': return <Bot className="w-4 h-4 text-orange-400" />;
       case 'saif': return <Gavel className="w-4 h-4 text-blue-400" />;
       case 'mcp': return <Network className="w-4 h-4 text-cyan-400" />;
+      case 'atlas': return <Flame className="w-4 h-4 text-orange-400" />;
       case 'dsgai':
       case 'dspm': return <Database className="w-4 h-4 text-emerald-400" />;
       case 'tool': return <Terminal className="w-4 h-4 text-purple-400" />;

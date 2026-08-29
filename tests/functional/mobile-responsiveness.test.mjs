@@ -128,3 +128,23 @@ test('Mobile Responsiveness - Sidebar Drawer Navigation & Overlay', (t) => {
   assert.ok(sidebarContent.includes('-translate-x-full'), 'Sidebar must be hidden offscreen on mobile when closed');
   assert.ok(sidebarContent.includes('mobile-nav-overlay'), 'Sidebar must render backdrop overlay on mobile');
 });
+
+test('Mobile Responsiveness - MITRE ATLAS Explorer Mobile Navigation & Inspector Modal', (t) => {
+  const atlasContent = readFile('components/MitreAtlasView.tsx');
+
+  // Assert top menu bar / notch clearance & dynamic viewport height on inspector modal
+  assert.ok(atlasContent.includes('safe-area-inset-top') || atlasContent.includes('pt-[calc'), 'MITRE ATLAS inspector modal must include safe area top clearance');
+  assert.ok(atlasContent.includes('overflow-y-auto'), 'MITRE ATLAS modal must be vertically scrollable');
+
+  // Assert mobile dedicated tactic switcher on screens < lg
+  assert.ok(atlasContent.includes('lg:hidden') && atlasContent.includes('overflow-x-auto'), 'MITRE ATLAS navigator must provide horizontal mobile tactic picker');
+
+  // Assert pinned header and accessible close/action touch targets
+  assert.ok(atlasContent.includes('shrink-0') || atlasContent.includes('sticky top-0'), 'MITRE ATLAS inspector modal header must be pinned/sticky');
+  assert.ok(atlasContent.includes('min-w-[36px] min-h-[36px]'), 'Inspector modal close and action buttons must meet minimum touch target size');
+
+  // Assert text scaling & overflow protection
+  assert.ok(atlasContent.includes('break-words'), 'Technique titles must specify break-words to prevent overflow on mobile screens');
+  assert.ok(atlasContent.includes('overflow-x-auto'), 'Modal tabs and filters must allow horizontal swiping on mobile');
+});
+

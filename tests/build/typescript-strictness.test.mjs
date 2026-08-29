@@ -180,6 +180,9 @@ test('TypeScript - types.ts exports all required domain interfaces', (t) => {
     'OwaspTop10Entry',    // Framework threat entry
     'FrameworkOverview',  // Overview for each framework
     'Stat',               // Dashboard stat card
+    'MitreAtlasTechnique',// MITRE ATLAS technique
+    'MitreAtlasTactic',   // MITRE ATLAS tactic
+    'MitreAtlasOverview', // MITRE ATLAS overview
   ];
 
   for (const exported of requiredExports) {

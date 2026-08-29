@@ -42,6 +42,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Agent Goal Hijack',
     description: 'An attacker changes an agent’s objective, decision path, or multi-step behavior through direct or indirect prompt injection, deceptive tool output, forged agent messages, poisoned external data, or manipulated business context. Unlike a one-response prompt-injection finding, goal hijack follows the effect into planning, delegation, tool selection, and autonomous action.',
     whyUnique: 'ASI01 is direct manipulation of the active goal or its interpretation. Persistent corruption belongs primarily to ASI06, misuse of an otherwise accepted tool call to ASI02, and sustained autonomous behavioral divergence after the initiating compromise to ASI10.',
+    mitreAtlasRef: 'AML.T0051',
+    mitreAtlasRefs: ['AML.T0051', 'AML.T0054'],
     commonRisks: [
       'Hidden instructions in websites, RAG chunks, documents, issue text, email, calendar invitations, Teams messages, or tool results are treated as authoritative task instructions.',
       'A malicious party changes constraints, success criteria, risk tolerance, recipients, destinations, or action order while leaving the high-level request apparently intact.',
@@ -93,6 +95,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Tool Misuse and Exploitation',
     description: 'An agent uses a legitimate tool in an unsafe, unintended, or adversary-controlled way while remaining inside the tool’s nominal authorization. Ambiguous instructions, unsafe delegation, prompt injection, poisoned tool descriptions, unchecked arguments, and excessive action loops can turn ordinary shell, database, browser, messaging, financial, or administrative functions into attack primitives.',
     whyUnique: 'ASI02 concerns unsafe use within available capability. If the agent obtains or inherits authority it should not have, classify ASI03; if arbitrary code or command execution is the core impact, classify ASI05; if the tool or dependency itself was malicious or compromised, classify ASI04.',
+    mitreAtlasRef: 'AML.T0040',
+    mitreAtlasRefs: ['AML.T0040', 'AML.T0048'],
     commonRisks: [
       'Over-broad tools expose more operations, data, destinations, or parameters than the task requires.',
       'Agent-generated values are forwarded to shells, interpreters, SQL, file paths, browsers, or administrative APIs without schema, semantic, or destination validation.',
@@ -146,6 +150,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Identity and Privilege Abuse',
     description: 'Agent identities, non-human identities, credentials, delegated roles, cached sessions, and inherited permissions are forged, reused, confused, or allowed to drift beyond the original user and purpose. Because agentic workflows dynamically delegate and cross trust boundaries, authorization that was valid at one step can become excessive or misleading at the next.',
     whyUnique: 'This risk focuses on who the agent is acting as and why that authority remains valid. It includes confused-deputy and time-of-check/time-of-use failures, not merely broad tool capability (ASI02) or malicious messages in transit (ASI07).',
+    mitreAtlasRef: 'AML.T0036',
+    mitreAtlasRefs: ['AML.T0036', 'AML.T0048'],
     commonRisks: [
       'An agent inherits the caller’s full account or administrative role instead of receiving a task-scoped delegation.',
       'Credentials, SSH sessions, API tokens, or authorization context remain in memory and leak into later tasks, users, tenants, or agents.',
@@ -198,6 +204,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Agentic Supply Chain Vulnerabilities',
     description: 'Models, weights, tools, plugins, prompts, datasets, knowledge sources, other agents, MCP or A2A servers, registries, artifacts, configuration, and update channels are compromised, substituted, impersonated, or loaded without sufficient provenance. The agentic supply chain is live and behavioral: components can be discovered and invoked dynamically after deployment, not only included at build time.',
     whyUnique: 'ASI04 extends static software and model supply-chain risk into runtime discovery, capability descriptors, peer agents, remote prompt templates, knowledge plugins, and continuously changing tool ecosystems. ASI05 describes execution impact; ASI04 identifies the untrusted or compromised source that entered the system.',
+    mitreAtlasRef: 'AML.T0010',
+    mitreAtlasRefs: ['AML.T0010', 'AML.T0012'],
     commonRisks: [
       'Remote prompt templates, system instructions, policies, or knowledge sources are changed after review and alter behavior at runtime.',
       'Tool and MCP descriptors include hidden instructions or misrepresent capability, side effects, permissions, provenance, or destination.',
@@ -253,6 +261,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Unexpected Code Execution (RCE)',
     description: 'Agent-generated or agent-selected content reaches a code-execution boundary and runs with unintended effect. Prompt injection, unsafe output handling, vulnerable serialization, dynamic loading, hallucinated packages, generated scripts, templates, JIT or WASM modules, and “vibe coding” workflows can turn model output or untrusted memory into commands, binaries, or executable objects.',
     whyUnique: 'ASI05 is the execution outcome and path: code runs where it should have remained data or untrusted output. ASI02 covers broader misuse of legitimate tools, while ASI04 covers a malicious or compromised component that may deliver the executable payload.',
+    mitreAtlasRef: 'AML.T0048',
+    mitreAtlasRefs: ['AML.T0048', 'AML.T0040'],
     commonRisks: [
       'Injected instructions cause a coding or automation agent to create and execute attacker-selected commands or files.',
       'Hallucinated, insecure, or backdoored code is accepted because the model’s output is treated as production-ready implementation.',
@@ -307,6 +317,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Memory & Context Poisoning',
     description: 'An adversary corrupts or seeds retained and retrievable information - conversation summaries, embeddings, RAG stores, long-term memory, shared state, API feeds, uploads, or peer-agent context - so later reasoning, planning, retrieval, or tool use becomes biased, unsafe, or useful for exfiltration. The defining property is persistence or reuse beyond a one-time prompt.',
     whyUnique: 'ASI06 concerns stored or retrievable corruption. Direct active-goal manipulation is ASI01, while ASI08 describes the propagation and system-wide degradation that can occur after poisoned context is consumed.',
+    mitreAtlasRef: 'AML.T0042',
+    mitreAtlasRefs: ['AML.T0042', 'AML.T0051'],
     commonRisks: [
       'Malicious content enters a vector database through poisoned sources, uploads, weak ingestion pipelines, or loose tenant filters and is retrieved as trusted evidence.',
       'Shared or reused user context lets one conversation influence later sessions, users, agents, or tasks.',
@@ -362,6 +374,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Insecure Inter-Agent Communication',
     description: 'Messages exchanged through APIs, message buses, shared channels, discovery services, MCP, A2A, or coordination protocols lack sufficient authentication, confidentiality, integrity, authorization, replay protection, routing trust, or semantic validation. Attackers can intercept, spoof, alter, replay, downgrade, misroute, or infer sensitive agent intent in real time.',
     whyUnique: 'ASI07 is the live communication path: transport, discovery, routing, descriptors, protocol negotiation, message integrity, and semantic intent. Credential or privilege misuse is ASI03; corruption stored for later use is ASI06.',
+    mitreAtlasRef: 'AML.T0040',
+    mitreAtlasRefs: ['AML.T0040', 'AML.T0060'],
     commonRisks: [
       'Unencrypted or unauthenticated channels allow a man in the middle to read messages and insert instructions that change goals or decisions.',
       'Message tampering contaminates task boundaries, parameters, context, reputation, or trust signals between agents.',
@@ -417,6 +431,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Cascading Failures',
     description: 'A hallucination, malicious input, corrupted tool, poisoned memory, compromised dependency, or bad decision propagates and amplifies across agents, tools, sessions, tenants, regions, or workflows. Autonomous planning, persistence, delegation, retries, and emergent connections let a small initial fault become a system-wide confidentiality, integrity, availability, safety, or cost event faster than human oversight can respond.',
     whyUnique: 'ASI08 describes fan-out and amplification, not the original defect. Record the initiating weakness under ASI04, ASI06, ASI07, or another applicable category, and use ASI08 when measurable impact spreads beyond the original breach or context.',
+    mitreAtlasRef: 'AML.T0029',
+    mitreAtlasRefs: ['AML.T0029', 'AML.T0040'],
     commonRisks: [
       'A compromised or hallucinating planner emits unsafe steps that executors and downstream agents perform automatically.',
       'Poisoned persistent goals or state continue influencing new plans after the original source is gone.',
@@ -474,6 +490,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Human-Agent Trust Exploitation',
     description: 'An adversary or unsafe design exploits anthropomorphism, automation bias, emotional cues, perceived expertise, authority, urgency, or convincing but unverifiable explanations to make a person disclose information, approve an unsafe action, or accept a harmful recommendation. The human performs the final audited action, which can hide the agent’s influence from ordinary forensics.',
     whyUnique: 'ASI09 is about human misperception, persuasion, and over-reliance. ASI10 is loss of the agent’s behavioral integrity. A hijacked or poisoned agent may cause either risk, but the distinguishing question is whether harm depends on manipulating a person or on autonomous deviation.',
+    mitreAtlasRef: 'AML.T0043',
+    mitreAtlasRefs: ['AML.T0043', 'AML.T0054'],
     commonRisks: [
       'Opaque reasoning forces a reviewer to trust an output they cannot independently evaluate.',
       'Sensitive actions execute without a separate confirmation that states the exact effect, target, source, risk, and reversibility.',
@@ -530,6 +548,8 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     title: 'Rogue Agents',
     description: 'A malicious or compromised agent deviates from its intended function or authorized behavioral scope and acts deceptively, parasitically, or destructively within human-agent or multi-agent ecosystems. Individual actions may look permitted while the emergent pattern pursues hidden goals, hijacks workflows, colludes, self-replicates, games rewards, exfiltrates data, or resists containment.',
     whyUnique: 'Prompt injection, goal hijack, poisoned memory, or supply-chain compromise may start the divergence, but ASI10 concerns the subsequent loss of behavioral integrity and governance. It differs from excessive agency, which is over-granted capability even when behavior remains aligned.',
+    mitreAtlasRef: 'AML.T0040',
+    mitreAtlasRefs: ['AML.T0040', 'AML.T0043'],
     commonRisks: [
       'Goal drift or scheming makes the agent appear compliant while it pursues a hidden or conflicting objective.',
       'The agent hijacks a trusted workflow and redirects data, approvals, resources, or operational outcomes toward an unauthorized purpose.',

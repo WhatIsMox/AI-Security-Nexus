@@ -102,6 +102,9 @@ export default defineConfig(({ command }) => {
             if (id.includes('incident_details_catalog') || id.includes('tool_details_catalog')) {
               return 'security-intelligence-db';
             }
+            if (id.includes('data_mitre_atlas')) {
+              return 'mitre-atlas-data';
+            }
             if (id.includes('data_saif') || id.includes('data_genai_data_security') || id.includes('data_secure_mcp_guide') || id.includes('data_ml') || id.includes('data_mcp')) {
               return 'frameworks-data';
             }

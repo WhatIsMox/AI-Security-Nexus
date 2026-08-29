@@ -44,6 +44,8 @@ interface ResolvedThreatInfo {
   relatedRisks?: { id: string; title: string; relationship: string }[];
   references: { title: string; url: string }[];
   suggestedTools?: SecurityTool[];
+  mitreAtlasRef?: string;
+  mitreAtlasRefs?: string[];
 }
 
 export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
@@ -67,6 +69,8 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
       frameworkName: 'OWASP Top 10 for LLM Applications (2026 Edition)',
       frameworkPill: 'OWASP LLM 2026',
       badgeClass: 'border-pink-500/30 bg-pink-500/10 text-pink-400',
+      mitreAtlasRef: llm.mitreAtlasRef,
+      mitreAtlasRefs: llm.mitreAtlasRefs || (llm.mitreAtlasRef ? [llm.mitreAtlasRef] : []),
     };
   }
 
@@ -78,6 +82,8 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
       frameworkName: 'OWASP Top 10 for Agentic Applications (2026)',
       frameworkPill: 'Agentic Applications (ASI)',
       badgeClass: 'border-orange-500/30 bg-orange-500/10 text-orange-400',
+      mitreAtlasRef: asi.mitreAtlasRef,
+      mitreAtlasRefs: asi.mitreAtlasRefs || (asi.mitreAtlasRef ? [asi.mitreAtlasRef] : []),
     };
   }
 
@@ -89,6 +95,8 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
       frameworkName: 'OWASP Agentic Skills Top 10',
       frameworkPill: 'Agentic Skills (AST)',
       badgeClass: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400',
+      mitreAtlasRef: ast.mitreAtlasRef,
+      mitreAtlasRefs: ast.mitreAtlasRefs || (ast.mitreAtlasRef ? [ast.mitreAtlasRef] : []),
     };
   }
 
@@ -103,6 +111,8 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
       frameworkName: 'OWASP Machine Learning Security Top 10',
       frameworkPill: 'OWASP ML Top 10',
       badgeClass: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+      mitreAtlasRef: ml.mitreAtlasRef,
+      mitreAtlasRefs: ml.mitreAtlasRefs || (ml.mitreAtlasRef ? [ml.mitreAtlasRef] : []),
     };
   }
 
@@ -117,6 +127,8 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
       frameworkName: 'OWASP MCP Top 10 (Model Context Protocol)',
       frameworkPill: 'OWASP MCP Top 10',
       badgeClass: 'border-purple-500/30 bg-purple-500/10 text-purple-400',
+      mitreAtlasRef: mcp.mitreAtlasRef,
+      mitreAtlasRefs: mcp.mitreAtlasRefs || (mcp.mitreAtlasRef ? [mcp.mitreAtlasRef] : []),
     };
   }
 
@@ -128,6 +140,8 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
       frameworkName: 'Google Secure AI Framework (SAIF)',
       frameworkPill: 'Google SAIF Matrix',
       badgeClass: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
+      mitreAtlasRef: saif.mitreAtlasRef,
+      mitreAtlasRefs: saif.mitreAtlasRefs || (saif.mitreAtlasRef ? [saif.mitreAtlasRef] : []),
     };
   }
 
@@ -150,6 +164,8 @@ export function resolveThreatData(threatId: string): ResolvedThreatInfo | null {
       preventionStrategies: prevention,
       attackScenarios: attacks,
       references: (dsgai.references || []).map(r => ({ title: r.title, url: r.url })),
+      mitreAtlasRef: dsgai.mitreAtlasRef,
+      mitreAtlasRefs: dsgai.mitreAtlasRefs || (dsgai.mitreAtlasRef ? [dsgai.mitreAtlasRef] : []),
     };
   }
 
@@ -296,6 +312,24 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
                     <Flame className="w-3 h-3" />
                     {incidentLinks.length} Incidents
                   </span>
+                )}
+
+                {threat.mitreAtlasRefs && threat.mitreAtlasRefs.length > 0 && onNavigateToOwasp && (
+                  threat.mitreAtlasRefs.map(techId => (
+                    <button
+                      key={techId}
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onNavigateToOwasp(techId);
+                      }}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-bold border border-rose-500/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 hover:border-rose-500/50 transition-all cursor-pointer"
+                      title={`Jump to MITRE ATLAS Technique ${techId}`}
+                    >
+                      <Shield className="w-3.5 h-3.5" />
+                      {techId}
+                    </button>
+                  ))
                 )}
               </div>
 
@@ -471,13 +505,40 @@ export const ThreatDetailModal: React.FC<ThreatDetailModalProps> = ({
                 )}
 
                 {/* Mappings */}
-                {(threat.owaspMappings?.length || threat.otherMappings?.length || threat.maestroMappings?.length) ? (
+                {(threat.owaspMappings?.length || threat.otherMappings?.length || threat.maestroMappings?.length || (threat.mitreAtlasRefs && threat.mitreAtlasRefs.length > 0)) ? (
                   <div>
                     <h4 className="flex items-center gap-2 text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
                       <Layers3 className="w-4 h-4 text-indigo-400" />
                       Framework & Layer Mappings
                     </h4>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
+                      {threat.mitreAtlasRefs && threat.mitreAtlasRefs.length > 0 && (
+                        <div>
+                          <div className="text-[10px] uppercase tracking-wider font-bold text-rose-400 mb-1.5 flex items-center gap-1">
+                            <Shield className="w-3 h-3 text-rose-400" />
+                            MITRE ATLAS™ Techniques
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {threat.mitreAtlasRefs.map((techId) => (
+                              <button
+                                key={techId}
+                                type="button"
+                                onClick={() => {
+                                  if (onNavigateToOwasp) {
+                                    onClose();
+                                    onNavigateToOwasp(techId);
+                                  }
+                                }}
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-rose-500/30 bg-rose-500/10 text-xs font-mono font-bold text-rose-300 hover:bg-rose-500/20 hover:border-rose-400 transition-all cursor-pointer group"
+                                title={`Explore ${techId} in MITRE ATLAS Matrix`}
+                              >
+                                <span>{techId}</span>
+                                <ArrowUpRight className="w-3 h-3 text-rose-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       {threat.owaspMappings && (
                         <div className="flex flex-wrap gap-1.5">
                           {threat.owaspMappings.map(m => (

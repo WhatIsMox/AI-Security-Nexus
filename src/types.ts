@@ -34,6 +34,7 @@ export interface RealWorldIncident extends ExternalResource {
   cveOrAdvisoryId?: string;
   severity?: 'Critical' | 'High' | 'Medium' | 'Low';
   mappedThreats?: string[];
+  mitreAtlasTechniques?: string[];
   additionalReferences?: ExternalResource[];
 }
 
@@ -51,6 +52,7 @@ export interface SecurityTool {
   ecosystem?: string[];
   license?: string;
   authorOrMaintainer?: string;
+  mitreAtlasTechniques?: string[];
 }
 
 export interface SuggestedTool {
@@ -82,6 +84,86 @@ export interface TestItem {
   owaspSaifRef?: string;
   owaspMcpTop10Ref?: string;
   owaspDsgaiRef?: string;
+  mitreAtlasRef?: string;
+}
+
+export interface MitreAtlasMitigation {
+  id: string;
+  name: string;
+  description: string;
+  useDescription?: string;
+  url?: string;
+}
+
+export interface MitreAtlasCaseStudy {
+  id: string;
+  name: string;
+  url?: string;
+}
+
+export interface MitreAtlasProcedureExample {
+  caseStudyId: string;
+  caseStudyName: string;
+  description: string;
+  url: string;
+  stepId?: string;
+  tacticId?: string;
+}
+
+export interface MitreAtlasReference {
+  sourceName: string;
+  description?: string;
+  url?: string;
+  externalId?: string;
+}
+
+export interface MitreAtlasSubtechniqueRef {
+  id: string;
+  name: string;
+  description?: string;
+  url?: string;
+}
+
+export interface MitreAtlasTechnique {
+  id: string;
+  name: string;
+  description: string;
+  tacticId: string;
+  tacticName: string;
+  tactics?: { id: string; name: string }[];
+  isSubtechnique: boolean;
+  parentTechniqueId?: string;
+  parentTechniqueName?: string;
+  subtechniques?: MitreAtlasSubtechniqueRef[];
+  url: string;
+  platforms?: string[];
+  maturity?: string;
+  attackReference?: { id: string; url: string };
+  createdDate?: string;
+  modifiedDate?: string;
+  detection?: string;
+  mitigations?: MitreAtlasMitigation[];
+  caseStudies?: MitreAtlasCaseStudy[];
+  procedureExamples?: MitreAtlasProcedureExample[];
+  references?: MitreAtlasReference[];
+  suggestedTools?: SuggestedTool[];
+}
+
+export interface MitreAtlasTactic {
+  id: string;
+  shortname: string;
+  name: string;
+  description: string;
+  url: string;
+  techniques: MitreAtlasTechnique[];
+}
+
+export interface MitreAtlasOverview {
+  version: string;
+  lastUpdated: string;
+  totalTactics: number;
+  totalTechniques: number;
+  tactics: MitreAtlasTactic[];
 }
 
 export interface OwaspTop10Entry {
@@ -96,6 +178,8 @@ export interface OwaspTop10Entry {
   implementationNotes?: { title: string; content: string }[];
   owaspMappings?: string[];
   otherMappings?: string[];
+  mitreAtlasRef?: string;
+  mitreAtlasRefs?: string[];
   maestroMappings?: { layer: string; name: string; details: string }[];
   relatedRisks?: { id: string; title: string; relationship: string }[];
   references: ExternalResource[];

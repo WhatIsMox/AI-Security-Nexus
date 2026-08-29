@@ -46,6 +46,7 @@ test('Security - Framework Data Catalogs URL Validation', (t) => {
     'data_agentic_applications.ts',
     'data_genai_data_security.ts',
     'data_secure_mcp_guide.ts',
+    'data_mitre_atlas.ts',
     'data_tests.ts'
   ];
 

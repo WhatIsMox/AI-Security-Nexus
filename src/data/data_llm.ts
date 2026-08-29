@@ -7,6 +7,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM01:2026",
     title: "Prompt Injection",
     description: "Prompt injection occurs when direct user input, retrieved content, tool output, multimodal content, intermediate reasoning, or persistent memory changes an LLM's behavior in ways the application developer did not intend. The 2026 guidance treats this as an architectural risk: models do not enforce a clean boundary between instructions and data, so systems must assume that the instruction boundary can be bypassed and constrain what model output is allowed to reach.",
+    mitreAtlasRef: "AML.T0051",
+    mitreAtlasRefs: ["AML.T0051", "AML.T0054", "AML.T0043"],
     commonRisks: [
       "Direct prompt-input overrides that make the model ignore role, capability, or safety limits.",
       "Indirect injections delivered through RAG passages, web pages, documents, emails, tool responses, database rows, issue titles, or MCP channels.",
@@ -41,6 +43,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM02:2026",
     title: "Sensitive Information Disclosure",
     description: "Sensitive information disclosure occurs when an LLM-integrated system exposes confidential, regulated, privileged, or proprietary data through an unauthorized channel. The channel is not only the final answer: tool-call arguments, reasoning traces, retrieved chunks, multimodal output, logs, telemetry, embeddings, and inference side channels can all disclose protected information.",
+    mitreAtlasRef: "AML.T0024",
+    mitreAtlasRefs: ["AML.T0024", "AML.T0025", "AML.T0057"],
     commonRisks: [
       "Training-time memorization and extraction of PII, credentials, copyrighted content, or rare examples from base models, fine-tunes, or adapters.",
       "Inference-time disclosure of system prompts, retrieved private documents, files, tool outputs, memory, or another user's session data.",
@@ -75,6 +79,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM03:2026",
     title: "Excessive Agency",
     description: "Excessive Agency occurs when an LLM-based system can perform damaging actions because it has more functionality, permissions, or autonomy than the application requires. The trigger may be prompt injection, hallucination, tool compromise, or a peer-agent failure, but the root vulnerability is that the system allows unexpected model output to reach privileged actions.",
+    mitreAtlasRef: "AML.T0040",
+    mitreAtlasRefs: ["AML.T0040", "AML.T0048"],
     commonRisks: [
       "Tools expose unnecessary functions, such as delete or send operations when only read access is required.",
       "Deprecated or experimental tools remain available to the agent after development.",
@@ -109,6 +115,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM04:2026",
     title: "Supply Chain",
     description: "Supply Chain risks affect the integrity of training data, models, adapters, conversion pipelines, deployment platforms, serving frameworks, and third-party components. The 2026 guidance expands this category beyond code dependencies to include model provenance, artifact promotion, LoRA adapters, quantization, model conversion, and on-device LLM distribution.",
+    mitreAtlasRef: "AML.T0010",
+    mitreAtlasRefs: ["AML.T0010", "AML.T0012", "AML.T0018"],
     commonRisks: [
       "Vulnerable or outdated packages, serving frameworks, APIs, model runtimes, or AI-suggested dependencies.",
       "Licensing, terms, or data-privacy risks in software, datasets, model operators, and third-party services.",
@@ -143,6 +151,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM05:2026",
     title: "Data and Model Poisoning",
     description: "Data and Model Poisoning covers attacks and unsafe processes that manipulate data or model artifacts to embed harmful behavior, bias, backdoors, or exploitable weaknesses. In modern GenAI systems this can happen during pre-training, fine-tuning, embedding creation, retrieval augmentation, model distribution, continuous learning, memory, and feedback loops.",
+    mitreAtlasRef: "AML.T0020",
+    mitreAtlasRefs: ["AML.T0020", "AML.T0115", "AML.T0031"],
     commonRisks: [
       "Training, fine-tuning, and open-source dataset poisoning that introduces bias, backdoors, or degraded refusal behavior.",
       "Low-volume high-impact poisoning where small numbers of crafted samples produce large behavioral shifts.",
@@ -177,6 +187,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM06:2026",
     title: "Unbounded Consumption",
     description: "Unbounded Consumption occurs when an LLM application allows excessive or uncontrolled inference, letting attackers disrupt availability, cause unsustainable financial cost, or collect enough outputs for functional model replication. The 2026 guidance expands this beyond request rate limiting to token-aware budgets, multimodal costs, reasoning-token controls, agent circuit breakers, and inference infrastructure hardening.",
+    mitreAtlasRef: "AML.T0029",
+    mitreAtlasRefs: ["AML.T0029", "AML.T0034"],
     commonRisks: [
       "Variable-length input flooding, output explosion, and near-limit context abuse that exhaust memory, compute, or budget.",
       "Denial of Wallet attacks against pay-per-token or cloud-hosted AI services.",
@@ -211,6 +223,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM07:2026",
     title: "Misinformation",
     description: "Misinformation occurs when an LLM or LLM-enabled application produces incorrect, incomplete, unsupported, or misleading information that appears credible enough to influence a human decision, automated workflow, or agent action. The risk is not merely that the model is wrong, but that the false representation is trusted and acted upon.",
+    mitreAtlasRef: "AML.T0043",
+    mitreAtlasRefs: ["AML.T0043", "AML.T0034"],
     commonRisks: [
       "Unsupported or false decision support in business, legal, healthcare, financial, or operational contexts.",
       "Incorrect state inference that triggers unintended workflow or agent actions.",
@@ -245,6 +259,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM08:2026",
     title: "Hidden Context Exposure",
     description: "Hidden Context Exposure is the unauthorized extraction, inference, or reconstruction of non-user-facing system instructions or operational context. It is security-relevant when hidden context reveals secrets, policy logic, tool schemas, trust boundaries, workflow criteria, proprietary behavior, or other implementation details that materially increase attacker capability.",
+    mitreAtlasRef: "AML.T0056",
+    mitreAtlasRefs: ["AML.T0056", "AML.T0057"],
     commonRisks: [
       "Exposure of sensitive functionality, tool schemas, API keys, database credentials, user tokens, or architectural details from hidden context.",
       "Disclosure of behavioral control logic, policy rules, workflow criteria, filtering conditions, or refusal mechanisms.",
@@ -279,6 +295,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM09:2026",
     title: "Vector and Embedding Weaknesses",
     description: "Vector and embedding weaknesses affect LLM applications that convert text, images, code, or audio into numerical representations and use similarity search to decide what the model sees. The 2026 guidance separates these from prompt injection: they exploit embedding-space geometry, retrieval mechanics, semantic caches, vector-backed memory, or deduplication rather than instruction-following behavior.",
+    mitreAtlasRef: "AML.T0042",
+    mitreAtlasRefs: ["AML.T0042", "AML.T0044"],
     commonRisks: [
       "Cross-tenant leakage when similarity search runs across shared indexes before access control is enforced.",
       "Embedding inversion that reconstructs source text from stored vectors, exported embeddings, or vector backups.",
@@ -313,6 +331,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM10:2026",
     title: "Improper Output Handling",
     description: "Improper Output Handling is insufficient validation, sanitization, encoding, and handling of LLM outputs before they are passed to users, tools, databases, shells, renderers, logs, IDEs, or other downstream systems. Because model output can be influenced by input, treating it as trusted can give attackers indirect access to privileged functionality.",
+    mitreAtlasRef: "AML.T0043",
+    mitreAtlasRefs: ["AML.T0043", "AML.T0040"],
     commonRisks: [
       "Model output is passed to shells, eval-like functions, interpreters, or administrative tools and leads to remote code execution or privilege escalation.",
       "Generated HTML, JavaScript, Markdown, email content, or link previews are rendered without proper encoding, causing XSS, CSRF, phishing, or exfiltration.",

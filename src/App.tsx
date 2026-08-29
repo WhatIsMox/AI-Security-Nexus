@@ -19,6 +19,7 @@ const GenAiDataSecurityView = lazy(() => import('./components/GenAiDataSecurityV
 const AuditChecklistView = lazy(() => import('./components/AuditChecklistView'));
 const ToolsDirectoryView = lazy(() => import('./components/ToolsDirectoryView'));
 const IncidentsDirectoryView = lazy(() => import('./components/IncidentsDirectoryView'));
+const MitreAtlasView = lazy(() => import('./components/MitreAtlasView'));
 
 const ViewLoadingFallback = () => (
   <div className="flex items-center justify-center min-h-[50vh] text-slate-400">
@@ -89,6 +90,11 @@ const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKe
   ) {
     return { view: 'genai-data-security', pillar: 'GENAIDATASECURITY', id: clean };
   }
+  if (clean.startsWith('mitre-atlas') || clean.startsWith('AML') || upper.startsWith('AML')) {
+    const parts = clean.split('/');
+    const id = (clean.startsWith('AML') || upper.startsWith('AML')) ? clean : (parts[1] || null);
+    return { view: 'mitre-atlas', pillar: 'MITREATLAS', id };
+  }
   if (clean.startsWith('owasp-top10') || clean.startsWith('LLM') || upper.startsWith('LLM')) {
     const parts = clean.split('/');
     const id = (clean.startsWith('LLM') || upper.startsWith('LLM')) ? clean : (parts[1] || null);
@@ -138,6 +144,7 @@ const stateToHash = (view: AppView, pillar: ActivePillarKey, testId?: string | n
   if (view === 'audit-checklist') return '#/audit-checklist';
   if (view === 'tools') return '#/tools';
   if (view === 'incidents') return '#/incidents';
+  if (view === 'mitre-atlas') return threatId ? `#/mitre-atlas/${threatId}` : '#/mitre-atlas';
   if (view === 'secure-mcp-guide') return threatId ? `#/secure-mcp-guide/${threatId}` : '#/secure-mcp-guide';
   if (view === 'genai-data-security') return threatId ? `#/genai-data-security/${threatId}` : '#/genai-data-security';
   if (view === 'owasp-top10') return threatId ? `#/owasp-top10/${threatId}` : '#/owasp-top10';
@@ -267,7 +274,10 @@ const App: React.FC = () => {
   const handleSelectPillar = (pillar: ActivePillarKey) => {
     setActivePillar(pillar);
     let view: AppView = 'tests';
-    if (pillar === 'TOP10') {
+    if (pillar === 'MITREATLAS') {
+      setOwaspTargetId(null);
+      view = 'mitre-atlas';
+    } else if (pillar === 'TOP10') {
       setOwaspTargetId(null); 
       view = 'owasp-top10';
     } else if (pillar === 'MLTOP10') {
@@ -299,7 +309,10 @@ const App: React.FC = () => {
     let view: AppView = 'owasp-top10';
     let pillar: ActivePillarKey = 'TOP10';
 
-    if (id.startsWith("ML") || id.toUpperCase().startsWith("ML")) {
+    if (id.startsWith("AML") || id.toUpperCase().startsWith("AML")) {
+      pillar = 'MITREATLAS';
+      view = 'mitre-atlas';
+    } else if (id.startsWith("ML") || id.toUpperCase().startsWith("ML")) {
       pillar = 'MLTOP10';
       view = 'owasp-ml-top10';
     } else if (id.startsWith("ASI") || id.startsWith("AST") || id.toUpperCase().startsWith("ASI") || id.toUpperCase().startsWith("AST")) {
@@ -363,7 +376,9 @@ const App: React.FC = () => {
   const handleBackToTests = () => {
     setSelectedTest(null);
     let view: AppView = 'tests';
-    if (activePillar === 'TOP10') {
+    if (activePillar === 'MITREATLAS') {
+      view = 'mitre-atlas';
+    } else if (activePillar === 'TOP10') {
       view = 'owasp-top10';
     } else if (activePillar === 'MLTOP10') {
       view = 'owasp-ml-top10';
@@ -542,6 +557,15 @@ const App: React.FC = () => {
                 />
               )}
 
+              {currentView === 'mitre-atlas' && (
+                <MitreAtlasView 
+                  initialTechniqueId={owaspTargetId}
+                  initialPillar={activePillar === Pillar.APP || activePillar === Pillar.MODEL || activePillar === Pillar.INFRA || activePillar === Pillar.DATA ? activePillar : 'ALL'}
+                  onNavigateToTest={handleSelectTest}
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
+              )}
+
               {currentView === 'owasp-top10' && (
                 <OwaspTop10View 
                   initialExpandedId={owaspTargetId} 
@@ -549,6 +573,7 @@ const App: React.FC = () => {
                   title="OWASP Top 10 for LLM Applications (2026 Edition)"
                   description="The definitive industry benchmark for Large Language Model security—covering prompt injection, data poisoning, vector store vulnerabilities, over-permissioned tools, and output handling."
                   colorTheme="pink"
+                  onNavigateToOwasp={handleNavigateToOwasp}
                 />
               )}
 
@@ -559,11 +584,15 @@ const App: React.FC = () => {
                   title="OWASP Machine Learning Security Top 10"
                   description="Essential vulnerability catalog for predictive models and deep learning pipelines, covering adversarial evasion, dataset poisoning, model inversion, and supply-chain threats."
                   colorTheme="emerald"
+                  onNavigateToOwasp={handleNavigateToOwasp}
                 />
               )}
 
               {currentView === 'owasp-agent-top10' && (
-                <AgenticTop10View initialExpandedId={owaspTargetId} />
+                <AgenticTop10View 
+                  initialExpandedId={owaspTargetId} 
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
               )}
 
               {currentView === 'owasp-saif-top10' && (
@@ -573,6 +602,7 @@ const App: React.FC = () => {
                   title="Google Secure AI Framework (SAIF) Threats"
                   description="End-to-end AI security lifecycle model mapping 15 distinct threat vectors across dataset curation, model training, deployment infrastructure, and live operations."
                   colorTheme="blue"
+                  onNavigateToOwasp={handleNavigateToOwasp}
                 />
               )}
 
@@ -583,6 +613,7 @@ const App: React.FC = () => {
                   title="OWASP Model Context Protocol (MCP) Top 10"
                   description="Dedicated security standards for Model Context Protocol architectures—focusing on tool integrity, rogue server containment, confused-deputy authorization, and context isolation."
                   colorTheme="cyan"
+                  onNavigateToOwasp={handleNavigateToOwasp}
                 />
               )}
 
@@ -591,7 +622,10 @@ const App: React.FC = () => {
               )}
 
               {currentView === 'genai-data-security' && (
-                <GenAiDataSecurityView initialExpandedId={owaspTargetId} />
+                <GenAiDataSecurityView 
+                  initialExpandedId={owaspTargetId} 
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
               )}
 
               {currentView === 'tests' && (

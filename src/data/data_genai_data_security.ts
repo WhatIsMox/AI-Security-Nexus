@@ -70,6 +70,8 @@ export interface GenAiDataSecurityRisk {
   knownExploits?: string[];
   references?: ExternalResource[];
   crossReferences?: string[];
+  mitreAtlasRef?: string;
+  mitreAtlasRefs?: string[];
   keywords: string[];
 }
 
@@ -311,6 +313,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI01',
     title: 'Sensitive Data Leakage',
     theme: 'Leakage & Exposure',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0057', 'AML.T0025'],
     summary:
       'Sensitive data leaks when models, RAG retrieval, logs, telemetry, fine-tuned adapters, or embeddings surface PII, PHI, secrets, IP, or deleted data that should not be available.',
     howItUnfolds: [
@@ -378,6 +382,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI02',
     title: 'Agent Identity & Credential Exposure',
     theme: 'Identity, Tools & Agents',
+    mitreAtlasRef: 'AML.T0036',
+    mitreAtlasRefs: ['AML.T0036', 'AML.T0040'],
     summary:
       'Agent pipelines create non-human identity sprawl when service accounts, OAuth tokens, API keys, and tool credentials are long-lived, over-scoped, shared, inherited, or logged.',
     howItUnfolds: [
@@ -431,6 +437,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI03',
     title: 'Shadow AI & Unsanctioned Data Flows',
     theme: 'Governance & Compliance',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0040'],
     summary:
       'Shadow AI occurs when employees, teams, or vendors use unapproved GenAI tools and embedded AI features outside security, privacy, procurement, retention, and data processing controls.',
     howItUnfolds: [
@@ -488,6 +496,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI04',
     title: 'Data, Model & Artifact Poisoning',
     theme: 'Integrity & Resilience',
+    mitreAtlasRef: 'AML.T0010',
+    mitreAtlasRefs: ['AML.T0010', 'AML.T0020', 'AML.T0012'],
     summary:
       'Poisoning and tampering compromise trusted datasets, dependencies, preprocessing, model artifacts, loaders, registries, vector indexes, and RAG sources so malicious influence flows into production.',
     howItUnfolds: [
@@ -552,6 +562,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI05',
     title: 'Data Integrity & Validation Failures',
     theme: 'Integrity & Resilience',
+    mitreAtlasRef: 'AML.T0048',
+    mitreAtlasRefs: ['AML.T0048', 'AML.T0010'],
     summary:
       'Weak ingestion validation lets structurally valid but semantically malicious data corrupt training, indexing, feature stores, and snapshot restore paths.',
     howItUnfolds: [
@@ -598,6 +610,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI06',
     title: 'Tool, Plugin & Agent Data Exchange Risks',
     theme: 'Identity, Tools & Agents',
+    mitreAtlasRef: 'AML.T0040',
+    mitreAtlasRefs: ['AML.T0040', 'AML.T0048'],
     summary:
       'Every plugin call, MCP invocation, A2A handoff, or tool execution boundary can forward sensitive context, credentials, attachments, and authority outside the intended control plane.',
     howItUnfolds: [
@@ -654,6 +668,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI07',
     title: 'Data Governance, Lifecycle & Classification for AI Systems',
     theme: 'Governance & Compliance',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0057'],
     summary:
       'Governance failures in AI propagate into derived artifacts such as embeddings, logs, fine-tuned weights, backups, and agent memory, making erasure, audit, and remediation difficult or impossible.',
     howItUnfolds: [
@@ -697,6 +713,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI08',
     title: 'Non-Compliance & Regulatory Violations',
     theme: 'Governance & Compliance',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0025'],
     summary:
       'Regulatory exposure materializes when AI data processing lacks lawful basis, consent, erasure propagation, lineage, DPIAs, and records that include derived artifacts.',
     howItUnfolds: [
@@ -741,6 +759,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI09',
     title: 'Multimodal Capture & Cross-Channel Data Leakage',
     theme: 'Leakage & Exposure',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0057'],
     summary:
       'Multimodal systems ingest screenshots, images, audio, video, IDs, PDFs, and whiteboards; the raw media and extracted OCR/ASR derivatives can leak through overlooked stores and channels.',
     howItUnfolds: [
@@ -792,6 +812,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI10',
     title: 'Synthetic Data, Anonymization & Transformation Pitfalls',
     theme: 'Governance & Compliance',
+    mitreAtlasRef: 'AML.T0025',
+    mitreAtlasRefs: ['AML.T0025', 'AML.T0037'],
     summary:
       'Synthetic, anonymized, de-identified, tokenized, or transformed data can still reveal individuals, membership, attributes, rare records, bias, or source structure.',
     howItUnfolds: [
@@ -849,6 +871,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI11',
     title: 'Cross-Context & Multi-User Conversation Bleed',
     theme: 'Leakage & Exposure',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0040'],
     summary:
       'Session state, shared memory, KV caches, response caches, or shared vector indexes can leak one user or tenant context into another user or tenant conversation.',
     howItUnfolds: [
@@ -905,6 +929,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI12',
     title: 'Unsafe Natural-Language Data Gateways (LLM-to-SQL/Graph)',
     theme: 'Model, Vector & Inference',
+    mitreAtlasRef: 'AML.T0048',
+    mitreAtlasRefs: ['AML.T0048', 'AML.T0040'],
     summary:
       'Text-to-SQL, text-to-Graph, and data-copilot interfaces can translate natural language and injected context into overly broad or destructive queries that bypass normal access boundaries.',
     howItUnfolds: [
@@ -957,6 +983,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI13',
     title: 'Vector Store Platform Data Security',
     theme: 'Model, Vector & Inference',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0048'],
     summary:
       'Vector stores hold durable semantic representations of sensitive corpora; weak auth, tenant scoping, encryption, import validation, or query controls can expose or corrupt entire indexes.',
     howItUnfolds: [
@@ -1009,6 +1037,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI14',
     title: 'Excessive Telemetry & Monitoring Leakage',
     theme: 'Leakage & Exposure',
+    mitreAtlasRef: 'AML.T0057',
+    mitreAtlasRefs: ['AML.T0057', 'AML.T0024'],
     summary:
       'LLM observability and agent tracing can capture full prompts, responses, tool calls, vector results, secrets, and internal reasoning into centralized stores with weaker controls.',
     howItUnfolds: [
@@ -1061,6 +1091,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI15',
     title: 'Over-Broad Context Windows & Prompt Over-Sharing',
     theme: 'Leakage & Exposure',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0057'],
     summary:
       'Prompt inflation sends full records, customer-360 profiles, tickets, documents, or screens to models, providers, caches, and logs even when the task only needs a few fields.',
     howItUnfolds: [
@@ -1109,6 +1141,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI16',
     title: 'Endpoint & Browser Assistant Overreach',
     theme: 'Identity, Tools & Agents',
+    mitreAtlasRef: 'AML.T0040',
+    mitreAtlasRefs: ['AML.T0040', 'AML.T0048'],
     summary:
       'AI browsers, extensions, local copilots, and IDE assistants can read tabs, DOMs, clipboards, files, code, authenticated SaaS sessions, and local memory stores.',
     howItUnfolds: [
@@ -1164,6 +1198,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI17',
     title: 'Data Availability & Resilience Failures in AI Pipelines',
     theme: 'Integrity & Resilience',
+    mitreAtlasRef: 'AML.T0029',
+    mitreAtlasRefs: ['AML.T0029'],
     summary:
       'RAG and AI pipelines fail differently from traditional systems: stale, partial, corrupted, or unavailable data can produce silent misinformation rather than obvious downtime.',
     howItUnfolds: [
@@ -1206,6 +1242,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI18',
     title: 'Inference & Data Reconstruction',
     theme: 'Model, Vector & Inference',
+    mitreAtlasRef: 'AML.T0025',
+    mitreAtlasRefs: ['AML.T0025', 'AML.T0037', 'AML.T0024'],
     summary:
       'Models, embedding stores, and APIs can leak through membership inference, attribute inference, inversion, probability signals, confidence differences, and repeated probing.',
     howItUnfolds: [
@@ -1260,6 +1298,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI19',
     title: 'Human-in-the-Loop & Labeler Overexposure',
     theme: 'Governance & Compliance',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0057'],
     summary:
       'RLHF, safety fine-tuning, quality review, and data labeling pipelines expose human annotators and vendors to raw prompts, completions, documents, and transcripts at scale.',
     howItUnfolds: [
@@ -1307,6 +1347,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI20',
     title: 'Model Exfiltration & IP Replication',
     theme: 'Model, Vector & Inference',
+    mitreAtlasRef: 'AML.T0024',
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0044'],
     summary:
       'Model exfiltration and distillation attacks use legitimate API access to systematically query a proprietary teacher model and train a derivative student model.',
     howItUnfolds: [
@@ -1352,6 +1394,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI21',
     title: 'Disinformation & Integrity Attacks via Data Poisoning',
     theme: 'Integrity & Resilience',
+    mitreAtlasRef: 'AML.T0020',
+    mitreAtlasRefs: ['AML.T0020', 'AML.T0043'],
     summary:
       'Disinformation becomes a data security attack when false or manipulated content is inserted into trusted training, retrieval, tool, or live-feed sources and surfaced as grounded authoritative output.',
     howItUnfolds: [

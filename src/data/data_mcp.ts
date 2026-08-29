@@ -6,6 +6,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP1:2025",
     title: "Token Mismanagement & Secret Exposure",
     description: "Hard-coded credentials, long-lived tokens, and secrets stored in model memory or MCP logs can expose sensitive environments to unauthorized access and lateral movement.",
+    mitreAtlasRef: "AML.T0024",
+    mitreAtlasRefs: ["AML.T0024", "AML.T0036", "AML.T0057"],
     commonRisks: [
       "Secrets embedded in prompts, tools, or configuration files that leak via logs or telemetry.",
       "Long-lived or overly broad tokens reused across tools and sessions.",
@@ -44,6 +46,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP2:2025",
     title: "Privilege Escalation via Scope Creep",
     description: "Temporary or loosely defined permissions within MCP servers often expand over time, allowing agents or tools to gain unintended capabilities and perform unauthorized actions.",
+    mitreAtlasRef: "AML.T0040",
+    mitreAtlasRefs: ["AML.T0040", "AML.T0036"],
     commonRisks: [
       "Tokens granted wider scopes than necessary for a single task.",
       "Accumulated permissions across chained tools and agents.",
@@ -81,6 +85,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP3:2025",
     title: "Tool Poisoning",
     description: "Attackers compromise tools, plugins, schemas, or their outputs to inject malicious or misleading context, steering model behavior through trusted interfaces.",
+    mitreAtlasRef: "AML.T0051",
+    mitreAtlasRefs: ["AML.T0051", "AML.T0010", "AML.T0048"],
     commonRisks: [
       "Malicious tool updates (rug pulls) that alter behavior after installation.",
       "Schema poisoning that tricks models into unsafe or privileged tool calls.",
@@ -119,6 +125,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP4:2025",
     title: "Software Supply Chain Attacks & Dependency Tampering",
     description: "MCP ecosystems rely on open-source packages, connectors, and plugins. Compromised dependencies can alter agent behavior or introduce execution-level backdoors.",
+    mitreAtlasRef: "AML.T0010",
+    mitreAtlasRefs: ["AML.T0010", "AML.T0012"],
     commonRisks: [
       "Typosquatting or dependency confusion in MCP tool registries.",
       "Malicious code in transitive dependencies.",
@@ -156,6 +164,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP5:2025",
     title: "Command Injection & Execution",
     description: "Agents that construct and execute system commands or API calls from untrusted input can be coerced into running arbitrary code or destructive actions.",
+    mitreAtlasRef: "AML.T0048",
+    mitreAtlasRefs: ["AML.T0048", "AML.T0040"],
     commonRisks: [
       "Shell command injection through concatenated prompts or tool parameters.",
       "Unsafe execution of model-generated code without validation.",
@@ -193,6 +203,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP6:2025",
     title: "Prompt Injection via Contextual Payloads",
     description: "Attackers hide instructions in retrieved documents, logs, or OCR text. The model treats these payloads as authoritative context and follows them.",
+    mitreAtlasRef: "AML.T0051",
+    mitreAtlasRefs: ["AML.T0051", "AML.T0054"],
     commonRisks: [
       "Hidden instructions embedded in RAG sources or external files.",
       "Context mixing of untrusted content with system instructions.",
@@ -230,6 +242,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP7:2025",
     title: "Insufficient Authentication & Authorization",
     description: "MCP servers, tools, or agents that do not properly verify identities or enforce access controls expose high-impact attack paths across the ecosystem.",
+    mitreAtlasRef: "AML.T0036",
+    mitreAtlasRefs: ["AML.T0036", "AML.T0040"],
     commonRisks: [
       "Unauthenticated MCP endpoints accessible on internal networks.",
       "Weak token validation or missing audience and scope checks.",
@@ -267,6 +281,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP8:2025",
     title: "Lack of Audit and Telemetry",
     description: "Without comprehensive activity logging and alerting, unauthorized actions or data access can go undetected, undermining incident response.",
+    mitreAtlasRef: "AML.T0043",
+    mitreAtlasRefs: ["AML.T0043", "AML.T0040"],
     commonRisks: [
       "Missing logs for tool invocations or context mutations.",
       "No correlation across agents, tools, and user actions.",
@@ -304,6 +320,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP9:2025",
     title: "Shadow MCP Servers",
     description: "Unapproved or unsupervised MCP deployments outside formal governance often use default credentials or permissive configs, creating hidden attack surfaces.",
+    mitreAtlasRef: "AML.T0040",
+    mitreAtlasRefs: ["AML.T0040", "AML.T0048"],
     commonRisks: [
       "Rogue MCP servers deployed without security review.",
       "Default credentials or open endpoints in internal networks.",
@@ -341,6 +359,8 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "MCP10:2025",
     title: "Context Injection & Over-Sharing",
     description: "Shared or persistent context windows can leak sensitive information across users, tasks, or agents, turning convenience into a data exposure risk.",
+    mitreAtlasRef: "AML.T0024",
+    mitreAtlasRefs: ["AML.T0024", "AML.T0051", "AML.T0057"],
     commonRisks: [
       "Cross-tenant leakage from shared context buffers.",
       "Overly permissive context retention beyond task scope.",

@@ -6,6 +6,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML01:2023",
       title: "Input Manipulation Attack",
       description: "Deliberately altering input data to mislead the model into making incorrect predictions or classifications. This includes evasion attacks and adversarial perturbations that are often imperceptible to humans.",
+      mitreAtlasRef: "AML.T0015",
+      mitreAtlasRefs: ["AML.T0015", "AML.T0043"],
       commonRisks: [
         "Misclassification of images (e.g., traffic signs) leading to safety bypass.",
         "Evasion of AI-based intrusion detection systems (IDS).",
@@ -37,6 +39,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML02:2023",
       title: "Data Poisoning Attack",
       description: "Manipulating the training data to cause the model to behave in an undesirable way. This can be 'Targeted' (backdoors) or 'Untargeted' (overall performance degradation).",
+      mitreAtlasRef: "AML.T0020",
+      mitreAtlasRefs: ["AML.T0020", "AML.T0115", "AML.T0031"],
       commonRisks: [
         "Incorrect predictions based on maliciously labeled data.",
         "Persistent hidden backdoors triggered by specific input patterns.",
@@ -68,6 +72,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML03:2023",
       title: "Model Inversion Attack",
       description: "Reverse-engineering the model by analyzing its outputs to extract sensitive information about the training data or features used during development.",
+      mitreAtlasRef: "AML.T0024",
+      mitreAtlasRefs: ["AML.T0024", "AML.T0025", "AML.T0037"],
       commonRisks: [
         "Confidentiality breach of sensitive user data.",
         "Reconstruction of private training examples (e.g., patient records or faces).",
@@ -98,6 +104,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML04:2023",
       title: "Membership Inference Attack",
       description: "Determining whether a specific individual's data record was included in the model's training set by observing the model's response to that record.",
+      mitreAtlasRef: "AML.T0025",
+      mitreAtlasRefs: ["AML.T0025", "AML.T0037"],
       commonRisks: [
         "Loss of privacy for individuals whose data was used in training.",
         "Regulatory compliance violations (GDPR, HIPAA).",
@@ -129,6 +137,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML05:2023",
       title: "Model Theft",
       description: "Unauthorized access to model parameters (weights), architecture, or functionality, often through systematic querying or by compromising the model registry.",
+      mitreAtlasRef: "AML.T0024",
+      mitreAtlasRefs: ["AML.T0024", "AML.T0044", "AML.T0037"],
       commonRisks: [
         "Loss of proprietary Intellectual Property (IP) and competitive edge.",
         "Financial loss and theft of R&D investment.",
@@ -159,6 +169,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML06:2023",
       title: "AI Supply Chain Attacks",
       description: "Modifying or replacing machine learning libraries, pre-trained base models, or dataset files used in the ML pipeline to execute malicious code or corrupt the model.",
+      mitreAtlasRef: "AML.T0010",
+      mitreAtlasRefs: ["AML.T0010", "AML.T0012", "AML.T0018"],
       commonRisks: [
         "Execution of malicious shellcode during model loading (e.g., pickle exploits).",
         "Infection of the production environment via backdoored framework libraries.",
@@ -190,6 +202,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML07:2023",
       title: "Transfer Learning Attack",
       description: "Training a base model with a hidden backdoor and then providing it to others, who unknowingly inherit the vulnerability when they fine-tune it for their specific task.",
+      mitreAtlasRef: "AML.T0018",
+      mitreAtlasRefs: ["AML.T0018", "AML.T0020"],
       commonRisks: [
         "Inherited backdoors in downstream fine-tuned models.",
         "Systemic vulnerability across multiple applications using the same base model.",
@@ -220,6 +234,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML08:2023",
       title: "Model Skewing",
       description: "Manipulating the feedback loops or the continuous training data distribution to gradually shift the model's decision boundaries toward a malicious outcome.",
+      mitreAtlasRef: "AML.T0020",
+      mitreAtlasRefs: ["AML.T0020", "AML.T0115"],
       commonRisks: [
         "Incorrect automated decisions leading to financial or physical harm.",
         "Gradual introduction of discriminatory bias.",
@@ -250,6 +266,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML09:2023",
       title: "Output Integrity Attack",
       description: "Intercepting or manipulating the model's output *after* it is generated but *before* it is acted upon by the application or seen by the user.",
+      mitreAtlasRef: "AML.T0043",
+      mitreAtlasRefs: ["AML.T0043", "AML.T0048"],
       commonRisks: [
         "Total loss of confidence in system-generated predictions.",
         "Severe safety risks if model outputs are used for automated control (e.g., robotics).",
@@ -280,6 +298,8 @@ export const OWASP_ML_TOP_10_DATA: OwaspTop10Entry[] = [
       id: "ML10:2023",
       title: "Model Poisoning",
       description: "Directly manipulating the model's internal parameters (weights or biases) through authorized but malicious access or by exploiting framework vulnerabilities.",
+      mitreAtlasRef: "AML.T0018",
+      mitreAtlasRefs: ["AML.T0018", "AML.T0020", "AML.T0031"],
       commonRisks: [
         "Total loss of model reliability and predictable behavior.",
         "Introduction of extremely stealthy, hard-to-detect backdoors.",

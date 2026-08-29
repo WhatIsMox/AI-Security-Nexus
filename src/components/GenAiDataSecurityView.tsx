@@ -312,7 +312,8 @@ const RiskCard: React.FC<{
   isExpanded: boolean;
   selectedTier: GenAiDataSecurityTier | 'All';
   onToggle: () => void;
-}> = ({ risk, isExpanded, selectedTier, onToggle }) => {
+  onNavigateToOwasp?: (threatId: string) => void;
+}> = ({ risk, isExpanded, selectedTier, onToggle, onNavigateToOwasp }) => {
   const style = THEME_STYLES[risk.theme];
   const visibleMitigations =
     selectedTier === 'All'
@@ -342,6 +343,23 @@ const RiskCard: React.FC<{
             <span className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-400">
               {risk.mitigations.reduce((count, group) => count + group.items.length, 0)} controls
             </span>
+            {risk.mitreAtlasRefs && risk.mitreAtlasRefs.length > 0 && onNavigateToOwasp && (
+              risk.mitreAtlasRefs.map(techId => (
+                <button
+                  key={techId}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigateToOwasp(techId);
+                  }}
+                  className="inline-flex items-center gap-1 rounded-full border border-rose-500/30 bg-rose-500/10 px-2.5 py-1 text-xs font-mono font-bold text-rose-300 hover:bg-rose-500/20 hover:border-rose-400 transition-all cursor-pointer"
+                  title={`Jump to MITRE ATLAS Technique ${techId}`}
+                >
+                  <ShieldCheck className="w-3 h-3 text-rose-400" />
+                  {techId}
+                </button>
+              ))
+            )}
           </div>
           <h3 className="break-words text-lg font-bold text-white md:text-xl">{risk.title}</h3>
           <p className={`mt-2 text-sm leading-relaxed text-slate-400 ${isExpanded ? '' : 'line-clamp-2'}`}>
@@ -469,14 +487,30 @@ const RiskCard: React.FC<{
                 </div>
               )}
 
-              {risk.crossReferences && risk.crossReferences.length > 0 && (
+              {((risk.crossReferences && risk.crossReferences.length > 0) || (risk.mitreAtlasRefs && risk.mitreAtlasRefs.length > 0)) && (
                 <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-4">
-                  <h4 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-300">Cross References</h4>
-                  <ul className="space-y-2">
-                    {risk.crossReferences.map((item) => (
-                      <li key={item} className="text-sm leading-relaxed text-slate-400">{item}</li>
+                  <h4 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-300">Cross References & ATLAS</h4>
+                  <div className="space-y-2">
+                    {risk.mitreAtlasRefs && risk.mitreAtlasRefs.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {risk.mitreAtlasRefs.map(techId => (
+                          <button
+                            key={techId}
+                            type="button"
+                            onClick={() => onNavigateToOwasp && onNavigateToOwasp(techId)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-rose-500/30 bg-rose-500/10 text-xs font-mono font-bold text-rose-300 hover:bg-rose-500/20 hover:border-rose-400 transition-all cursor-pointer"
+                            title={`Explore ${techId} in MITRE ATLAS Matrix`}
+                          >
+                            <span>{techId}</span>
+                            <ExternalLink className="w-3 h-3 text-rose-400" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {risk.crossReferences && risk.crossReferences.map((item) => (
+                      <div key={item} className="text-sm leading-relaxed text-slate-400">{item}</div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
             </div>
@@ -489,6 +523,7 @@ const RiskCard: React.FC<{
 
 interface GenAiDataSecurityViewProps {
   initialExpandedId?: string | null;
+  onNavigateToOwasp?: (threatId: string) => void;
 }
 
 const normalizeRiskId = (id: string | null | undefined): string | null => {
@@ -502,7 +537,7 @@ const normalizeRiskId = (id: string | null | undefined): string | null => {
   return id.trim();
 };
 
-const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialExpandedId }) => {
+const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialExpandedId, onNavigateToOwasp }) => {
   const [activeSectionId, setActiveSectionId] = useState('genai-data-security-context');
   const [search, setSearch] = useState('');
   const [themeFilter, setThemeFilter] = useState<ThemeFilter>('All');
@@ -859,6 +894,7 @@ const GenAiDataSecurityView: React.FC<GenAiDataSecurityViewProps> = ({ initialEx
                   isExpanded={Boolean(expandedIds[risk.id])}
                   selectedTier={tierFilter}
                   onToggle={() => toggleRisk(risk.id)}
+                  onNavigateToOwasp={onNavigateToOwasp}
                 />
               ))}
               {filteredRisks.length === 0 && (

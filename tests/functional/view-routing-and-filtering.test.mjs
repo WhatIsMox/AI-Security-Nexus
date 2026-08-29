@@ -31,6 +31,7 @@ test('Functional - App Router View Transitions', (t) => {
     'tests',
     'detail',
     'threat-model',
+    'mitre-atlas',
     'owasp-top10',
     'owasp-ml-top10',
     'owasp-agent-top10',
@@ -48,6 +49,7 @@ test('Functional - App Router View Transitions', (t) => {
   }
 
   // Verify handleNavigateToOwasp routing logic for various prefixes
+  assert.ok(appContent.includes('id.startsWith("AML")'), 'AML IDs route to mitre-atlas');
   assert.ok(appContent.includes('id.startsWith("ML")'), 'ML IDs route to owasp-ml-top10');
   assert.ok(appContent.includes('id.startsWith("ASI") || id.startsWith("AST")'), 'Agentic IDs route to owasp-agent-top10');
   assert.ok(appContent.includes('id.startsWith("SAIF")'), 'SAIF IDs route to owasp-saif-top10');

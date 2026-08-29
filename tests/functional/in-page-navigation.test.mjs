@@ -127,11 +127,11 @@ test('App.tsx - passes initialExpandedId to SecureMcpGuideView and GenAiDataSecu
   const content = readFile('App.tsx');
 
   assert.ok(
-    content.includes('<SecureMcpGuideView initialExpandedId={owaspTargetId} />'),
+    /<SecureMcpGuideView[\s\S]*?initialExpandedId=\{owaspTargetId\}/.test(content),
     'App.tsx must pass initialExpandedId to SecureMcpGuideView'
   );
   assert.ok(
-    content.includes('<GenAiDataSecurityView initialExpandedId={owaspTargetId} />'),
+    /<GenAiDataSecurityView[\s\S]*?initialExpandedId=\{owaspTargetId\}/.test(content),
     'App.tsx must pass initialExpandedId to GenAiDataSecurityView'
   );
 });

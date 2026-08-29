@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-27T17:35:07.669Z",
+  "timestamp": "2026-08-29T19:01:07.722Z",
   "frameworks": {
     "owaspLlmTop10_2026": {
       "count": 10,
@@ -139,6 +139,10 @@
         "ai-dspm-12",
         "ai-dspm-13"
       ]
+    },
+    "mitreAtlas": {
+      "tacticsCount": 0,
+      "techniquesCount": 0
     }
   },
   "tests": {

@@ -140,6 +140,16 @@ const TestDetail: React.FC<TestDetailProps> = ({ test, onBack, onNavigateToOwasp
                       <Database className="w-3.5 h-3.5" /> {test.owaspDsgaiRef}
                     </button>
                   )}
+                  {test.mitreAtlasRef && (
+                    <button 
+                      type="button"
+                      onClick={() => onNavigateToOwasp(test.mitreAtlasRef!)}
+                      className="flex items-center gap-1.5 font-mono text-xs sm:text-sm text-rose-400 bg-rose-500/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded border border-rose-500/20 hover:bg-rose-500/20 hover:border-rose-500/40 transition-all cursor-pointer"
+                      title="Jump to MITRE ATLAS™ Technique Matrix"
+                    >
+                      <Shield className="w-3.5 h-3.5" /> {test.mitreAtlasRef}
+                    </button>
+                  )}
                   <span className="text-slate-400 text-xs sm:text-sm font-medium border-l border-slate-800 pl-2 sm:pl-3">
                     {test.pillar}
                   </span>

@@ -12,9 +12,10 @@ type AgenticFramework = 'applications' | 'skills';
 
 interface AgenticTop10ViewProps {
   initialExpandedId?: string | null;
+  onNavigateToOwasp?: (threatId: string) => void;
 }
 
-const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }) => {
+const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId, onNavigateToOwasp }) => {
   const [framework, setFramework] = useState<AgenticFramework>(
     initialExpandedId?.toUpperCase().startsWith('AST') ? 'skills' : 'applications',
   );
@@ -88,6 +89,7 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
             description="System-wide security threats for autonomous multi-agent environments—covering goal hijacking, over-privileged tool invocation, rogue memory poisoning, cascading failures, and unauthorized inter-agent messaging."
             colorTheme="orange"
             frameworkOverview={AGENTIC_APPLICATIONS_OVERVIEW}
+            onNavigateToOwasp={onNavigateToOwasp}
           />
         </div>
       ) : (
@@ -100,6 +102,7 @@ const AgenticTop10View: React.FC<AgenticTop10ViewProps> = ({ initialExpandedId }
             description="Focused security standards for modular, reusable agent tool definitions—addressing malicious skill packages, metadata poisoning, permission creep, unverified updates, and cross-platform isolation failures."
             colorTheme="cyan"
             frameworkOverview={AGENTIC_SKILLS_OVERVIEW}
+            onNavigateToOwasp={onNavigateToOwasp}
           />
         </div>
       )}

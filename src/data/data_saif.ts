@@ -6,6 +6,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R01",
     title: "Data Poisoning",
     description: "Attackers inject malicious or misleading data into the model's training data, compromising performance or creating backdoors that activate under specific conditions.",
+    mitreAtlasRef: "AML.T0020",
+    mitreAtlasRefs: ["AML.T0020", "AML.T0115", "AML.T0031"],
     commonRisks: [
       "Compromised model integrity and overall performance decay.",
       "Hidden backdoors triggered by specific input patterns or 'trigger' tokens.",
@@ -35,6 +37,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R02",
     title: "Unauthorized Training Data",
     description: "The model is trained on unauthorized data (unlicensed, non-consensual, or PII), resulting in severe legal, ethical, or regulatory compliance issues.",
+    mitreAtlasRef: "AML.T0024",
+    mitreAtlasRefs: ["AML.T0024", "AML.T0025"],
     commonRisks: [
       "Copyright infringement and massive legal liabilities.",
       "Reputational damage due to unethical data sourcing practices.",
@@ -63,6 +67,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R03",
     title: "Model Source Tampering",
     description: "Attackers manipulate the model's source code, serving framework, or weights file, compromising performance or creating persistent backdoors in the inference engine.",
+    mitreAtlasRef: "AML.T0010",
+    mitreAtlasRefs: ["AML.T0010", "AML.T0018"],
     commonRisks: [
       "Total loss of model reliability and predictable behavior.",
       "Introduction of persistent backdoors into the inference pipeline.",
@@ -92,6 +98,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R04",
     title: "Excessive Data Handling",
     description: "Data collection or retention goes beyond what is allowed in corresponding privacy policies, resulting in legal risk and increased attack surface for data breaches.",
+    mitreAtlasRef: "AML.T0024",
+    mitreAtlasRefs: ["AML.T0024", "AML.T0057"],
     commonRisks: [
       "Privacy violations and massive regulatory fines (GDPR, CCPA).",
       "Increased attack surface due to unnecessary long-term data storage.",
@@ -120,6 +128,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R05",
     title: "Model Exfiltration",
     description: "Attackers gain unauthorized access to the model weights or architecture, stealing intellectual property and enabling 'white-box' local attacks.",
+    mitreAtlasRef: "AML.T0024",
+    mitreAtlasRefs: ["AML.T0024", "AML.T0044"],
     commonRisks: [
       "Loss of proprietary IP and significant competitive advantage.",
       "Enabling attackers to perform perfect 'white-box' adversarial attacks locally.",
@@ -149,6 +159,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R06",
     title: "Model Deployment Tampering",
     description: "Attackers manipulate components used for model deployment (API gateways, load balancers, serving images), compromising performance or creating backdoors.",
+    mitreAtlasRef: "AML.T0048",
+    mitreAtlasRefs: ["AML.T0048", "AML.T0040"],
     commonRisks: [
       "Inference-time manipulation of results to achieve attacker goals.",
       "System unavailability or instability (Denial of Service).",
@@ -177,6 +189,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R07",
     title: "Denial of ML Service",
     description: "Attackers feed inputs to the model that result in excessively high resource consumption, causing disruptions or high costs for the ML service.",
+    mitreAtlasRef: "AML.T0029",
+    mitreAtlasRefs: ["AML.T0029"],
     commonRisks: [
       "Financial 'denial of wallet' via high token/GPU usage charges.",
       "Model unavailability for legitimate users during an attack.",
@@ -205,6 +219,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R08",
     title: "Model Reverse Engineering",
     description: "Attackers gain unauthorized insights into the model by analyzing systematically collected inputs and outputs, stealing Intellectual Property.",
+    mitreAtlasRef: "AML.T0024",
+    mitreAtlasRefs: ["AML.T0024", "AML.T0044"],
     commonRisks: [
       "Creation of surrogate models that mimic the proprietary model's logic.",
       "Discovery of sensitive logic patterns or training data secrets.",
@@ -233,6 +249,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R09",
     title: "Insecure Integrated Component",
     description: "Attackers exploit security vulnerabilities in third-party software interacting with the model, such as plugins, agents, or orchestration frameworks.",
+    mitreAtlasRef: "AML.T0010",
+    mitreAtlasRefs: ["AML.T0010", "AML.T0048", "AML.T0040"],
     commonRisks: [
       "Remote Code Execution (RCE) via vulnerable third-party plugins.",
       "Unauthorized tool access (e.g., file system or network) via the AI agent.",
@@ -261,6 +279,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R10",
     title: "Prompt Injection",
     description: "Attackers manipulate the model's input directly or indirectly to cause malicious, illegal, or unintended behavior in the AI application.",
+    mitreAtlasRef: "AML.T0051",
+    mitreAtlasRefs: ["AML.T0051", "AML.T0054"],
     commonRisks: [
       "Bypassing system guardrails and safety filters (Jailbreaking).",
       "Unauthorized execution of agentic actions (e.g., mass deletions).",
@@ -290,6 +310,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R11",
     title: "Model Evasion",
     description: "Attackers manipulate the model's input by applying slight perturbations to cause incorrect inference results while appearing normal to humans.",
+    mitreAtlasRef: "AML.T0015",
+    mitreAtlasRefs: ["AML.T0015", "AML.T0043"],
     commonRisks: [
       "Bypassing fraud or malware detection filters in automated systems.",
       "Misclassification of safety-critical inputs (e.g., medical images).",
@@ -318,6 +340,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R12",
     title: "Sensitive Data Disclosure",
     description: "Attackers trick the model into revealing sensitive information (PII, secrets, or context) in its response that it should have kept confidential.",
+    mitreAtlasRef: "AML.T0024",
+    mitreAtlasRefs: ["AML.T0024", "AML.T0057", "AML.T0025"],
     commonRisks: [
       "PII leaks in generated content (e.g., names, SSNs, emails).",
       "Exposure of secret keys or internal system details from the prompt.",
@@ -346,6 +370,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R13",
     title: "Inferred Sensitive Data",
     description: "The model provides sensitive information that it did not have access to by inferring it from training data patterns or user prompts.",
+    mitreAtlasRef: "AML.T0025",
+    mitreAtlasRefs: ["AML.T0025", "AML.T0037"],
     commonRisks: [
       "Unintended discovery of private user attributes (e.g., health status, location).",
       "Disclosure of sensitive information that was never explicitly collected.",
@@ -374,6 +400,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R14",
     title: "Insecure Model Output",
     description: "Model output is handled insecurely by the application, resulting in vulnerabilities like Cross-Site Scripting (XSS) or SQL Injection.",
+    mitreAtlasRef: "AML.T0043",
+    mitreAtlasRefs: ["AML.T0043", "AML.T0048"],
     commonRisks: [
       "Cross-Site Scripting (XSS) in UI components that render model text.",
       "SQL Injection if output is used directly in raw database queries.",
@@ -402,6 +430,8 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     id: "SAIF-R15",
     title: "Rogue Actions",
     description: "Attackers exploit insufficiently restricted model access to cause autonomous harm in the real or digital world.",
+    mitreAtlasRef: "AML.T0040",
+    mitreAtlasRefs: ["AML.T0040", "AML.T0048"],
     commonRisks: [
       "Unauthorized autonomous operations (e.g., mass database deletions).",
       "Financial fraud via autonomous agent tools (unintended refunds).",

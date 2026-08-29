@@ -292,6 +292,56 @@ function validateCatalogs() {
   }
 }
 
+// 7. Validate data_mitre_atlas.ts
+function validateMitreAtlasData() {
+  const content = readFileContent('data_mitre_atlas.ts');
+  if (!content) return;
+
+  const tacticMatches = [...content.matchAll(/"?id"?:\s*["'](AML\.TA\d{4})["']/g)].map(m => m[1]);
+  const uniqueTactics = [...new Set(tacticMatches)];
+  if (uniqueTactics.length !== 16) {
+    logFail(`data_mitre_atlas.ts: Expected 16 unique MITRE ATLAS Tactics (AML.TA0000-AML.TA0015), found ${uniqueTactics.length}`);
+  } else {
+    logPass(`data_mitre_atlas.ts: 16 MITRE ATLAS Tactics (AML.TA0000-AML.TA0015) verified`);
+  }
+
+  const techMatches = [...content.matchAll(/"?id"?:\s*["'](AML\.T\d{4}(?:\.\d{3})?)["']/g)].map(m => m[1]);
+  const uniqueTechs = [...new Set(techMatches)];
+  if (uniqueTechs.length < 150) {
+    logFail(`data_mitre_atlas.ts: Expected at least 150 unique MITRE ATLAS Techniques/Sub-techniques, found ${uniqueTechs.length}`);
+  } else {
+    logPass(`data_mitre_atlas.ts: ${uniqueTechs.length} MITRE ATLAS Techniques/Sub-techniques verified`);
+  }
+
+  // Verify Procedure Examples & Specific Mitigations
+  const procedureMatches = (content.match(/"caseStudyId":\s*"AML\.CS\d{4}"/g) || []).length;
+  if (procedureMatches < 200) {
+    logFail(`data_mitre_atlas.ts: Expected at least 200 procedure examples across techniques, found ${procedureMatches}`);
+  } else {
+    logPass(`data_mitre_atlas.ts: Verified ${procedureMatches} procedure examples with case study execution narratives`);
+  }
+
+  const useDescMatches = (content.match(/"useDescription":/g) || []).length;
+  if (useDescMatches < 100) {
+    logFail(`data_mitre_atlas.ts: Expected at least 100 specific mitigation useDescription mappings, found ${useDescMatches}`);
+  } else {
+    logPass(`data_mitre_atlas.ts: Verified ${useDescMatches} technique-specific mitigation guidance mappings`);
+  }
+
+  const attackRefMatches = (content.match(/"attackReference":/g) || []).length;
+  if (attackRefMatches < 50) {
+    logFail(`data_mitre_atlas.ts: Expected at least 50 ATT&CK references, found ${attackRefMatches}`);
+  } else {
+    logPass(`data_mitre_atlas.ts: Verified ${attackRefMatches} Enterprise ATT&CK cross-mappings`);
+  }
+
+  if (!content.includes('MITRE_ATLAS_META') || !content.includes('MITRE_ATLAS_TACTICS') || !content.includes('MITRE_ATLAS_TECHNIQUES')) {
+    logFail(`data_mitre_atlas.ts: Missing required exports (MITRE_ATLAS_META, MITRE_ATLAS_TACTICS, MITRE_ATLAS_TECHNIQUES)`);
+  } else {
+    logPass(`data_mitre_atlas.ts: Required exports (META, TACTICS, TECHNIQUES) verified`);
+  }
+}
+
 console.log('------------------------------------------------------------');
 console.log('🔍 AI Security Nexus - Data Integrity & Schema Validation');
 console.log('------------------------------------------------------------');
@@ -302,6 +352,7 @@ validateAgenticData();
 validateMcpData();
 validateSaifData();
 validateGenAiDataSecurity();
+validateMitreAtlasData();
 validateTestData();
 validateCatalogs();
 

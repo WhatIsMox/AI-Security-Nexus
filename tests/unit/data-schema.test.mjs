@@ -91,6 +91,18 @@ test('Unit - OWASP GenAI Data Security (DSGAI01-DSGAI21 & AI-DSPM) Schema Confor
   assert.ok(content.includes('GENAI_DATA_SECURITY_OVERVIEW'), 'Must export overview');
 });
 
+test('Unit - MITRE ATLAS (AML.TA* and AML.T*) Schema Conformance', (t) => {
+  const content = readFile('data_mitre_atlas.ts');
+  const tacticIds = [...new Set([...content.matchAll(/"?id"?:\s*["'](AML\.TA\d{4})["']/g)].map(m => m[1]))];
+  const techIds = [...new Set([...content.matchAll(/"?id"?:\s*["'](AML\.T\d{4}(?:\.\d{3})?)["']/g)].map(m => m[1]))];
+
+  assert.equal(tacticIds.length, 16, 'Expected exactly 16 unique MITRE ATLAS tactics');
+  assert.ok(techIds.length >= 50, `Expected at least 50 unique MITRE ATLAS techniques, found ${techIds.length}`);
+  assert.ok(content.includes('MITRE_ATLAS_META'), 'Must export MITRE_ATLAS_META');
+  assert.ok(content.includes('MITRE_ATLAS_TACTICS'), 'Must export MITRE_ATLAS_TACTICS');
+  assert.ok(content.includes('MITRE_ATLAS_TECHNIQUES'), 'Must export MITRE_ATLAS_TECHNIQUES');
+});
+
 test('Unit - Security Test Catalogs (AITG-* and AGT-*) Conformance', (t) => {
   const standardTestsContent = readFile('data_tests.ts');
   const agenticTestsContent = readFile('data_agentic.ts');

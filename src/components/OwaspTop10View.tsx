@@ -16,6 +16,7 @@ interface OwaspTop10ViewProps {
   description: string;
   colorTheme?: 'pink' | 'emerald' | 'orange' | 'blue' | 'cyan';
   frameworkOverview?: FrameworkOverview;
+  onNavigateToOwasp?: (threatId: string) => void;
 }
 
 const normalizeFrameworkId = (id: string | null | undefined): string => {
@@ -47,6 +48,7 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
   description,
   colorTheme = 'pink',
   frameworkOverview,
+  onNavigateToOwasp,
 }) => {
   const findMatchingEntry = React.useCallback((targetId: string | null | undefined): OwaspTop10Entry | undefined => {
     if (!targetId) return undefined;
@@ -102,9 +104,12 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
 
   const openRelatedEntry = (id: string) => {
     const matched = findMatchingEntry(id);
-    const targetId = matched ? matched.id : id;
-    setExpandedId(targetId);
-    scrollToCard(targetId);
+    if (matched) {
+      setExpandedId(matched.id);
+      scrollToCard(matched.id);
+    } else if (onNavigateToOwasp) {
+      onNavigateToOwasp(id);
+    }
   };
 
   const getToolFilter = (id: string) => toolFilters[id] || { category: 'all', pricing: 'all' };
@@ -505,16 +510,38 @@ const OwaspTop10View: React.FC<OwaspTop10ViewProps> = ({
                     )}
 
                     {/* Framework Mappings, MAESTRO Layers & Related Risks */}
-                    {(entry.owaspMappings?.length || entry.otherMappings?.length || entry.maestroMappings?.length || entry.relatedRisks?.length) && (
+                    {(entry.owaspMappings?.length || entry.otherMappings?.length || entry.maestroMappings?.length || entry.relatedRisks?.length || (entry.mitreAtlasRefs && entry.mitreAtlasRefs.length > 0)) && (
                       <div className={`space-y-4 rounded-xl border border-purple-500/20 bg-purple-950/10 p-4 sm:p-5 flex flex-col ${!entry.implementationNotes?.length ? 'lg:col-span-2' : ''}`}>
-                        {/* Framework Mappings */}
-                        {(entry.owaspMappings?.length || entry.otherMappings?.length) && (
+                        {/* Framework Mappings & MITRE ATLAS */}
+                        {(entry.owaspMappings?.length || entry.otherMappings?.length || (entry.mitreAtlasRefs && entry.mitreAtlasRefs.length > 0)) && (
                           <div>
                             <h4 className="flex items-center gap-2 text-sm font-bold text-purple-300 uppercase tracking-wider mb-3">
                               <Shield className="w-4 h-4 text-purple-400" />
-                              Framework Mappings
+                              Framework Mappings & Adversarial Mappings
                             </h4>
                             <div className="space-y-3">
+                              {entry.mitreAtlasRefs && entry.mitreAtlasRefs.length > 0 && (
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider font-bold text-rose-400 mb-1.5 flex items-center gap-1">
+                                    <Shield className="w-3 h-3 text-rose-400" />
+                                    MITRE ATLAS™ Techniques
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {entry.mitreAtlasRefs.map((techId) => (
+                                      <button
+                                        key={techId}
+                                        type="button"
+                                        onClick={() => openRelatedEntry(techId)}
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-rose-500/30 bg-rose-500/10 text-xs font-mono font-bold text-rose-300 hover:bg-rose-500/20 hover:border-rose-400 transition-all cursor-pointer group"
+                                        title={`Jump to MITRE ATLAS Technique ${techId}`}
+                                      >
+                                        <span>{techId}</span>
+                                        <ArrowUpRight className="w-3 h-3 text-rose-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                               {entry.owaspMappings && (
                                 <div>
                                   <div className="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-1.5">OWASP / AISVS</div>
