@@ -384,9 +384,35 @@ const MitreAtlasView: React.FC<MitreAtlasViewProps> = ({
 
   const handleCopyId = (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    navigator.clipboard.writeText(id);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+    const fallbackCopy = () => {
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = id;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+      } catch (err) {
+        // Fallback failed
+      }
+    };
+
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(id).then(() => {
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+      }).catch(() => {
+        fallbackCopy();
+      });
+    } else {
+      fallbackCopy();
+    }
   };
 
   // Toggle individual parent expansion

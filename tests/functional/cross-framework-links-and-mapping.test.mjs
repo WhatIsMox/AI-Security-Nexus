@@ -434,3 +434,31 @@ test('Interactive Tools & Incidents - Verified Modal Mounting & Click Handlers A
 
   t.diagnostic('Verified 100% interactive modal wiring, createPortal viewport immunity, and single-instance modal guarantee across the entire application');
 });
+
+test('Cross-Framework - Threat Modelling SAIF Threat Complete Test Coverage', (t) => {
+  const threatModelContent = readFile('components/ThreatModelling.tsx');
+  
+  // Verify that every SAIF threat (SAIF-R01 through SAIF-R15) in THREAT_LIBRARY has at least one relatedTestId
+  const saifBlocks = [...threatModelContent.matchAll(/id:\s*"SAIF-R\d+"[\s\S]*?relatedTestIds:\s*\[(.*?)\]/g)];
+  assert.ok(saifBlocks.length >= 15, `Expected at least 15 SAIF threat definitions, found ${saifBlocks.length}`);
+
+  for (const block of saifBlocks) {
+    const rawIds = block[1].split(',').map(s => s.trim().replace(/['"]/g, '')).filter(Boolean);
+    assert.ok(rawIds.length > 0, `SAIF Threat block has empty relatedTestIds: ${block[0]}`);
+  }
+
+  t.diagnostic(`Verified all ${saifBlocks.length} Google SAIF threat entries in ThreatModelling have active related test links.`);
+});
+
+test('UI Navigation - Sidebar Dynamic Test Count Integrity', (t) => {
+  const sidebarContent = readFile('components/Sidebar.tsx');
+  assert.ok(
+    sidebarContent.includes('TEST_DATA.length') || sidebarContent.includes('All 62 Security Tests'),
+    'Sidebar.tsx must display the accurate total test count (62 test cases) or use dynamic TEST_DATA.length'
+  );
+  assert.ok(
+    !sidebarContent.includes('All 42 Security Tests'),
+    'Sidebar.tsx must not contain hardcoded obsolete "All 42 Security Tests"'
+  );
+});
+

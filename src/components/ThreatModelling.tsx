@@ -213,7 +213,7 @@ const THREAT_LIBRARY: ThreatDefinition[] = [
     name: "Model Deployment Tampering", 
     category: "Security", 
     riskLevel: "Critical", 
-    relatedTestIds: [], 
+    relatedTestIds: ["AITG-INF-01", "AITG-INF-05"], 
     affectedComponents: ["11", "9"], 
     impact: "Production model behaves maliciously despite clean training.", 
     riskOwner: "Model Creator/Consumer", 

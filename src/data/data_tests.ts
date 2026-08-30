@@ -1670,7 +1670,7 @@ export const TEST_DATA: TestItem[] = [
       { type: 'Mitigation', content: "Use Data Loss Prevention (DLP) Solutions." }
     ],
     suggestedTools: [
-      { name: "Burp Suite", description: "API security testing.", url: "https://portswigger.net/web-security" },
+      { name: "Burp Suite", description: "API security testing.", url: "https://portswigger.net/" },
       { name: "Elastic Security", description: "Log security.", url: "https://www.elastic.co/security" }
     ],
     externalResources: [
@@ -2575,7 +2575,7 @@ export const TEST_DATA: TestItem[] = [
       {
             "name": "Burp Suite",
             "description": "Web application and API vulnerability scanner.",
-            "url": "https://portswigger.net/web-security"
+            "url": "https://portswigger.net/"
       },
       {
             "name": "k6",

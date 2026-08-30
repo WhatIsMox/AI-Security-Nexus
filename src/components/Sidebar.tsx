@@ -6,6 +6,7 @@ import {
   Terminal, Flame, Sparkles, ChevronDown, Globe, SlidersHorizontal 
 } from 'lucide-react';
 import { Pillar, GlobalDomain } from '../types';
+import { TEST_DATA } from '../data';
 
 export type AppView = 
   | 'dashboard' 
@@ -334,7 +335,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             }`}
           >
             <BookOpen className="w-4 h-4 shrink-0 text-cyan-400" />
-            <span>All 42 Security Tests</span>
+            <span>All {TEST_DATA.length} Security Tests</span>
           </button>
 
           <button

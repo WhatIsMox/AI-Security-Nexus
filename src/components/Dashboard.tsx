@@ -605,7 +605,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 icon: Bug,
                 tint: 'text-red-400 bg-red-400/10 border-red-400/20 group-hover:border-red-400/50',
                 action: () => onSelectPillar('ALL'),
-                tooltip: 'Explore all 42+ curated test cases'
+                tooltip: `Explore all ${stats.totalTests} curated test cases`
               },
               {
                 label: 'Attack payloads',
@@ -631,7 +631,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 action: () => {
                   document.getElementById('frameworks-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 },
-                tooltip: 'View all 7 major AI security standards'
+                tooltip: `View all ${frameworks.length} major AI security standards`
               },
               {
                 label: 'Curated tools',
