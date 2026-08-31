@@ -24,11 +24,15 @@ function readFile(relativePath) {
 
 test('Security - GitHub Actions Least-Privilege Permissions', (t) => {
   const syncWorkflow = readFile('.github/workflows/agent-docs-sync.yml');
+  const atlasWorkflow = readFile('.github/workflows/mitre-atlas-sync.yml');
   const deployWorkflow = readFile('.github/workflows/deploy.yml');
 
   // Verify explicit top-level read restrictions
   assert.ok(syncWorkflow.includes('permissions:'), 'agent-docs-sync.yml must declare explicit permissions');
   assert.ok(syncWorkflow.includes('contents: read'), 'agent-docs-sync.yml top-level must default to contents: read');
+
+  assert.ok(atlasWorkflow.includes('permissions:'), 'mitre-atlas-sync.yml must declare explicit permissions');
+  assert.ok(atlasWorkflow.includes('contents: read'), 'mitre-atlas-sync.yml top-level must default to contents: read');
   
   assert.ok(deployWorkflow.includes('permissions:'), 'deploy.yml must declare explicit permissions');
   assert.ok(deployWorkflow.includes('contents: read'), 'deploy.yml must restrict contents permission to read');
@@ -74,10 +78,14 @@ test('Security - GitHub Actions Shell Injection Prevention', (t) => {
 
 test('Security - GitHub Actions Concurrency Race-Condition Guards', (t) => {
   const syncWorkflow = readFile('.github/workflows/agent-docs-sync.yml');
+  const atlasWorkflow = readFile('.github/workflows/mitre-atlas-sync.yml');
   const deployWorkflow = readFile('.github/workflows/deploy.yml');
 
   assert.ok(syncWorkflow.includes('concurrency:'), 'agent-docs-sync.yml must specify concurrency guard');
   assert.ok(syncWorkflow.includes('cancel-in-progress: true'), 'agent-docs-sync.yml must cancel overlapping runs');
+
+  assert.ok(atlasWorkflow.includes('concurrency:'), 'mitre-atlas-sync.yml must specify concurrency guard');
+  assert.ok(atlasWorkflow.includes('cancel-in-progress: true'), 'mitre-atlas-sync.yml must cancel overlapping runs');
 
   assert.ok(deployWorkflow.includes('concurrency:'), 'deploy.yml must specify concurrency guard');
   assert.ok(deployWorkflow.includes('cancel-in-progress: true'), 'deploy.yml must cancel overlapping runs');
