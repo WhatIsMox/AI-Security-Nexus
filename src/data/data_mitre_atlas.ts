@@ -5,7 +5,7 @@
  * Authoritative Source: https://github.com/mitre-atlas/atlas-data (dist/v6/ATLAS-latest.yaml)
  * 100% 1-to-1 Parity with https://atlas.mitre.org/
  * 
- * Last synchronized: 2026-09-07T08:44:00.497Z
+ * Last synchronized: 2026-09-14T09:22:03.314Z
  */
 
 import { MitreAtlasTactic, MitreAtlasTechnique, MitreAtlasOverview } from '../types';
