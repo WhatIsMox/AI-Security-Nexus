@@ -458,14 +458,15 @@ const Dashboard: React.FC<DashboardProps> = ({
       Both: uniqueTools.filter((t) => t.category === 'Both').length,
     };
 
-    // 3. Pre-filter incidents by domain threats
-    const incidents = Object.entries(INCIDENTS_BY_THREAT_ID).flatMap(([threatId, list]) => {
+    // 3. Pre-filter incidents by domain threats and deduplicate by title
+    const rawIncidents = Object.entries(INCIDENTS_BY_THREAT_ID).flatMap(([threatId, list]) => {
       if (globalDomain === 'LLM' && !threatId.startsWith('LLM')) return [];
       if (globalDomain === 'ML' && !threatId.startsWith('ML')) return [];
       if (globalDomain === 'AGENT' && !threatId.startsWith('AS') && !threatId.startsWith('AST')) return [];
       if (globalDomain === 'MCP' && !threatId.startsWith('MCP')) return [];
       return list.map((r) => getEnrichedIncident(r, threatId));
     });
+    const incidents = Array.from(new Map(rawIncidents.map((inc) => [inc.title.toLowerCase().trim(), inc])).values());
 
     let threatEntries = 0;
     if (globalDomain === 'ALL' || globalDomain === 'LLM') threatEntries += OWASP_TOP_10_DATA.length;
