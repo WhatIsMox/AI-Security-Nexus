@@ -196,6 +196,20 @@ test('Barrel - data.ts re-exports MITRE ATLAS data', () => {
   );
 });
 
+test('Barrel - data.ts re-exports GenAI Red Teaming Manual constructs', () => {
+  const content = readFile('data.ts');
+  const manualSource = readFile('data_red_teaming_manual.ts');
+
+  const hasManualReExport =
+    content.includes("export * from './data_red_teaming_manual'") ||
+    content.includes('export * from "./data_red_teaming_manual"') ||
+    content.includes('RED_TEAMING_MANUAL_META');
+
+  assert.ok(hasManualReExport, 'data.ts must re-export GenAI Red Teaming Manual data from data_red_teaming_manual.ts');
+  assert.ok(manualSource.includes('RED_TEAMING_MANUAL_META'), 'data_red_teaming_manual.ts must export RED_TEAMING_MANUAL_META');
+  assert.ok(manualSource.includes('RED_TEAMING_MANUAL_PHASES'), 'data_red_teaming_manual.ts must export RED_TEAMING_MANUAL_PHASES');
+});
+
 // ─── 3. Framework Overview Re-Exports ────────────────────────────────────────
 
 test('Barrel - data.ts re-exports Agentic overview objects (AGENTIC_SKILLS_OVERVIEW, AGENTIC_APPLICATIONS_OVERVIEW)', () => {

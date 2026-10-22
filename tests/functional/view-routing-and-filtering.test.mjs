@@ -39,6 +39,7 @@ test('Functional - App Router View Transitions', (t) => {
     'owasp-mcp-top10',
     'secure-mcp-guide',
     'genai-data-security',
+    'red-teaming-manual',
     'audit-checklist',
     'tools',
     'incidents'
@@ -54,6 +55,7 @@ test('Functional - App Router View Transitions', (t) => {
   assert.ok(appContent.includes('id.startsWith("ASI") || id.startsWith("AST")'), 'Agentic IDs route to owasp-agent-top10');
   assert.ok(appContent.includes('id.startsWith("SAIF")'), 'SAIF IDs route to owasp-saif-top10');
   assert.ok(appContent.includes('id.startsWith("MCP")'), 'MCP IDs route to owasp-mcp-top10');
+  assert.ok(appContent.includes('id.startsWith("RTM")') && appContent.includes("'red-teaming-manual'"), 'RTM/phase IDs route to red-teaming-manual');
 });
 
 test('Functional - Pillar Filtering Algorithm', (t) => {

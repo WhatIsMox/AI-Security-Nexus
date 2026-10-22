@@ -47,6 +47,7 @@ function extractFrameworkStats() {
   const saifContent = readFileContent('src/data/data_saif.ts');
   const dsgaiContent = readFileContent('src/data/data_genai_data_security.ts');
   const atlasContent = readFileContent('src/data/data_mitre_atlas.ts');
+  const rtmContent = readFileContent('src/data/data_red_teaming_manual.ts');
   const testsContent = readFileContent('src/data/data_tests.ts');
   const toolsContent = readFileContent('src/data/tools_catalog.ts');
   const incidentsContent = readFileContent('src/data/incidents_catalog.ts');
@@ -61,6 +62,11 @@ function extractFrameworkStats() {
   const dspmMatches = [...dsgaiContent.matchAll(/id:\s*["'](ai-dspm-\d{2})["']/g)].map(m => m[1]);
   const atlasTacticMatches = [...atlasContent.matchAll(/id:\s*["'](AML\.TA\d{4})["']/g)].map(m => m[1]);
   const atlasTechMatches = [...new Set([...atlasContent.matchAll(/id:\s*["'](AML\.T\d{4}(?:\.\d{3})?)["']/g)].map(m => m[1]))];
+
+  const rtmPhases = [...rtmContent.matchAll(/id:\s*["'](phase-\d+-[^"']+)["']/g)].map(m => m[1]);
+  const rtmDomains = [...rtmContent.matchAll(/id:\s*["'](DOM-\d{2})["']/g)].map(m => m[1]);
+  const rtmRefusals = [...rtmContent.matchAll(/id:\s*["'](RP-\d{2})["']/g)].map(m => m[1]);
+  const rtmExfil = [...rtmContent.matchAll(/id:\s*["'](EXFIL-\d{2})["']/g)].map(m => m[1]);
 
   const standardTestMatches = [...testsContent.matchAll(/id:\s*["'](AITG-[A-Z]+-\d+)["']/g)].map(m => m[1]);
   const agenticTestMatches = [...agenticSkillsContent.matchAll(/id:\s*["'](AGT-\d+)["']/g)].map(m => m[1]);
@@ -86,7 +92,13 @@ function extractFrameworkStats() {
       googleSaifThreats: { count: saifMatches.length, ids: saifMatches },
       owaspGenAiDataSecurity: { count: dsgaiMatches.length, ids: dsgaiMatches },
       aiDspmCapabilities: { count: dspmMatches.length, ids: dspmMatches },
-      mitreAtlas: { tacticsCount: new Set(atlasTacticMatches).size, techniquesCount: atlasTechMatches.length }
+      mitreAtlas: { tacticsCount: new Set(atlasTacticMatches).size, techniquesCount: atlasTechMatches.length },
+      owaspGenAiRedTeamingManual: {
+        phasesCount: rtmPhases.length,
+        domainsCount: rtmDomains.length,
+        refusalPatternsCount: rtmRefusals.length,
+        exfiltrationChannelsCount: rtmExfil.length
+      }
     },
     tests: {
       standard: standardTestMatches.length,
@@ -127,6 +139,7 @@ function generateProjectMap(stats) {
 | **Google SAIF Threat Model** | \`SAIF-R01\` - \`SAIF-R15\` | **${stats.frameworks.googleSaifThreats.count}** | [\`data_saif.ts\`](../src/data/data_saif.ts) |
 | **OWASP GenAI Data Security (2026)** | \`DSGAI01\` - \`DSGAI21\` | **${stats.frameworks.owaspGenAiDataSecurity.count}** | [\`data_genai_data_security.ts\`](../src/data/data_genai_data_security.ts) |
 | **AI-DSPM Posture Capabilities** | \`ai-dspm-01\` - \`ai-dspm-13\` | **${stats.frameworks.aiDspmCapabilities.count}** | [\`data_genai_data_security.ts\`](../src/data/data_genai_data_security.ts) |
+| **OWASP GenAI Red Teaming Manual (2026)** | \`Phase 1\` - \`Phase 8\` / \`DOM-01\` - \`DOM-26\` | **${stats.frameworks.owaspGenAiRedTeamingManual?.phasesCount || 8} Phases (${stats.frameworks.owaspGenAiRedTeamingManual?.domainsCount || 26} Domains)** | [\`data_red_teaming_manual.ts\`](../src/data/data_red_teaming_manual.ts) |
 | **MITRE ATLAS™ Matrix** | \`AML.TA0000\` - \`AML.TA0015\` / \`AML.T*\` | **${stats.frameworks.mitreAtlas?.techniquesCount || 170}** | [\`data_mitre_atlas.ts\`](../src/data/data_mitre_atlas.ts) |
 | **Security Test Cases (Total)** | \`AITG-*\`, \`AGT-*\` | **${stats.tests.total}** | [\`data_tests.ts\`](../src/data/data_tests.ts) & [\`data_agentic.ts\`](../src/data/data_agentic.ts) |
 | **Tooling Registry Entries** | Security Tools | **${stats.catalogs.toolsCount}** | [\`tools_catalog.ts\`](../src/data/tools_catalog.ts) |
@@ -142,7 +155,7 @@ function generateProjectMap(stats) {
 
 ## 🗺️ Component Hierarchy & View Routing
 
-\`src/App.tsx\` acts as the central state router coordinating 11 primary views:
+\`src/App.tsx\` acts as the central state router coordinating 15 primary views:
 
 \`\`\`mermaid
 graph TD
@@ -154,6 +167,7 @@ graph TD
     App --> AgenticTop10View[src/components/AgenticTop10View.tsx]
     App --> SecureMcpGuideView[src/components/SecureMcpGuideView.tsx]
     App --> GenAiDataSecurityView[src/components/GenAiDataSecurityView.tsx]
+    App --> RedTeamingManualView[src/components/RedTeamingManualView.tsx]
     App --> TestList[src/components/TestList.tsx]
     App --> TestDetail[src/components/TestDetail.tsx]
 
@@ -176,6 +190,7 @@ graph TD
   - [\`data_mcp.ts\`](../src/data/data_mcp.ts)
   - [\`data_secure_mcp_guide.ts\`](../src/data/data_secure_mcp_guide.ts)
   - [\`data_genai_data_security.ts\`](../src/data/data_genai_data_security.ts)
+  - [\`data_red_teaming_manual.ts\`](../src/data/data_red_teaming_manual.ts)
   - [\`data_ml.ts\`](../src/data/data_ml.ts)
   - [\`data_saif.ts\`](../src/data/data_saif.ts)
   - [\`data_tests.ts\`](../src/data/data_tests.ts)
@@ -189,6 +204,7 @@ graph TD
   - [\`components/AgenticTop10View.tsx\`](../src/components/AgenticTop10View.tsx)
   - [\`components/SecureMcpGuideView.tsx\`](../src/components/SecureMcpGuideView.tsx)
   - [\`components/GenAiDataSecurityView.tsx\`](../src/components/GenAiDataSecurityView.tsx)
+  - [\`components/RedTeamingManualView.tsx\`](../src/components/RedTeamingManualView.tsx)
   - [\`components/TestList.tsx\`](../src/components/TestList.tsx)
   - [\`components/TestDetail.tsx\`](../src/components/TestDetail.tsx)
 - **Build & Config**: [\`vite.config.ts\`](../vite.config.ts), [\`tailwind.config.js\`](../tailwind.config.js), [\`tsconfig.json\`](../tsconfig.json)

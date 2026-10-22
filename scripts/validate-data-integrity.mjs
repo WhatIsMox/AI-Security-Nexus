@@ -342,6 +342,40 @@ function validateMitreAtlasData() {
   }
 }
 
+// 7b. Validate data_red_teaming_manual.ts
+function validateRedTeamingManual() {
+  const content = readFileContent('data_red_teaming_manual.ts');
+  if (!content) return;
+
+  const phaseMatches = [...content.matchAll(/id:\s*["'](phase-\d+-[a-z-]+)["']/g)].map(m => m[1]);
+  if (phaseMatches.length !== 8) {
+    logFail(`data_red_teaming_manual.ts: Expected 8 methodology phases, found ${phaseMatches.length}`);
+  } else {
+    logPass(`data_red_teaming_manual.ts: 8 methodology phases verified (Phase 1 to Phase 8)`);
+  }
+
+  const refusalMatches = [...content.matchAll(/id:\s*["'](RP-\d{2})["']/g)].map(m => m[1]);
+  if (refusalMatches.length !== 10) {
+    logFail(`data_red_teaming_manual.ts: Expected 10 refusal patterns, found ${refusalMatches.length}`);
+  } else {
+    logPass(`data_red_teaming_manual.ts: 10 refusal patterns verified`);
+  }
+
+  const domainMatches = [...content.matchAll(/id:\s*["'](DOM-\d{2})["']/g)].map(m => m[1]);
+  if (domainMatches.length !== 26) {
+    logFail(`data_red_teaming_manual.ts: Expected 26 testing domains, found ${domainMatches.length}`);
+  } else {
+    logPass(`data_red_teaming_manual.ts: 26 testing domains verified`);
+  }
+
+  const exfilMatches = [...content.matchAll(/id:\s*["'](EXFIL-\d{2})["']/g)].map(m => m[1]);
+  if (exfilMatches.length !== 7) {
+    logFail(`data_red_teaming_manual.ts: Expected 7 exfiltration channels, found ${exfilMatches.length}`);
+  } else {
+    logPass(`data_red_teaming_manual.ts: 7 exfiltration channels verified`);
+  }
+}
+
 console.log('------------------------------------------------------------');
 console.log('🔍 AI Security Nexus - Data Integrity & Schema Validation');
 console.log('------------------------------------------------------------');
@@ -352,6 +386,7 @@ validateAgenticData();
 validateMcpData();
 validateSaifData();
 validateGenAiDataSecurity();
+validateRedTeamingManual();
 validateMitreAtlasData();
 validateTestData();
 validateCatalogs();

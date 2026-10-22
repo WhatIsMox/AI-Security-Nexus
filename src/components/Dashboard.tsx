@@ -23,12 +23,14 @@ import {
   MITRE_ATLAS_META,
   MITRE_ATLAS_TECHNIQUES,
   MITRE_ATLAS_TACTICS,
+  RED_TEAMING_MANUAL_META,
+  RED_TEAMING_MANUAL_PHASES,
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
 import { getEnrichedIncident } from '../data/incident_details_catalog';
 
-type PillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
+type PillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY' | 'REDTEAMINGMANUAL';
 
 interface DashboardProps {
   globalDomain: GlobalDomain;
@@ -206,7 +208,7 @@ const PILLAR_META: Record<Pillar, { name: string; blurb: string; icon: any; text
 };
 
 interface FrameworkCard {
-  key: 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'MCPTOP10' | 'SAIFTOP10' | 'GENAIDATASECURITY' | 'SECUREMCPGUIDE' | 'MITREATLAS';
+  key: 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'MCPTOP10' | 'SAIFTOP10' | 'GENAIDATASECURITY' | 'SECUREMCPGUIDE' | 'MITREATLAS' | 'REDTEAMINGMANUAL';
   name: string;
   edition: string;
   kind: string;
@@ -388,6 +390,26 @@ const buildFrameworkCards = (): FrameworkCard[] => [
     ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(129,140,248,0.35)]',
     arrowHover: 'group-hover:border-indigo-500/60 group-hover:text-indigo-300',
   },
+  {
+    key: 'REDTEAMINGMANUAL',
+    name: 'GenAI Red Teaming Manual',
+    edition: 'October 2026 (v1.0)',
+    kind: 'Adversarial Testing Guide',
+    blurb: 'The official 8-phase tactical playbook for offensive GenAI testing—covering reconnaissance, surface mapping, multi-layer exploitation, persistence, and red-blue remediation.',
+    icon: Crosshair,
+    count: RED_TEAMING_MANUAL_PHASES.length,
+    countLabel: 'phases',
+    previewId: RED_TEAMING_MANUAL_PHASES[0]?.number ?? 'Phase 1',
+    previewTitle: RED_TEAMING_MANUAL_PHASES[0]?.title ?? 'Planning & Scoping',
+    text: 'text-rose-400',
+    border: 'border-rose-500/25',
+    hoverBorder: 'hover:border-rose-400/70',
+    iconBox: 'bg-rose-500/10 border-rose-500/30',
+    chipBg: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
+    glow: 'bg-rose-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(244,63,94,0.35)]',
+    arrowHover: 'group-hover:border-rose-500/60 group-hover:text-rose-300',
+  },
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -469,9 +491,9 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const frameworks = useMemo(() => {
     return buildFrameworkCards().filter(f => {
-      if (globalDomain === 'LLM') return f.key === 'TOP10';
+      if (globalDomain === 'LLM') return f.key === 'TOP10' || f.key === 'REDTEAMINGMANUAL';
       if (globalDomain === 'ML') return f.key === 'MLTOP10';
-      if (globalDomain === 'AGENT') return f.key === 'AGENTTOP10';
+      if (globalDomain === 'AGENT') return f.key === 'AGENTTOP10' || f.key === 'REDTEAMINGMANUAL';
       if (globalDomain === 'MCP') return f.key === 'MCPTOP10' || f.key === 'SECUREMCPGUIDE';
       return true;
     });

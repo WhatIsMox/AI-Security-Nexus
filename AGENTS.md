@@ -22,6 +22,7 @@ The **AI Security Nexus** is a state-of-the-art interactive graphical exploratio
 8. **Google Secure AI Framework (SAIF)**: 15 Lifecycle Threats & interactive SVG threat model (`data_saif.ts`)
 9. **Curated Security Test Suite**: 42+ structured tests across 4 Pillars (`data_tests.ts` & `data_agentic.ts`)
 10. **Security Tools & Real-World Incident Catalogs**: Tool classifications and CVE/research citations (`tools_catalog.ts`, `incidents_catalog.ts`)
+11. **OWASP GenAI Red Teaming Manual (v1.0, October 2026)**: Tactical 8-phase adversary emulation manual with refusal diagnostics, exfiltration matrices, and persistence validation (`data_red_teaming_manual.ts`, [Official Link](https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/))
 
 ---
 

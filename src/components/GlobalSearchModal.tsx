@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { 
   Search, X, Brain, Cpu, Bot, Gavel, Network, Database, 
-  Terminal, Flame, Shield, ArrowRight, CornerDownLeft, Sparkles, Layers
+  Terminal, Flame, Shield, ArrowRight, CornerDownLeft, Sparkles, Layers, Target
 } from 'lucide-react';
 import { 
   TEST_DATA, 
@@ -14,7 +14,9 @@ import {
   OWASP_MCP_TOP_10_DATA, 
   GENAI_DATA_SECURITY_RISKS,
   GENAI_DSPM_CAPABILITIES,
-  MITRE_ATLAS_TECHNIQUES
+  MITRE_ATLAS_TECHNIQUES,
+  RED_TEAMING_MANUAL_PHASES,
+  RED_TEAMING_TESTING_DOMAINS
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
 import { getEnrichedTool } from '../data/tool_details_catalog';
@@ -26,7 +28,7 @@ export interface SearchResultItem {
   id: string;
   title: string;
   subtitle: string;
-  category: 'test' | 'llm' | 'ml' | 'agentic' | 'saif' | 'mcp' | 'dsgai' | 'dspm' | 'atlas' | 'tool' | 'incident';
+  category: 'test' | 'llm' | 'ml' | 'agentic' | 'saif' | 'mcp' | 'dsgai' | 'dspm' | 'atlas' | 'tool' | 'incident' | 'redteam';
   categoryLabel: string;
   badgeColor: string;
   searchText: string;
@@ -293,6 +295,40 @@ function getSearchIndex(): SearchResultItem[] {
     });
   }
 
+  // 12. OWASP GenAI Red Teaming Manual Phases
+  for (const phase of RED_TEAMING_MANUAL_PHASES) {
+    const title = `${phase.number}: ${phase.title}`;
+    const subtitle = phase.objective;
+    const categoryLabel = 'Red Teaming Manual';
+    items.push({
+      id: `rtm-${phase.id}`,
+      title,
+      subtitle,
+      category: 'redteam',
+      categoryLabel,
+      badgeColor: 'border-rose-500/30 bg-rose-500/10 text-rose-400',
+      searchText: `${title} ${subtitle} ${categoryLabel} ${(phase.primaryGoals || []).join(' ')} ${(phase.keyActivities || []).join(' ')}`.toLowerCase(),
+      targetId: phase.id
+    });
+  }
+
+  // 13. Red Teaming Testing Domains
+  for (const dom of RED_TEAMING_TESTING_DOMAINS) {
+    const title = `${dom.id}: ${dom.name}`;
+    const subtitle = `${dom.category} • ${dom.description}`;
+    const categoryLabel = 'Red Team Risk Domain';
+    items.push({
+      id: `rtm-dom-${dom.id}`,
+      title,
+      subtitle,
+      category: 'redteam',
+      categoryLabel,
+      badgeColor: 'border-rose-500/30 bg-rose-500/10 text-rose-300',
+      searchText: `${title} ${subtitle} ${categoryLabel} ${dom.category} ${dom.severity}`.toLowerCase(),
+      targetId: 'phase-4-exploitation-impact'
+    });
+  }
+
   cachedSearchIndex = items;
   return items;
 }
@@ -370,7 +406,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     if (activeTab === 'tests') {
       list = list.filter(i => i.category === 'test');
     } else if (activeTab === 'threats') {
-      list = list.filter(i => ['llm', 'ml', 'agentic', 'saif', 'mcp', 'dsgai', 'dspm', 'atlas'].includes(i.category));
+      list = list.filter(i => ['llm', 'ml', 'agentic', 'saif', 'mcp', 'dsgai', 'dspm', 'atlas', 'redteam'].includes(i.category));
     } else if (activeTab === 'tools') {
       list = list.filter(i => i.category === 'tool');
     } else if (activeTab === 'incidents') {
@@ -447,6 +483,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       case 'dspm': return <Database className="w-4 h-4 text-emerald-400" />;
       case 'tool': return <Terminal className="w-4 h-4 text-purple-400" />;
       case 'incident': return <Flame className="w-4 h-4 text-amber-400" />;
+      case 'redteam': return <Target className="w-4 h-4 text-rose-400" />;
     }
   };
 

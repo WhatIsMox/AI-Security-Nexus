@@ -16,6 +16,7 @@ const OwaspTop10View = lazy(() => import('./components/OwaspTop10View'));
 const AgenticTop10View = lazy(() => import('./components/AgenticTop10View'));
 const SecureMcpGuideView = lazy(() => import('./components/SecureMcpGuideView'));
 const GenAiDataSecurityView = lazy(() => import('./components/GenAiDataSecurityView'));
+const RedTeamingManualView = lazy(() => import('./components/RedTeamingManualView'));
 const AuditChecklistView = lazy(() => import('./components/AuditChecklistView'));
 const ToolsDirectoryView = lazy(() => import('./components/ToolsDirectoryView'));
 const IncidentsDirectoryView = lazy(() => import('./components/IncidentsDirectoryView'));
@@ -89,6 +90,18 @@ const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKe
     clean === 'dspm-framework'
   ) {
     return { view: 'genai-data-security', pillar: 'GENAIDATASECURITY', id: clean };
+  }
+  if (clean === 'red-teaming-manual' || clean.startsWith('red-teaming-manual/')) {
+    const parts = clean.split('/');
+    return { view: 'red-teaming-manual', pillar: 'REDTEAMINGMANUAL', id: parts[1] || null };
+  }
+  if (
+    clean.startsWith('RTM-') ||
+    upper.startsWith('RTM-') ||
+    clean.startsWith('rtm-') ||
+    clean.startsWith('phase-')
+  ) {
+    return { view: 'red-teaming-manual', pillar: 'REDTEAMINGMANUAL', id: clean };
   }
   if (clean.startsWith('mitre-atlas') || clean.startsWith('AML') || upper.startsWith('AML')) {
     const parts = clean.split('/');
@@ -267,7 +280,7 @@ const App: React.FC = () => {
         return true;
       });
     }
-    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'SECUREMCPGUIDE' || activePillar === 'GENAIDATASECURITY') return tests;
+    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'SECUREMCPGUIDE' || activePillar === 'GENAIDATASECURITY' || activePillar === 'REDTEAMINGMANUAL') return tests;
     return tests.filter(t => t.pillar === activePillar);
   }, [activePillar, globalDomain]);
 
@@ -298,6 +311,9 @@ const App: React.FC = () => {
     } else if (pillar === 'GENAIDATASECURITY') {
       setOwaspTargetId(null);
       view = 'genai-data-security';
+    } else if (pillar === 'REDTEAMINGMANUAL') {
+      setOwaspTargetId(null);
+      view = 'red-teaming-manual';
     }
     setCurrentView(view);
     syncHash(view, pillar, null, null);
@@ -327,6 +343,9 @@ const App: React.FC = () => {
     } else if (id.startsWith("DSGAI") || id.startsWith("ai-dspm") || id.toUpperCase().startsWith("DSGAI")) {
       pillar = 'GENAIDATASECURITY';
       view = 'genai-data-security';
+    } else if (id.startsWith("RTM") || id.startsWith("rtm") || id.toUpperCase().startsWith("RTM") || id.startsWith("phase-")) {
+      pillar = 'REDTEAMINGMANUAL';
+      view = 'red-teaming-manual';
     }
 
     setActivePillar(pillar);
@@ -624,6 +643,13 @@ const App: React.FC = () => {
               {currentView === 'genai-data-security' && (
                 <GenAiDataSecurityView 
                   initialExpandedId={owaspTargetId} 
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                />
+              )}
+
+              {currentView === 'red-teaming-manual' && (
+                <RedTeamingManualView 
+                  initialPhaseId={owaspTargetId} 
                   onNavigateToOwasp={handleNavigateToOwasp}
                 />
               )}

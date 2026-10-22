@@ -32,7 +32,7 @@ function readFile(relativePath) {
 
 // ─── 1. AppView Type Completeness ────────────────────────────────────────────
 
-test('Sidebar - AppView type union includes all 14 recognized view identifiers', (t) => {
+test('Sidebar - AppView type union includes all 15 recognized view identifiers', (t) => {
   const sidebarContent = readFile('components/Sidebar.tsx');
 
   const requiredViews = [
@@ -47,6 +47,7 @@ test('Sidebar - AppView type union includes all 14 recognized view identifiers',
     'owasp-mcp-top10',
     'secure-mcp-guide',
     'genai-data-security',
+    'red-teaming-manual',
     'audit-checklist',
     'tools',
     'incidents',
@@ -71,6 +72,7 @@ test('Sidebar - ActivePillarKey type includes all 4 Pillars plus framework-speci
     'MCPTOP10',
     'SECUREMCPGUIDE',
     'GENAIDATASECURITY',
+    'REDTEAMINGMANUAL',
   ];
 
   for (const key of requiredPillarKeys) {
@@ -97,7 +99,7 @@ test('Sidebar - renders navigation items for all 4 pillar test categories', (t) 
   assert.ok(sidebarContent.includes('Data Testing') || sidebarContent.includes('Pillar.DATA'), 'Sidebar must render DATA pillar item');
 });
 
-test('Sidebar - renders navigation entries for all 7 framework views', (t) => {
+test('Sidebar - renders navigation entries for all framework views', (t) => {
   const sidebarContent = readFile('components/Sidebar.tsx');
 
   // Framework view entries (check for recognizable labels or routes)
@@ -128,6 +130,10 @@ test('Sidebar - renders navigation entries for all 7 framework views', (t) => {
   assert.ok(
     sidebarContent.includes('genai-data-security') || sidebarContent.includes('GENAIDATASECURITY'),
     'Sidebar must render GenAI Data Security framework entry'
+  );
+  assert.ok(
+    sidebarContent.includes('red-teaming-manual') || sidebarContent.includes('REDTEAMINGMANUAL'),
+    'Sidebar must render GenAI Red Teaming Manual framework entry'
   );
 });
 

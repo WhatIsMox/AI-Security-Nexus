@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-19T09:25:18.006Z",
+  "timestamp": "2026-10-22T20:05:44.741Z",
   "frameworks": {
     "owaspLlmTop10_2026": {
       "count": 10,
@@ -143,6 +143,12 @@
     "mitreAtlas": {
       "tacticsCount": 0,
       "techniquesCount": 0
+    },
+    "owaspGenAiRedTeamingManual": {
+      "phasesCount": 8,
+      "domainsCount": 26,
+      "refusalPatternsCount": 10,
+      "exfiltrationChannelsCount": 7
     }
   },
   "tests": {

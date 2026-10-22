@@ -103,6 +103,34 @@ test('Unit - MITRE ATLAS (AML.TA* and AML.T*) Schema Conformance', (t) => {
   assert.ok(content.includes('MITRE_ATLAS_TECHNIQUES'), 'Must export MITRE_ATLAS_TECHNIQUES');
 });
 
+test('Unit - OWASP GenAI Red Teaming Manual Schema Conformance', (t) => {
+  const content = readFile('data_red_teaming_manual.ts');
+  
+  assert.ok(content.includes('RED_TEAMING_MANUAL_META'), 'Must export RED_TEAMING_MANUAL_META');
+  assert.ok(content.includes('RED_TEAMING_MANUAL_PHASES'), 'Must export RED_TEAMING_MANUAL_PHASES');
+  assert.ok(content.includes('RED_TEAMING_REFUSAL_PATTERNS'), 'Must export RED_TEAMING_REFUSAL_PATTERNS');
+  assert.ok(content.includes('RED_TEAMING_TESTING_DOMAINS'), 'Must export RED_TEAMING_TESTING_DOMAINS');
+  assert.ok(content.includes('RED_TEAMING_SURFACE_MAP_MATRIX'), 'Must export RED_TEAMING_SURFACE_MAP_MATRIX');
+  assert.ok(content.includes('RED_TEAMING_EXFILTRATION_CHANNELS'), 'Must export RED_TEAMING_EXFILTRATION_CHANNELS');
+  assert.ok(content.includes('RED_TEAMING_STANDARDIZED_TEST_CASES'), 'Must export RED_TEAMING_STANDARDIZED_TEST_CASES');
+
+  // Verify 8 phases
+  const phaseIds = [...content.matchAll(/id:\s*["'](phase-\d+-[a-z-]+)["']/g)].map(m => m[1]);
+  assert.equal(phaseIds.length, 8, 'Expected exactly 8 methodology phases');
+
+  // Verify 10 refusal patterns
+  const refusalIds = [...content.matchAll(/id:\s*["'](RP-\d{2})["']/g)].map(m => m[1]);
+  assert.equal(refusalIds.length, 10, 'Expected exactly 10 refusal heuristic patterns');
+
+  // Verify 26 testing domains
+  const domainIds = [...content.matchAll(/id:\s*["'](DOM-\d{2})["']/g)].map(m => m[1]);
+  assert.equal(domainIds.length, 26, 'Expected exactly 26 testing domains');
+
+  // Verify 7 exfiltration channels
+  const exfilIds = [...content.matchAll(/id:\s*["'](EXFIL-\d{2})["']/g)].map(m => m[1]);
+  assert.equal(exfilIds.length, 7, 'Expected exactly 7 exfiltration channels');
+});
+
 test('Unit - Security Test Catalogs (AITG-* and AGT-*) Conformance', (t) => {
   const standardTestsContent = readFile('data_tests.ts');
   const agenticTestsContent = readFile('data_agentic.ts');

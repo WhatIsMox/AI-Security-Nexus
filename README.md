@@ -18,6 +18,7 @@ Navigate the most influential AI security standards through specialized, color-c
 - **🗄️ OWASP GenAI Data Security Risks and Mitigations 2026**: A detailed, searchable navigator for DSGAI01-DSGAI21 covering GenAI data leakage, agent credentials, shadow AI, poisoning, lifecycle governance, compliance, multimodal leakage, unsafe data gateways, vector stores, telemetry, context over-sharing, endpoint assistants, resilience, inference, labeler exposure, model exfiltration, and disinformation.
 - **📘 Secure MCP Server Development Guide (v1.0)**: An interactive MCP hardening workspace with expandable control families, search, concept drill-downs, and an implementation readiness checklist.
 - **🛡️ Google SAIF (Secure AI Framework) Risks**: A holistic mapping of 15+ risks across the entire AI lifecycle.
+- **🎯 OWASP GenAI Red Teaming Manual (October 2026, Version 1.0)**: An exhaustive 8-phase offensive adversary testing guide covering planning, fingerprinting, surface mapping & trust boundaries, exploitation across 26 risk domains, persistence mechanisms (InjecMEM, worms, framework file overwrites), live Confusion Matrix & Rule of Three ($3/N$) statistical calculators, and paired Red–Blue remediation artifacts.
 
 ### 2. Interactive Architecture & Threat Modelling
 - **Visual Pipeline**: Explore the AI system layers (Application, Model, Data, Infrastructure) through an interactive dashboard.
@@ -38,7 +39,14 @@ Explore **OWASP GenAI Data Security Risks and Mitigations 2026** as an interacti
 - **Tiered Controls**: Foundational, hardening, and advanced mitigations with Buy / Build / Buy and Build scope labels for planning implementation work.
 - **Search & Filtering**: Filter by risk theme, mitigation tier, CVE, keyword, and control text.
 
-### 5. Security Tooling Database
+### 5. OWASP GenAI Red Teaming Manual Studio
+Dedicated interactive workspace for **OWASP GenAI Red Teaming Manual (Version 1.0, October 2026)**:
+- **8-Phase Tactical Methodology**: Interactive workflow tracking from planning & scoping through post-engagement purple-teaming.
+- **26 Testing Domains**: Complete risk taxonomy for safety, security, agent autonomy, and system availability.
+- **Live Empirical Evaluator**: Dynamic Confusion Matrix simulator (calculating ASR, Recall, FPR, Precision, Accuracy) and Rule of Three sample size calculator.
+- **Paired Red-Blue Artifact Studio**: Generates copyable, audit-ready engineering reproduction packages (Red Artifacts) and SOC detection rules (Blue Artifacts).
+
+### 6. Security Tooling Database
 Each threat and test case is mapped to recommended security tools. The database includes:
 - **Metadata**: Classification by **Cost** (Free to Premium) and **Deployment Type** (Local vs. Third-party).
 - **Tool Categories**: Scanners (Garak, Promptfoo), Sanitizers (DOMPurify, Presidio), and Robustness libraries (ART, Foolbox).
@@ -55,7 +63,14 @@ This application is built upon the following authoritative sources:
 7. **OWASP MCP Top 10 (v0.1)**
 8. **OWASP GenAI Data Security Risks and Mitigations 2026, Version 1.0 (March 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/owasp-genai-data-security-risks-mitigations-2026/
 9. **Secure MCP Server Development, Version 1.0 (February 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/
-10. **EU AI Act & NIST AI RMF**
+10. **OWASP GenAI Red Teaming Manual, Version 1.0 (October 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/
+11. **EU AI Act & NIST AI RMF**
+
+### Attribution for OWASP GenAI Red Teaming Manual (Version 1.0, October 2026)
+
+The dedicated **GenAI Red Teaming Manual** application section adapts content from **GenAI Red Teaming Manual: A Practical Guide for Adversarial Testing of Generative AI Models & Systems (Version 1.0, October 2026)**, published under Creative Commons CC BY-SA 4.0 by the OWASP GenAI Security Project at https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/.
+
+Changes made: the original 144-page manual has been structured into searchable application data, categorized refusal diagnostics, trust boundary matrices, live statistical confusion-matrix & sample-size calculators, paired Red-Blue artifact templates, and interactive case study explorers.
 
 ### Attribution for OWASP GenAI Data Security Risks and Mitigations 2026
 

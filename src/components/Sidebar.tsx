@@ -3,7 +3,7 @@ import React from 'react';
 import { 
   Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, 
   Brain, Cpu, Bot, Gavel, Network, FileText, Search, CheckCircle2, 
-  Terminal, Flame, Sparkles, ChevronDown, Globe, SlidersHorizontal 
+  Terminal, Flame, Sparkles, ChevronDown, Globe, SlidersHorizontal, Target 
 } from 'lucide-react';
 import { Pillar, GlobalDomain } from '../types';
 import { TEST_DATA } from '../data';
@@ -21,11 +21,12 @@ export type AppView =
   | 'owasp-mcp-top10' 
   | 'secure-mcp-guide' 
   | 'genai-data-security'
+  | 'red-teaming-manual'
   | 'audit-checklist'
   | 'tools'
   | 'incidents';
 
-export type ActivePillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY';
+export type ActivePillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY' | 'REDTEAMINGMANUAL';
 
 const DOMAIN_OPTIONS: { id: GlobalDomain; label: string; icon: React.ComponentType<{ className?: string }>; color: string; badge: string }[] = [
   { id: 'ALL', label: 'All AI Domains', icon: Globe, color: 'text-cyan-400', badge: 'Global' },
@@ -317,6 +318,21 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Gavel className="w-4 h-4 shrink-0 text-blue-400" />
             <span>Google SAIF Risk Flow</span>
           </button>
+
+          {(globalDomain === 'ALL' || globalDomain === 'LLM' || globalDomain === 'AGENT') && (
+            <button
+              type="button"
+              onClick={() => { onSelectPillar('REDTEAMINGMANUAL'); onClose(); }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
+                currentView === 'red-teaming-manual' || (currentView === 'tests' && activePillar === 'REDTEAMINGMANUAL')
+                  ? 'bg-gradient-to-r from-rose-500/20 to-red-500/10 text-rose-300 border border-rose-500/30 font-semibold'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+              }`}
+            >
+              <Target className="w-4 h-4 shrink-0 text-rose-400" />
+              <span>GenAI Red Teaming Manual</span>
+            </button>
+          )}
 
           {/* Testing Pillars & Attack Matrix */}
           <div className="pt-3 pb-1">
