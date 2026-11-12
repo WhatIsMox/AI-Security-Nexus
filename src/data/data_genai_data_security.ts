@@ -314,7 +314,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     title: 'Sensitive Data Leakage',
     theme: 'Leakage & Exposure',
     mitreAtlasRef: 'AML.T0024',
-    mitreAtlasRefs: ['AML.T0024', 'AML.T0057', 'AML.T0025'],
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0136', 'AML.T0025'],
     summary:
       'Sensitive data leaks when models, RAG retrieval, logs, telemetry, fine-tuned adapters, or embeddings surface PII, PHI, secrets, IP, or deleted data that should not be available.',
     howItUnfolds: [
@@ -669,7 +669,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     title: 'Data Governance, Lifecycle & Classification for AI Systems',
     theme: 'Governance & Compliance',
     mitreAtlasRef: 'AML.T0024',
-    mitreAtlasRefs: ['AML.T0024', 'AML.T0057'],
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0136'],
     summary:
       'Governance failures in AI propagate into derived artifacts such as embeddings, logs, fine-tuned weights, backups, and agent memory, making erasure, audit, and remediation difficult or impossible.',
     howItUnfolds: [
@@ -760,7 +760,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     title: 'Multimodal Capture & Cross-Channel Data Leakage',
     theme: 'Leakage & Exposure',
     mitreAtlasRef: 'AML.T0024',
-    mitreAtlasRefs: ['AML.T0024', 'AML.T0057'],
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0136'],
     summary:
       'Multimodal systems ingest screenshots, images, audio, video, IDs, PDFs, and whiteboards; the raw media and extracted OCR/ASR derivatives can leak through overlooked stores and channels.',
     howItUnfolds: [
@@ -1037,8 +1037,8 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     id: 'DSGAI14',
     title: 'Excessive Telemetry & Monitoring Leakage',
     theme: 'Leakage & Exposure',
-    mitreAtlasRef: 'AML.T0057',
-    mitreAtlasRefs: ['AML.T0057', 'AML.T0024'],
+    mitreAtlasRef: 'AML.T0136',
+    mitreAtlasRefs: ['AML.T0136', 'AML.T0024'],
     summary:
       'LLM observability and agent tracing can capture full prompts, responses, tool calls, vector results, secrets, and internal reasoning into centralized stores with weaker controls.',
     howItUnfolds: [
@@ -1092,7 +1092,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     title: 'Over-Broad Context Windows & Prompt Over-Sharing',
     theme: 'Leakage & Exposure',
     mitreAtlasRef: 'AML.T0024',
-    mitreAtlasRefs: ['AML.T0024', 'AML.T0057'],
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0136'],
     summary:
       'Prompt inflation sends full records, customer-360 profiles, tickets, documents, or screens to models, providers, caches, and logs even when the task only needs a few fields.',
     howItUnfolds: [
@@ -1299,7 +1299,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
     title: 'Human-in-the-Loop & Labeler Overexposure',
     theme: 'Governance & Compliance',
     mitreAtlasRef: 'AML.T0024',
-    mitreAtlasRefs: ['AML.T0024', 'AML.T0057'],
+    mitreAtlasRefs: ['AML.T0024', 'AML.T0136'],
     summary:
       'RLHF, safety fine-tuning, quality review, and data labeling pipelines expose human annotators and vendors to raw prompts, completions, documents, and transcripts at scale.',
     howItUnfolds: [

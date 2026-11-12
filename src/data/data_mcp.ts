@@ -7,7 +7,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     title: "Token Mismanagement & Secret Exposure",
     description: "Hard-coded credentials, long-lived tokens, and secrets stored in model memory or MCP logs can expose sensitive environments to unauthorized access and lateral movement.",
     mitreAtlasRef: "AML.T0024",
-    mitreAtlasRefs: ["AML.T0024", "AML.T0036", "AML.T0057"],
+    mitreAtlasRefs: ["AML.T0024", "AML.T0036", "AML.T0136"],
     commonRisks: [
       "Secrets embedded in prompts, tools, or configuration files that leak via logs or telemetry.",
       "Long-lived or overly broad tokens reused across tools and sessions.",
@@ -360,7 +360,7 @@ export const OWASP_MCP_TOP_10_DATA: OwaspTop10Entry[] = [
     title: "Context Injection & Over-Sharing",
     description: "Shared or persistent context windows can leak sensitive information across users, tasks, or agents, turning convenience into a data exposure risk.",
     mitreAtlasRef: "AML.T0024",
-    mitreAtlasRefs: ["AML.T0024", "AML.T0051", "AML.T0057"],
+    mitreAtlasRefs: ["AML.T0024", "AML.T0051", "AML.T0136"],
     commonRisks: [
       "Cross-tenant leakage from shared context buffers.",
       "Overly permissive context retention beyond task scope.",

@@ -44,7 +44,7 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     title: "Sensitive Information Disclosure",
     description: "Sensitive information disclosure occurs when an LLM-integrated system exposes confidential, regulated, privileged, or proprietary data through an unauthorized channel. The channel is not only the final answer: tool-call arguments, reasoning traces, retrieved chunks, multimodal output, logs, telemetry, embeddings, and inference side channels can all disclose protected information.",
     mitreAtlasRef: "AML.T0024",
-    mitreAtlasRefs: ["AML.T0024", "AML.T0025", "AML.T0057"],
+    mitreAtlasRefs: ["AML.T0024", "AML.T0025", "AML.T0136"],
     commonRisks: [
       "Training-time memorization and extraction of PII, credentials, copyrighted content, or rare examples from base models, fine-tunes, or adapters.",
       "Inference-time disclosure of system prompts, retrieved private documents, files, tool outputs, memory, or another user's session data.",
@@ -259,8 +259,8 @@ export const OWASP_TOP_10_DATA: OwaspTop10Entry[] = [
     id: "LLM08:2026",
     title: "Hidden Context Exposure",
     description: "Hidden Context Exposure is the unauthorized extraction, inference, or reconstruction of non-user-facing system instructions or operational context. It is security-relevant when hidden context reveals secrets, policy logic, tool schemas, trust boundaries, workflow criteria, proprietary behavior, or other implementation details that materially increase attacker capability.",
-    mitreAtlasRef: "AML.T0056",
-    mitreAtlasRefs: ["AML.T0056", "AML.T0057"],
+    mitreAtlasRef: "AML.T0069.002",
+    mitreAtlasRefs: ["AML.T0069.002", "AML.T0136"],
     commonRisks: [
       "Exposure of sensitive functionality, tool schemas, API keys, database credentials, user tokens, or architectural details from hidden context.",
       "Disclosure of behavioral control logic, policy rules, workflow criteria, filtering conditions, or refusal mechanisms.",

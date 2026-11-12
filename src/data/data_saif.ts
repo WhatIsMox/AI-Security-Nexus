@@ -99,7 +99,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     title: "Excessive Data Handling",
     description: "Data collection or retention goes beyond what is allowed in corresponding privacy policies, resulting in legal risk and increased attack surface for data breaches.",
     mitreAtlasRef: "AML.T0024",
-    mitreAtlasRefs: ["AML.T0024", "AML.T0057"],
+    mitreAtlasRefs: ["AML.T0024", "AML.T0136"],
     commonRisks: [
       "Privacy violations and massive regulatory fines (GDPR, CCPA).",
       "Increased attack surface due to unnecessary long-term data storage.",
@@ -341,7 +341,7 @@ export const OWASP_SAIF_THREATS_DATA: OwaspTop10Entry[] = [
     title: "Sensitive Data Disclosure",
     description: "Attackers trick the model into revealing sensitive information (PII, secrets, or context) in its response that it should have kept confidential.",
     mitreAtlasRef: "AML.T0024",
-    mitreAtlasRefs: ["AML.T0024", "AML.T0057", "AML.T0025"],
+    mitreAtlasRefs: ["AML.T0024", "AML.T0136", "AML.T0025"],
     commonRisks: [
       "PII leaks in generated content (e.g., names, SSNs, emails).",
       "Exposure of secret keys or internal system details from the prompt.",
