@@ -342,6 +342,34 @@ function validateMitreAtlasData() {
   }
 }
 
+// 7c. Validate data_securing_agentic_apps.ts
+function validateSecuringAgenticApps() {
+  const content = readFileContent('data_securing_agentic_apps.ts');
+  if (!content) return;
+
+  const checks = [
+    { label: 'chapters (1–9 + appendix)', re: /id:\s*'(SAA-(?:CH\d|ACK))'/g, expected: 10 },
+    { label: 'key components (KC1–KC6)', re: /^\s{4}id:\s*'(KC\d)',$/gm, expected: 6 },
+    { label: 'T-code threats (T1–T15)', re: /\{\s*id:\s*'(T\d{1,2})',\s*name:/g, expected: 15 },
+    { label: 'security hook points', re: /\{\s*id:\s*'([A-Za-z /]+)',\s*scope:\s*'(?:Session|Turn|Inner)'/g, expected: 18 },
+    { label: 'operational capabilities (KC6.1–KC6.6)', re: /id:\s*'(CAP-[A-Z]+)'/g, expected: 6 },
+  ];
+  for (const c of checks) {
+    const found = new Set([...content.matchAll(c.re)].map(m => m[1])).size;
+    if (found !== c.expected) logFail(`data_securing_agentic_apps.ts: Expected ${c.expected} ${c.label}, found ${found}`);
+    else logPass(`data_securing_agentic_apps.ts: ${c.expected} ${c.label} verified`);
+  }
+
+  const sectionIds = [...content.matchAll(/id:\s*'(SAA-[\dA][\d.]*)'/g)].map(m => m[1]);
+  const dupes = sectionIds.filter((id, i) => sectionIds.indexOf(id) !== i);
+  if (dupes.length) logFail(`data_securing_agentic_apps.ts: Duplicate section IDs: ${[...new Set(dupes)].join(', ')}`);
+  else logPass(`data_securing_agentic_apps.ts: ${sectionIds.length} unique section IDs verified`);
+
+  if (!content.includes('https://genai.owasp.org/resource/securing-agentic-applications-v2/')) {
+    logFail('data_securing_agentic_apps.ts: Missing official publication URL');
+  }
+}
+
 // 7b. Validate data_red_teaming_manual.ts
 function validateRedTeamingManual() {
   const content = readFileContent('data_red_teaming_manual.ts');
@@ -387,6 +415,7 @@ validateMcpData();
 validateSaifData();
 validateGenAiDataSecurity();
 validateRedTeamingManual();
+validateSecuringAgenticApps();
 validateMitreAtlasData();
 validateTestData();
 validateCatalogs();

@@ -6,7 +6,7 @@ import {
   BookOpen, Bot, Brain, Bug, CheckCircle2, ChevronLeft, ChevronRight,
   Cpu, Crosshair, Database, ExternalLink, FileText, Flame, Gavel,
   Github, Globe, Layers, Network, Radar, Server,
-  Shield, Sparkles, Star, Terminal, Wrench, Zap, Play, Info
+  Shield, ShieldCheck, Sparkles, Star, Terminal, Wrench, Zap, Play, Info
 } from 'lucide-react';
 import {
   TEST_DATA,
@@ -25,12 +25,15 @@ import {
   MITRE_ATLAS_TACTICS,
   RED_TEAMING_MANUAL_META,
   RED_TEAMING_MANUAL_PHASES,
+  SECURING_AGENTIC_APPS_META,
+  SAA_CHAPTERS,
+  SAA_ALL_SECTIONS,
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
 import { getEnrichedIncident } from '../data/incident_details_catalog';
 
-type PillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY' | 'REDTEAMINGMANUAL';
+type PillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY' | 'REDTEAMINGMANUAL' | 'SECUREAGENTICAPPS';
 
 interface DashboardProps {
   globalDomain: GlobalDomain;
@@ -208,7 +211,7 @@ const PILLAR_META: Record<Pillar, { name: string; blurb: string; icon: any; text
 };
 
 interface FrameworkCard {
-  key: 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'MCPTOP10' | 'SAIFTOP10' | 'GENAIDATASECURITY' | 'SECUREMCPGUIDE' | 'MITREATLAS' | 'REDTEAMINGMANUAL';
+  key: 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'MCPTOP10' | 'SAIFTOP10' | 'GENAIDATASECURITY' | 'SECUREMCPGUIDE' | 'MITREATLAS' | 'REDTEAMINGMANUAL' | 'SECUREAGENTICAPPS';
   name: string;
   edition: string;
   kind: string;
@@ -410,6 +413,26 @@ const buildFrameworkCards = (): FrameworkCard[] => [
     ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(244,63,94,0.35)]',
     arrowHover: 'group-hover:border-rose-500/60 group-hover:text-rose-300',
   },
+  {
+    key: 'SECUREAGENTICAPPS',
+    name: 'Securing Agentic Applications',
+    edition: `${SECURING_AGENTIC_APPS_META.publicationDate} (v${SECURING_AGENTIC_APPS_META.version})`,
+    kind: "Builder & Defender's Guide",
+    blurb: 'The ASI builder guide: six key components, hooks & circuit breakers, Rule of Two, OBO delegation, MCP rug-pull defenses, assurance, and runtime hardening — with interactive labs.',
+    icon: ShieldCheck,
+    count: SAA_ALL_SECTIONS.length,
+    countLabel: 'sections',
+    previewId: SAA_CHAPTERS[1]?.sections[0]?.number ? `§${SAA_CHAPTERS[1].sections[0].number}` : '§2.1',
+    previewTitle: SAA_CHAPTERS[1]?.sections[0]?.title ?? 'Key Components',
+    text: 'text-violet-400',
+    border: 'border-violet-500/25',
+    hoverBorder: 'hover:border-violet-400/70',
+    iconBox: 'bg-violet-500/10 border-violet-500/30',
+    chipBg: 'bg-violet-500/10 text-violet-300 border-violet-500/30',
+    glow: 'bg-violet-500/10',
+    ring: 'group-hover:shadow-[0_0_40px_-8px_rgba(139,92,246,0.35)]',
+    arrowHover: 'group-hover:border-violet-500/60 group-hover:text-violet-300',
+  },
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -494,8 +517,8 @@ const Dashboard: React.FC<DashboardProps> = ({
     return buildFrameworkCards().filter(f => {
       if (globalDomain === 'LLM') return f.key === 'TOP10' || f.key === 'REDTEAMINGMANUAL';
       if (globalDomain === 'ML') return f.key === 'MLTOP10';
-      if (globalDomain === 'AGENT') return f.key === 'AGENTTOP10' || f.key === 'REDTEAMINGMANUAL';
-      if (globalDomain === 'MCP') return f.key === 'MCPTOP10' || f.key === 'SECUREMCPGUIDE';
+      if (globalDomain === 'AGENT') return f.key === 'AGENTTOP10' || f.key === 'REDTEAMINGMANUAL' || f.key === 'SECUREAGENTICAPPS';
+      if (globalDomain === 'MCP') return f.key === 'MCPTOP10' || f.key === 'SECUREMCPGUIDE' || f.key === 'SECUREAGENTICAPPS';
       return true;
     });
   }, [globalDomain]);

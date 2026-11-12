@@ -28,6 +28,7 @@ const DATA_FILES = [
   'src/data/data_mcp.ts',
   'src/data/data_secure_mcp_guide.ts',
   'src/data/data_genai_data_security.ts',
+  'src/data/data_securing_agentic_apps.ts',
   'src/data/tools_catalog.ts',
   'src/data/tool_details_catalog.ts',
   'src/data/incidents_catalog.ts',

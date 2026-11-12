@@ -32,7 +32,7 @@ function readFile(relativePath) {
 
 // ─── 1. AppView Type Completeness ────────────────────────────────────────────
 
-test('Sidebar - AppView type union includes all 15 recognized view identifiers', (t) => {
+test('Sidebar - AppView type union includes all 16 recognized view identifiers', (t) => {
   const sidebarContent = readFile('components/Sidebar.tsx');
 
   const requiredViews = [
@@ -48,6 +48,7 @@ test('Sidebar - AppView type union includes all 15 recognized view identifiers',
     'secure-mcp-guide',
     'genai-data-security',
     'red-teaming-manual',
+    'securing-agentic-apps',
     'audit-checklist',
     'tools',
     'incidents',
@@ -73,6 +74,7 @@ test('Sidebar - ActivePillarKey type includes all 4 Pillars plus framework-speci
     'SECUREMCPGUIDE',
     'GENAIDATASECURITY',
     'REDTEAMINGMANUAL',
+    'SECUREAGENTICAPPS',
   ];
 
   for (const key of requiredPillarKeys) {
@@ -134,6 +136,10 @@ test('Sidebar - renders navigation entries for all framework views', (t) => {
   assert.ok(
     sidebarContent.includes('red-teaming-manual') || sidebarContent.includes('REDTEAMINGMANUAL'),
     'Sidebar must render GenAI Red Teaming Manual framework entry'
+  );
+  assert.ok(
+    sidebarContent.includes('securing-agentic-apps') && sidebarContent.includes('SECUREAGENTICAPPS'),
+    'Sidebar must render Securing Agentic Applications V2 framework entry'
   );
 });
 

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-09T11:05:19.198Z",
+  "timestamp": "2026-11-12T21:47:24.672Z",
   "frameworks": {
     "owaspLlmTop10_2026": {
       "count": 10,
@@ -149,6 +149,11 @@
       "domainsCount": 26,
       "refusalPatternsCount": 10,
       "exfiltrationChannelsCount": 7
+    },
+    "owaspSecuringAgenticApps": {
+      "chaptersCount": 10,
+      "sectionsCount": 102,
+      "hooksCount": 18
     }
   },
   "tests": {

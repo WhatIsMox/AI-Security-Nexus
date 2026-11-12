@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { 
   Search, X, Brain, Cpu, Bot, Gavel, Network, Database, 
-  Terminal, Flame, Shield, ArrowRight, CornerDownLeft, Sparkles, Layers, Target
+  Terminal, Flame, Shield, ArrowRight, CornerDownLeft, Sparkles, Layers, Target, ShieldCheck
 } from 'lucide-react';
 import { 
   TEST_DATA, 
@@ -16,7 +16,11 @@ import {
   GENAI_DSPM_CAPABILITIES,
   MITRE_ATLAS_TECHNIQUES,
   RED_TEAMING_MANUAL_PHASES,
-  RED_TEAMING_TESTING_DOMAINS
+  RED_TEAMING_TESTING_DOMAINS,
+  SAA_ALL_SECTIONS,
+  SAA_KEY_COMPONENTS,
+  SAA_HOOKS,
+  SAA_SECTION_SEARCH_TEXT
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
 import { getEnrichedTool } from '../data/tool_details_catalog';
@@ -28,7 +32,7 @@ export interface SearchResultItem {
   id: string;
   title: string;
   subtitle: string;
-  category: 'test' | 'llm' | 'ml' | 'agentic' | 'saif' | 'mcp' | 'dsgai' | 'dspm' | 'atlas' | 'tool' | 'incident' | 'redteam';
+  category: 'test' | 'llm' | 'ml' | 'agentic' | 'saif' | 'mcp' | 'dsgai' | 'dspm' | 'atlas' | 'tool' | 'incident' | 'redteam' | 'saa';
   categoryLabel: string;
   badgeColor: string;
   searchText: string;
@@ -329,6 +333,50 @@ function getSearchIndex(): SearchResultItem[] {
     });
   }
 
+  // 14. Securing Agentic Applications V2 — guide sections
+  for (const sec of SAA_ALL_SECTIONS) {
+    const title = `§${sec.number} ${sec.title}`;
+    const categoryLabel = 'Securing Agentic Apps';
+    items.push({
+      id: `saa-${sec.id}`,
+      title,
+      subtitle: `${sec.chapterTitle} • ${sec.summary}`,
+      category: 'saa',
+      categoryLabel,
+      badgeColor: 'border-violet-500/30 bg-violet-500/10 text-violet-300',
+      searchText: `${categoryLabel} securing agentic applications ${SAA_SECTION_SEARCH_TEXT[sec.id] ?? ''}`.toLowerCase(),
+      targetId: sec.id
+    });
+  }
+
+  // 15. Securing Agentic Applications V2 — key components & enforcement hooks
+  for (const kc of SAA_KEY_COMPONENTS) {
+    const title = `${kc.id}: ${kc.name}`;
+    items.push({
+      id: `saa-${kc.id}`,
+      title,
+      subtitle: `Key component • ${kc.riskSummary}`,
+      category: 'saa',
+      categoryLabel: 'Agentic Key Component',
+      badgeColor: 'border-violet-500/30 bg-violet-500/10 text-violet-300',
+      searchText: `${title} ${kc.definition} ${kc.subcomponents.map(s => `${s.id} ${s.name}`).join(' ')} key component`.toLowerCase(),
+      targetId: 'SAA-2.1'
+    });
+  }
+  for (const hook of SAA_HOOKS) {
+    const title = `Hook: ${hook.id}`;
+    items.push({
+      id: `saa-hook-${hook.id}`,
+      title,
+      subtitle: `${hook.scope} hook • ${hook.dispositions.join(' / ')} • ${hook.controls}`,
+      category: 'saa',
+      categoryLabel: 'Agent Security Hook',
+      badgeColor: 'border-violet-500/30 bg-violet-500/10 text-violet-300',
+      searchText: `${title} ${hook.controls} ${hook.dispositions.join(' ')} security hook enforcement point`.toLowerCase(),
+      targetId: 'SAA-3.3.7'
+    });
+  }
+
   cachedSearchIndex = items;
   return items;
 }
@@ -406,7 +454,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     if (activeTab === 'tests') {
       list = list.filter(i => i.category === 'test');
     } else if (activeTab === 'threats') {
-      list = list.filter(i => ['llm', 'ml', 'agentic', 'saif', 'mcp', 'dsgai', 'dspm', 'atlas', 'redteam'].includes(i.category));
+      list = list.filter(i => ['llm', 'ml', 'agentic', 'saif', 'mcp', 'dsgai', 'dspm', 'atlas', 'redteam', 'saa'].includes(i.category));
     } else if (activeTab === 'tools') {
       list = list.filter(i => i.category === 'tool');
     } else if (activeTab === 'incidents') {
@@ -484,6 +532,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       case 'tool': return <Terminal className="w-4 h-4 text-purple-400" />;
       case 'incident': return <Flame className="w-4 h-4 text-amber-400" />;
       case 'redteam': return <Target className="w-4 h-4 text-rose-400" />;
+      case 'saa': return <ShieldCheck className="w-4 h-4 text-violet-400" />;
     }
   };
 

@@ -105,7 +105,7 @@ export default defineConfig(({ command }) => {
             if (id.includes('data_mitre_atlas')) {
               return 'mitre-atlas-data';
             }
-            if (id.includes('data_saif') || id.includes('data_genai_data_security') || id.includes('data_secure_mcp_guide') || id.includes('data_ml') || id.includes('data_mcp')) {
+            if (id.includes('data_saif') || id.includes('data_genai_data_security') || id.includes('data_secure_mcp_guide') || id.includes('data_ml') || id.includes('data_mcp') || id.includes('data_securing_agentic_apps')) {
               return 'frameworks-data';
             }
           },

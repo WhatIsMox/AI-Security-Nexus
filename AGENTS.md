@@ -23,6 +23,7 @@ The **AI Security Nexus** is a state-of-the-art interactive graphical exploratio
 9. **Curated Security Test Suite**: 42+ structured tests across 4 Pillars (`data_tests.ts` & `data_agentic.ts`)
 10. **Security Tools & Real-World Incident Catalogs**: Tool classifications and CVE/research citations (`tools_catalog.ts`, `incidents_catalog.ts`)
 11. **OWASP GenAI Red Teaming Manual (v1.0, October 2026)**: Tactical 8-phase adversary emulation manual with refusal diagnostics, exfiltration matrices, and persistence validation (`data_red_teaming_manual.ts`, [Official Link](https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/))
+12. **OWASP Securing Agentic Applications V2 (v2.0, October 2026)**: Builder & defender guide — key components KC1–KC6, T1–T15 attack surface, 18 security hooks, circuit breakers, Rule of Two, OBO delegation, MCP supply-chain controls, assurance, and runtime hardening (`data_securing_agentic_apps.ts`, `SecuringAgenticAppsView.tsx`, [Official Link](https://genai.owasp.org/resource/securing-agentic-applications-v2/))
 
 ---
 
@@ -46,6 +47,7 @@ The **AI Security Nexus** is a state-of-the-art interactive graphical exploratio
   - SAIF: `SAIF-R01` ... `SAIF-R15`
   - GenAI Data Security: `DSGAI01` ... `DSGAI21`
   - AI-DSPM: `ai-dspm-01` ... `ai-dspm-13`
+  - Securing Agentic Applications V2: `SAA-1.1` ... `SAA-9.7` (sections), `SAA-CH1` ... `SAA-CH9`, `SAA-ACK` (chapters)
   - Tests: `AITG-APP-*`, `AITG-MOD-*`, `AITG-INFRA-*`, `AITG-DATA-*`, `AGT-*`
 
 ---

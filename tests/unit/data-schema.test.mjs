@@ -131,6 +131,20 @@ test('Unit - OWASP GenAI Red Teaming Manual Schema Conformance', (t) => {
   assert.equal(exfilIds.length, 7, 'Expected exactly 7 exfiltration channels');
 });
 
+test('Unit - OWASP Securing Agentic Applications V2 Schema Conformance', (t) => {
+  const content = readFile('data_securing_agentic_apps.ts');
+  for (const name of ['SECURING_AGENTIC_APPS_META', 'SAA_CHAPTERS', 'SAA_THREATS', 'SAA_KEY_COMPONENTS', 'SAA_MEMORY_SCOPES', 'SAA_HOOKS', 'SAA_CAPABILITIES', 'SAA_ASSURANCE_CHAIN', 'SAA_EDITORIAL_NOTES']) {
+    assert.ok(content.includes(`export const ${name}`), `Must export ${name}`);
+  }
+  const chapterIds = [...content.matchAll(/id:\s*'(SAA-(?:CH\d|ACK))'/g)].map(m => m[1]);
+  assert.equal(chapterIds.length, 10, 'Expected chapters 1–9 plus acknowledgements');
+  const threats = [...content.matchAll(/\{\s*id:\s*'(T\d{1,2})',\s*name:/g)].map(m => m[1]);
+  assert.equal(threats.length, 15, 'Expected T1–T15');
+  const hooks = [...content.matchAll(/\{\s*id:\s*'([A-Za-z /]+)',\s*scope:\s*'(?:Session|Turn|Inner)'/g)].map(m => m[1]);
+  assert.equal(hooks.length, 18, 'Expected 18 hook points');
+  assert.ok(content.includes('CC BY-SA 4.0'), 'Must carry the CC BY-SA 4.0 license');
+});
+
 test('Unit - Security Test Catalogs (AITG-* and AGT-*) Conformance', (t) => {
   const standardTestsContent = readFile('data_tests.ts');
   const agenticTestsContent = readFile('data_agentic.ts');

@@ -210,6 +210,18 @@ test('Barrel - data.ts re-exports GenAI Red Teaming Manual constructs', () => {
   assert.ok(manualSource.includes('RED_TEAMING_MANUAL_PHASES'), 'data_red_teaming_manual.ts must export RED_TEAMING_MANUAL_PHASES');
 });
 
+test('Barrel - data.ts re-exports Securing Agentic Applications V2 constructs', () => {
+  const content = readFile('data.ts');
+  const guideSource = readFile('data_securing_agentic_apps.ts');
+  assert.ok(
+    content.includes("export * from './data_securing_agentic_apps'"),
+    'data.ts must re-export Securing Agentic Applications V2 data'
+  );
+  for (const name of ['SECURING_AGENTIC_APPS_META', 'SAA_CHAPTERS', 'SAA_ALL_SECTIONS', 'SAA_KEY_COMPONENTS', 'SAA_HOOKS', 'SAA_CAPABILITIES']) {
+    assert.ok(guideSource.includes(`export const ${name}`), `data_securing_agentic_apps.ts must export ${name}`);
+  }
+});
+
 // ─── 3. Framework Overview Re-Exports ────────────────────────────────────────
 
 test('Barrel - data.ts re-exports Agentic overview objects (AGENTIC_SKILLS_OVERVIEW, AGENTIC_APPLICATIONS_OVERVIEW)', () => {

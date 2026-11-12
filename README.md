@@ -19,6 +19,7 @@ Navigate the most influential AI security standards through specialized, color-c
 - **📘 Secure MCP Server Development Guide (v1.0)**: An interactive MCP hardening workspace with expandable control families, search, concept drill-downs, and an implementation readiness checklist.
 - **🛡️ Google SAIF (Secure AI Framework) Risks**: A holistic mapping of 15+ risks across the entire AI lifecycle.
 - **🎯 OWASP GenAI Red Teaming Manual (October 2026, Version 1.0)**: An exhaustive 8-phase offensive adversary testing guide covering planning, fingerprinting, surface mapping & trust boundaries, exploitation across 26 risk domains, persistence mechanisms (InjecMEM, worms, framework file overwrites), live Confusion Matrix & Rule of Three ($3/N$) statistical calculators, and paired Red–Blue remediation artifacts.
+- **🛡️ OWASP Securing Agentic Applications V2 (October 2026, Version 2.0)**: The complete ASI builder & defender guide as a searchable, deep-linkable reader with 15 interactive labs — key components explorer, threat × component heatmap, Effective Scope calculator, Rule of Two / Lethal Trifecta checker, 18-hook explorer, circuit-breaker designer, capability composition matrix, OBO delegation chain, tool rug-pull lifecycle, and assurance chain.
 
 ### 2. Interactive Architecture & Threat Modelling
 - **Visual Pipeline**: Explore the AI system layers (Application, Model, Data, Infrastructure) through an interactive dashboard.
@@ -46,7 +47,13 @@ Dedicated interactive workspace for **OWASP GenAI Red Teaming Manual (Version 1.
 - **Live Empirical Evaluator**: Dynamic Confusion Matrix simulator (calculating ASR, Recall, FPR, Precision, Accuracy) and Rule of Three sample size calculator.
 - **Paired Red-Blue Artifact Studio**: Generates copyable, audit-ready engineering reproduction packages (Red Artifacts) and SOC detection rules (Blue Artifacts).
 
-### 6. Security Tooling Database
+### 6. Securing Agentic Applications V2 Workspace
+Dedicated reader for **OWASP Securing Agentic Applications V2 — A Builder & Defender's Guide (Version 2.0, October 2026)**:
+- **All 9 chapters + credits**: architectures, developer lifecycle, architecture-specific actions, operational capabilities, supply chain, assurance, deployments, and runtime hardening — each section collapsible, searchable, and deep-linkable (`#/securing-agentic-apps/SAA-3.3.7`).
+- **15 Interactive Labs** embedded where the guide introduces each concept (hooks, circuit breakers, Rule of Two, Effective Scope, capability composition, OBO delegation, tool lifecycle, assurance chain, …).
+- **Reading progress** stored locally with strict whitelist validation, plus cross-links into the OWASP Agentic Top 10, MCP Top 10, Secure MCP Guide, and Red Teaming Manual.
+
+### 7. Security Tooling Database
 Each threat and test case is mapped to recommended security tools. The database includes:
 - **Metadata**: Classification by **Cost** (Free to Premium) and **Deployment Type** (Local vs. Third-party).
 - **Tool Categories**: Scanners (Garak, Promptfoo), Sanitizers (DOMPurify, Presidio), and Robustness libraries (ART, Foolbox).
@@ -64,7 +71,14 @@ This application is built upon the following authoritative sources:
 8. **OWASP GenAI Data Security Risks and Mitigations 2026, Version 1.0 (March 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/owasp-genai-data-security-risks-mitigations-2026/
 9. **Secure MCP Server Development, Version 1.0 (February 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/a-practical-guide-for-secure-mcp-server-development/
 10. **OWASP GenAI Red Teaming Manual, Version 1.0 (October 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/
-11. **EU AI Act & NIST AI RMF**
+11. **Securing Agentic Applications V2 — A Builder & Defender's Guide, Version 2.0 (October 2026)**, OWASP GenAI Security Project: https://genai.owasp.org/resource/securing-agentic-applications-v2/
+12. **EU AI Act & NIST AI RMF**
+
+### Attribution for OWASP Securing Agentic Applications V2 (Version 2.0, October 2026)
+
+The dedicated **Securing Agentic Applications V2** application section adapts content from **Securing Agentic Applications V2: A Builder & Defender's Guide (Version 2.0, October 2026)**, published under Creative Commons CC BY-SA 4.0 by the OWASP GenAI Security Project at https://genai.owasp.org/resource/securing-agentic-applications-v2/.
+
+Changes made: the 106-page guide has been restructured into searchable, deep-linkable sections with 15 interactive explorers; text has been lightly edited for clarity; and cross-reference errors in the source are corrected and listed as editorial notes inside the app.
 
 ### Attribution for OWASP GenAI Red Teaming Manual (Version 1.0, October 2026)
 

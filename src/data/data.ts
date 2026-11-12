@@ -13,5 +13,6 @@ export * from './data_secure_mcp_guide';
 export * from './data_genai_data_security';
 export * from './data_mitre_atlas';
 export * from './data_red_teaming_manual';
+export * from './data_securing_agentic_apps';
 export { AGENTIC_SKILLS_OVERVIEW, OWASP_AGENTIC_THREATS_DATA } from './data_agentic';
 export { AGENTIC_APPLICATIONS_OVERVIEW, OWASP_AGENTIC_APPLICATIONS_DATA } from './data_agentic_applications';

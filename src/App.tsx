@@ -17,6 +17,7 @@ const AgenticTop10View = lazy(() => import('./components/AgenticTop10View'));
 const SecureMcpGuideView = lazy(() => import('./components/SecureMcpGuideView'));
 const GenAiDataSecurityView = lazy(() => import('./components/GenAiDataSecurityView'));
 const RedTeamingManualView = lazy(() => import('./components/RedTeamingManualView'));
+const SecuringAgenticAppsView = lazy(() => import('./components/SecuringAgenticAppsView'));
 const AuditChecklistView = lazy(() => import('./components/AuditChecklistView'));
 const ToolsDirectoryView = lazy(() => import('./components/ToolsDirectoryView'));
 const IncidentsDirectoryView = lazy(() => import('./components/IncidentsDirectoryView'));
@@ -103,6 +104,13 @@ const parseHashToState = (hash: string): { view: AppView; pillar: ActivePillarKe
   ) {
     return { view: 'red-teaming-manual', pillar: 'REDTEAMINGMANUAL', id: clean };
   }
+  if (clean === 'securing-agentic-apps' || clean.startsWith('securing-agentic-apps/')) {
+    const parts = clean.split('/');
+    return { view: 'securing-agentic-apps', pillar: 'SECUREAGENTICAPPS', id: parts[1] || null };
+  }
+  if (upper.startsWith('SAA-')) {
+    return { view: 'securing-agentic-apps', pillar: 'SECUREAGENTICAPPS', id: clean };
+  }
   if (clean.startsWith('mitre-atlas') || clean.startsWith('AML') || upper.startsWith('AML')) {
     const parts = clean.split('/');
     const id = (clean.startsWith('AML') || upper.startsWith('AML')) ? clean : (parts[1] || null);
@@ -160,6 +168,8 @@ const stateToHash = (view: AppView, pillar: ActivePillarKey, testId?: string | n
   if (view === 'mitre-atlas') return threatId ? `#/mitre-atlas/${threatId}` : '#/mitre-atlas';
   if (view === 'secure-mcp-guide') return threatId ? `#/secure-mcp-guide/${threatId}` : '#/secure-mcp-guide';
   if (view === 'genai-data-security') return threatId ? `#/genai-data-security/${threatId}` : '#/genai-data-security';
+  if (view === 'red-teaming-manual') return threatId ? `#/red-teaming-manual/${threatId}` : '#/red-teaming-manual';
+  if (view === 'securing-agentic-apps') return threatId ? `#/securing-agentic-apps/${threatId}` : '#/securing-agentic-apps';
   if (view === 'owasp-top10') return threatId ? `#/owasp-top10/${threatId}` : '#/owasp-top10';
   if (view === 'owasp-ml-top10') return threatId ? `#/owasp-ml-top10/${threatId}` : '#/owasp-ml-top10';
   if (view === 'owasp-agent-top10') return threatId ? `#/owasp-agent-top10/${threatId}` : '#/owasp-agent-top10';
@@ -280,7 +290,7 @@ const App: React.FC = () => {
         return true;
       });
     }
-    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'SECUREMCPGUIDE' || activePillar === 'GENAIDATASECURITY' || activePillar === 'REDTEAMINGMANUAL') return tests;
+    if (activePillar === 'ALL' || activePillar === 'TOP10' || activePillar === 'MLTOP10' || activePillar === 'AGENTTOP10' || activePillar === 'SAIFTOP10' || activePillar === 'MCPTOP10' || activePillar === 'SECUREMCPGUIDE' || activePillar === 'GENAIDATASECURITY' || activePillar === 'REDTEAMINGMANUAL' || activePillar === 'SECUREAGENTICAPPS') return tests;
     return tests.filter(t => t.pillar === activePillar);
   }, [activePillar, globalDomain]);
 
@@ -314,6 +324,9 @@ const App: React.FC = () => {
     } else if (pillar === 'REDTEAMINGMANUAL') {
       setOwaspTargetId(null);
       view = 'red-teaming-manual';
+    } else if (pillar === 'SECUREAGENTICAPPS') {
+      setOwaspTargetId(null);
+      view = 'securing-agentic-apps';
     }
     setCurrentView(view);
     syncHash(view, pillar, null, null);
@@ -346,6 +359,9 @@ const App: React.FC = () => {
     } else if (id.startsWith("RTM") || id.startsWith("rtm") || id.toUpperCase().startsWith("RTM") || id.startsWith("phase-")) {
       pillar = 'REDTEAMINGMANUAL';
       view = 'red-teaming-manual';
+    } else if (id.startsWith("SAA-") || id.toUpperCase().startsWith("SAA-")) {
+      pillar = 'SECUREAGENTICAPPS';
+      view = 'securing-agentic-apps';
     }
 
     setActivePillar(pillar);
@@ -411,6 +427,10 @@ const App: React.FC = () => {
       view = 'secure-mcp-guide';
     } else if (activePillar === 'GENAIDATASECURITY') {
       view = 'genai-data-security';
+    } else if (activePillar === 'REDTEAMINGMANUAL') {
+      view = 'red-teaming-manual';
+    } else if (activePillar === 'SECUREAGENTICAPPS') {
+      view = 'securing-agentic-apps';
     }
     setCurrentView(view);
     syncHash(view, activePillar);
@@ -651,6 +671,15 @@ const App: React.FC = () => {
                 <RedTeamingManualView 
                   initialPhaseId={owaspTargetId} 
                   onNavigateToOwasp={handleNavigateToOwasp}
+                />
+              )}
+
+              {currentView === 'securing-agentic-apps' && (
+                <SecuringAgenticAppsView
+                  key={owaspTargetId ?? 'saa-root'}
+                  initialSectionId={owaspTargetId}
+                  onNavigateToOwasp={handleNavigateToOwasp}
+                  onSelectPillar={handleSelectPillar}
                 />
               )}
 

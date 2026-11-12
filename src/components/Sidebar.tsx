@@ -3,7 +3,7 @@ import React from 'react';
 import { 
   Box, Database, LayoutGrid, Server, BookOpen, Shield, Book, X, 
   Brain, Cpu, Bot, Gavel, Network, FileText, Search, CheckCircle2, 
-  Terminal, Flame, Sparkles, ChevronDown, Globe, SlidersHorizontal, Target 
+  Terminal, Flame, Sparkles, ChevronDown, Globe, SlidersHorizontal, Target, ShieldCheck 
 } from 'lucide-react';
 import { Pillar, GlobalDomain } from '../types';
 import { TEST_DATA } from '../data';
@@ -22,11 +22,12 @@ export type AppView =
   | 'secure-mcp-guide' 
   | 'genai-data-security'
   | 'red-teaming-manual'
+  | 'securing-agentic-apps'
   | 'audit-checklist'
   | 'tools'
   | 'incidents';
 
-export type ActivePillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY' | 'REDTEAMINGMANUAL';
+export type ActivePillarKey = Pillar | 'ALL' | 'MITREATLAS' | 'TOP10' | 'MLTOP10' | 'AGENTTOP10' | 'SAIFTOP10' | 'MCPTOP10' | 'SECUREMCPGUIDE' | 'GENAIDATASECURITY' | 'REDTEAMINGMANUAL' | 'SECUREAGENTICAPPS';
 
 const DOMAIN_OPTIONS: { id: GlobalDomain; label: string; icon: React.ComponentType<{ className?: string }>; color: string; badge: string }[] = [
   { id: 'ALL', label: 'All AI Domains', icon: Globe, color: 'text-cyan-400', badge: 'Global' },
@@ -290,6 +291,21 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Database className="w-4 h-4 shrink-0 text-emerald-400" />
             <span>OWASP GenAI Data Security</span>
           </button>
+
+          {(globalDomain === 'ALL' || globalDomain === 'AGENT' || globalDomain === 'MCP') && (
+            <button
+              type="button"
+              onClick={() => { onSelectPillar('SECUREAGENTICAPPS'); onClose(); }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-xs font-medium ${
+                currentView === 'securing-agentic-apps' || (currentView === 'tests' && activePillar === 'SECUREAGENTICAPPS')
+                  ? 'bg-gradient-to-r from-violet-500/20 to-fuchsia-500/10 text-violet-300 border border-violet-500/30 font-semibold'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+              }`}
+            >
+              <ShieldCheck className="w-4 h-4 shrink-0 text-violet-400" />
+              <span>Securing Agentic Apps V2</span>
+            </button>
+          )}
 
           {(globalDomain === 'ALL' || globalDomain === 'MCP') && (
             <button
