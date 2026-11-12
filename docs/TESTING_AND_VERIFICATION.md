@@ -14,7 +14,7 @@ The project implements a zero-dependency, comprehensive test architecture built 
 | Test Suite | Path | Description | Execution Command |
 | :--- | :--- | :--- | :--- |
 | **Master Suite** | `scripts/run-all-tests.mjs` | Runs all test suites in sequence with formatted metrics | `npm test` |
-| **Unit & Schema** | `tests/unit/*.test.mjs` | Strict schema assertions across all 8 frameworks and 42+ test items | `npm run test:unit` |
+| **Unit & Schema** | `tests/unit/*.test.mjs` | Strict schema assertions across all 8 frameworks and 60+ test items | `npm run test:unit` |
 | **Functional & Logic**| `tests/functional/*.test.mjs` | View routing transitions, active pillar filtering, and search logic | `npm run test:functional` |
 | **Security & CSP** | `tests/security/*.test.mjs` | CSP header compliance, raw payload rendering safety, and citation scheme validation | `npm run test:security` |
 | **Build & GitHub Pages** | `tests/build/*.test.mjs` | Static output validation, base path support (`/<repo>/`), and pure SPA checks | `npm run test:build` |

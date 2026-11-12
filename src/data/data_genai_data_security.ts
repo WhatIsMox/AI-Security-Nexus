@@ -488,7 +488,7 @@ export const GENAI_DATA_SECURITY_RISKS: GenAiDataSecurityRisk[] = [
       { title: 'IBM - Four ways to lower shadow AI security risk', url: 'https://www.ibm.com/think/insights/security-risk-shadow-AI' },
       { title: 'SoSafe - How leaders can govern Shadow AI', url: 'https://sosafe-awareness.com/blog/shadow-ai-risks-culture-safe-ai-use/' },
       { title: 'GDT - Why you need to address Shadow AI', url: 'https://gdt.com/blog/why-you-need-to-address-shadow-ai-and-how-to-get-started/' },
-      { title: 'BDO - Shadow AI: The Next Generation of Shadow IT', url: 'https://www.bdo.com/insights/digital/shadow-ai-the-next-generation-of-shadow-it' }
+      { title: 'BDO - Shadow AI: The Next Generation of Shadow IT', url: 'https://www.bdo.com/insights/advisory/shadow-ai-the-next-generation-of-shadow-it' }
     ],
     keywords: ['shadow AI', 'SaaS', 'CASB', 'DLP', 'procurement', 'data residency']
   },

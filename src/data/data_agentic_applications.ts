@@ -253,7 +253,7 @@ const APPLICATION_ENTRIES: OwaspTop10Entry[] = [
     references: [
       { title: 'OWASP CycloneDX', url: 'https://cyclonedx.org/' },
       { title: 'OWASP ASI exploits and incidents tracker', url: INCIDENT_TRACKER },
-      { title: 'Noma Security AgentSmith research', url: 'https://noma.security/blog/agentsmith/' },
+      { title: 'AgentSmith: LangSmith Prompt Hub proxy flaw (The Hacker News)', url: 'https://thehackernews.com/2025/06/langchain-langsmith-bug-let-hackers.html' },
     ],
   },
   {

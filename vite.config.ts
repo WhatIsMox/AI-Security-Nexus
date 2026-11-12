@@ -1,5 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { createHash } from 'node:crypto'
+
+/** SHA-256 CSP source expressions for every inline <script> (no src) in the HTML. */
+const inlineScriptHashes = (html: string): string[] =>
+  [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)]
+    .map((m) => m[1])
+    .filter((body) => body.trim().length > 0)
+    .map((body) => `'sha256-${createHash('sha256').update(body).digest('base64')}'`)
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -14,11 +22,13 @@ export default defineConfig(({ command }) => {
       react(),
       {
         name: 'html-security-meta',
-        transformIndexHtml() {
+        transformIndexHtml(html: string) {
           const isDev = command !== 'build';
+          // Production: allow only our own inline analytics loader, pinned by hash (never 'unsafe-inline').
+          const hashes = inlineScriptHashes(html).join(' ');
           const scriptSrc = isDev 
             ? "'self' 'unsafe-inline' https://stats.byreference.net" 
-            : "'self' https://stats.byreference.net";
+            : `'self' ${hashes ? hashes + ' ' : ''}https://stats.byreference.net`;
           const connectSrc = isDev
             ? "'self' https://stats.byreference.net ws: wss:"
             : "'self' https://stats.byreference.net";
@@ -91,6 +101,11 @@ export default defineConfig(({ command }) => {
       emptyOutDir: true,
       chunkSizeWarningLimit: 1200,
       rollupOptions: {
+        // src/data/* modules are pure data literals. Declaring them side-effect free lets Rollup drop a
+        // catalog (e.g. the multi-megabyte MITRE ATLAS dataset) from every chunk that merely re-imports the barrel.
+        treeshake: {
+          moduleSideEffects: (id) => !/[\\/]src[\\/]data[\\/]/.test(id),
+        },
         output: {
           manualChunks(id) {
             if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
@@ -102,7 +117,13 @@ export default defineConfig(({ command }) => {
             if (id.includes('incident_details_catalog') || id.includes('tool_details_catalog')) {
               return 'security-intelligence-db';
             }
-            if (id.includes('data_mitre_atlas')) {
+            if (
+              id.includes('/data/data_tests') || id.includes('/data/data_agentic') || id.includes('/data/data_llm') ||
+              id.includes('/data/data_red_teaming_manual') || id.includes('/data/tools_catalog') || id.includes('/data/incidents_catalog')
+            ) {
+              return 'catalog-data';
+            }
+            if (id.includes('data_mitre_atlas') && !id.includes('data_mitre_atlas_index')) {
               return 'mitre-atlas-data';
             }
             if (id.includes('data_saif') || id.includes('data_genai_data_security') || id.includes('data_secure_mcp_guide') || id.includes('data_ml') || id.includes('data_mcp') || id.includes('data_securing_agentic_apps')) {

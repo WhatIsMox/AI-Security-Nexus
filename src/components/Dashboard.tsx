@@ -20,15 +20,13 @@ import {
   SECURE_MCP_GUIDE_SECTIONS,
   GENAI_DATA_SECURITY_META,
   GENAI_DATA_SECURITY_RISKS,
-  MITRE_ATLAS_META,
-  MITRE_ATLAS_TECHNIQUES,
-  MITRE_ATLAS_TACTICS,
   RED_TEAMING_MANUAL_META,
   RED_TEAMING_MANUAL_PHASES,
   SECURING_AGENTIC_APPS_META,
   SAA_CHAPTERS,
   SAA_ALL_SECTIONS,
 } from '../data';
+import { MITRE_ATLAS_SUMMARY, MITRE_ATLAS_TECHNIQUE_INDEX } from '../data/data_mitre_atlas_index';
 import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
 import { getEnrichedIncident } from '../data/incident_details_catalog';
@@ -236,14 +234,14 @@ const buildFrameworkCards = (): FrameworkCard[] => [
   {
     key: 'MITREATLAS',
     name: 'MITRE ATLAS™ Matrix',
-    edition: MITRE_ATLAS_META.version,
+    edition: MITRE_ATLAS_SUMMARY.version,
     kind: 'Adversary Tactics & Techniques',
     blurb: 'Curated knowledge base of 16 tactics, 170+ techniques, mitigations, and real-world case studies modeling adversary lifecycles targeting AI/ML systems.',
     icon: Flame,
-    count: MITRE_ATLAS_TECHNIQUES.length,
+    count: MITRE_ATLAS_TECHNIQUE_INDEX.length,
     countLabel: 'techniques',
-    previewId: MITRE_ATLAS_TECHNIQUES[0]?.id ?? '',
-    previewTitle: MITRE_ATLAS_TECHNIQUES[0]?.name ?? '',
+    previewId: MITRE_ATLAS_TECHNIQUE_INDEX[0]?.id ?? '',
+    previewTitle: MITRE_ATLAS_TECHNIQUE_INDEX[0]?.name ?? '',
     text: 'text-orange-400',
     border: 'border-orange-500/25',
     hoverBorder: 'hover:border-orange-400/70',

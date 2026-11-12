@@ -2507,7 +2507,7 @@ export const TOOL_DATABASE: Record<string, SecurityTool> = {
   "Galileo": {
     name: "Galileo",
     description: "GenAI evaluation, guardrails, and observability platform.",
-    url: "https://www.rungalileo.io/",
+    url: "https://galileo.ai/",
     cost: "Free tier / $100/mo",
     type: "Third-party",
     category: "Both",

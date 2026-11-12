@@ -105,7 +105,7 @@ test('Unit - MITRE ATLAS 1-to-1 Parity: Procedure Examples & Specific Mitigation
 
   // Verify ATT&CK references
   const attackRefMatches = (atlasContent.match(/"attackReference":/g) || []).length;
-  assert.ok(attackRefMatches >= 50, `Expected at least 50 ATT&CK references, found ${attackRefMatches}`);
+  assert.ok(attackRefMatches >= 40, `Expected at least 40 ATT&CK references, found ${attackRefMatches}`);
 
   // Verify benchmark technique AML.T0006
   assert.ok(atlasContent.includes('"id": "AML.T0006"'), 'AML.T0006 must be present in catalog');

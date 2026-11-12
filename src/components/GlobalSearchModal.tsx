@@ -14,7 +14,6 @@ import {
   OWASP_MCP_TOP_10_DATA, 
   GENAI_DATA_SECURITY_RISKS,
   GENAI_DSPM_CAPABILITIES,
-  MITRE_ATLAS_TECHNIQUES,
   RED_TEAMING_MANUAL_PHASES,
   RED_TEAMING_TESTING_DOMAINS,
   SAA_ALL_SECTIONS,
@@ -23,6 +22,8 @@ import {
   SAA_SECTION_SEARCH_TEXT
 } from '../data';
 import { TOOLS_BY_THREAT_ID } from '../data/tools_catalog';
+import { tokenizeQuery, rankSearchResults } from '../utils/searchRanking';
+import { MITRE_ATLAS_TECHNIQUE_INDEX } from '../data/data_mitre_atlas_index';
 import { getEnrichedTool } from '../data/tool_details_catalog';
 import { INCIDENTS_BY_THREAT_ID } from '../data/incidents_catalog';
 import { getEnrichedIncident } from '../data/incident_details_catalog';
@@ -204,22 +205,6 @@ function getSearchIndex(): SearchResultItem[] {
     });
   }
 
-  // 10. MITRE ATLAS Techniques
-  for (const entry of MITRE_ATLAS_TECHNIQUES) {
-    const title = `${entry.id}: ${entry.name}`;
-    const subtitle = `${entry.tacticName} • ${entry.description}`;
-    const categoryLabel = 'MITRE ATLAS';
-    items.push({
-      id: `atlas-${entry.id}`,
-      title,
-      subtitle,
-      category: 'atlas',
-      categoryLabel,
-      badgeColor: 'border-orange-500/30 bg-orange-500/10 text-orange-400',
-      searchText: `${title} ${subtitle} ${categoryLabel} ${entry.tacticName} ${(entry.platforms || []).join(' ')}`.toLowerCase(),
-      targetId: entry.id
-    });
-  }
 
   // 11. Tools Catalog
   const toolItemsMap = new Map<string, { tool: SecurityTool & { mappedThreats: string[] } }>();
@@ -381,6 +366,35 @@ function getSearchIndex(): SearchResultItem[] {
   return items;
 }
 
+interface AtlasSearchSource {
+  id: string;
+  name: string;
+  tacticName: string;
+  description?: string;
+  platforms?: readonly string[];
+}
+
+const buildAtlasSearchItems = (entries: readonly AtlasSearchSource[]): SearchResultItem[] =>
+  entries.map((entry) => {
+    const title = `${entry.id}: ${entry.name}`;
+    const subtitle = entry.description ? `${entry.tacticName} • ${entry.description}` : entry.tacticName;
+    const categoryLabel = 'MITRE ATLAS';
+    return {
+      id: `atlas-${entry.id}`,
+      title,
+      subtitle,
+      category: 'atlas',
+      categoryLabel,
+      badgeColor: 'border-orange-500/30 bg-orange-500/10 text-orange-400',
+      searchText: `${title} ${subtitle} ${categoryLabel} ${entry.tacticName} ${(entry.platforms || []).join(' ')}`.toLowerCase(),
+      targetId: entry.id
+    };
+  });
+
+// The full ATLAS catalog is multi-megabyte, so it is fetched on demand; the tiny index makes IDs and names searchable immediately.
+const ATLAS_INDEX_ITEMS: SearchResultItem[] = buildAtlasSearchItems(MITRE_ATLAS_TECHNIQUE_INDEX);
+let cachedAtlasFullItems: SearchResultItem[] | null = null;
+
 interface GlobalSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -430,7 +444,26 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     }
   }, [selectedIndex, isOpen]);
 
-  const allSearchItems = useMemo(() => getSearchIndex(), []);
+  const [atlasItems, setAtlasItems] = useState<SearchResultItem[]>(cachedAtlasFullItems ?? ATLAS_INDEX_ITEMS);
+
+  // Lazily enrich the ATLAS entries with full descriptions the first time the modal opens
+  useEffect(() => {
+    if (!isOpen || cachedAtlasFullItems) return;
+    let cancelled = false;
+    import('../data/data_mitre_atlas')
+      .then((mod) => {
+        cachedAtlasFullItems = buildAtlasSearchItems(mod.MITRE_ATLAS_TECHNIQUES);
+        if (!cancelled) setAtlasItems(cachedAtlasFullItems);
+      })
+      .catch(() => {
+        // Offline / chunk failure: keep the lightweight index
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen]);
+
+  const allSearchItems = useMemo(() => [...getSearchIndex(), ...atlasItems], [atlasItems]);
 
   const categoryCounts = useMemo(() => {
     let tests = 0;
@@ -465,7 +498,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       return list.slice(0, 15);
     }
 
-    return list.filter(item => item.searchText.includes(cleanQuery)).slice(0, 30);
+    const tokens = tokenizeQuery(cleanQuery);
+    const matched = list.filter(item => tokens.every(variants => variants.some(v => item.searchText.includes(v))));
+    return rankSearchResults(matched, cleanQuery).slice(0, 30);
   }, [allSearchItems, query, activeTab]);
 
   const handleTabChange = (tab: 'all' | 'tests' | 'threats' | 'tools' | 'incidents') => {

@@ -386,7 +386,7 @@ export const TEST_DATA: TestItem[] = [
       { type: 'Mitigation', content: "Sandbox high-risk tools and isolate agent memory and communication channels." }
     ],
     suggestedTools: [
-      { name: "Galileo Agentic Evaluations", description: "Monitors and evaluates agent behavior.", url: "https://www.rungalileo.io/" },
+      { name: "Galileo Agentic Evaluations", description: "Monitors and evaluates agent behavior.", url: "https://galileo.ai/" },
       { name: "Giskard Red Teaming", description: "LLM-based red teaming for agent scenarios.", url: "https://giskard.ai/" },
       { name: "BrowserART", description: "Tests browser-based agents for unsafe behavior.", url: "https://arxiv.org/abs/2402.04253" },
       { name: "SafeAgentBench", description: "Benchmarks safe refusal on hazardous tasks.", url: "https://arxiv.org/abs/2403.02345" },
@@ -1825,7 +1825,7 @@ export const TEST_DATA: TestItem[] = [
       { name: "Google Cloud DLP", description: "Privacy compliance.", url: "https://cloud.google.com/security/products/dlp" }
     ],
     externalResources: [
-        { title: "OWASP AI Exchange - Privacy", url: "https://owasp.org/www-project-ai-security-and-privacy-guide/" }
+        { title: "OWASP AI Exchange - Privacy", url: "https://owaspai.org/" }
     ]
   },
   {

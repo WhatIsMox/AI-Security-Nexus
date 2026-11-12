@@ -1,7 +1,7 @@
 # AI Security Nexus — System Project Map & Taxonomy Index
 
 > **Auto-Generated Reference Document**  
-> **Last Synchronized**: `2026-11-12T21:59:39.288Z`  
+> **Last Synchronized**: `2026-11-12T22:15:25.386Z`  
 > *Do not edit manually. Re-generate via `npm run docs:sync`.*
 
 ---

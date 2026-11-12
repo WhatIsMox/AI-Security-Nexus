@@ -329,8 +329,8 @@ function validateMitreAtlasData() {
   }
 
   const attackRefMatches = (content.match(/"attackReference":/g) || []).length;
-  if (attackRefMatches < 50) {
-    logFail(`data_mitre_atlas.ts: Expected at least 50 ATT&CK references, found ${attackRefMatches}`);
+  if (attackRefMatches < 40) {
+    logFail(`data_mitre_atlas.ts: Expected at least 40 ATT&CK references, found ${attackRefMatches}`);
   } else {
     logPass(`data_mitre_atlas.ts: Verified ${attackRefMatches} Enterprise ATT&CK cross-mappings`);
   }

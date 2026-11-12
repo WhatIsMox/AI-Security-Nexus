@@ -1821,7 +1821,7 @@ export const RED_TEAMING_REFERENCES = [
   { id: "REF-8", title: "HiddenLayer APE Taxonomy", url: "https://github.com/hiddenlayerai/ape-taxonomy" },
   { id: "REF-9", title: "OWASP Top 10 for LLM Applications 2026", url: "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/" },
   { id: "REF-10", title: "OWASP Top 10 for Agentic Applications 2026", url: "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/" },
-  { id: "REF-11", title: "MITRE ATLAS Matrix", url: "https://atlas.mitre.org/matrices/ATLAS" },
+  { id: "REF-11", title: "MITRE ATLAS Matrix", url: "https://atlas.mitre.org/" },
   { id: "REF-12", title: "MITRE SAFE-AI Framework (2023)", url: "https://atlas.mitre.org/pdf-files/SAFEAI_Full_Report.pdf" },
   { id: "REF-13", title: "NIST AI Risk Management Framework 1.0 & GenAI Profile (NIST AI 600-1)", url: "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf" },
   { id: "REF-14", title: "European Parliament - EU AI Act (2023)", url: "https://www.europarl.europa.eu/topics/en/article/20230601STO93804/eu-ai-act-first-regulation-on-artificial-intelligence" },

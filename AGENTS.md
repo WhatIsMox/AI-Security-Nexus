@@ -20,7 +20,7 @@ The **AI Security Nexus** is a state-of-the-art interactive graphical exploratio
 6. **OWASP GenAI Data Security Risks & Mitigations (2026)**: `DSGAI01` - `DSGAI21` & AI-DSPM capabilities (`data_genai_data_security.ts`)
 7. **OWASP Machine Learning Security Top 10**: `ML01:2023` - `ML10:2023` (`data_ml.ts`)
 8. **Google Secure AI Framework (SAIF)**: 15 Lifecycle Threats & interactive SVG threat model (`data_saif.ts`)
-9. **Curated Security Test Suite**: 42+ structured tests across 4 Pillars (`data_tests.ts` & `data_agentic.ts`)
+9. **Curated Security Test Suite**: 60+ structured tests across 4 Pillars (`data_tests.ts` & `data_agentic.ts`)
 10. **Security Tools & Real-World Incident Catalogs**: Tool classifications and CVE/research citations (`tools_catalog.ts`, `incidents_catalog.ts`)
 11. **OWASP GenAI Red Teaming Manual (v1.0, October 2026)**: Tactical 8-phase adversary emulation manual with refusal diagnostics, exfiltration matrices, and persistence validation (`data_red_teaming_manual.ts`, [Official Link](https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/))
 12. **OWASP Securing Agentic Applications V2 (v2.0, October 2026)**: Builder & defender guide — key components KC1–KC6, T1–T15 attack surface, 18 security hooks, circuit breakers, Rule of Two, OBO delegation, MCP supply-chain controls, assurance, and runtime hardening (`data_securing_agentic_apps.ts`, `SecuringAgenticAppsView.tsx`, [Official Link](https://genai.owasp.org/resource/securing-agentic-applications-v2/))
@@ -117,7 +117,7 @@ The build injects strict CSP and Referrer headers via [`vite.config.ts`](file://
 Every change made by an agent MUST be verified before concluding:
 
 ```bash
-# 1. Run complete automated test suite (69 tests: Unit, Functional, Performance, Security/SAST, Build)
+# 1. Run complete automated test suite (350+ automated checks: Unit, Functional, Performance, Security/SAST, Build)
 npm test
 
 # 2. Run data catalog schema & referential integrity validator

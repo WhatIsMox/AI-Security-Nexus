@@ -6,7 +6,7 @@ import {
   Network, Database, Search, X, Shield, Flame, ChevronDown, ChevronUp, 
   Layers, ExternalLink, Sparkles 
 } from 'lucide-react';
-import { MITRE_ATLAS_TECHNIQUES } from '../data';
+import { MITRE_ATLAS_TECHNIQUE_INDEX } from '../data/data_mitre_atlas_index';
 
 interface TestListProps {
   tests: TestItem[];
@@ -47,13 +47,9 @@ const TestList: React.FC<TestListProps> = ({ tests, onSelectTest, onNavigateToOw
     }
     const result: { id: string; name: string; tacticName?: string }[] = [];
     for (const id of atlasIdSet) {
-      const match = MITRE_ATLAS_TECHNIQUES.find(tech => tech.id === id);
+      const match = MITRE_ATLAS_TECHNIQUE_INDEX.find(tech => tech.id === id);
       if (match) {
-        result.push({
-          id: match.id,
-          name: match.name,
-          tacticName: match.tactics?.[0]?.name || match.tactics?.[0]?.id || 'MITRE ATLAS'
-        });
+        result.push({ id: match.id, name: match.name, tacticName: match.tacticName });
       } else {
         result.push({ id, name: id, tacticName: 'MITRE ATLAS' });
       }

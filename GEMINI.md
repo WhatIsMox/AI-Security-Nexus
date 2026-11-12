@@ -13,22 +13,22 @@ The UI is a state-driven single page application. Navigation is controlled via `
 
 | `currentView` | `activePillar` | Component Rendered | Description |
 | :--- | :--- | :--- | :--- |
-| `'dashboard'` | `'ALL'` | [`Dashboard.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedDashboard.tsx) | Executive metrics, framework cards, recent tests |
-| `'threat-model'` | Any | [`ThreatModelling.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedThreatModelling.tsx) | Interactive SVG architecture pipeline & SAIF threat flow |
-| `'owasp-top10'` | `'TOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedOwaspTop10View.tsx) | OWASP LLM Applications Top 10 (2026 Edition) |
-| `'owasp-ml-top10'` | `'MLTOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedOwaspTop10View.tsx) | OWASP Machine Learning Top 10 |
-| `'owasp-agent-top10'`| `'AGENTTOP10'`| [`AgenticTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedAgenticTop10View.tsx) | Dual view: ASI01-ASI10 & AST01-AST10 |
-| `'owasp-saif-top10'` | `'SAIFTOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedOwaspTop10View.tsx) | Google SAIF Threat Matrix |
-| `'owasp-mcp-top10'` | `'MCPTOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedOwaspTop10View.tsx) | OWASP MCP Top 10 (v0.1) |
-| `'secure-mcp-guide'` | `'SECUREMCPGUIDE'` | [`SecureMcpGuideView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedSecureMcpGuideView.tsx) | Secure MCP Server Hardening Guide v1.0 |
-| `'genai-data-security'`| `'GENAIDATASECURITY'`| [`GenAiDataSecurityView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedGenAiDataSecurityView.tsx) | DSGAI01-DSGAI21 & AI-DSPM capabilities |
+| `'dashboard'` | `'ALL'` | [`Dashboard.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/Dashboard.tsx) | Executive metrics, framework cards, recent tests |
+| `'threat-model'` | Any | [`ThreatModelling.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/ThreatModelling.tsx) | Interactive SVG architecture pipeline & SAIF threat flow |
+| `'owasp-top10'` | `'TOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/OwaspTop10View.tsx) | OWASP LLM Applications Top 10 (2026 Edition) |
+| `'owasp-ml-top10'` | `'MLTOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/OwaspTop10View.tsx) | OWASP Machine Learning Top 10 |
+| `'owasp-agent-top10'`| `'AGENTTOP10'`| [`AgenticTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/AgenticTop10View.tsx) | Dual view: ASI01-ASI10 & AST01-AST10 |
+| `'owasp-saif-top10'` | `'SAIFTOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/OwaspTop10View.tsx) | Google SAIF Threat Matrix |
+| `'owasp-mcp-top10'` | `'MCPTOP10'` | [`OwaspTop10View.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/OwaspTop10View.tsx) | OWASP MCP Top 10 (v0.1) |
+| `'secure-mcp-guide'` | `'SECUREMCPGUIDE'` | [`SecureMcpGuideView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/SecureMcpGuideView.tsx) | Secure MCP Server Hardening Guide v1.0 |
+| `'genai-data-security'`| `'GENAIDATASECURITY'`| [`GenAiDataSecurityView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/GenAiDataSecurityView.tsx) | DSGAI01-DSGAI21 & AI-DSPM capabilities |
 | `'audit-checklist'` | Any | [`AuditChecklistView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/AuditChecklistView.tsx) | Interactive audit tracking, scoring & JSON/MD report export |
 | `'securing-agentic-apps'` | `'SECUREAGENTICAPPS'` | [`SecuringAgenticAppsView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/SecuringAgenticAppsView.tsx) | OWASP Securing Agentic Applications V2 (9 chapters, 15 interactive labs, hooks, circuit breakers, Rule of Two, OBO delegation) |
 | `'red-teaming-manual'` | `'REDTEAMINGMANUAL'` | [`RedTeamingManualView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/RedTeamingManualView.tsx) | OWASP GenAI Red Teaming Manual (8 phases, refusal heuristics, confusion matrix simulator, exfiltration & persistence chains) |
 | `'tools'` | Any | [`ToolsDirectoryView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/ToolsDirectoryView.tsx) | Consolidated security tools directory & posture filtering |
-| `'incidents'` | Any | [`IncidentsDirectoryView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedIncidentsDirectoryView.tsx) | Real-world AI security incidents & CVE explorer |
-| `'tests'` | `Pillar \| 'ALL'` | [`TestList.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedTestList.tsx) | Filterable security test catalog (42+ tests) with keyword search |
-| `'detail'` | `Pillar` | [`TestDetail.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/undefinedTestDetail.tsx) | Test drill-down with payloads, copy button, and remediations |
+| `'incidents'` | Any | [`IncidentsDirectoryView.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/IncidentsDirectoryView.tsx) | Real-world AI security incidents & CVE explorer |
+| `'tests'` | `Pillar \| 'ALL'` | [`TestList.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/TestList.tsx) | Filterable security test catalog (60+ tests) with keyword search |
+| `'detail'` | `Pillar` | [`TestDetail.tsx`](file:///Users/gabrielemossino/Documents/GitHub/OWASP-AI-Testing-Bible/src/components/TestDetail.tsx) | Test drill-down with payloads, copy button, and remediations |
 
 ---
 

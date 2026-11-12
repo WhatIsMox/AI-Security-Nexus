@@ -143,7 +143,7 @@ const MISINFORMATION_TOOLS: SecurityTool[] = [
   { name: "Google DeepMind SynthID", description: "Imperceptible digital watermarking and provenance identification for AI media and text.", url: "https://deepmind.google/technologies/synthid/", cost: "Free", type: "Third-party", category: "Defensive" },
   { name: "C2PA", description: "Content provenance standard and ecosystem for authenticity.", url: "https://c2pa.org/", cost: "Free", type: "Third-party", category: "Defensive" },
   { name: "Content Credentials", description: "Provenance signals for authenticated media.", url: "https://contentcredentials.org/", cost: "Free", type: "Third-party", category: "Defensive" },
-  { name: "Galileo", description: "Monitoring and detection of hallucinations in production.", url: "https://www.rungalileo.io/", cost: "Free tier / $100/mo", type: "Third-party", category: "Defensive" }
+  { name: "Galileo", description: "Monitoring and detection of hallucinations in production.", url: "https://galileo.ai/", cost: "Free tier / $100/mo", type: "Third-party", category: "Defensive" }
 ];
 
 const UNBOUNDED_CONSUMPTION_TOOLS: SecurityTool[] = [
