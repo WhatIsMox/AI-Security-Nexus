@@ -8,7 +8,7 @@
  * Heavy dataset: import it lazily (dynamic import) or from the ATLAS explorer only.
  * Lightweight consumers (dashboard, test list) use ./data_mitre_atlas_index instead.
  * 
- * Last synchronized: 2026-11-12T22:12:15.373Z
+ * Last synchronized: 2026-11-16T12:14:06.872Z
  */
 
 import { MitreAtlasTactic, MitreAtlasTechnique, MitreAtlasOverview } from '../types';
